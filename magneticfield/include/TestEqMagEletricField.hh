@@ -19,7 +19,7 @@ public:
 			G4double MomentumXc,
 			G4double mass);
 
-	void EvaluateRhsGivenB(State s, const State f) const;
+	void EvaluateRhsGivenB(State s, const double Field[]) const;
 
 private:
 

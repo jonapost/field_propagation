@@ -16,7 +16,7 @@ G4EqMagElectricField::SetChargeMomentumMass(G4ChargeState particleCharge,
 
 
 void
-G4EqMagElectricField::EvaluateRhsGivenB(State y, const State f) const; 
+G4EqMagElectricField::EvaluateRhsGivenB(State y, double Field[]) const; 
 {
    // Components of y:
    //    0-2 dr/ds, 
@@ -34,18 +34,18 @@ G4EqMagElectricField::EvaluateRhsGivenB(State y, const State f) const;
 
    G4double cof1     = fElectroMagCof*pModuleInverse ;
 
-   //  G4double vDotE = s.x[3]*f.x[3] + s.x[4]*f.x[4] + s.x[5]*f.x[5] ;
+   //  G4double vDotE = s.x[3]*Field[3] + s.x[4]*Field[4] + s.x[5]*Field[5] ;
 
 
    s.xp[0] = s.x[3]*pModuleInverse ;                         
    s.xp[1] = s.x[4]*pModuleInverse ;                         
    s.xp[2] = s.x[5]*pModuleInverse ;                        
 
-   s.xp[3] = cof1*(cof2*f.x[3] + (s.x[4]*f.x[2] - s.x[5]*f.x[1])) ;
+   s.xp[3] = cof1*(cof2*Field[3] + (s.x[4]*Field[2] - s.x[5]*Field[1])) ;
    
-   s.xp[4] = cof1*(cof2*f.x[4] + (s.x[5]*f.x[0] - s.x[3]*f.x[2])) ; 
+   s.xp[4] = cof1*(cof2*Field[4] + (s.x[5]*Field[0] - s.x[3]*Field[2])) ; 
  
-   s.xp[5] = cof1*(cof2*f.x[5] + (s.x[3]*f.x[1] - s.x[4]*f.x[0])) ;  
+   s.xp[5] = cof1*(cof2*Field[5] + (s.x[3]*Field[1] - s.x[4]*Field[0])) ;  
 
    s.xp[6] = 0.;//not used
 
