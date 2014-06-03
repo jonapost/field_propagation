@@ -1,0 +1,69 @@
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    FullCMS benchmark History file
+                    ------------------------------
+This file should be used by the G4 example coordinator to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+
+13-Jun-2013 - A.Dotti (cms-V09-06-01)
+---------------------
+- Migrated to MT interfaces for RNG (note no other MT migration done yet).
+  Try to solve run-time warning from CLHEP with MT builds.
+
+14-Dec-2012 - A.Ribon (cms-V09-06-00)
+---------------------
+- Replaced the removed LHEP physics list with FTFP_BERT.
+
+12-Oct-2012 - G.Cosmo (cms-V09-05-00)
+---------------------
+- Explicit inclusion of units and constants headers.
+
+14-Nov-2011 - A.Ribon (cms-V09-04-00)
+---------------------
+- Migrated to the new G4Exception.
+
+24-Mar-2010 - A.Ribon (cms-V09-03-00)
+---------------------
+- Use <ctime> header (instead of <time.h>).
+- Added new macro files with different number of events: 100, 500, 1k
+  (i.e. 1000) and 5k (i.e. 5000).
+
+18-Mar-2010 - A.Ribon
+---------------------
+- Changed main in for Windows compatibility: added header <time.h>, and
+  removed call to G4UItcsh.
+
+16-Nov-2009 - G.Cosmo (cms-V09-02-02)
+---------------------
+- Changed main and executable from mainApplication to full_cms.
+
+12-Nov-2009 - A.Ribon (cms-V09-02-01)
+---------------------
+- The Physics List is still set via command line argument, e.g.:
+    mainApplication bench1.g4 QGSP_BIC
+  but it uses the G4PhysListFactory, so there is no need to
+  update the main program with new/obsolete Physics Lists.
+
+
+12-Nov-2009 - A.Ribon (cms-V09-02-00)
+---------------------
+- The Physics List is now set via command line argument, e.g.:
+    mainApplication bench1.g4 QGSP_BIC
+
+
+23-Apr-2008 - A.Ribon (cms-V09-01-00)
+---------------------
+- Added total energy deposit in the whole experimental hall.
+
+
+24-Oct-2007 - A.Ribon (cms-V09-00-00)
+---------------------
+- Created.

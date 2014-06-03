@@ -1,0 +1,104 @@
+
+	 ---------------- g4svn ---------------- 
+
+Reading SVN information about the directory:
+Repository root: svn+ssh://svn.cern.ch/reps/g4tests
+Category repository URL: svn+ssh://svn.cern.ch/reps/g4tests/trunk/benchmarks
+Symbol type: trunk
+Project path: benchmarks
+
+Switching (Please wait):
+Restored 'calorimeter/FullCMS/cms.gdml'
+U    calorimeter/FullCMS/History
+U    calorimeter/FullCMS/full_cms.cc
+U    calorimeter/FullCMS/CMakeLists.txt
+U    calorimeter/HadCalCMS/src/StatAccepTestAnalysis.cc
+U    calorimeter/HadCalCMS/src/StatAccepTestDetectorConstruction.cc
+U    calorimeter/HadCalCMS/src/StatAccepTestSteppingAction.cc
+U    calorimeter/HadCalCMS/src/StatAccepTestPrimaryGeneratorAction.cc
+U    calorimeter/HadCalCMS/src/StatAccepTestEventAction.cc
+U    calorimeter/HadCalCMS/src/StatAccepTestSensitiveCalorimeter.cc
+U    calorimeter/HadCalCMS/History
+U    calorimeter/HadCalCMS/CMakeLists.txt
+A    calorimeter/ParFullCMS
+A    calorimeter/ParFullCMS/cms.gdml.gz
+A    calorimeter/ParFullCMS/include
+A    calorimeter/ParFullCMS/include/MyEventAction.hh
+A    calorimeter/ParFullCMS/include/DummyPL.icc
+A    calorimeter/ParFullCMS/include/DummyPL.hh
+A    calorimeter/ParFullCMS/include/MyDetectorMessenger.hh
+A    calorimeter/ParFullCMS/include/MyRunAction.hh
+A    calorimeter/ParFullCMS/include/MyDetectorConstruction.hh
+A    calorimeter/ParFullCMS/include/MyUserActionInitialization.hh
+A    calorimeter/ParFullCMS/include/MySteppingAction.hh
+A    calorimeter/ParFullCMS/include/MyPrimaryGeneratorAction.hh
+A    calorimeter/ParFullCMS/src
+A    calorimeter/ParFullCMS/src/MySteppingAction.cc
+A    calorimeter/ParFullCMS/src/MyPrimaryGeneratorAction.cc
+A    calorimeter/ParFullCMS/src/MyEventAction.cc
+A    calorimeter/ParFullCMS/src/MyDetectorMessenger.cc
+A    calorimeter/ParFullCMS/src/MyRunAction.cc
+A    calorimeter/ParFullCMS/src/MyDetectorConstruction.cc
+A    calorimeter/ParFullCMS/src/MyUserActionInitialization.cc
+A    calorimeter/ParFullCMS/.DAWN_1.history
+A    calorimeter/ParFullCMS/GNUmakefile
+A    calorimeter/ParFullCMS/mt.g4
+A    calorimeter/ParFullCMS/start.rndm
+A    calorimeter/ParFullCMS/README
+A    calorimeter/ParFullCMS/ParmainApplication.cc
+A    calorimeter/ParFullCMS/vis.mac
+A    calorimeter/ParFullCMS/History
+A    calorimeter/ParFullCMS/cms.gdml
+A    calorimeter/ParFullCMS/perf.g4
+A    calorimeter/ParFullCMS/bench0.g4
+A    calorimeter/ParFullCMS/memoryProf.g4
+A    calorimeter/ParFullCMS/bench1.g4
+A    calorimeter/ParFullCMS/user.properties
+A    calorimeter/ParFullCMS/bench2.g4
+A    calorimeter/ParFullCMS/.DAWN_1.default
+A    calorimeter/ParFullCMS/bench3.g4
+A    calorimeter/ParFullCMS/CMakeLists.txt
+U    History
+U    electromagnetic/be1/History
+D    electromagnetic/be1/include/PhysListEmStandard.hh
+U    electromagnetic/be1/include/HistoManager.hh
+U    electromagnetic/be1/include/Histo.hh
+D    electromagnetic/be1/src/PhysListEmStandard.cc
+U    electromagnetic/be1/src/TrackingAction.cc
+U    electromagnetic/be1/src/PhysicsList.cc
+U    electromagnetic/be1/src/EventAction.cc
+U    electromagnetic/be1/src/HistoManager.cc
+U    electromagnetic/be1/src/DetectorConstruction.cc
+U    electromagnetic/be1/src/PrimaryGeneratorAction.cc
+U    electromagnetic/be2/History
+U    electromagnetic/be2/include/HistoManager.hh
+U    electromagnetic/be2/include/PrimaryGeneratorAction.hh
+U    electromagnetic/be2/include/TrackingAction.hh
+U    electromagnetic/be2/src/TrackingAction.cc
+U    electromagnetic/be2/src/RunAction.cc
+U    electromagnetic/be2/src/PhysicsList.cc
+U    electromagnetic/be2/src/EventAction.cc
+U    electromagnetic/be2/src/HistoManager.cc
+U    electromagnetic/be2/src/PhysListEmStandard.cc
+U    electromagnetic/be2/src/DetectorConstruction.cc
+U    electromagnetic/be2/src/SteppingAction.cc
+U    electromagnetic/be2/src/PrimaryGeneratorAction.cc
+U    transportation/honeycomb/History
+U    transportation/honeycomb/replicaCal.cc
+U    transportation/honeycomb/BuildCalorimeter.hh
+U    transportation/honeycomb/shooter.cc
+U    transportation/honeycomb/Shoot.hh
+U    transportation/honeycomb/BuildBoxWorld.hh
+U    transportation/NTST/include/NTSTPhysicsList.hh
+U    transportation/NTST/include/NTSTLooperDeath.hh
+U    transportation/NTST/src/NTSTDetectorConstruction.cc
+U    transportation/NTST/src/NTSTBabarEvtReadGenerator.cc
+U    transportation/NTST/src/NTSTTabulatedField3d.cc
+U    transportation/NTST/src/NTSTGunGenerator.cc
+U    transportation/NTST/src/NTSTGradientField.cc
+U    transportation/NTST/src/NTSTFieldSetup.cc
+U    transportation/NTST/src/NTSTLooperDeath.cc
+U    transportation/NTST/src/NTSTPhysicsList.cc
+U    transportation/NTST/src/NTSTEventAction.cc
+U    transportation/NTST/History
+Updated to revision 2836.

@@ -1,0 +1,28 @@
+stepper8, with 0.01
+  User=29.61s Real=29.68s Sys=0.03s
+stepper8, with 0.001
+  User=29.56s Real=29.63s Sys=0.03s
+stepper8, with 0.0001
+  User=29.46s Real=29.53s Sys=0.03s
+stepper8, with 0.00001
+  User=29.37s Real=29.44s Sys=0.03s
+stepper8, with 0.000001
+  User=29.55s Real=29.62s Sys=0.03s
+stepper8, with 0.0000001
+  User=29.66s Real=29.73s Sys=0.03s
+stepper8, with 0.00000001
+  User=30.16s Real=30.23s Sys=0.03s
+stepper8, with 0.000000001
+  User=32.75s Real=32.83s Sys=0.03s
+stepper8, with 0.0000000001
+  User=41.56s Real=41.67s Sys=0.03s
+stepper8, with 0.00000000001
+  User=52.42s Real=52.54s Sys=0.04s
+stepper8, with 0.000000000001
+  User=68.08s Real=68.24s Sys=0.05s
+stepper8, with 0.0000000000001
+  User=92.58s Real=92.78s Sys=0.07s
+stepper8, with 0.0000000000001
+  User=92.34s Real=92.54s Sys=0.07s
+stepper8, with 0.0000000000001
+  User=92.61s Real=92.82s Sys=0.07s

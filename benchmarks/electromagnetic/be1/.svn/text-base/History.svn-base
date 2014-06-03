@@ -1,0 +1,58 @@
+$Id: History,v 1.2 2007-12-03 12:37:42 vnivanch Exp $
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    EM benchmark 1 History file
+                    ---------------------------
+This file should be used by the G4 example coordinator to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+
+     ----------------------------------------------------------
+
+22 Aug 2013 - V.Ivanchenko (be1-V09-06-03)
+- removed local PhysListEmStandard;
+- PhysicsList - removed activation of hadronic physics (not 
+    used in the benchmark)
+
+29 Jul 2013 - G.Folger (be1-V09-06-02)
+- Fix compilation warnings from clang32, warning about unused datamember.
+    Affects Histo.hh and HistoManager.hh
+
+03 Apr 2013 - A.Dotti (be1-V09-06-01)
+------------------------------------------
+- Migration to new G4VPhysicsConstructor interface needed for G4MT
+
+13 Dec 2012 - A.Ribon (be1-V09-06-00)
+------------------------------------------
+- Replaced G4QStoppingPhysics with G4StoppingPhysics.
+
+28 Oct 2012 - G.Cosmo (be1-V09-05-04)
+------------------------------------------
+- Fixed variable shadowing in HistoManager...
+
+12 Oct 2012 - G.Cosmo (be1-V09-05-02/be1-V09-05-03)
+------------------------------------------
+- Explicit inclusion of units and constants headers.
+
+15 Jun 2012 - P. Mato (be1-V09-05-01)
+------------------------------------------
+- Re-introducing the tests in CMakeLists.txt
+
+24 Feb 2011 - V.Ivantchenko 
+------------------------------------------
+- Update Physics List to 9.4
+
+03 Dec 2007 - V.Ivantchenko (be1-V09-00-01)
+------------------------------------------
+- Added scripts
+
+11 Oct 2007 - V.Ivantchenko (be1-V09-00-00)
+---------------------------
+- Packaged out of TestEm9 example.

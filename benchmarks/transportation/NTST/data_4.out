@@ -1,0 +1,12 @@
+stepper4, with 0.01
+  User=29.09s Real=29.09s Sys=0.03s
+stepper4, with 0.001
+  User=29.33s Real=29.32s Sys=0.03s
+stepper4, with 0.0001
+  User=29.42s Real=29.41s Sys=0.03s
+stepper4, with 0.00001
+  User=29.91s Real=29.92s Sys=0.03s
+stepper4, with 0.000001
+  User=31.45s Real=31.45s Sys=0.03s
+stepper4, with 0.0000001
+  User=33.21s Real=33.2s Sys=0.03s

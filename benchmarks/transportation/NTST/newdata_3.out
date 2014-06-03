@@ -1,0 +1,24 @@
+stepper3, with 0.1^1
+  User=27.34s Real=27.42s Sys=0.04s
+stepper3, with 0.1^2
+  User=28.89s Real=28.96s Sys=0.02s
+stepper3, with 0.1^3
+  User=39.76s Real=39.86s Sys=0.03s
+stepper3, with 0.1^4
+  User=49.23s Real=49.35s Sys=0.04s
+stepper3, with 0.1^5
+  User=49.23s Real=49.34s Sys=0.04s
+stepper3, with 0.1^6
+  User=56.66s Real=56.78s Sys=0.04s
+stepper3, with 0.1^7
+  User=84.08s Real=84.28s Sys=0.07s
+stepper3, with 0.1^8
+  User=140.67s Real=141.01s Sys=0.12s
+stepper3, with 0.1^9
+  User=246.39s Real=246.92s Sys=0.15s
+stepper3, with 0.1^10
+  User=384.4s Real=385.22s Sys=0.23s
+stepper3, with 0.1^11
+  User=491.88s Real=493.49s Sys=0.74s
+stepper3, with 0.1^12
+  User=509.44s Real=511.27s Sys=0.78s

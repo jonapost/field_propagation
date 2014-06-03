@@ -1,0 +1,109 @@
+$Id: History,v 1.7 2010-03-24 16:46:04 ribon Exp $
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    Benchmarks History file
+                    -----------------------
+This file should be used to briefly summarize all major modifications
+introduced in the code and keep track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+
+4 December 2013 Gunter Folger    (benchmarks-V09-06-08)
+-  Global tag for geant4-10-00
+    include tag for ParFullCMS-V09-06-02 on top of benchmarks..07
+	 
+23 October 2013 Gunter Folger    (benchmarks-V09-06-07)
+-  Global tag for geant4-09-06-ref-10
+    include tag for ParFullCMS-V09-06-01 on top of benchmarks..06
+	
+16 October 2013 Gunter Folger    (benchmarks-V09-06-06)
+-  Global tag to include calorimeter/ParFullCMS
+
+28 August 2013 Gunter Folger    (benchmarks-V09-06-05)
+-  Global tag for geant4-09-06-ref-08.
+    Update tags for be1 to be1-V09-06-03, be2 to be2-V09-06-01
+	 
+28 June 2013 Gunter Folger      (benchmarks-V09-06-04)
+-  Global tag for geant4-09-06-ref-06, and geant4-10-00-beta-01
+     adds calorimeter/FullCMS tag cms-V09-06-01
+
+23 April 2013 Gunter Folger     (benchmarks-V09-06-03)
+-  Group tags in electromagnetic/be{1,2} be1-V09-06-01 and be2-V09-06-00 
+   to benchmarks tag
+   
+??????  (benchmarks-V09-06-02)
+
+10 December 2012  Alberto Ribon (benchmarks-V09-06-01)
+- Removed obsolete physics lists in calorimeter/HadCalCMS.
+
+05 December 2012  John Allison (benchmarks-V09-06-00)
+- Migrated to DrawTrajectory().  (Integer i_mode argument no longer
+  available.)
+
+28 November 2012  Alberto Ribon (benchmarks-V09-05-01)
+- Fixed shadowing warnings in calorimeter/HadCalCMS/
+  (file StatAccepTestAnalysis.cc).
+
+12 October 2012  G.Cosmo (benchmarks-V09-05-00)
+- Explicit inclusion of units and constants headers.
+
+14 November 2011  Alberto Ribon (benchmarks-V09-04-03)
+- Migrated FullCMS to the new G4Exception.
+  Included also Pere's change: "Removed QGSP_BERT_TRV
+  and QGSP_BERT_NOLEP from tests of HadCalCMS".
+
+04 October 2011  Pere Mato (benchmarks-V09-04-01)
+- Corrected minor problem for testing on Windows
+
+04 October 2011  Pere Mato (benchmarks-V09-04-00)
+- Added CMakeLists.txt files for calorimeter benchmarks
+
+24 March 2010  Alberto Ribon (benchmarks-V09-03-01)
+- Use <ctime> header (instead of "time.h") in calorimeter/FullCMS 
+  and calorimeter/HadCalCMS.
+  Added new macro files with different number of events: 100, 500,
+  1k (i.e. 1000) and 5k (i.e. 5000).
+
+
+18 March 2010  Alberto Ribon (benchmarks-V09-03-00)
+- Changed main in calorimeter/FullCMS and calorimeter/HadCalCMS
+  for Windows compatibility: added header "time.h", and removed
+  the class G4UItcsh.
+  Furthermore, in calorimeter/HadCalCMS, the macro files run*.g4
+  run now 5 events (instead of 1).
+
+
+16 November 2009  Gabriele Cosmo (benchmarks-V09-02-04)
+- Changed main and executable from mainApplication to full_cms in
+  calorimeter/FullCMS benchmark.
+
+
+12 November 2009  Alberto Ribon (benchmarks-V09-02-03)
+- On both  calorimeter/HadCalCMS  and  calorimeter/FullCMS  
+  the steering of the Physics List is still via command argument
+  but the G4PhysListFactory is now used, so there is no need to
+  update the main program with new/obsolete Physics Lists.
+
+
+12 November 2009  Alberto Ribon (benchmarks-V09-02-02)
+- Changed  calorimeter/FullCMS  to allow the steering of
+  the Physics List via command argument (instead of using
+  an environmental variable). 
+  Fixed also few warnings in calorimeter/HadCalCMS.
+
+
+19 August 2009  Alberto Ribon (benchmarks-V09-02-01)
+- Changed  calorimeter/HadCalCMS  to allow the steering of
+  the Physics List via command argument (instead of using
+  an environmental variable). 
+  Now it is ready to be included in system testing.
+
+
+1 July 2009  Gabriele Cosmo (benchmarks-V09-02-00)
+- Created.

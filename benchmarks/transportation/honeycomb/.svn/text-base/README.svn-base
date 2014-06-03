@@ -1,0 +1,42 @@
+$Id: README,v 1.1 2007-10-11 13:30:21 gcosmo Exp $
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                 Pure tracking benchmark README
+                 ------------------------------
+
+Honeycomb calorimeter test (calorimeter.cc)
+--------------------------
+Calorimeter consisting 2 matrices 24x50 and 25x50 CSoC '95 tubes
+translated on X and Y.
+Shoots 10000 geantinos on the optimised geometry, starting from
+the origin and along three different fixed directions.
+
+Replicated geometry performance test (replicaCal.cc)
+------------------------------------
+Calorimeter with end caps, where the main calorimeter block is
+replicated (divided) in r and Z.
+Shoots 10000 geantinos on the optimized geometry.
+
+Shooter test (shooter.cc)
+------------
+Shooting test with/without field.
+Options (as arguments):
+-event <number_of_events>
+      number of events for the test. Default is 1000000
+-geom <geometry_type>
+      where <geometry_type> can be:
+      box      - simple box (default)
+      caloloop - calorimeter made by a loop of placements
+      calorep  - calorimeter made of replicas
+-magn <magnetic_field_value>
+      activates magnetic field (value in tesla units). Default is OFF
+
+To build the executable use the command:
+
+make G4TARGET=<application_name>
+
+where <application_name> can be either: calorimeter || replicaCal || shooter

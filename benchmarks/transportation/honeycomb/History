@@ -1,0 +1,28 @@
+$Id: History,v 1.1 2007-10-11 13:30:50 gcosmo Exp $
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                 Pure tracking benchmark History file
+                 ------------------------------------
+This file should be used by the G4 example coordinator to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+
+     ----------------------------------------------------------
+
+12 Oct 2012 - G.Cosmo (honeycomb-V09-05-00)
+---------------------
+- Explicit inclusion of units and constants headers.
+
+11 Oct 2007 - G.Cosmo (honeycomb-V09-00-00)
+---------------------
+- Packaged out of internal geometry pure-tracking benchmarks. Including:
+  o Honeycomb calorimeter test (calorimeter.cc)
+  o Replicated geometry performance test (replicaCal.cc)
+  o Simple shooting test with/without field (shooter.cc)

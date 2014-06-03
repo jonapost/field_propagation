@@ -1,0 +1,24 @@
+# $Id: atlasbar_emv.mac,v 1.2 2007-12-03 12:35:29 vnivanch Exp $
+#
+# Macro file for "TestEm3.cc" 
+#
+# ATLAS BARREL model 
+# QGSP_EMV PL
+#
+/control/verbose 1
+/run/verbose 1
+#
+/testem/phys/addPhysics  emstandard_opt1
+#
+/gun/particle e-
+/gun/energy 10 GeV
+#
+/testem/phys/setCuts 0.7 mm
+/run/initialize
+#/process/eLoss/StepFunction 0.8 1 mm
+#/process/eLoss/MscStepLimit 0.2 false
+#
+#/random/resetEngineFrom seed.rndm
+
+/run/beamOn 1400
+#

@@ -1,0 +1,140 @@
+
+*************************************************************
+ Geant4 version Name: geant4-10-00-patch-01    (28-February-2014)
+                      Copyright : Geant4 Collaboration
+                      Reference : NIM A 506 (2003), 250-303
+                            WWW : http://cern.ch/geant4
+*************************************************************
+
+Opened input file SVT.dat
+G4VUserPhysicsList::SetVerboseLevel  : Verbose level is set to 2
+Visualization Manager instantiating with verbosity "warnings (3)"...
+Visualization Manager initialising...
+Registering graphics systems...
+
+You have successfully registered the following graphics systems.
+Current available graphics systems are:
+  ASCIITree (ATree)
+  DAWNFILE (DAWNFILE)
+  G4HepRep (HepRepXML)
+  G4HepRepFile (HepRepFile)
+  OpenGLImmediateX (OGLI, OGLIX)
+  OpenGLStoredX (OGL, OGLS, OGLSX)
+  RayTracer (RayTracer)
+  VRML1FILE (VRML1FILE)
+  VRML2FILE (VRML2FILE)
+  gMocrenFile (gMocrenFile)
+
+Registering model factories...
+
+You have successfully registered the following model factories.
+Registered model factories:
+  generic
+  drawByCharge
+  drawByParticleID
+  drawByOriginVolume
+  drawByAttribute
+
+Registered filter factories:
+  chargeFilter
+  particleFilter
+  originVolumeFilter
+  attributeFilter
+
+You have successfully registered the following user vis actions.
+Run Duration User Vis Actions: none
+End of Event User Vis Actions: none
+End of Run User Vis Actions: none
+
+Some /vis commands (optionally) take a string to specify colour.
+Available colours:
+  black, blue, brown, cyan, gray, green, grey, magenta, red, white, yellow
+
+### instantiated gun generator
+### Instantiated /gen/print cmd
+### SetGuidance for /gen/print
+### Set default value for /gen/print cmd
+/NTST/setDebug 0
+Reset debug flag to false
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+/run/onlyTransport true
+/gen/choose evt
+### instantiated evt generator
+/field/setStepperType 8
+/run/initialize
+Field set to  UniformField(default)
+G4CashKarpRKF45 is called
+The minimal step is equal to 1 mm
+Field Manager's parameters are  minEpsilonStep= 1e-08  maxEpsilonStep= 1e-07  deltaOneStep=   0.25  deltaIntersection= 0.1
+G4VUserPhysicsList::Construct()
+Construct processes 
+ +^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^+ 
+ +v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v+ 
+ +---                                                   ---+ 
+ +---                 G4Transportation                  ---+ 
+ +---                      USED !!                      ---+ 
+ +---                                                   ---+ 
+ +^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^+ 
+ +v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v+ 
+!!!Only Transportation Process No Physics
+G4VUserPhysicsList::SetDefaultCutValue:default cut value is changed to   :2[mm]
+G4VUserPhysicsList::SetDefaultCutValue:default cut value is changed to   :2[mm]
+G4VUserPhysicsList::SetCuts:   
+Cut for gamma: 2[mm]
+Cut  for e-: 2[mm]
+Cut  for e+: 2[mm]
+Cut  for proton: 2[mm]
+/field/setMinEpsilon 0.000000001
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/field/setMaxEpsilon 0.0000001
+#/field/setMinStep 0.0000001
+/field/update
+Field set to  UniformField(default)
+G4CashKarpRKF45 is called
+The minimal step is equal to 1 mm
+Field Manager's parameters are  minEpsilonStep= 1e-09  maxEpsilonStep= 1e-07  deltaOneStep=   0.25  deltaIntersection= 0.1
+/run/beamOn 1000
+
+========= Table of registered couples ==============================
+
+Index : 0     used in the geometry : Yes
+ Material : ArgonGas
+ Range cuts        :  gamma  2 mm     e-  2 mm     e+  2 mm  proton 2 mm 
+ Energy thresholds :  gamma  990 eV     e-  1.61707 keV    e+  1.60218 keV proton 200 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 1     used in the geometry : Yes
+ Material : Silicon
+ Range cuts        :  gamma  2 mm     e-  2 mm     e+  2 mm  proton 2 mm 
+ Energy thresholds :  gamma  9.66055 keV    e-  926.09 keV    e+  889.493 keV proton 200 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+====================================================================
+
+### Run 0 starts.
+### Run 0 start.
+/vis~/clear/view
+/vis~/draw/current
+Run terminated.
+Run Summary
+  Number of events processed : 1000
+  User=29.7s Real=29.76s Sys=0.03s
+/vis~/show/view
+/NTST/getFieldStats
+Number calls to field = 236000554
+/field/getChordFinderStats
+G4ChordFinder statistics report: 
+  No trials: 17031572  No Calls: 16998767  Max-trial: 12
+  Parameters:   fFirstFraction 0.999  fFractionLast 1  fFractionNextEstimate 0.98
+Graphics systems deleted.
+Visualization Manager deleting...
+G4 kernel has come to Quit state.
+================== Deleting memory pools ===================
+Number of memory pools allocated: 10; of which, static: 0
+Dynamic pools deleted: 10 / Total memory freed: 0.042 Mb
+============================================================
+RunManagerKernel is deleted. Good bye :)

@@ -1,0 +1,74 @@
+ Last update: 12-Nov-2009
+
+ Simplified CMS Hadronic Calorimeter benchmark
+ ---------------------------------------------
+
+ You can find in this directory a CPU benchmark test of Geant4 
+ on a simplified CMS hadronic calorimeter: 25 layers of 
+ Cu(6cm)-Scintillator(4mm).
+
+ The Physics List can be specified in the command line,
+ as the second argument, e.g. :
+
+           mainHadCalo  run1.g4  FTF_BIC
+
+ Notice that the name of the Physics List must be in upper case, 
+ exactly as the corresponding header file.
+ If the Physics List is not specified, then  QGSP_BERT  is used 
+ by default.
+
+ To build the application do:   
+                                make
+ and you get the executable:
+                                $G4BIN/$G4SYSTEM/mainHadCalo
+ and to run it:
+                                $G4BIN/$G4SYSTEM/mainHadCalo bench1.g4
+
+ You can run this application with one of the following 3 macro files:
+   1)  bench1.g4 : 4000 events of 50 GeV e-  without magnetic field;
+   2)  bench2.g4 : 4000 events of 50 GeV pi- without magnetic field;
+   3)  bench3.g4 : 4000 events of 50 GeV pi- with 4 Tesla magnetic field
+                   (the field is orthogonal to the beam direction).
+ In all cases, the beam particle is shot along the axis of the
+ cylindrical calorimeter.
+
+ The CPU time for each test can be obtained in different ways
+ (all of these should be, more or less, in agreement):
+   - Look at the value "User=..." at the end of the running,
+     after the line "Run Summary": this is the total time,
+     in seconds, for all (4000) events, excluding the 
+     initialization.
+   - Look at the value "mean = "  in one of the last lines:
+     this is the average time, in seconds, for one event
+     (in this case you can also see the statistical error
+      of this quantity);
+   - Use:
+            time $G4BIN/$G4SYSTEM/mainHadCalo bench1.g4
+     when launching the program: you would get, at the end
+     of the program, the value: "user ..."  which is the 
+     total time for all (4000) events, including the 
+     initialization.
+  
+ To get more information that can help understanding the time
+ result, it is convenient to look at the total number of 
+ tracks and steps, which is printout at the end of the program.
+
+ Finally, notice that each of the three macro files starts
+ with the same seed number (taken from the file  start.rndm ),
+ so if you run twice in the same machine you should get the
+ same result, although the time can vary slightly due to 
+ the different condition of the machine.
+
+ ==================================================================
+
+ In order to use this application for nightly tests, the following
+ three Geant4 macro files have been added:
+
+   1) run1.g4 : simplified ATLAS HEC calorimeter (Cu-LAr), 
+                30 GeV pi-, B=2T, 1 event.
+   
+   2) run2.g4 : simplified ATLAS Tile calorimeter (Fe-Sci) at 90 degrees,
+                30 GeV pi-, B=3T, 1 event.
+
+   3) run3.g4 : simplified PbWO4,
+                30 GeV pi-, B=4T, 1 event.

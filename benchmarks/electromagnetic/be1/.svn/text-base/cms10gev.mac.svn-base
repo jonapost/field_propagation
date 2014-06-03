@@ -1,0 +1,28 @@
+# $Id: cms10gev.mac,v 1.2 2007-12-03 12:17:46 vnivanch Exp $
+#
+# Macro file for "TestEm9.cc" 
+#
+# CMS PbWO4 model
+#
+/control/verbose 1
+/run/verbose 1
+#
+/testem/det/CalMat     PbWO4
+/testem/det/CalMat     G4_PbWO4
+/testem/det/EcalLength 230 mm
+/testem/det/EcalWidth   22 mm
+#
+/testem/phys/addPhysics  emstandard
+#
+/testem/phys/setCuts 0.7 mm
+/testem/phys/VertexCuts 0.01 mm
+/testem/phys/MuonCuts  10.0 mm
+#
+/gun/particle e-
+/gun/energy 10 GeV
+#
+/run/initialize
+#/random/resetEngineFrom seed.rndm
+
+/run/beamOn 1500
+#
