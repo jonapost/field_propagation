@@ -7,7 +7,7 @@
 
 template
 <class State, class Field>
-class TestEqMagEletricField
+class TestEqMagEletricField : public G4EquationOfMotion
 {
 public:
 	TestEqMagEletricField(Field *emField)
@@ -19,11 +19,14 @@ public:
 			G4double MomentumXc,
 			G4double mass);
 
-	void EvaluateRhsGivenB(State s, const double Field[]) const;
+	//void EvaluateRhsGivenB(State s, const G4double Field[]); 
+	void EvaluateRhsGivenB(const G4double y[], 
+			G4double dydx[], const G4double Field[]) const;
+        void TestEvaluateRhsGivenB(State s, G4double Field[]) const;
 
 private:
 
-	G4double        fElectroMagCof ;
+	G4double        fElectroMagCof;
 	G4double        fMassCof;
 };
 
