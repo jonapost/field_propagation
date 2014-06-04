@@ -32,7 +32,7 @@
 // -------------------------------------------------------------------
 
 inline
-G4EquationOfMotion::G4EquationOfMotion(Field* pField) 
+G4EquationOfMotion::G4EquationOfMotion(G4Field* pField) 
   :itsField(pField)
 {}
 
@@ -43,7 +43,7 @@ const G4Field* G4EquationOfMotion::GetFieldObj() const
 }
 
 inline
-void G4EquationOfMotion::SetFieldObj(Field* pField)
+void G4EquationOfMotion::SetFieldObj(G4Field* pField)
 {
   itsField= pField;
 }
@@ -57,19 +57,20 @@ void G4EquationOfMotion::GetFieldValue( const  G4double Point[4],
 
 inline
 void 
-G4EquationOfMotion::RightHandSide(State s) const
+G4EquationOfMotion::RightHandSide( const  G4double y[],
+				   G4double dydx[]   ) const
 {
      G4double Field[G4maximum_number_of_field_components];   
      G4double  PositionAndTime[4];
 
      // Position
-     PositionAndTime[0] = s.x[0];
-     PositionAndTime[1] = s.x[1];
-     PositionAndTime[2] = s.x[2];
+     PositionAndTime[0] = y[0];
+     PositionAndTime[1] = y[1];
+     PositionAndTime[2] = y[2];
      // Global Time
-     PositionAndTime[3] = s.x[7];  // See G4FieldTrack::LoadFromArray
+     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
 
      GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB(s, Field);
+     EvaluateRhsGivenB( y, Field, dydx );
 }
 
