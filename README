@@ -1,0 +1,16 @@
+For this experienment, I would like to eventually achieve:
+
+//interface
+typedef State<13> State_t;
+
+typedef G4ThreeVector Vector_t;
+typedef G4Field<TestUniformElectricField, Vector_t> Field_t;
+typedef TestEqMagEletricField<State_t, Field_t> Equation_t;
+typedef EquationOfMotion<Equation_t> EqEM_t;
+
+Field_t uniformMagField(Vector_t(10.*tesla, 0., 0));
+G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
+EqEM_t* fEquation = new EqEM_t(&myMagField);
+//...
+pStepper = new G4ClassicalRK4( tEquation ); break;
+
