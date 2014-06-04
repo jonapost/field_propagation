@@ -5,7 +5,7 @@
 #define G4_EquationOfMotion_DEF
 
 #include "G4Types.hh"      // "globals.hh"
-
+#include "G4Field.hh"
 #include "G4ChargeState.hh"
 
 template 
@@ -14,9 +14,10 @@ class G4EquationOfMotion
 {
 public:  
 
-	G4EquationOfMotion(Equation* fEquation)
-		:itsEq(fEquation)
-	{}
+	G4EquationOfMotion(G4Field* field)
+	{
+		Equation itsEq(field);
+	}
 
 	virtual ~G4EquationOfMotion();
 

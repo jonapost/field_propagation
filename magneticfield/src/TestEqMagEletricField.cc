@@ -4,7 +4,7 @@
 #include "G4SystemOfUnits.hh"
 
 void  
-TestEqMagElectricField<State, Field>::SetChargeMomentumMass
+TestEqMagElectricField::SetChargeMomentumMass
 (G4ChargeState particleCharge, G4double, G4double particleMass)
 {
 	G4double pcharge = particleCharge.GetCharge();
@@ -13,7 +13,7 @@ TestEqMagElectricField<State, Field>::SetChargeMomentumMass
 }
 
 void 
-TestEqMagElectricField<State, Field>::EvaluateRhsGivenB
+TestEqMagElectricField::EvaluateRhsGivenB
 (const G4double y[], G4double dydx[], const G4double Field[]) const
 {
 State s;
@@ -23,7 +23,7 @@ TestEvaluateRhsGivenB(s, Field);
 
 
 void
-TestEqMagElectricField<State, Field>::TestEvaluateRhsGivenB
+TestEqMagElectricField::TestEvaluateRhsGivenB
 (State s, G4double Field[]) const 
 {
 	// Components of y:
