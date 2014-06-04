@@ -3,29 +3,28 @@
 
 #include "G4Types.hh"
 #include "G4ThreeVector.hh"
-//#include "G4ElectricField.hh"
 #include "G4Field.hh"
-
-class TestUniformElectricField : public G4Field
-//: public G4ElectricField
+template
+<class Vector>
+class TestUniformElectricField 
 {
   public: 
-    TestUniformElectricField(const G4ThreeVector FieldVector);
+    TestUniformElectricField(const Vector FieldVector);
       // A field with value equal to FieldVector.
 
     TestUniformElectricField(G4double vField,
                            G4double vTheta,
                            G4double vPhi     ) ;
        
-    virtual ~TestUniformElectricField() ;
-
+    ~TestUniformElectricField() ;
+    G4bool DoesFieldChangeEnergy() const {return true;}
     TestUniformElectricField(const TestUniformElectricField &p);
     TestUniformElectricField& operator = (const TestUniformElectricField &p);
       // Copy constructor and assignment operator
 
-    virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
+    void GetFieldValue(const G4double pos[4], G4double *field) const;
 
-    virtual TestUniformElectricField* Clone() const;
+    //TestUniformElectricField* Clone() const;
   private:
   
     G4double fFieldComponents[6] ;
