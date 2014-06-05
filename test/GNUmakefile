@@ -3,10 +3,10 @@
 # Makes test program in environment variable TESTTARGET.
 # ----------------------------------------------------------------
 
-ifndef G4BASE
-#path that points to source directory
-  G4BASE=/home/josh/Documents/source
-endif
+#ifndef G4GITBASE
+#path to git directory
+  G4GITBASE=/home/josh/Documents/vecEM
+#endif
 
 ifndef G4TARGET
   G4TARGET := $(TESTTARGET)
@@ -26,7 +26,7 @@ INCFLAGS := -I$(G4BASE)/geometry/management/include \
             -I$(G4BASE)/geometry/volumes/include \
             -I$(G4BASE)/geometry/navigation/include \
             -I$(G4BASE)/geometry/solids/CSG/include \
-            -I$(G4BASE)/geometry/magneticfield/include \
+            -I$(G4GITBASE)/magneticfield/include \
             -I$(G4BASE)/global/management/include \
             -I$(G4BASE)/global/HEPRandom/include \
             -I$(G4BASE)/global/HEPGeometry/include \

@@ -1,0 +1,43 @@
+In file included from /home/josh/Documents/geant4.10.00.p01/source/geometry/navigation/include/G4ParameterisedNavigation.hh:52:0,
+                 from /home/josh/Documents/geant4.10.00.p01/source/geometry/navigation/include/G4Navigator.hh:65,
+                 from testPropagateMagField.cc:43:
+/home/josh/Documents/geant4.10.00.p01/source/geometry/management/include/G4VPVParameterisation.hh:123:18: warning: ‘virtual void G4VPVParameterisation::ComputeDimensions(G4Ellipsoid&, G4int, const G4VPhysicalVolume*) const’ was hidden [-Woverloaded-virtual]
+     virtual void ComputeDimensions(G4Ellipsoid &,
+                  ^
+testPropagateMagField.cc:108:16: warning:   by ‘G4LinScale::ComputeDimensions’ [-Woverloaded-virtual]
+   virtual void ComputeDimensions(G4Polyhedra &,
+                ^
+In file included from testPropagateMagField.cc:249:0:
+/home/josh/Documents/vecEM/magneticfield/include/TMagFieldEquation.hh: In member function ‘void TMagFieldEquation<T_Field, T_State>::TRightHandSide(T_State) const’:
+/home/josh/Documents/vecEM/magneticfield/include/TMagFieldEquation.hh:28:3: warning: declaration of ‘s’ shadows a global declaration [-Wshadow]
+   {
+   ^
+In file included from /home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/PhysicalConstants.h:42:0,
+                 from /home/josh/Documents/geant4.10.00.p01/source/global/management/include/G4PhysicalConstants.hh:27,
+                 from testPropagateMagField.cc:40:
+/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/SystemOfUnits.h:133:24: warning: shadowed declaration is here [-Wshadow]
+   static const double  s = second;
+                        ^
+In file included from testPropagateMagField.cc:251:0:
+/home/josh/Documents/vecEM/magneticfield/include/StateVector.h: In function ‘std::ostream& operator<<(std::ostream&, const State<M>&)’:
+/home/josh/Documents/vecEM/magneticfield/include/StateVector.h:83:67: warning: declaration of ‘s’ shadows a global declaration [-Wshadow]
+ std::ostream & operator<<( std::ostream & str, State<M> const & s )
+                                                                   ^
+In file included from /home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/PhysicalConstants.h:42:0,
+                 from /home/josh/Documents/geant4.10.00.p01/source/global/management/include/G4PhysicalConstants.hh:27,
+                 from testPropagateMagField.cc:40:
+/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/SystemOfUnits.h:133:24: warning: shadowed declaration is here [-Wshadow]
+   static const double  s = second;
+                        ^
+testPropagateMagField.cc: In function ‘G4FieldManager* SetupField(G4int)’:
+testPropagateMagField.cc:272:20: warning: unused variable ‘fEquation’ [-Wunused-variable]
+  G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
+                    ^
+testPropagateMagField.cc: At global scope:
+testPropagateMagField.cc:268:17: warning: unused parameter ‘type’ [-Wunused-parameter]
+ G4FieldManager* SetupField(G4int type)
+                 ^
+testPropagateMagField.cc: In function ‘G4bool testG4PropagatorInField(G4VPhysicalVolume*, G4int)’:
+testPropagateMagField.cc:402:14: warning: variable ‘step_len’ set but not used [-Wunused-but-set-variable]
+     G4double step_len, physStep, safety;
+              ^

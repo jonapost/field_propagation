@@ -245,7 +245,11 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4ConstRK4.hh"
 #include "G4NystromRK4.hh"
 #include "G4HelixMixedStepper.hh"
-
+//=============test template mode================
+#include "TMagFieldEquation.hh"
+#include "TCashKarpRKF45.hh"
+#include "StateVector.h"
+//===============================================
 #include "globals.hh"
 
 G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
@@ -256,12 +260,21 @@ G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
+typedef State<50> State_t;
+typedef G4CachedMagneticField Field_t;
+typedef TMagFieldEquation<Field_t, State_t> Equation_t;
+typedef TCashKarpRKF45<Equation_t, Field_t, State_t> Stepper_t;
+
 G4FieldManager* SetupField(G4int type)
 {
     G4FieldManager   *pFieldMgr;
     G4ChordFinder    *pChordFinder;
-    G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
-    G4MagIntegratorStepper *pStepper;
+	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
+    //=============test template mode================
+	 Equation_t *tEquation = new Equation_t(&myMagField);
+    //===============================================
+	
+	G4MagIntegratorStepper *pStepper;
 
     G4cout << " Setting up field of type: " << fieldName << G4endl;
 
@@ -281,7 +294,8 @@ G4FieldManager* SetupField(G4int type)
       case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
       case 12: pStepper = new G4ConstRK4( fEquation ); break;
       case 13: pStepper = new G4NystromRK4( fEquation ); break; 
-      default: 
+      case 14: pStepper = new Stepper_t(tEquation); break;
+	  default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
           G4ExceptionDescription ErrorMsg;
           ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
@@ -293,7 +307,7 @@ G4FieldManager* SetupField(G4int type)
                       " Invalid value of stepper type" );
           break; 
     }
-    
+
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
 
