@@ -24,36 +24,58 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4UniformMagField.hh 68055 2013-03-13 14:43:28Z gcosmo $
 //
-// -------------------------------------------------------------------
+// 
+// class G4UniformMagField
+//
+// Class description:
+//
+// Class for creation of Uniform Magnetic Field.
 
-#include "G4EquationOfMotion.hh"
+// History:
+// - 30.01.97 V.Grichine, Created.
+// - 01.08.97 J.Apostolakis, cleanup, new 3-vector constructor, 
+//            and removal of helix-stepper (to separate file).
+// - 05.11.97 G.Cosmo, added copy constructor and assignment operator.
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4UNIFORMMAGFIELD_HH
+#define G4UNIFORMMAGFIELD_HH
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4Types.hh"
+#include "G4ThreeVector.hh"
+#include "G4MagneticField.hh"
+
+class G4UniformMagField : public G4MagneticField
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
+  
+    G4UniformMagField(const G4ThreeVector& FieldVector );
+      // A field with value equal to FieldVector.
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4UniformMagField(G4double vField,
+                      G4double vTheta,
+                      G4double vPhi     ) ;
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    virtual ~G4UniformMagField() ;
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
+    G4UniformMagField(const G4UniformMagField &p);
+    G4UniformMagField& operator = (const G4UniformMagField &p);
+      // Copy constructor and assignment operator.
+
+    virtual void GetFieldValue(const G4double yTrack[4],
+                                     G4double *MagField) const ;
+
+    void SetFieldValue(const G4ThreeVector& newFieldValue);
+
+    G4ThreeVector GetConstantFieldValue() const;
+      // Return the field value
+    
+    virtual G4UniformMagField* Clone() const;
+
+  private:
+
+    G4double fFieldComponents[3] ;
+};
+
 #endif

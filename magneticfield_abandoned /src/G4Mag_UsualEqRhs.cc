@@ -24,36 +24,53 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4Mag_UsualEqRhs.cc 69699 2013-05-13 08:50:30Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+//  This is the 'standard' right-hand side for the equation of motion
+//  of a charged particle in a magnetic field.
+//
+//  Initial version: J. Apostolakis, January 13th, 1997
+//
+// --------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4Mag_UsualEqRhs.hh"
+#include "G4MagneticField.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "globals.hh"    // For DBL_MAX
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+G4Mag_UsualEqRhs::G4Mag_UsualEqRhs( G4MagneticField* MagField )
+  : G4Mag_EqRhs( MagField ) {}
+
+G4Mag_UsualEqRhs::~G4Mag_UsualEqRhs() {}
+
+void
+G4Mag_UsualEqRhs::EvaluateRhsGivenB( const G4double y[],
+			             const G4double B[3],
+				           G4double dydx[] ) const
 {
-     G4double  PositionAndTime[4];
+   G4double momentum_mag_square = y[3]*y[3] + y[4]*y[4] + y[5]*y[5];
+   G4double inv_momentum_magnitude = 1.0 / std::sqrt( momentum_mag_square );
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+   G4double cof = FCof()*inv_momentum_magnitude;
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
+   dydx[0] = y[3]*inv_momentum_magnitude;       //  (d/ds)x = Vx/V
+   dydx[1] = y[4]*inv_momentum_magnitude;       //  (d/ds)y = Vy/V
+   dydx[2] = y[5]*inv_momentum_magnitude;       //  (d/ds)z = Vz/V
+
+   dydx[3] = cof*(y[4]*B[2] - y[5]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
+   dydx[4] = cof*(y[5]*B[0] - y[3]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
+   dydx[5] = cof*(y[3]*B[1] - y[4]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
+
+   return ;
 }
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
+void
+G4Mag_UsualEqRhs::
+ SetChargeMomentumMass( G4ChargeState particleCharge,
+                        G4double MomentumXc,
+			G4double mass)
+
 {
+   G4Mag_EqRhs::SetChargeMomentumMass( particleCharge, MomentumXc, mass);
 }
-#endif

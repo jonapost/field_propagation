@@ -47,7 +47,7 @@ G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
      // Global Time
      PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
 
-     GetFieldValue(PositionAndTime, Field) ;
+     GetFieldValue(PositionAndTime, Field);
      EvaluateRhsGivenB( y, Field, dydx );
 }
 

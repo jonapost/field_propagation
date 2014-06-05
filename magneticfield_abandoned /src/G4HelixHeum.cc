@@ -24,36 +24,49 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HelixHeum.cc 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+//  Simple Heum:
+//        x_1 = x_0 + h *
+//                1/4 * dx(t0,x0)  +
+//                3/4 * dx(t0+2/3*h, x0+2/3*h*(dx(t0+h/3,x0+h/3*dx(t0,x0)))) 
+//
+//  Third order solver.
+//
+//  W.Wander <wwc@mit.edu> 12/09/97 
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4HelixHeum.hh"
+#include "G4ThreeVector.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+void
+G4HelixHeum::DumbStepper( const G4double  yIn[],
+			  G4ThreeVector   Bfld,
+			  G4double        h,
+			  G4double        yOut[])
 {
-     G4double  PositionAndTime[4];
+  const G4int nvar = 6 ;
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+  G4ThreeVector Bfield_Temp, Bfield_Temp2;
+  G4double yTemp[6], yAdd1[6], yAdd2[6] , yTemp2[6];
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+  G4int i;
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+  AdvanceHelix( yIn, Bfld, h, yAdd1 );
+  
+  AdvanceHelix( yIn, Bfld, h/3.0, yTemp );
+  MagFieldEvaluate(yTemp,Bfield_Temp);
+
+  AdvanceHelix( yIn, Bfield_Temp, (2.0 / 3.0) * h, yTemp2 );
+  
+  MagFieldEvaluate(yTemp2,Bfield_Temp2);
+
+  AdvanceHelix( yIn, Bfield_Temp2, h, yAdd2 );
+
+  for( i = 0; i < nvar; i++ ) {
+    yOut[i] = ( 0.25 * yAdd1[i] + 0.75 * yAdd2[i]);
+  }
+
+  // NormaliseTangentVector( yOut );           
+}  

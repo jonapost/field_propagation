@@ -24,36 +24,54 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HelixExplicitEuler.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+// class G4HelixExplicitEuler
+//
+// Class description:
+//
+// Helix Explicit Euler: x_1 = x_0 + helix(h)
+// with helix(h) being a helix piece of length h.
+// A simple approach for solving linear differential equations.
+// Take the current derivative and add it to the current position.
+
+// History:
+// - Created. W.Wander <wwc@mit.edu>, 12/09/97
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4HELIXEXPLICITEULER_HH
+#define G4HELIXEXPLICITEULER_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4MagHelicalStepper.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4HelixExplicitEuler : public G4MagHelicalStepper
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4HelixExplicitEuler(G4Mag_EqRhs *EqRhs)
+      : G4MagHelicalStepper(EqRhs) {}
+ 
+    ~G4HelixExplicitEuler() {}
+   void Stepper( const G4double y[],
+                  const G4double*,
+                        G4double h,
+                        G4double yout[],
+                        G4double yerr[]  ); 
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+   void DumbStepper( const G4double y[],
+                           G4ThreeVector  Bfld,
+                           G4double       h,
+                           G4double       yout[]);
+   
+  G4double DistChord() const;
+  public:  // without description
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    // DELETED  RightHandSide( ) !!!!  
+    // Replaced by MagFieldEvaluate( const G4double y[], G4double B[] )   
+    // in G4HelicalStepper
+  
+    G4int IntegratorOrder() const { return 1; }
+};
+
+#endif /* G4EXPLICITEULER_HH */

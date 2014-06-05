@@ -24,36 +24,46 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HelixHeum.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+// class G4HelixHeum
+//
+// Class description:
+//
+// Simple Heum stepper for magnetic field:
+//     x_1 = x_0 +
+//           h * 1/4 * dx(t0,x0)  +
+//               3/4 * dx(t0+2/3*h, x0+2/3*h*(dx(t0+h/3,x0+h/3*dx(t0,x0)))) 
+// Third order solver.
+
+// History:
+// - Created. W.Wander <wwc@mit.edu>, 03/11/98
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4HELIXHEUM_HH
+#define G4HELIXHEUM_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4MagHelicalStepper.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4HelixHeum : public G4MagHelicalStepper
 {
-     G4double  PositionAndTime[4];
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+  public:  // with description
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    G4HelixHeum(G4Mag_EqRhs *EqRhs)
+      : G4MagHelicalStepper(EqRhs) {}
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    ~G4HelixHeum() {}
+  
+    void DumbStepper( const G4double y[],
+                            G4ThreeVector  Bfld,
+                            G4double       h,
+                            G4double       yout[]);
+
+  public: // without description
+  
+    G4int IntegratorOrder() const { return 2; }
+};
+
+#endif /* G4HELIXHEUM_HH */

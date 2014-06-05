@@ -24,36 +24,56 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4SimpleHeum.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+// class G4SimpleHeum
+//
+// Class description:
+//
+// Simple Heum stepper for magnetic field:
+//        x_1 = x_0  +
+//              h * 1/4 * dx(t0,x0)  +
+//                  3/4 * dx(t0+2/3*h, x0+2/3*h*(dx(t0+h/3,x0+h/3*dx(t0,x0)))) 
+//
+// Third order solver.
+
+// History:
+// - Created. W. Wander <wwc@mit.edu>, 12/09/97
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4SIMPLEHEUM_HH
+#define G4SIMPLEHEUM_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4MagErrorStepper.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4SimpleHeum : public G4MagErrorStepper
 {
-     G4double  PositionAndTime[4];
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+  public:  // with description
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    G4SimpleHeum(G4EquationOfMotion *EqRhs, G4int num_variables=6);
+   ~G4SimpleHeum();
+      // Constructor and destructor.
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    void DumbStepper( const G4double y[],
+                      const G4double dydx[],
+                            G4double h,
+                            G4double yout[]);
+
+  public:  // without description
+  
+    G4int IntegratorOrder() const { return 3; }
+
+  private:
+
+    G4int fNumberOfVariables;
+
+    G4double* dydxTemp  ;
+    G4double* dydxTemp2 ;
+    G4double* yTemp     ;
+    G4double* yTemp2    ;
+      // scratch space    
+};
+
+#endif /* G4SIMPLEHEUM_HH */

@@ -24,36 +24,48 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HelixImplicitEuler.cc 66356 2012-12-18 09:02:32Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+//  Helix Implicit Euler:
+//        x_1 = x_0 + 1/2 * ( helix(h,t_0,x_0)
+//                          + helix(h,t_0+h,x_0+helix(h,t0,x0) ) )
+//  Second order solver.
+//  Take the current derivative and add it to the current position.
+//  Take the output and its derivative. Add the mean of both derivatives
+//  to form the final output
+//
+//  W.Wander <wwc@mit.edu> 12/09/97 
+//
+// -------------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4HelixImplicitEuler.hh"
+#include "G4ThreeVector.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+void
+G4HelixImplicitEuler::DumbStepper( const G4double  yIn[],
+				   G4ThreeVector   Bfld,
+				   G4double        h,
+				   G4double        yOut[])
 {
-     G4double  PositionAndTime[4];
+  const G4int nvar = 6 ;
+  G4double yTemp[6], yTemp2[6];
+  G4ThreeVector Bfld_endpoint;
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+  G4int i;
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+  // Step forward like in the explicit euler case
+  AdvanceHelix( yIn, Bfld, h, yTemp);
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+  // now obtain the new field value at the new point
+  MagFieldEvaluate(yTemp, Bfld_endpoint);      
+
+  // and also advance along a helix for this field value
+  AdvanceHelix( yIn, Bfld_endpoint, h, yTemp2);
+
+  // we take the average 
+  for( i = 0; i < nvar; i++ ) 
+    yOut[i] = 0.5 * ( yTemp[i] + yTemp2[i] );
+
+  // NormaliseTangentVector( yOut );           
+}  

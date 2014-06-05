@@ -24,36 +24,39 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4ErrorMag_UsualEqRhs.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+// --------------------------------------------------------------------
+//      GEANT 4 class header file 
+// --------------------------------------------------------------------
+//
+// Class description:
+//
+// Serves to reverse the magnetic field when propagation is backwards
+// for error propagation.
 
-#include "G4EquationOfMotion.hh"
+// History:
+// - Created. P. Arce, September 2004
+// --------------------------------------------------------------------
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4ErrorMag_UsualEqRhs_hh
+#define G4ErrorMag_UsualEqRhs_hh
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4Mag_UsualEqRhs.hh"
+#include "G4MagneticField.hh"
+
+class G4ErrorMag_UsualEqRhs : public G4Mag_UsualEqRhs
 {
-     G4double  PositionAndTime[4];
+   public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+     G4ErrorMag_UsualEqRhs( G4MagneticField* MagField );
+    ~G4ErrorMag_UsualEqRhs();
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+     void EvaluateRhsGivenB( const G4double y[],
+                             const G4double B[3],
+                                   G4double dydx[] ) const;
+       // Reverses dedx if propagation is backwards
+};
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+#endif /* G4MAG_USUAL_EQRHS */

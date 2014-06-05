@@ -24,36 +24,61 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4ExplicitEuler.cc 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+//  Explicit Euler: x_1 = x_0 + h * dx_0
+//
+//  most simple approach for solving linear differential equations.
+//  Take the current derivative and add it to the current position.
+//
+//  W.Wander <wwc@mit.edu> 12/09/97 
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4ExplicitEuler.hh"
+#include "G4ThreeVector.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+//////////////////////////////////////////////////////////////////////////
+//
+// Constructor
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
-{
-     G4double  PositionAndTime[4];
-
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
-
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
-
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
+G4ExplicitEuler::G4ExplicitEuler(G4EquationOfMotion* EqRhs, 
+                                 G4int numberOfVariables)
+ : G4MagErrorStepper(EqRhs, numberOfVariables)
 {
 }
-#endif
+
+
+///////////////////////////////////////////////////////////////////////
+//
+// Destructor
+
+G4ExplicitEuler::~G4ExplicitEuler()
+{
+}
+
+
+///////////////////////////////////////////////////////////////////////
+//
+//
+
+void
+G4ExplicitEuler::DumbStepper( const G4double  yIn[],
+			      const G4double  dydx[],
+			            G4double  h,
+			 	    G4double  yOut[]        )
+{
+  const G4int numberOfVariables= GetNumberOfVariables();
+
+  // Initialise time to t0, needed when it is not updated by the integration.
+  // yOut[7] = yIn[7];   //  Better to set it to NaN;  // TODO
+
+  G4int i;
+
+  for(i=0;i< numberOfVariables;i++)
+  {
+    yOut[i] = yIn[i] + h*dydx[i] ;             // 1st and only Step 
+  }
+  
+  return ;
+}  

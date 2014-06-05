@@ -24,36 +24,60 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4Mag_SpinEqRhs.hh 69699 2013-05-13 08:50:30Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+// class G4Mag_SpinEqRhs
+//
+// Class description:
+//
+// This is the equation of motion for a particle with spin in a pure
+// magnetic field. The three components of the particle's spin are
+// treated utilising BMT equation.
 
-#include "G4EquationOfMotion.hh"
+// History:
+// - Created: J.Apostolakis, P.Gumplinger - February 8th, 1999.
+// --------------------------------------------------------------------
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4MAG_SPIN_EQRHS
+#define G4MAG_SPIN_EQRHS
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4Types.hh"
+#include "G4Mag_EqRhs.hh"
+#include "G4ChargeState.hh"
+
+class G4MagneticField;
+
+class G4Mag_SpinEqRhs : public G4Mag_EqRhs
 {
-     G4double  PositionAndTime[4];
+   public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+     G4Mag_SpinEqRhs( G4MagneticField* MagField );
+    ~G4Mag_SpinEqRhs();
+       // Constructor and destructor. No actions.
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+     void SetChargeMomentumMass(G4ChargeState particleCharge,
+                                G4double MomentumXc,
+                                G4double mass); 
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+     void EvaluateRhsGivenB( const  G4double y[],
+                             const  G4double B[3],
+                                    G4double dydx[] ) const;
+       // Given the value of the magnetic field B, this function 
+       // calculates the value of the derivative dydx.
+
+     inline void SetAnomaly(G4double a) { anomaly = a; }
+     inline G4double GetAnomaly() const { return anomaly; }
+       // set/get magnetic anomaly
+
+   private:
+
+     G4double charge, mass, magMoment, spin;
+
+     G4double omegac, anomaly;
+
+     G4double beta, gamma;
+
+};
+
+#endif /* G4MAG_SPIN_EQRHS */

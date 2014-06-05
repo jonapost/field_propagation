@@ -24,36 +24,57 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// class G4UniformGravifyField
 //
+// Class description:
+//
+// Class for creation of Uniform Gravitation Field.
+//
+
+// History:
+// - 14.06.11 P.Gumplinger, Created.
 // -------------------------------------------------------------------
+// Adapted from G4UniformElectricField.hh
+//
+// Thanks to Peter Fierlinger (PSI) and
+// A. Capra and A. Fontana (INFN Pavia)
+// -------------------------------------------------------------------
+//
+#ifndef G4UNIFORMGRAVITYFIELD_HH
+#define G4UNIFORMGRAVITYFIELD_HH
 
-#include "G4EquationOfMotion.hh"
+#include <CLHEP/Units/PhysicalConstants.h>
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4Types.hh"
+#include "G4ThreeVector.hh"
+#include "G4Field.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4UniformGravityField : public G4Field
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4UniformGravityField(const G4ThreeVector FieldVector );
+      // A field with value equal to FieldVector.
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    G4UniformGravityField(const G4double gy = -9.81*CLHEP::m/CLHEP::s/CLHEP::s);
+      // Standard Gravitational field on earth's surface
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
+    virtual ~G4UniformGravityField();
+
+    G4UniformGravityField(const G4UniformGravityField &p);
+    G4UniformGravityField& operator = (const G4UniformGravityField &p);
+      // Copy constructor and assignment operator
+
+    G4bool   DoesFieldChangeEnergy() const { return true; }
+      // Since a gravitational field can change track energy
+
+    virtual void GetFieldValue(const G4double Point[4], G4double *field) const;
+    
+    virtual G4UniformGravityField* Clone() const;
+
+  private:
+
+    G4double fFieldComponents[3];
+};
+
 #endif

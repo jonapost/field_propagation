@@ -24,36 +24,39 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4DELPHIMagField.hh 68055 2013-03-13 14:43:28Z gcosmo $
 //
+//
+// class G4DELPHIMagField
+//
+// Class description:
+//
+// Class describing the DELPHI magnetic field. This axial symmetry
+// field mainly directed along Z axis. The function MagneticField(yTrack,B)
+// calculates the magnetic induction vector B in point corresponding to
+// yTrack according to parametrization given in:
+//   P.Billoir, Precise tracking in a quasi-honogeneous magnetic field,
+//              DELPHI 87-6 PROG 65, 1987.
+
+// History:
+// 3.2.97 - V. Grichine, created.
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4DELPHIMAGFIELD_HH
+#define G4DELPHIMAGFIELD_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4MagneticField.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4DELPHIMagField : public G4MagneticField
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
+                       
+    G4DELPHIMagField();
+   ~G4DELPHIMagField();
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    void GetFieldValue(const G4double yTrack[],
+                             G4double B[]     ) const;
+    G4DELPHIMagField* Clone() const;
+};
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
-
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
 #endif

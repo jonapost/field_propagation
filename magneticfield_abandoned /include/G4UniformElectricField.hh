@@ -24,36 +24,49 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4UniformElectricField.hh 68055 2013-03-13 14:43:28Z gcosmo $
 //
+// 
+// class G4UniformElectricField
+//
+// Class description:
+//
+// Class for creation of Uniform electric Magnetic Field.
+
+// History:
+// - 30.01.97 V.Grichine, Created.
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4UNIFORMELECTRICFIELD_HH
+#define G4UNIFORMELECTRICFIELD_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4Types.hh"
+#include "G4ThreeVector.hh"
+#include "G4ElectricField.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4UniformElectricField : public G4ElectricField
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4UniformElectricField(const G4ThreeVector FieldVector );
+      // A field with value equal to FieldVector.
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    G4UniformElectricField(G4double vField,
+                           G4double vTheta,
+                           G4double vPhi     ) ;
+       
+    virtual ~G4UniformElectricField() ;
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
+    G4UniformElectricField(const G4UniformElectricField &p);
+    G4UniformElectricField& operator = (const G4UniformElectricField &p);
+      // Copy constructor and assignment operator
+
+    virtual void GetFieldValue(const G4double pos[4], G4double *field) const;
+
+    virtual G4UniformElectricField* Clone() const;
+  private:
+  
+    G4double fFieldComponents[6] ;
+};
+
 #endif

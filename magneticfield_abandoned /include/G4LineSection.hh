@@ -24,36 +24,46 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4LineSection.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+// class G4LineSection
+//
+// Class description:
+//
+// A utility class that calculates the distance of a point from a 
+// line section.
 
-#include "G4EquationOfMotion.hh"
+// History:
+// - Created. J. Apostolakis.
+// --------------------------------------------------------------------
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4LineSection_hh
+#define G4LineSection_hh
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4Types.hh" 
+#include "G4ThreeVector.hh"
+
+class G4LineSection
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+     G4LineSection( const G4ThreeVector& PntA, const G4ThreeVector& PntB );
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+     G4double Dist( G4ThreeVector OtherPnt ) const;
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
+     G4double GetABdistanceSq() const { return fABdistanceSq ; }
+
+     static G4double Distline( const G4ThreeVector& OtherPnt, 
+                               const G4ThreeVector& LinePntA, 
+                               const G4ThreeVector& LinePntB );
+  private:
+
+     G4ThreeVector   EndpointA;
+     G4ThreeVector   VecAtoB;
+
+     G4double fABdistanceSq ;
+};
+
+
 #endif

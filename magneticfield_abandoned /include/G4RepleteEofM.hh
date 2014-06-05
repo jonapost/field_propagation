@@ -24,36 +24,66 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4RepleteEofM.hh$
 //
+//
+// class G4RepleteEofM
+//
+// Class description:
+//
+// This is the right-hand side of equation of motion in a combined
+// field, including: magnetic, electric, gravity, and gradient B field,
+// as well as spin tracking
+
+// History:
+// - Created. P.Gumplinger, 08.04.2013
 // -------------------------------------------------------------------
 
+#ifndef G4EOFM_hh
+#define G4EOFM_hh
+
+#include "G4ChargeState.hh"
 #include "G4EquationOfMotion.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+class G4Field;
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4RepleteEofM : public G4EquationOfMotion
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4RepleteEofM(G4Field*);
+    ~G4RepleteEofM();
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    void SetChargeMomentumMass(G4ChargeState particleCharge, // in e+ units
+                               G4double MomentumXc,
+                               G4double mass);
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    void EvaluateRhsGivenB(const G4double y[],
+                           const G4double Field[],
+                                 G4double dydx[] ) const;
+    // Given the value of the field, this function 
+    // calculates the value of the derivative dydx.
+
+    inline void SetAnomaly(G4double a) { anomaly = a; }
+    inline G4double GetAnomaly() const { return anomaly; }
+    // set/get magnetic anomaly
+
+    inline void SetBField() {fBfield = true;}
+    inline void SetEField() {fEfield = true;}
+    inline void SetgradB()  {fgradB  = true;}
+    inline void SetSpin()   {fSpin   = true;}
+
+  private:
+
+    G4bool fBfield, fEfield, fGfield, fgradB, fSpin;
+
+    G4double charge, mass, magMoment, spin;
+
+    G4double ElectroMagCof;
+
+    G4double omegac, anomaly;
+    G4double beta, gamma;
+
+};
+
+#endif /* G4EOFM */

@@ -1,3 +1,5 @@
+//ignore this file. Not developed yet.
+
 #include "G4MagErrorStepper.hh"
 
 template

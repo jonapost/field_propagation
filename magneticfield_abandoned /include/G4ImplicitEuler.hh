@@ -24,36 +24,51 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4ImplicitEuler.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+// class G4ImplicitEuler
+//
+// Class description:
+//
+// Implicit Euler stepper for magnetic field:
+//      x_1 = x_0 + h/2 * ( dx(t_0,x_0) + dx(t_0+h,x_0+h*dx(t_0,x_0) ) )
+//
+// Second order solver.
+// Takes the current derivative and add it to the current position.
+// Takes the output and its derivative. Adds the mean of both
+// derivatives to form the final output.
+
+// W. Wander <wwc@mit.edu> 12/09/97
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4IMPLICITEULER_HH
+#define G4IMPLICITEULER_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4MagErrorStepper.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4ImplicitEuler : public G4MagErrorStepper
 {
-     G4double  PositionAndTime[4];
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+  public:  // with description
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    G4ImplicitEuler(G4EquationOfMotion *EqRhs, G4int numberOfVariables = 6) ;
+   ~G4ImplicitEuler();
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    void  DumbStepper(  const G4double y[] ,
+                        const G4double dydx[] ,
+                              G4double h ,
+                              G4double yout[] ) ;
+
+  public:  // without description
+
+    G4int IntegratorOrder() const { return 2 ; } ;
+
+  private:
+
+    G4double*  dydxTemp;
+    G4double*  yTemp;    
+      // Temporaries, created to avoid new/delete on every call
+};
+
+#endif /* G4IMPLICITEULER_HH */

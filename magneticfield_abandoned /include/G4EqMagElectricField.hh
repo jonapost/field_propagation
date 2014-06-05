@@ -24,36 +24,50 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4EqMagElectricField.hh 69699 2013-05-13 08:50:30Z gcosmo $
 //
+//
+// class G4EqMagElectricField
+//
+// Class description:
+//
+// This is the right-hand side of equation of motion in a combined
+// electric and magnetic field.
+
+// History:
+// - Created. V.Grichine, 10.11.98
 // -------------------------------------------------------------------
 
+#ifndef G4EQMAGELECTRICFIELD_hh
+#define G4EQMAGELECTRICFIELD_hh
+
+#include "G4ChargeState.hh"
 #include "G4EquationOfMotion.hh"
+#include "G4ElectroMagneticField.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4EqMagElectricField : public G4EquationOfMotion
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4EqMagElectricField(G4ElectroMagneticField *emField )
+      : G4EquationOfMotion( emField ) {;}
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    ~G4EqMagElectricField() {;} 
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
+    void  SetChargeMomentumMass(G4ChargeState particleCharge, // in e+ units
+                                G4double MomentumXc,
+                                G4double mass);
+
+    void EvaluateRhsGivenB(const G4double y[],
+                           const G4double Field[],
+                                 G4double dydx[] ) const;
+      // Given the value of the electromagnetic field, this function 
+      // calculates the value of the derivative dydx.
+
+  private:
+
+    G4double        fElectroMagCof ;
+    G4double        fMassCof;
+};
+
 #endif

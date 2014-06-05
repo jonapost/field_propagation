@@ -24,36 +24,44 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HelixSimpleRunge.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+// class G4HelixSimpleRunge
+//
+// Class description:
+//
+//  Helix Simple Runge-Kutta stepper for magnetic field:
+//        x_1 = x_0 + h * ( dx( t_0+h/2, x_0 + h/2 * dx( t_0, x_0) ) )
+//
+//  Second order solver.
+//  Take the derivative at a position to be assumed at the middle of the
+//  Step and add it to the current position.
+
+// W. Wander <wwc@mit.edu> 03/12/98
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4HELIXSIMPLERUNGE_HH
+#define G4HELIXSIMPLERUNGE_HH
+#include "G4MagHelicalStepper.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4HelixSimpleRunge : public G4MagHelicalStepper
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4HelixSimpleRunge(G4Mag_EqRhs *EqRhs)
+      : G4MagHelicalStepper(EqRhs){}
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    ~G4HelixSimpleRunge(){}
+  
+    void  DumbStepper(  const G4double y[],
+                              G4ThreeVector   Bfld,
+                              G4double        h,
+                              G4double        yout[]);
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+  public:  // without description
+  
+    G4int IntegratorOrder() const { return 2; }
+};
+
+#endif /* G4HELIXSIMPLERUNGE_HH */

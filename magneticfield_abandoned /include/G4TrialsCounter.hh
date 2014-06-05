@@ -24,36 +24,55 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: $
+// GEANT4 tag $Name:  $
 //
+//
+// class G4TrialsCounter
+//
+// Class description:
+//    Keep statistics of the number of trials,
+//    including the Maximum and how many times it was reached.
+//
+
+// Author: Dec 8, 2006  John Apostolakis    
 // -------------------------------------------------------------------
+#ifndef G4TRIALS_COUNTER_HH
+#define G4TRIALS_COUNTER_HH
 
-#include "G4EquationOfMotion.hh"
+#include "G4Types.hh"
+#include "G4String.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class  G4TrialsCounter
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4TrialsCounter( const G4String& nameStats,
+                     const G4String& description, G4bool printOnExit=false ); 
+   ~G4TrialsCounter();
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    inline void AccumulateCounts( G4int noTrials ); 
+       //  Add this number to stats
+    void ClearCounts(); 
+       //  Reset all counts
+    G4int ReturnTotals( G4int& calls, G4int& maxTrials, G4int& numMaxT ) ; 
+       //  Return number of count/trials, calls, max & no-max
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    void PrintStatistics(); 
+
+  private:
+
+    G4int    fTotalNoTrials;    //  Counts sum of trials 
+    G4int    fNumberCalls;      //  Total # of calls to accumulate
+    G4int    fmaxTrials;        // Max value of trials
+    G4int    fNoTimesMaxTrials; // How many times maximum is reached
+
+    G4String  fName;         //  Identifies stats, and is printed 
+    G4String  fDescription;  //  Explanation of stats
+    G4bool    fStatsVerbose; //  If verbose and not printed, print on destruction
+    G4bool    fPrinted;      //  Flag, to avoid reprinting on destruction
+}; 
+
+#include "G4TrialsCounter.icc"
+
+#endif  /* End of ifndef G4TRIALS_COUNTER_HH */

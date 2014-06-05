@@ -24,36 +24,48 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HelixImplicitEuler.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
+//
+// class G4HelixImplicitEuler
+//
+// Class description:
+//
+//  Helix Implicit Euler stepper for magnetic field:
+//        x_1 = x_0 + 1/2 * ( helix(h,t_0,x_0)
+//                          + helix(h,t_0+h,x_0+helix(h,t0,x0) ) )
+//  Second order solver.
+//  Take the current derivative and add it to the current position.
+//  Take the output and its derivative. Add the mean of both derivatives
+//  to form the final output.
+
+// History:
+// - Created. W.Wander <wwc@mit.edu>, 03/11/98
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#ifndef G4HELIXIMPLICITEULER_HH
+#define G4HELIXIMPLICITEULER_HH
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#include "G4MagHelicalStepper.hh"
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4HelixImplicitEuler : public G4MagHelicalStepper
 {
-     G4double  PositionAndTime[4];
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+  public:  // with description
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    G4HelixImplicitEuler(G4Mag_EqRhs *EqRhs)
+      : G4MagHelicalStepper(EqRhs) {}
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+    ~G4HelixImplicitEuler() {}
+  
+    void DumbStepper( const G4double y[],
+                            G4ThreeVector  Bfld,
+                            G4double       h,
+                            G4double       yout[]);
+  
+  public:  // without description
+
+    G4int IntegratorOrder() const { return 2; }
+};
+
+#endif /* G4HELIXIMPLICITEULER_HH */

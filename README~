@@ -6,6 +6,4 @@ Editing list:
 
 - add TMag_UsualsRhs.hh/.cc
 
-For test/:
 
-Please edit G4BASE/ in GNUmakefile before you run it. 

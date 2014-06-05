@@ -24,36 +24,38 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4HarmonicPolMagField.hh 68055 2013-03-13 14:43:28Z gcosmo $
 //
-// -------------------------------------------------------------------
+// class G4HarmonicPolMagField
+//
+// Class description:
+//
+// Class describing magnetic field parametrised by harmonic polynom up to
+// 3rd order. The function MagneticField(yTrack,B) calculates the magnetic
+// field induction vector B for the trajectory point yTrack according to
+// formula given in:
+//   M.Metcalf, Analysis of the SFM Field,
+//              OM Development Note AP-10 (revised), 1974
 
-#include "G4EquationOfMotion.hh"
+// History:
+// 3.2.97 - V.Grichine, created.
+// --------------------------------------------------------------------
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4HARMONICPOLMAGFIELD_HH
+#define G4HARMONICPOLMAGFIELD_HH
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4MagneticField.hh"
+
+class G4HarmonicPolMagField : public G4MagneticField
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
+                       
+    G4HarmonicPolMagField();
+   ~G4HarmonicPolMagField();
+     
+    void GetFieldValue(const G4double yTrack[] ,
+                             G4double B[]      ) const  ;
+    G4HarmonicPolMagField* Clone() const;
+};
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
-
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
-
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
 #endif

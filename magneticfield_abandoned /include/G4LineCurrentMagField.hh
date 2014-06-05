@@ -24,36 +24,40 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4LineCurrentMagField.hh 68055 2013-03-13 14:43:28Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+// class G4LineCurrentMagField
+//
+// Class description:
+//
+// Class describing line current magnetic field.
+// 'fFieldConstant' determines the coefficient in the field law.
+// The line current is directed along Z axis and crosses the XY
+// plane in the origin point (0,0).
 
-#include "G4EquationOfMotion.hh"
+// History:
+// 3.2.97 - V. Grichine, created.
+// --------------------------------------------------------------------
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4LINECURRENTMAGFIELD_HH
+#define G4LINECURRENTMAGFIELD_HH
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4MagneticField.hh"
+
+class G4LineCurrentMagField : public G4MagneticField
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+    G4LineCurrentMagField(G4double pFieldConstant);
+   ~G4LineCurrentMagField();
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+    void GetFieldValue(const G4double yTrack[] ,
+                             G4double B[]      ) const;
+    G4LineCurrentMagField* Clone() const;
+  private:
+  
+    G4double fFieldConstant;
+};
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
 #endif

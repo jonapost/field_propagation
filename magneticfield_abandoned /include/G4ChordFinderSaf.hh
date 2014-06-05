@@ -23,37 +23,48 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: G4ChordFinderSaf.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// 
+// class G4ChordFinderRad
 //
+// Class description:
+//
+// A class that provides the next chord, utilising an estimate of
+//  the radius of curvature.
+
+// History:
+// - 07.11.03 John Apostolakis,  design and implementation 
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4ChordFinder.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+class G4ChordFinderSaf : public G4ChordFinder
 {
-     G4double  PositionAndTime[4];
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+public:
+  G4ChordFinderSaf(G4MagInt_Driver* pIntegrationDriver); 
+    
+  G4ChordFinderSaf( G4MagneticField*        theMagField,
+		    G4double                stepMinimum, 
+		    G4MagIntegratorStepper* pItsStepper ); 
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+  ~G4ChordFinderSaf(); 
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+  G4double FindNextChord( const  G4FieldTrack&  yStart,
+			  G4double     stepMax,
+			  G4FieldTrack&   yEnd,  // Endpoint
+			  G4double&   dyErrPos,  // Error of endpoint
+			  G4double    epsStep,
+			  G4double*  pStepForAccuracy,
+			  const G4ThreeVector latestSafetyOrigin,
+			  G4double       latestSafetyRadius 
+			  );  
+
+  void PrintStatistics();
+
+private:
+  // G4int fNoInitialRadBig,  fNoInitialRadSmall; 
+  // G4int fNoTrialsRadBig,   fNoTrialsRadSmall; 
+
+};

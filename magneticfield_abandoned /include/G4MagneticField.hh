@@ -24,36 +24,42 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4MagneticField.hh 66356 2012-12-18 09:02:32Z gcosmo $
 //
-// -------------------------------------------------------------------
+//
+// class G4MagneticField
+//
+// Class description:
+//
+// Magnetic Field abstract class, implements inquiry function interface.
 
-#include "G4EquationOfMotion.hh"
+// History:
+// - Created. JA, January 13th, 1996.
+// --------------------------------------------------------------------
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+#ifndef G4MAGNETIC_FIELD_DEF
+#define G4MAGNETIC_FIELD_DEF
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+#include "G4Types.hh"
+#include "G4ElectroMagneticField.hh"
+
+class G4MagneticField : public G4ElectroMagneticField
 {
-     G4double  PositionAndTime[4];
+  public:  // with description
 
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
+     G4MagneticField();
+     virtual ~G4MagneticField();
+       // Constructor and destructor. No actions.
 
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
-}
+     G4MagneticField(const G4MagneticField &r);
+     G4MagneticField& operator = (const G4MagneticField &p);
+       // Copy constructor & assignment operator.
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
-{
-}
-#endif
+     G4bool   DoesFieldChangeEnergy() const { return false; }
+       //  Since a pure magnetic field does not change track energy
+
+     virtual void  GetFieldValue( const G4double Point[4],
+                                        G4double *Bfield ) const = 0;
+};
+
+#endif /* G4MAGNETIC_FIELD_DEF */

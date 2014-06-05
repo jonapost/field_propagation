@@ -23,37 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
-//
+// $Id: G4LineCurrentMagField.cc 68055 2013-03-13 14:43:28Z gcosmo $
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4LineCurrentMagField.hh"
+#include "globals.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
+G4LineCurrentMagField::G4LineCurrentMagField(G4double pFieldConstant)
 {
-     G4double  PositionAndTime[4];
-
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
-
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
+   fFieldConstant = pFieldConstant ;
 }
+G4LineCurrentMagField* G4LineCurrentMagField::Clone() const
+{
+    return new G4LineCurrentMagField( this->fFieldConstant );
+}
+////////////////////////////////////////////////////////////////////////
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
+G4LineCurrentMagField::~G4LineCurrentMagField()
 {
 }
-#endif
+
+///////////////////////////////////////////////////////////////////////////
+
+
+void G4LineCurrentMagField::GetFieldValue( const G4double yTrack[7],
+                                                 G4double B[3]      ) const  
+{
+   //   G4double fFieldConstant = 100 ;
+   G4double a = 1.00 ;   // mm
+   G4double x = a*yTrack[0], y = a*yTrack[1] ;
+   G4double x2 = x*x, y2 = y*y, r2 = x2 + y2 ;
+   G4double r = std::sqrt(r2+a*a) ;
+   G4double Br = fFieldConstant/r;
+   B[0] = -Br*y/r ;
+   B[1] = Br*x/r ;
+   B[2] = 0 ;
+}
+
+// -----------------------------------------------------------------

@@ -24,36 +24,43 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4Mag_EqRhs.cc 69699 2013-05-13 08:50:30Z gcosmo $
 //
-// -------------------------------------------------------------------
+//  This is the standard right-hand side for equation of motion  
+//    in a pure Magnetic Field .
+//
+//   Other that might be required are:
+//     i) is when using a moving reference frame ... or
+//    ii) extending for other forces, eg an electric field
+//
+//            J. Apostolakis, January 13th, 1997
+//
+// --------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4MagneticField.hh"
+#include "G4Mag_EqRhs.hh"
+#include "globals.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
+const G4double G4Mag_EqRhs::fUnitConstant = 0.299792458 * (GeV/(tesla*m)); 
 
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
-{
-     G4double  PositionAndTime[4];
-
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
-
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
+// Constructor Implementation
+//
+G4Mag_EqRhs::G4Mag_EqRhs( G4MagneticField *magField ) 
+   : G4EquationOfMotion(magField), fCof_val(0.)
+{ 
 }
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
+void  
+G4Mag_EqRhs::SetChargeMomentumMass( G4ChargeState particleCharge,
+			            G4double,                // MomentumXc
+                                    G4double )               // particleMass
 {
+   G4double pcharge = particleCharge.GetCharge();
+   fCof_val = pcharge*eplus*c_light ; //  B must be in Tesla
+   //  fCof_val = fUnitConstant*pcharge/MomentumXc; //  B must be in Tesla
+   // fMass = particleMass;
 }
-#endif
+
+G4Mag_EqRhs::~G4Mag_EqRhs() { }

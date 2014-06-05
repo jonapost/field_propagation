@@ -23,37 +23,62 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: $
+// GEANT4 tag $Name:  $
 //
-// $Id: G4EquationOfMotion.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// class G4TrialsCounter
 //
+// Class inline implementation
+//
+// Author: Dec 8, 2006  John Apostolakis
 // -------------------------------------------------------------------
 
-#include "G4EquationOfMotion.hh"
+#include "G4TrialsCounter.hh"
+#include "G4ios.hh"
 
-G4EquationOfMotion::~G4EquationOfMotion()
-{}
-
-void 
-G4EquationOfMotion::EvaluateRhsReturnB( const G4double y[],
-				 G4double dydx[],
-				 G4double  Field[]  ) const
-{
-     G4double  PositionAndTime[4];
-
-     // Position
-     PositionAndTime[0] = y[0];
-     PositionAndTime[1] = y[1];
-     PositionAndTime[2] = y[2];
-     // Global Time
-     PositionAndTime[3] = y[7];  // See G4FieldTrack::LoadFromArray
-
-     GetFieldValue(PositionAndTime, Field) ;
-     EvaluateRhsGivenB( y, Field, dydx );
+G4TrialsCounter::G4TrialsCounter( const G4String& nameStats,
+                                  const G4String& description,
+                                        G4bool printOnExit )
+  : fName(nameStats), fDescription(description),
+    fStatsVerbose(printOnExit), fPrinted(false) 
+{ 
+  ClearCounts(); 
+}
+   
+G4TrialsCounter::~G4TrialsCounter() 
+{ 
+  if( (fStatsVerbose) && (!fPrinted) )  { PrintStatistics(); }
 }
 
-#if  HELP_THE_COMPILER
-void 
-G4EquationOfMotion::doNothing()
+void
+G4TrialsCounter::PrintStatistics()
 {
+  // Print Statistics
+  G4cout << "G4TrialsCounter::PrintStatistics()" << G4endl
+         << "Report of counts for " << fDescription  << " : " << G4endl;
+  G4cout << "Stats for '" <<  fName << "' > "
+         << "  No-trials= " << fTotalNoTrials
+         << "  No-calls= "  << fNumberCalls
+         << "  Max-trial= " << fmaxTrials
+         << "  no-max= "    << fNoTimesMaxTrials 
+         << G4endl; 
+  fPrinted= true; 
 }
-#endif
+
+void G4TrialsCounter::ClearCounts()
+{
+  fTotalNoTrials= 0; 
+  fNumberCalls  = 0; 
+  fmaxTrials    = 0;        // Maximum --> so only unsigned ints expected
+  fNoTimesMaxTrials=0; 
+}
+
+G4int
+G4TrialsCounter::ReturnTotals( G4int& calls, G4int& maxTrials, G4int& numMaxT ) 
+{
+  calls    = fNumberCalls; 
+  maxTrials= fmaxTrials;
+  numMaxT  = fNoTimesMaxTrials; 
+
+  return fTotalNoTrials; 
+}
