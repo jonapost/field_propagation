@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Editing list:
 
 - add class diagrams to documents/
@@ -9,3 +10,19 @@ Editing list:
 For test/:
 
 Please edit G4BASE/ in GNUmakefile before you run it. 
+=======
+For this experienment, I would like to achieve as first step:
+
+//static polym
+const G4int N = 13;
+typedef State<N> State_t;
+typedef G4ThreeVector Vector_t;
+typedef G4Field<TestUniformElectricField, Vector_t> Field_t;
+typedef TestEqMagEletricField<State_t, Field_t> Equation_t;
+typedef EquationOfMotion<Equation_t> EqEM_t;
+
+Field_t uniformMagField(Vector_t(10.*tesla, 0., 0));
+EqEM_t* fEquation = new EqEM_t(&uniformMagField);
+//...
+pStepper = new G4ClassicalRK4( tEquation ); break;
+>>>>>>> 945d122c15dd6d811da5bf07dc3eb7f3c3408118
