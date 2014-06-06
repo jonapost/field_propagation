@@ -1,43 +1,91 @@
-In file included from /home/josh/Documents/geant4.10.00.p01/source/geometry/navigation/include/G4ParameterisedNavigation.hh:52:0,
-                 from /home/josh/Documents/geant4.10.00.p01/source/geometry/navigation/include/G4Navigator.hh:65,
-                 from testPropagateMagField.cc:43:
-/home/josh/Documents/geant4.10.00.p01/source/geometry/management/include/G4VPVParameterisation.hh:123:18: warning: ‘virtual void G4VPVParameterisation::ComputeDimensions(G4Ellipsoid&, G4int, const G4VPhysicalVolume*) const’ was hidden [-Woverloaded-virtual]
-     virtual void ComputeDimensions(G4Ellipsoid &,
-                  ^
-testPropagateMagField.cc:108:16: warning:   by ‘G4LinScale::ComputeDimensions’ [-Woverloaded-virtual]
-   virtual void ComputeDimensions(G4Polyhedra &,
-                ^
-In file included from testPropagateMagField.cc:249:0:
-/home/josh/Documents/vecEM/magneticfield/include/TMagFieldEquation.hh: In member function ‘void TMagFieldEquation<T_Field, T_State>::TRightHandSide(T_State) const’:
-/home/josh/Documents/vecEM/magneticfield/include/TMagFieldEquation.hh:28:3: warning: declaration of ‘s’ shadows a global declaration [-Wshadow]
-   {
-   ^
-In file included from /home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/PhysicalConstants.h:42:0,
-                 from /home/josh/Documents/geant4.10.00.p01/source/global/management/include/G4PhysicalConstants.hh:27,
-                 from testPropagateMagField.cc:40:
-/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/SystemOfUnits.h:133:24: warning: shadowed declaration is here [-Wshadow]
-   static const double  s = second;
-                        ^
-In file included from testPropagateMagField.cc:251:0:
-/home/josh/Documents/vecEM/magneticfield/include/StateVector.h: In function ‘std::ostream& operator<<(std::ostream&, const State<M>&)’:
-/home/josh/Documents/vecEM/magneticfield/include/StateVector.h:83:67: warning: declaration of ‘s’ shadows a global declaration [-Wshadow]
- std::ostream & operator<<( std::ostream & str, State<M> const & s )
-                                                                   ^
-In file included from /home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/PhysicalConstants.h:42:0,
-                 from /home/josh/Documents/geant4.10.00.p01/source/global/management/include/G4PhysicalConstants.hh:27,
-                 from testPropagateMagField.cc:40:
-/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Units/SystemOfUnits.h:133:24: warning: shadowed declaration is here [-Wshadow]
-   static const double  s = second;
-                        ^
-testPropagateMagField.cc: In function ‘G4FieldManager* SetupField(G4int)’:
-testPropagateMagField.cc:272:20: warning: unused variable ‘fEquation’ [-Wunused-variable]
-  G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
-                    ^
-testPropagateMagField.cc: At global scope:
-testPropagateMagField.cc:268:17: warning: unused parameter ‘type’ [-Wunused-parameter]
- G4FieldManager* SetupField(G4int type)
-                 ^
-testPropagateMagField.cc: In function ‘G4bool testG4PropagatorInField(G4VPhysicalVolume*, G4int)’:
-testPropagateMagField.cc:402:14: warning: variable ‘step_len’ set but not used [-Wunused-but-set-variable]
-     G4double step_len, physStep, safety;
-              ^
+ Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety
+ Testing with stepper number    14
+              voxel optimisation      On
+              Propagator safety optim On
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+ Using default values for  Min Eps = 5e-05 and  MaxEps = 0.001
+ Test with no voxels
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+ Cached field: 
+   Number of calls:        13627
+   Number of evaluations : 3791
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.073323557510677,0.58658846008541,0.80655913261744)
+ Momentum in GeV/c is 9.8518561365 = 9851.8561365 MeV
+ Cached field: 
+   Number of calls:        23582
+   Number of evaluations : 9089
+Set Driver verbosity to -1
+ Test with full voxels
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.4691360065 = 469.1360065 MeV
+ Cached field: 
+   Number of calls:        37209
+   Number of evaluations : 12880
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.073323557510677,0.58658846008541,0.80655913261744)
+ Momentum in GeV/c is 9.8518561365 = 9851.8561365 MeV
+ Cached field: 
+   Number of calls:        47164
+   Number of evaluations : 18178
+
+----------------------------------------------------------
+Test with more accurate parameters 
+ Setting values for Min Eps = 2.5e-08 and MaxEps = 0.001
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.4691360065 = 469.1360065 MeV
+ Cached field: 
+   Number of calls:        193051
+   Number of evaluations : 31824
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.073323557510677,0.58658846008541,0.80655913261744)
+ Momentum in GeV/c is 9.8518561365 = 9851.8561365 MeV
+ Cached field: 
+   Number of calls:        223043
+   Number of evaluations : 42035
+ Now test with optimisation off
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.4691360065 = 469.1360065 MeV
+ Cached field: 
+   Number of calls:        368930
+   Number of evaluations : 55681
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.073323557510677,0.58658846008541,0.80655913261744)
+ Momentum in GeV/c is 9.8518561365 = 9851.8561365 MeV
+ Cached field: 
+   Number of calls:        398922
+   Number of evaluations : 65892

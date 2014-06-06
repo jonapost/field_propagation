@@ -221,6 +221,7 @@ G4VPhysicalVolume* BuildGeometry()
     return worldPhys;
 }
 
+
 #include "G4UniformMagField.hh"
 #include "G4QuadrupoleMagField.hh"
 #include "G4CachedMagneticField.hh"
@@ -260,10 +261,9 @@ G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
-typedef State<50> State_t;
 typedef G4CachedMagneticField Field_t;
-typedef TMagFieldEquation<Field_t, State_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, Field_t, State_t> Stepper_t;
+typedef TMagFieldEquation<Field_t> Equation_t;
+typedef TCashKarpRKF45<Equation_t, Field_t> Stepper_t;
 
 G4FieldManager* SetupField(G4int type)
 {
@@ -272,7 +272,7 @@ G4FieldManager* SetupField(G4int type)
 	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
     //=============test template mode================
 	 Equation_t *tEquation = new Equation_t(&myMagField);
-    //===============================================
+	 //===============================================
 	
 	G4MagIntegratorStepper *pStepper;
 
