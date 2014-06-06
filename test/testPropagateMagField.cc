@@ -60,54 +60,54 @@
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
 {
-  virtual void ComputeTransformation(const G4int n,
-				     G4VPhysicalVolume* pRep) const
-  {
-    pRep->SetTranslation(G4ThreeVector(0,(n-1)*15,0));
-  }
-  
-  virtual void ComputeDimensions(G4Box &pBox,
-				 const G4int n,
-				 const G4VPhysicalVolume* ) const
-  {
-    pBox.SetXHalfLength(10);
-    pBox.SetYHalfLength(5+n);
-    pBox.SetZHalfLength(5+n);
-  }
+	virtual void ComputeTransformation(const G4int n,
+			G4VPhysicalVolume* pRep) const
+	{
+		pRep->SetTranslation(G4ThreeVector(0,(n-1)*15,0));
+	}
 
-  virtual void ComputeDimensions(G4Tubs &,
-				 const G4int ,
-                                 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Trd &, 
-				 const G4int,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Cons &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Trap &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Hype &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Orb &,
-		                 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Sphere &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Torus &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Para &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Polycone &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
-  virtual void ComputeDimensions(G4Polyhedra &,
-				 const G4int ,
-				 const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Box &pBox,
+			const G4int n,
+			const G4VPhysicalVolume* ) const
+	{
+		pBox.SetXHalfLength(10);
+		pBox.SetYHalfLength(5+n);
+		pBox.SetZHalfLength(5+n);
+	}
+
+	virtual void ComputeDimensions(G4Tubs &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Trd &, 
+			const G4int,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Cons &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Trap &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Hype &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Orb &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Sphere &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Torus &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Para &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Polycone &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
+	virtual void ComputeDimensions(G4Polyhedra &,
+			const G4int ,
+			const G4VPhysicalVolume*) const {}
 };
 G4LinScale myParam;
 
@@ -116,109 +116,109 @@ G4LinScale myParam;
 G4VPhysicalVolume* BuildGeometry()
 {
 
-    G4Box *myHugeBox=  new G4Box("huge box",15*m,15*m,25*m);
-    G4Box *myBigBox=   new G4Box("big cube",10*m,10*m,10*m);
-    G4Box *mySmallBox= new G4Box("smaller cube",2.5*m,2.5*m,2.5*m);
-    G4Box *myTinyBox=  new G4Box("tiny  cube",.25*m,.25*m,.25*m);
+	G4Box *myHugeBox=  new G4Box("huge box",15*m,15*m,25*m);
+	G4Box *myBigBox=   new G4Box("big cube",10*m,10*m,10*m);
+	G4Box *mySmallBox= new G4Box("smaller cube",2.5*m,2.5*m,2.5*m);
+	G4Box *myTinyBox=  new G4Box("tiny  cube",.25*m,.25*m,.25*m);
 
-    // G4Box *myVariableBox=
-    new G4Box("Variable Box",10,5,5);
+	// G4Box *myVariableBox=
+	new G4Box("Variable Box",10,5,5);
 
-    //  World Volume
-    //
-    G4LogicalVolume *worldLog=new G4LogicalVolume(myHugeBox,0,
-						  "World",0,0,0);
-				// Logical with no material,field,
-                                // sensitive detector or user limits
-    
-    G4PVPlacement *worldPhys=new 
-         G4PVPlacement(0,G4ThreeVector(0,0,0), "World",worldLog,
-					       0,false,0);
-				// Note: no mother pointer set
+	//  World Volume
+	//
+	G4LogicalVolume *worldLog=new G4LogicalVolume(myHugeBox,0,
+			"World",0,0,0);
+	// Logical with no material,field,
+	// sensitive detector or user limits
 
-//  Create the logical Volumes
-//
-//  G4LogicalVolume(*pSolid, *pMaterial, Name, *pField, *pSDetector, *pULimits)
-//
-    G4LogicalVolume *BigBoxLog=new G4LogicalVolume(myBigBox,0,
-						"Crystal Box (large)",0,0,0);
-    G4LogicalVolume *smallBoxLog=new G4LogicalVolume(mySmallBox,0,
-						 "Crystal Box (small)");
-    G4LogicalVolume *tinyBoxLog=new G4LogicalVolume(myTinyBox,0,
-						 "Crystal Box (tiny)");
+	G4PVPlacement *worldPhys=new 
+		G4PVPlacement(0,G4ThreeVector(0,0,0), "World",worldLog,
+				0,false,0);
+	// Note: no mother pointer set
 
-
-//  Place them.
-//
-//  1) Two big boxes in the world volume
-//
-    // G4PVPlacement *BigTg1Phys=
-    new G4PVPlacement(0,G4ThreeVector(0,0,-15*m),
-						"Big Target 1",BigBoxLog,
-						worldPhys,false,0);
-    // G4PVPlacement *BigTg2Phys=
-    new G4PVPlacement(0,G4ThreeVector(0,0, 15*m),
-						"Big Target 2",BigBoxLog,
-						worldPhys,false,0);
-
-//  2) Four (medium) boxes in X & Y near the origin of the world volume
-//
-    // G4PVPlacement *MedTg3a_Phys=
-    new G4PVPlacement(0,G4ThreeVector(0, 7.5*m,0),
-					      "Target 3a",smallBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *MedTg3b_Phys=
-    new G4PVPlacement(0,G4ThreeVector(0,-7.5*m,0),
-					      "Target 3b",smallBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *MedTg3c_Phys=
-    new G4PVPlacement(0,G4ThreeVector(-7.5*m,0,0),
-					      "Target 3c",smallBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *MedTg3d_Phys=
-    new G4PVPlacement(0,G4ThreeVector( 7.5*m,0,0),
-					      "Target 3d",smallBoxLog,
-					      worldPhys,false,0);
+	//  Create the logical Volumes
+	//
+	//  G4LogicalVolume(*pSolid, *pMaterial, Name, *pField, *pSDetector, *pULimits)
+	//
+	G4LogicalVolume *BigBoxLog=new G4LogicalVolume(myBigBox,0,
+			"Crystal Box (large)",0,0,0);
+	G4LogicalVolume *smallBoxLog=new G4LogicalVolume(mySmallBox,0,
+			"Crystal Box (small)");
+	G4LogicalVolume *tinyBoxLog=new G4LogicalVolume(myTinyBox,0,
+			"Crystal Box (tiny)");
 
 
-//  3) Eight small boxes around the origin of the world volume 
-//        (in +-X, +-Y & +-Z)
-//
-    // G4PVPlacement *SmTg4a_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector( 0.3*m, 0.3*m,0.3*m), "Target 4a",tinyBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *SmTg4b_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector( 0.3*m,-0.3*m,0.3*m), "Target 4b",tinyBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *SmTg4c_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector(-0.3*m,-0.3*m,0.3*m), "Target 4c",tinyBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *SmTg4d_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector(-0.3*m, 0.3*m,0.3*m), "Target 4d",tinyBoxLog,
-					      worldPhys,false,0);
+	//  Place them.
+	//
+	//  1) Two big boxes in the world volume
+	//
+	// G4PVPlacement *BigTg1Phys=
+	new G4PVPlacement(0,G4ThreeVector(0,0,-15*m),
+			"Big Target 1",BigBoxLog,
+			worldPhys,false,0);
+	// G4PVPlacement *BigTg2Phys=
+	new G4PVPlacement(0,G4ThreeVector(0,0, 15*m),
+			"Big Target 2",BigBoxLog,
+			worldPhys,false,0);
 
-    // G4PVPlacement *SmTg4e_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector( 0.3*m, 0.3*m,-0.3*m), "Target 4e",tinyBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *SmTg4f_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector( 0.3*m,-0.3*m,-0.3*m), "Target 4f",tinyBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *SmTg4g_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector(-0.3*m,-0.3*m,-0.3*m), "Target 4g",tinyBoxLog,
-					      worldPhys,false,0);
-    // G4PVPlacement *SmTg4h_Phys=
-    new G4PVPlacement
-          (0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
-					      worldPhys,false,0);
+	//  2) Four (medium) boxes in X & Y near the origin of the world volume
+	//
+	// G4PVPlacement *MedTg3a_Phys=
+	new G4PVPlacement(0,G4ThreeVector(0, 7.5*m,0),
+			"Target 3a",smallBoxLog,
+			worldPhys,false,0);
+	// G4PVPlacement *MedTg3b_Phys=
+	new G4PVPlacement(0,G4ThreeVector(0,-7.5*m,0),
+			"Target 3b",smallBoxLog,
+			worldPhys,false,0);
+	// G4PVPlacement *MedTg3c_Phys=
+	new G4PVPlacement(0,G4ThreeVector(-7.5*m,0,0),
+			"Target 3c",smallBoxLog,
+			worldPhys,false,0);
+	// G4PVPlacement *MedTg3d_Phys=
+	new G4PVPlacement(0,G4ThreeVector( 7.5*m,0,0),
+			"Target 3d",smallBoxLog,
+			worldPhys,false,0);
 
-    return worldPhys;
+
+	//  3) Eight small boxes around the origin of the world volume 
+	//        (in +-X, +-Y & +-Z)
+	//
+	// G4PVPlacement *SmTg4a_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector( 0.3*m, 0.3*m,0.3*m), "Target 4a",tinyBoxLog,
+		 worldPhys,false,0);
+	// G4PVPlacement *SmTg4b_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector( 0.3*m,-0.3*m,0.3*m), "Target 4b",tinyBoxLog,
+		 worldPhys,false,0);
+	// G4PVPlacement *SmTg4c_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector(-0.3*m,-0.3*m,0.3*m), "Target 4c",tinyBoxLog,
+		 worldPhys,false,0);
+	// G4PVPlacement *SmTg4d_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector(-0.3*m, 0.3*m,0.3*m), "Target 4d",tinyBoxLog,
+		 worldPhys,false,0);
+
+	// G4PVPlacement *SmTg4e_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector( 0.3*m, 0.3*m,-0.3*m), "Target 4e",tinyBoxLog,
+		 worldPhys,false,0);
+	// G4PVPlacement *SmTg4f_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector( 0.3*m,-0.3*m,-0.3*m), "Target 4f",tinyBoxLog,
+		 worldPhys,false,0);
+	// G4PVPlacement *SmTg4g_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector(-0.3*m,-0.3*m,-0.3*m), "Target 4g",tinyBoxLog,
+		 worldPhys,false,0);
+	// G4PVPlacement *SmTg4h_Phys=
+	new G4PVPlacement
+		(0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
+		 worldPhys,false,0);
+
+	return worldPhys;
 }
 
 
@@ -250,6 +250,9 @@ G4VPhysicalVolume* BuildGeometry()
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
 #include "StateVector.h"
+typedef G4CachedMagneticField Field_t;
+typedef TMagFieldEquation<Field_t> Equation_t;
+typedef TCashKarpRKF45<Equation_t, Field_t> Stepper_t;
 //===============================================
 #include "globals.hh"
 
@@ -261,41 +264,39 @@ G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
-typedef G4CachedMagneticField Field_t;
-typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, Field_t> Stepper_t;
-
 G4FieldManager* SetupField(G4int type)
 {
-    G4FieldManager   *pFieldMgr;
-    G4ChordFinder    *pChordFinder;
+	G4FieldManager   *pFieldMgr;
+	G4ChordFinder    *pChordFinder;
 	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
-    //=============test template mode================
-	 Equation_t *tEquation = new Equation_t(&myMagField);
-	 //===============================================
-	
+	//=============test template mode================
+	Equation_t *tEquation = new Equation_t(&myMagField);
+	//===============================================
+
 	G4MagIntegratorStepper *pStepper;
 
-    G4cout << " Setting up field of type: " << fieldName << G4endl;
+	G4cout << " Setting up field of type: " << fieldName << G4endl;
 
-    switch ( type ) 
-    {
-      case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
-      case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
-      case 2: pStepper = new G4SimpleRunge( fEquation ); break;
-      case 3: pStepper = new G4SimpleHeum( fEquation ); break;
-      case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
-      case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
-      case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
-      case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
-      case 8: pStepper = new G4CashKarpRKF45( fEquation );    break;
-      case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
-      case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
-      case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
-      case 12: pStepper = new G4ConstRK4( fEquation ); break;
-      case 13: pStepper = new G4NystromRK4( fEquation ); break; 
-      case 14: pStepper = new Stepper_t(tEquation); break;
-	  default: 
+	switch ( type ) 
+	{
+		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
+		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
+		case 2: pStepper = new G4SimpleRunge( fEquation ); break;
+		case 3: pStepper = new G4SimpleHeum( fEquation ); break;
+		case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
+		case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
+		case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
+		case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
+		case 8: pStepper = new G4CashKarpRKF45( fEquation );    break;
+		case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
+		case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
+		case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
+		case 12: pStepper = new G4ConstRK4( fEquation ); break;
+		case 13: pStepper = new G4NystromRK4( fEquation ); break; 
+				 //=============test template mode================
+		case 14: pStepper = new Stepper_t(tEquation); break;
+				 //===============================================
+		default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
           G4ExceptionDescription ErrorMsg;
           ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
@@ -316,7 +317,7 @@ G4FieldManager* SetupField(G4int type)
     pChordFinder = new G4ChordFinder( &myMagField,
 				      1.0e-2 * mm,
 				      pStepper);
-    pChordFinder->SetVerbose(1);  // ity();
+    pChordFinder->SetVerbose(0);  // ity();
 
     pFieldMgr->SetChordFinder( pChordFinder );
 
@@ -590,12 +591,12 @@ void report_endPV(G4ThreeVector    Position,
 // -------------------------------
 int main(int argc, char **argv)
 {
+
     G4VPhysicalVolume *myTopNode;
     G4int type, optim, optimSaf;
     G4bool optimiseVoxels=true;
     G4bool optimisePiFwithSafety=true;
 
-    type = 8 ;
     G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
     if( argc >= 2 ){
@@ -642,13 +643,13 @@ int main(int argc, char **argv)
 	   << G4endl; 
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
-
-// Do the tests without voxels
+	for (int k = 0; k < 10; k++){
+	// Do the tests without voxels
     G4cout << " Test with no voxels" << G4endl; 
     testG4PropagatorInField(myTopNode, type);
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
-    pMagFieldPropagator->SetVerboseLevel( 1 ); 
+    pMagFieldPropagator->SetVerboseLevel( 0 ); 
 
 // Repeat tests but with full voxels
     G4cout << " Test with full voxels" << G4endl; 
@@ -693,7 +694,7 @@ int main(int argc, char **argv)
     testG4PropagatorInField(myTopNode, type);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
-
+}
     // Cannot delete G4TransportationManager::GetInstance(); 
     return 0;
 }
