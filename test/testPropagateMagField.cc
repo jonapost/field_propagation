@@ -643,7 +643,7 @@ int main(int argc, char **argv)
 	   << G4endl; 
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
-	for (int k = 0; k < 10; k++){
+	for (int k = 0; k < 1; k++){
 	// Do the tests without voxels
     G4cout << " Test with no voxels" << G4endl; 
     testG4PropagatorInField(myTopNode, type);

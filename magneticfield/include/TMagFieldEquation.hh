@@ -18,13 +18,13 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
 
 		~TMagFieldEquation(){;}
 
-		void TGetFieldValue(const G4double Point[4],
+		void inline TGetFieldValue(const G4double Point[4],
 				G4double Field[]) const
 		{
 			itsField->GetFieldValue(Point, Field);
 		}
 
-		void TRightHandSide(const G4double y[], G4double dydx[] ) const
+		void inline TRightHandSide(const G4double y[], G4double dydx[] ) const
 		{
 			G4double Field[G4maximum_number_of_field_components]; 
 			G4double  PositionAndTime[4];
