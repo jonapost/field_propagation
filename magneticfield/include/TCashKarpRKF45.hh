@@ -3,17 +3,20 @@
 #include "G4CashKarpRKF45.hh"
 
 template
-<class T_Equation, class T_Field>
+<class T_Equation, class T_Field, int N>
 class TCashKarpRKF45 : public G4CashKarpRKF45
 {
 	public:
 		TCashKarpRKF45(T_Equation *EqRhs,
-				G4int noIntegrationVariables=6, G4bool primary=true)
+					   G4int noIntegrationVariables=6, 
+					   G4bool primary=true)
 			: G4CashKarpRKF45(EqRhs),
-			fEquation_Rhs(EqRhs)
+			  fEquation_Rhs(EqRhs)
 	{
 		const G4int numberOfVariables = noIntegrationVariables;
-
+		
+		assert(numberOfVariables==N);
+		
 		ak2 = new G4double[numberOfVariables] ;  
 		ak3 = new G4double[numberOfVariables] ; 
 		ak4 = new G4double[numberOfVariables] ; 
@@ -22,6 +25,7 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 		ak7 = 0;
 		yTemp = new G4double[numberOfVariables] ; 
 		yIn = new G4double[numberOfVariables] ;
+		
 		fLastInitialVector = new G4double[numberOfVariables] ;
 		fLastFinalVector = new G4double[numberOfVariables] ;
 		fLastDyDx = new G4double[numberOfVariables];
@@ -41,24 +45,29 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 			delete[] ak4;
 			delete[] ak5;
 			delete[] ak6;
-			// delete[] ak7;
+
+			//delete[] ak7;
+			
 			delete[] yTemp;
 			delete[] yIn;
+			
 			delete[] fLastInitialVector;
 			delete[] fLastFinalVector;
 			delete[] fLastDyDx;
 			delete[] fMidVector;
-			delete[] fMidError; 
+			delete[] fMidError;
+			
+			delete fAuxStepper;
 		}
 
 		inline void TRightHandSide(G4double y[], G4double dydx[]) 
-		{fEquation_Rhs->TRightHandSide(y, dydx);}
+		{fEquation_Rhs->T_Equation::TRightHandSide(y, dydx);}
 
 		void Stepper(const G4double yInput[],
-				const G4double dydx[],
-				G4double Step,
-				G4double yOut[],
-				G4double yErr[])
+				     const G4double dydx[],
+				           G4double Step,
+						   G4double yOut[],
+				           G4double yErr[])
 		{
 			// const G4int nvar = 6 ;
 			// const G4double a2 = 0.2 , a3 = 0.3 , a4 = 0.6 , a5 = 1.0 , a6 = 0.875;
@@ -79,58 +88,56 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 				  c6 = 512.0/1771.0 ,
 				  dc5 = -277.0/14336.0 ;
 
-			const G4double dc1 = c1 - 2825.0/27648.0 ,  dc3 = c3 - 18575.0/48384.0 ,
-				  dc4 = c4 - 13525.0/55296.0 , dc6 = c6 - 0.25 ;
+			const G4double dc1 = c1 - 2825.0/27648.0 ,  
+			               dc3 = c3 - 18575.0/48384.0 ,
+				           dc4 = c4 - 13525.0/55296.0 , 
+						   dc6 = c6 - 0.25 ;
 
 			// Initialise time to t0, needed when it is not updated by the integration.
-			//        [ Note: Only for time dependent fields (usually electric) 
-			//                  is it neccessary to integrate the time.] 
+			//       [ Note: Only for time dependent fields (usually electric) 
+			//                 is it neccessary to integrate the time.] 
 			yOut[7] = yTemp[7]   = yIn[7]; 
 
-			const G4int numberOfVariables= this->GetNumberOfVariables(); 
-			// The number of variables to be integrated over
-
 			//  Saving yInput because yInput and yOut can be aliases for same array
-
-			for(i=0;i<numberOfVariables;i++) 
+			for(i=0;i<N;i++) 
 			{
 				yIn[i]=yInput[i];
 			}
-			// RightHandSide(yIn, dydx) ;              // 1st Step
+			// TRightHandSide(yIn, dydx) ;              // 1st Step
 
-			for(i=0;i<numberOfVariables;i++) 
+			for(i=0;i<N;i++) 
 			{
 				yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
 			}
 			TRightHandSide(yTemp, ak2) ;              // 2nd Step
 
-			for(i=0;i<numberOfVariables;i++)
+			for(i=0;i<N;i++)
 			{
 				yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
 			}
 			TRightHandSide(yTemp, ak3) ;              // 3rd Step
 
-			for(i=0;i<numberOfVariables;i++)
+			for(i=0;i<N;i++)
 			{
 				yTemp[i] = yIn[i] + Step*(b41*dydx[i] + b42*ak2[i] + b43*ak3[i]) ;
 			}
 			TRightHandSide(yTemp, ak4) ;              // 4th Step
 
-			for(i=0;i<numberOfVariables;i++)
+			for(i=0;i<N;i++)
 			{
 				yTemp[i] = yIn[i] + Step*(b51*dydx[i] + b52*ak2[i] + b53*ak3[i] +
 						b54*ak4[i]) ;
 			}
 			TRightHandSide(yTemp, ak5) ;              // 5th Step
 
-			for(i=0;i<numberOfVariables;i++)
+			for(i=0;i<N;i++)
 			{
 				yTemp[i] = yIn[i] + Step*(b61*dydx[i] + b62*ak2[i] + b63*ak3[i] +
 						b64*ak4[i] + b65*ak5[i]) ;
 			}
 			TRightHandSide(yTemp, ak6) ;              // 6th Step
 
-			for(i=0;i<numberOfVariables;i++)
+			for(i=0;i<N;i++)
 			{
 				// Accumulate increments with proper weights
 
@@ -168,7 +175,11 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 
 			// Do half a step using StepNoErr
 
-			fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength, fMidVector,   fMidError );
+			fAuxStepper->TCashKarpRKF45::Stepper( 
+					fLastInitialVector, 
+					fLastDyDx, 0.5 * fLastStepLength, 
+					fMidVector,   
+					fMidError );
 
 			midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);       
 

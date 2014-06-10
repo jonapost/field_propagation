@@ -20,6 +20,11 @@ G4EXEC_BUILD = true
 
 include $(G4INSTALL)/config/architecture.gmk
 
+
+//CPPFLAGS += -msse
+//CPPFLAGS +=-ftree-vectorize
+//CPPFLAGS += -ffast-math
+
 # Override some variables from binmake.gmk.
 #
 INCFLAGS := -I$(G4BASE)/geometry/management/include \

@@ -1,7 +1,0 @@
-## important 
-
-### Please change `G4BASE` and `G4GITBASE` before running the test.
-
-A new env var is introduced (`G4GITBASE`), pointing to the git vecEM directory.
-
-

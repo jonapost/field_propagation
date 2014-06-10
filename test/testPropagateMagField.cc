@@ -33,6 +33,8 @@
 //   with and without voxels. Parameterised volumes are included.
 
 #include <assert.h>
+#include <stdio.h>
+#include <time.h>
 // #include "ApproxEqual.hh"
 
 // Global defs
@@ -56,6 +58,7 @@
 
 #include "G4ios.hh"
 #include <iomanip>
+
 
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
@@ -249,20 +252,20 @@ G4VPhysicalVolume* BuildGeometry()
 //=============test template mode================
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
-#include "StateVector.h"
 typedef G4CachedMagneticField Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, Field_t> Stepper_t;
+typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
 //===============================================
 #include "globals.hh"
 
-G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
+//G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
 // G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
 // G4String   fieldName("Uniform 10Tesla"); 
 
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
+
 
 G4FieldManager* SetupField(G4int type)
 {
@@ -275,8 +278,7 @@ G4FieldManager* SetupField(G4int type)
 
 	G4MagIntegratorStepper *pStepper;
 
-	G4cout << " Setting up field of type: " << fieldName << G4endl;
-
+	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
 		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
@@ -347,11 +349,11 @@ G4PropagatorInField*  SetupPropagator( G4int type)
        GetNavigatorForTracking();
     // Test the options for Locator
     G4VIntersectionLocator *pLocator=0;
-    G4cout << "Over-riding  PropagatorInField to use ";
-    pLocator= new G4MultiLevelLocator(theNavigator); G4cout << "Multi"; // default
-    // pLocator= new G4SimpleLocator(theNavigator); G4cout << "Simple";
-    // pLocator= new G4BrentLocator(theNavigator); G4cout << " Brent "; 
-    G4cout << " Locator. ( In the unit test code. ) " << G4endl;
+    //G4cout << "Over-riding  PropagatorInField to use ";
+    pLocator= new G4MultiLevelLocator(theNavigator); //G4cout << "Multi"; // default
+    // pLocator= new G4SimpleLocator(theNavigator); //G4cout << "Simple";
+    // pLocator= new G4BrentLocator(theNavigator); //G4cout << " Brent "; 
+    //G4cout << " Locator. ( In the unit test code. ) " << G4endl;
 
     thePropagator->SetIntersectionLocator(pLocator);
 
@@ -418,9 +420,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	G4endl;
     }
 
-    G4cout << G4endl; 
+    //G4cout << G4endl; 
 
-    for( int iparticle=0; iparticle < 2; iparticle++ )
+    for( int iparticle=0; iparticle < 1; iparticle++ )
     { 
        physStep=  2.5 * mm ;  // millimeters 
        Position = G4ThreeVector(0.,0.,0.) 
@@ -442,16 +444,17 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 		      +1,                    // charge in e+ units
 		      momentum, 
 		      proton_mass_c2); 
-       G4cout << G4endl;
-       G4cout << "Test PropagateMagField: ***********************" << G4endl
+       /*//G4cout << G4endl;
+       //G4cout << "Test PropagateMagField: ***********************" << G4endl
             << " Starting New Particle with Position " << Position << G4endl 
 	    << " and UnitVelocity " << UnitMomentum << G4endl;
-       G4cout << " Momentum in GeV/c is " << momentum / GeV
+       //G4cout << " Momentum in GeV/c is " << momentum / GeV
 	      << " = " << (0.5+iparticle*10.0)*proton_mass_c2 / MeV << " MeV"
-              << G4endl;
+              << G4endl;*/
 
 
-       for( int istep=0; istep < 14; istep++ ){ 
+       clock_t total = 0;
+	   for( int istep=0; istep < 14; istep++ ){ 
           // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
 	  located= pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
@@ -467,11 +470,13 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   properTof,
 				   0              // or &Spin
 				   ); 
-
+		  clock_t t;
+		  t = clock();
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
 						     safety,
 						     located);
+	  total += clock() - t;
 	  //       --------------------
 	  EndPosition=     pMagFieldPropagator->EndPosition();
 	  EndUnitMomentum= pMagFieldPropagator->EndMomentumDir();
@@ -484,7 +489,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  G4ThreeVector MoveVec = EndPosition - Position;
 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
-	  // G4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
+	  // //G4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
 	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
 	//	       EndPosition, EndUnitMomentum, istep, located );
 
@@ -496,96 +501,14 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  UnitMomentum= EndUnitMomentum;
 	  physStep *= 2.; 
        } // ...........................  end for ( istep )
-
-       myMagField.ReportStatistics(); 
+       G4cout << "=============="<<total<<"================="<<G4endl;
+	   myMagField.ReportStatistics(); 
 
     }    // ..............................  end for ( iparticle )
 
     return(1);
 }
 
-void report_endPV(G4ThreeVector    Position, 
-                  G4ThreeVector    InitialUnitVelocity,
-		  G4double step_len, 
-                  G4double physStep, 
-                  G4double safety,
-		  G4ThreeVector EndPosition, 
-                  G4ThreeVector EndUnitVelocity,
-                  G4int             Step, 
-                  G4VPhysicalVolume* startVolume)
-		  //   G4VPhysicalVolume* endVolume)
-{
-    const G4int verboseLevel=1;
-    
-    if( Step == 0 && verboseLevel <= 3 )
-    {
-       G4cout.precision(6);
-       // G4cout.setf(ios_base::fixed,ios_base::floatfield);
-       G4cout << std::setw( 5) << "Step#" << " "
-            << std::setw( 9) << "X(mm)" << " "
-            << std::setw( 9) << "Y(mm)" << " "  
-            << std::setw( 9) << "Z(mm)" << " "
-            << std::setw( 9) << " N_x " << " "
-            << std::setw( 9) << " N_y " << " "
-            << std::setw( 9) << " N_z " << " "
-            << std::setw( 9) << " Delta|N|" << " "
-            << std::setw( 9) << " Delta(N_z) " << " "
-	   // << std::setw( 9) << "KinE(MeV)" << " "
-	   // << std::setw( 9) << "dE(MeV)" << " "  
-            << std::setw( 9) << "StepLen" << " "  
-            << std::setw( 9) << "PhsStep" << " "  
-            << std::setw( 9) << "Safety" << " "  
-            << std::setw(18) << "NextVolume" << " "
-            << G4endl;
-    }
-    //
-    //
-    if( verboseLevel > 3 )
-    {
-       G4cout << "End  Position is " << EndPosition << G4endl 
-	    << " and UnitVelocity is " << EndUnitVelocity << G4endl;
-       G4cout << "Step taken was " << step_len  
-	    << " out of PhysicalStep= " <<  physStep << G4endl;
-       G4cout << "Final safety is: " << safety << G4endl;
-
-       G4cout << "Chord length = " << (EndPosition-Position).mag() << G4endl;
-       G4cout << G4endl; 
-    }
-    else // if( verboseLevel > 0 )
-    {
-       G4cout.precision(6);
-       G4cout << std::setw( 5) << Step << " "
-	    << std::setw( 9) << Position.x() << " "
-	    << std::setw( 9) << Position.y() << " "
-	    << std::setw( 9) << Position.z() << " "
-	    << std::setw( 9) << EndUnitVelocity.x() << " "
-	    << std::setw( 9) << EndUnitVelocity.y() << " "
-	      << std::setw( 9) << EndUnitVelocity.z() << " ";
-       G4cout.precision(2); 
-       G4cout
-	    << std::setw( 9) << EndUnitVelocity.mag()-InitialUnitVelocity.mag() << " "
-	    << std::setw( 9) << EndUnitVelocity.z() - InitialUnitVelocity.z() << " ";
-	 //    << std::setw( 9) << KineticEnergy << " "
-	 //    << std::setw( 9) << EnergyDifference << " "
-       G4cout.precision(6);
-       G4cout 
-	    << std::setw( 9) << step_len << " "
-	    << std::setw( 9) << physStep << " "
-	    << std::setw( 9) << safety << " ";
-       if( startVolume != 0) {
-	 G4cout << std::setw(12) << startVolume->GetName() << " ";
-       } else {
-	 G4cout << std::setw(12) << "OutOfWorld" << " ";
-       }
-#if 0
-       if( endVolume != 0) 
-	 G4cout << std::setw(12) << endVolume()->GetName() << " ";
-       else 
-	 G4cout << std::setw(12) << "OutOfWorld" << " ";
-#endif
-       G4cout << G4endl;
-    }
-}
 
 // Main program
 // -------------------------------
@@ -597,11 +520,13 @@ int main(int argc, char **argv)
     G4bool optimiseVoxels=true;
     G4bool optimisePiFwithSafety=true;
 
-    G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
+    //G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
     if( argc >= 2 ){
        type = atoi(argv[1]);
-    } 
+    }else{
+		type = 14;
+	}
 
     if( argc >=3 ){
       optim= atoi(argv[2]);
@@ -613,17 +538,19 @@ int main(int argc, char **argv)
       if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
     }
 
-    G4cout << " Testing with stepper number    " << type << G4endl; 
-    G4cout << "             " ; 
-    G4cout << " voxel optimisation      " ; 
-    // if (optimiseVoxels)   G4cout << "On"; 
-    // else                  G4cout << "Off"; 
-    G4cout << (optimiseVoxels ? "On" : "Off")  << G4endl;
-    G4cout << "             " ; 
-    G4cout << " Propagator safety optim " ; 
+	int len = 1;
+	 for (int k = 0; k < len; k++){
+    //G4cout << " Testing with stepper number    " << type << G4endl; 
+    //G4cout << "             " ; 
+    //G4cout << " voxel optimisation      " ; 
+    // if (optimiseVoxels)   //G4cout << "On"; 
+    // else                  //G4cout << "Off"; 
+    //G4cout << (optimiseVoxels ? "On" : "Off")  << G4endl;
+    //G4cout << "             " ; 
+    //G4cout << " Propagator safety optim " ; 
     // const char* OnOff= (optimisePiFwithSafety ? "on" : "off") ; 
-    // G4cout << OnOff << G4endl;
-    G4cout << (optimisePiFwithSafety ? "On" : "Off")  << G4endl;
+    // //G4cout << OnOff << G4endl;
+    //G4cout << (optimisePiFwithSafety ? "On" : "Off")  << G4endl;
 
     // Create the geometry & field 
     myTopNode=BuildGeometry();	// Build the geometry
@@ -636,23 +563,22 @@ int main(int argc, char **argv)
 
     // Setup the propagator (will be overwritten by testG4Propagator ...)
     pMagFieldPropagator= SetupPropagator(type);
-    G4cout << " Using default values for " 
-	   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
-           << " and "
-	   << " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
-	   << G4endl; 
+    //G4cout << " Using default values for " 
+	//   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
+      //     << " and "
+	   //<< " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
+	   //<< G4endl; 
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
-	for (int k = 0; k < 1; k++){
 	// Do the tests without voxels
-    G4cout << " Test with no voxels" << G4endl; 
+    //G4cout << " Test with no voxels" << G4endl; 
     testG4PropagatorInField(myTopNode, type);
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
     pMagFieldPropagator->SetVerboseLevel( 0 ); 
 
 // Repeat tests but with full voxels
-    G4cout << " Test with full voxels" << G4endl; 
+    //G4cout << " Test with full voxels" << G4endl; 
 
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4GeometryManager::GetInstance()->CloseGeometry(true);
@@ -661,17 +587,18 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
-    G4cout << G4endl
-	   << "----------------------------------------------------------"
-	   << G4endl; 
+    //G4cout << G4endl
+	//   << "----------------------------------------------------------"
+	  // << G4endl; 
 
+	
 // Repeat tests with full voxels and modified parameters
-    G4cout << "Test with more accurate parameters " << G4endl; 
+    //G4cout << "Test with more accurate parameters " << G4endl; 
 
     G4double  maxEpsStep= 0.001;
     G4double  minEpsStep= 2.5e-8;
-    G4cout << " Setting values for Min Eps = " << minEpsStep 
-           << " and MaxEps = " << maxEpsStep << G4endl; 
+    //G4cout << " Setting values for Min Eps = " << minEpsStep 
+      //     << " and MaxEps = " << maxEpsStep << G4endl; 
 
     pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
     pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
@@ -685,7 +612,7 @@ int main(int argc, char **argv)
 
     optimiseVoxels = ! optimiseVoxels;
 // Repeat tests but with the opposite optimisation choice
-    G4cout << " Now test with optimisation " ; 
+    //G4cout << " Now test with optimisation " ; 
     if (optimiseVoxels)   G4cout << "on"; 
     else            G4cout << "off"; 
     G4cout << G4endl;
@@ -695,7 +622,8 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 }
-    // Cannot delete G4TransportationManager::GetInstance(); 
+    // Cannot delete G4TransportationManager::GetInstance();
+
     return 0;
 }
 
