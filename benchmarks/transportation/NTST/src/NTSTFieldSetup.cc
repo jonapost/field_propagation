@@ -120,7 +120,7 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 	SetField();  
 	if(fEquation) delete fEquation;
 	fEquation = new G4Mag_UsualEqRhs(fMagneticField); 
-
+	
 	SetStepper();
 	G4cout<<"The minimal step is equal to "<<fMinStep/mm<<" mm"<<G4endl ;
 
@@ -160,6 +160,14 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 //
 // Set stepper according to the stepper type
 //
+
+//=============test template mode================
+#include "TMagFieldEquation.hh"
+#include "TCashKarpRKF45.hh"
+typedef G4MagneticField Field_t;
+typedef TMagFieldEquation<Field_t> Equation_t;
+typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
+//===============================================
 
 void NTSTFieldSetup::SetStepper()
 {
@@ -225,7 +233,15 @@ void NTSTFieldSetup::SetStepper()
 
 			G4cout<<"G4NystromRK4 is called"<<G4endl;
 			break;
-
+		//=============test template mode================
+		case 100:
+			{
+				Equation_t *tEquation = new Equation_t(fMagneticField);
+				fStepper = new  Stepper_t(tEquation);
+			}
+			G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+			break;
+		//===============================================
 		default: fStepper = 0;
   }
   return; 
