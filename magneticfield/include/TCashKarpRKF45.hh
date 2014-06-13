@@ -16,22 +16,13 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 		const G4int numberOfVariables = noIntegrationVariables;
 		
 		assert(numberOfVariables==N);
-		
-		ak2 = new G4double[numberOfVariables] ;  
-		ak3 = new G4double[numberOfVariables] ; 
-		ak4 = new G4double[numberOfVariables] ; 
-		ak5 = new G4double[numberOfVariables] ; 
-		ak6 = new G4double[numberOfVariables] ; 
-		ak7 = 0;
-		yTemp = new G4double[numberOfVariables] ; 
-		yIn = new G4double[numberOfVariables] ;
-		
-		fLastInitialVector = new G4double[numberOfVariables] ;
-		fLastFinalVector = new G4double[numberOfVariables] ;
-		fLastDyDx = new G4double[numberOfVariables];
+		fLastInitialVector = new G4double[N] ;
+		fLastFinalVector = new G4double[N] ;
+		fLastDyDx = new G4double[N];
 
-		fMidVector = new G4double[numberOfVariables];
-		fMidError =  new G4double[numberOfVariables];
+		fMidVector = new G4double[N];
+		fMidError =  new G4double[N];
+		
 		if( primary )
 		{ 
 			fAuxStepper = new TCashKarpRKF45(EqRhs, numberOfVariables, !primary);
@@ -40,17 +31,6 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 
 		~TCashKarpRKF45()
 		{
-			delete[] ak2;
-			delete[] ak3;
-			delete[] ak4;
-			delete[] ak5;
-			delete[] ak6;
-
-			//delete[] ak7;
-			
-			delete[] yTemp;
-			delete[] yIn;
-			
 			delete[] fLastInitialVector;
 			delete[] fLastFinalVector;
 			delete[] fLastDyDx;
@@ -58,16 +38,17 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 			delete[] fMidError;
 			
 			delete fAuxStepper;
+			delete fEquation_Rhs;
 		}
 
 		inline void TRightHandSide(G4double y[], G4double dydx[]) 
 		{fEquation_Rhs->T_Equation::TRightHandSide(y, dydx);}
 
-		void Stepper(const G4double yInput[],
-				     const G4double dydx[],
-				           G4double Step,
-						   G4double yOut[],
-				           G4double yErr[])
+		void Stepper(const G4double __restrict__ yInput[],
+				     const G4double __restrict__ dydx[],
+				     G4double Step,
+					 G4double __restrict__ yOut[],
+				     G4double __restrict__ yErr[])
 		{
 			// const G4int nvar = 6 ;
 			// const G4double a2 = 0.2 , a3 = 0.3 , a4 = 0.6 , a5 = 1.0 , a6 = 0.875;
@@ -142,13 +123,17 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 				// Accumulate increments with proper weights
 
 				yOut[i] = yIn[i] + Step*(c1*dydx[i] + c3*ak3[i] + c4*ak4[i] + c6*ak6[i]) ;
-
+			}
+			for(i=0;i<N;i++)
+			{
 				// Estimate error as difference between 4th and
 				// 5th order methods
 
 				yErr[i] = Step*(dc1*dydx[i] + dc3*ak3[i] + dc4*ak4[i] +
 						dc5*ak5[i] + dc6*ak6[i]) ;
-
+			}
+			for(i=0;i<N;i++)
+			{
 				// Store Input and Final values, for possible use in calculating chord
 				fLastInitialVector[i] = yIn[i] ;
 				fLastFinalVector[i]   = yOut[i];
@@ -160,7 +145,6 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 
 			return ;
 		}
-
 
 		G4double  DistChord()   const
 		{
@@ -177,7 +161,8 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 
 			fAuxStepper->TCashKarpRKF45::Stepper( 
 					fLastInitialVector, 
-					fLastDyDx, 0.5 * fLastStepLength, 
+					fLastDyDx, 
+					0.5 * fLastStepLength, 
 					fMidVector,   
 					fMidError );
 
@@ -200,12 +185,23 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 		}
 
 	private:
-		G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *yTemp, *yIn;
+		//G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *yTemp, *yIn;
+		G4double ak2[N];
+		G4double ak3[N];
+		G4double ak4[N];
+		G4double ak5[N];
+		G4double ak6[N];
+		G4double ak7[N];
+		G4double yTemp[N];
+		G4double yIn[N];
 		// scratch space
 
 		G4double fLastStepLength;
-		G4double *fLastInitialVector, *fLastFinalVector,
-				 *fLastDyDx, *fMidVector, *fMidError;
+		G4double* fLastInitialVector;
+	    G4double* fLastFinalVector;
+	    G4double* fLastDyDx; 
+	    G4double* fMidVector;
+	    G4double* fMidError;
 		// for DistChord calculations
 
 		TCashKarpRKF45* fAuxStepper; 
