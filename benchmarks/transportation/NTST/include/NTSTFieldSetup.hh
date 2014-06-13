@@ -36,6 +36,7 @@
 #include "G4MagneticField.hh"
 #include "G4UniformMagField.hh"
 
+
 class NTSTGradientField;
 class NTSTTabulatedField3d;
 class NTSTField;
@@ -87,10 +88,11 @@ protected:
   G4ChordFinder*          fChordFinder ;
   G4Mag_UsualEqRhs*       fEquation ; 
   G4MagneticField*        fMagneticField ; 
-
-   NTSTGradientField *pAField1;
-   NTSTTabulatedField3d *pAField2;
-   NTSTField * ffield;
+  G4UniformMagField*      fTemplateField ; 
+   
+  NTSTGradientField *pAField1;
+  NTSTTabulatedField3d *pAField2;
+  NTSTField * ffield;
 
   G4MagIntegratorStepper* fStepper ;
   G4MagIntegratorStepper* pStepper ;

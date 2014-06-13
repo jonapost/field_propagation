@@ -80,6 +80,7 @@
 	fFieldName(0),fMinStep(0.01),fGradofField(0.000001)
 {
 	fMagneticField = new G4UniformMagField( G4ThreeVector(0.0, 0.0, 0.0 ) );
+	fTemplateField = new G4UniformMagField( G4ThreeVector(0.0, 0.0, 0.0 ) );
 	G4cout << " NTSTFieldSetup: magnetic field set to Uniform( 0.0, 0, 0 ) " << G4endl;
 	InitialiseAll();
 }
@@ -164,7 +165,7 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 //=============test template mode================
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
-typedef G4MagneticField Field_t;
+typedef G4UniformMagField Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
 //===============================================
@@ -234,9 +235,9 @@ void NTSTFieldSetup::SetStepper()
 			G4cout<<"G4NystromRK4 is called"<<G4endl;
 			break;
 		//=============test template mode================
-		case 100:
+		case 14:
 			{
-				Equation_t *tEquation = new Equation_t(fMagneticField);
+				Equation_t *tEquation = new Equation_t(fTemplateField);
 				fStepper = new  Stepper_t(tEquation);
 			}
 			G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
