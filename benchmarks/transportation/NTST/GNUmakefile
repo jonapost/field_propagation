@@ -6,6 +6,13 @@ ifndef G4INSTALL
   G4INSTALL = ../..
 endif
 
+CPPFLAGS += -g
+CPPFLAGS += -O3
+CPPFLAGS += -msse
+CPPFLAGS += -ftree-vectorizer-verbose=3
+CPPFLAGS += -ffast-math
+
+
 ifdef LHEP
   CPPFLAGS += -DflagLHEP
 endif
@@ -41,4 +48,6 @@ include $(G4INSTALL)/config/architecture.gmk
 all: lib bin
 
 include $(G4INSTALL)/config/binmake.gmk
+
+
 

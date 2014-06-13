@@ -1,0 +1,788 @@
+
+/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Vector/LorentzVector.icc:42: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Vector/LorentzVector.icc:42: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.00.p01/source/externals/clhep/include/CLHEP/Vector/LorentzVector.icc:42: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:123: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:123: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:123: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:124: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:124: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:124: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:125: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:125: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:125: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:126: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:126: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:126: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:127: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:127: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:127: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:128: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:128: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:128: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:129: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:129: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:129: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:122: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:123: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:123: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:123: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:124: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:124: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:124: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:125: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:125: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:125: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:126: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:126: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:126: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:127: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:127: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:127: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:128: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:128: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:128: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:129: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:129: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:129: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:295: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:295: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:295: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:296: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:296: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:296: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:297: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:297: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:297: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:298: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:298: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:298: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:301: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:301: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:301: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:302: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:302: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:302: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:303: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:303: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:303: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:304: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:304: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:304: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:307: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:307: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:307: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:310: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:310: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:310: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:294: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:295: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:295: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:295: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:296: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:296: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:296: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:297: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:297: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:297: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:298: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:298: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:298: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:301: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:301: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:301: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:302: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:302: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:302: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:303: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:303: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:303: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:304: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:304: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:304: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:307: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:307: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:307: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:310: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:310: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:310: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: can't force alignment of ref: this_2(D)->D.117373.D.117185._vptr.G4VVisManager
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: not consecutive access this_2(D)->D.117373.D.117185._vptr.G4VVisManager = &MEM[(void *)&_ZTV14G4VisExecutive + 16B];
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: not vectorized: failed to find SLP opportunities in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: can't force alignment of ref: this_2(D)->D.117373.D.117185._vptr.G4VVisManager
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: not consecutive access this_2(D)->D.117373.D.117185._vptr.G4VVisManager = &MEM[(void *)&_ZTV14G4VisExecutive + 16B];
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.hh:120: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:96: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:96: note: === vect_analyze_data_refs ===
+
+testNTST.cc:96: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:96: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:96: note: === vect_analyze_data_refs ===
+
+testNTST.cc:96: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:99: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:99: note: === vect_analyze_data_refs ===
+
+testNTST.cc:99: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:99: note: vectype: vector(2) long unsigned int
+testNTST.cc:99: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:99: note: vectype: vector(2) long unsigned int
+testNTST.cc:99: note: === vect_pattern_recog ===
+testNTST.cc:99: note: === vect_analyze_dependences ===
+testNTST.cc:99: note: === vect_analyze_data_refs_alignment ===
+testNTST.cc:99: note: vect_compute_data_ref_alignment:
+testNTST.cc:99: note: can't force alignment of ref: MEM[(struct G4RunManager *)_11]._vptr.G4RunManager
+testNTST.cc:99: note: vect_compute_data_ref_alignment:
+testNTST.cc:99: note: can't force alignment of ref: MEM[(int (*__vtbl_ptr_type) () *)_16 + 184B]
+testNTST.cc:99: note: === vect_analyze_data_ref_accesses ===
+testNTST.cc:99: note: not consecutive access _16 = MEM[(struct G4RunManager *)_11]._vptr.G4RunManager;
+
+testNTST.cc:99: note: not consecutive access _17 = MEM[(int (*__vtbl_ptr_type) () *)_16 + 184B];
+
+testNTST.cc:99: note: === vect_analyze_slp ===
+testNTST.cc:99: note: Failed to SLP the basic block.
+testNTST.cc:99: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:128: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:128: note: === vect_analyze_data_refs ===
+
+testNTST.cc:128: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:128: note: vectype: vector(2) long unsigned int
+testNTST.cc:128: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:128: note: vectype: vector(2) long unsigned int
+testNTST.cc:128: note: === vect_pattern_recog ===
+testNTST.cc:128: note: === vect_analyze_dependences ===
+testNTST.cc:128: note: === vect_analyze_data_refs_alignment ===
+testNTST.cc:128: note: vect_compute_data_ref_alignment:
+testNTST.cc:128: note: can't force alignment of ref: MEM[(struct G4RunManager *)_11]._vptr.G4RunManager
+testNTST.cc:128: note: vect_compute_data_ref_alignment:
+testNTST.cc:128: note: can't force alignment of ref: MEM[(int (*__vtbl_ptr_type) () *)_22 + 192B]
+testNTST.cc:128: note: === vect_analyze_data_ref_accesses ===
+testNTST.cc:128: note: not consecutive access _22 = MEM[(struct G4RunManager *)_11]._vptr.G4RunManager;
+
+testNTST.cc:128: note: not consecutive access _23 = MEM[(int (*__vtbl_ptr_type) () *)_22 + 192B];
+
+testNTST.cc:128: note: === vect_analyze_slp ===
+testNTST.cc:128: note: Failed to SLP the basic block.
+testNTST.cc:128: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:142: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:142: note: === vect_analyze_data_refs ===
+
+testNTST.cc:142: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: can't force alignment of ref: MEM[(struct G4VisExecutive *)_27].D.117373.D.117185._vptr.G4VVisManager
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&D.126115]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: not consecutive access MEM[(struct G4VisExecutive *)_27].D.117373.D.117185._vptr.G4VVisManager = &MEM[(void *)&_ZTV14G4VisExecutive + 16B];
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: not consecutive access _114 = MEM[(const struct basic_string *)&D.126115]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4VisExecutive.icc:107: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:147: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:147: note: === vect_analyze_data_refs ===
+
+testNTST.cc:147: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:148: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:148: note: === vect_analyze_data_refs ===
+
+testNTST.cc:148: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:149: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:149: note: === vect_analyze_data_refs ===
+
+testNTST.cc:149: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:150: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:150: note: === vect_analyze_data_refs ===
+
+testNTST.cc:150: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:157: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:157: note: === vect_analyze_data_refs ===
+
+testNTST.cc:157: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:157: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:157: note: === vect_analyze_data_refs ===
+
+testNTST.cc:157: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:157: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:157: note: === vect_analyze_data_refs ===
+
+testNTST.cc:157: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:157: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:157: note: === vect_analyze_data_refs ===
+
+testNTST.cc:157: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:157: note: vectype: vector(2) long unsigned int
+testNTST.cc:157: note: === vect_pattern_recog ===
+testNTST.cc:157: note: === vect_analyze_dependences ===
+testNTST.cc:157: note: === vect_analyze_data_refs_alignment ===
+testNTST.cc:157: note: vect_compute_data_ref_alignment:
+testNTST.cc:157: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&D.126193]._M_dataplus._M_p
+testNTST.cc:157: note: === vect_analyze_data_ref_accesses ===
+testNTST.cc:157: note: not consecutive access _116 = MEM[(const struct basic_string *)&D.126193]._M_dataplus._M_p;
+
+testNTST.cc:157: note: === vect_analyze_slp ===
+testNTST.cc:157: note: Failed to SLP the basic block.
+testNTST.cc:157: note: not vectorized: failed to find SLP opportunities in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: not vectorized: no vectype for stmt: D.143508 ={v} {CLOBBER};
+ scalar_type: struct allocator
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:136: note: not vectorized: failed to find SLP opportunities in basic block.
+
+/usr/include/c++/4.8/bits/basic_string.h:2369: note: ===vect_slp_analyze_bb===
+
+/usr/include/c++/4.8/bits/basic_string.h:2369: note: === vect_analyze_data_refs ===
+
+/usr/include/c++/4.8/bits/basic_string.h:2369: note: not vectorized: not enough data-refs in basic block.
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: ===vect_slp_analyze_bb===
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_data_refs ===
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: get vectype with 2 units of type long unsigned int
+/usr/include/c++/4.8/bits/basic_string.h:539: note: vectype: vector(2) long unsigned int
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_pattern_recog ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_dependences ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_data_refs_alignment ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: vect_compute_data_ref_alignment:
+/usr/include/c++/4.8/bits/basic_string.h:539: note: misalign = 0 bytes of ref D.126210._M_dataplus._M_p
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_data_ref_accesses ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: not consecutive access _171 = D.126210._M_dataplus._M_p;
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_slp ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: Failed to SLP the basic block.
+/usr/include/c++/4.8/bits/basic_string.h:539: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:156: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:156: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.icc:156: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:166: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:166: note: === vect_analyze_data_refs ===
+
+testNTST.cc:166: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&D.126211]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not consecutive access _118 = MEM[(const struct basic_string *)&D.126211]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:171: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:171: note: === vect_analyze_data_refs ===
+
+testNTST.cc:171: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:171: note: vectype: vector(2) long unsigned int
+testNTST.cc:171: note: get vectype with 2 units of type long unsigned int
+testNTST.cc:171: note: vectype: vector(2) long unsigned int
+testNTST.cc:171: note: === vect_pattern_recog ===
+testNTST.cc:171: note: === vect_analyze_dependences ===
+testNTST.cc:171: note: === vect_analyze_data_refs_alignment ===
+testNTST.cc:171: note: vect_compute_data_ref_alignment:
+testNTST.cc:171: note: can't force alignment of ref: MEM[(struct G4VisManager *)_27].D.117185._vptr.G4VVisManager
+testNTST.cc:171: note: vect_compute_data_ref_alignment:
+testNTST.cc:171: note: can't force alignment of ref: MEM[(int (*__vtbl_ptr_type) () *)_98 + 8B]
+testNTST.cc:171: note: === vect_analyze_data_ref_accesses ===
+testNTST.cc:171: note: not consecutive access _98 = MEM[(struct G4VisManager *)_27].D.117185._vptr.G4VVisManager;
+
+testNTST.cc:171: note: not consecutive access _99 = MEM[(int (*__vtbl_ptr_type) () *)_98 + 8B];
+
+testNTST.cc:171: note: === vect_analyze_slp ===
+testNTST.cc:171: note: Failed to SLP the basic block.
+testNTST.cc:171: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:96: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:96: note: === vect_analyze_data_refs ===
+
+testNTST.cc:96: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:99: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:99: note: === vect_analyze_data_refs ===
+
+testNTST.cc:99: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:128: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:128: note: === vect_analyze_data_refs ===
+
+testNTST.cc:128: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:142: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:142: note: === vect_analyze_data_refs ===
+
+testNTST.cc:142: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&D.126115]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not consecutive access _126 = MEM[(const struct basic_string *)&D.126115]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:147: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:147: note: === vect_analyze_data_refs ===
+
+testNTST.cc:147: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:148: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:148: note: === vect_analyze_data_refs ===
+
+testNTST.cc:148: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:149: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:149: note: === vect_analyze_data_refs ===
+
+testNTST.cc:149: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:150: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:150: note: === vect_analyze_data_refs ===
+
+testNTST.cc:150: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:157: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:157: note: === vect_analyze_data_refs ===
+
+testNTST.cc:157: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:157: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:157: note: === vect_analyze_data_refs ===
+
+testNTST.cc:157: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&D.126193]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not consecutive access _128 = MEM[(const struct basic_string *)&D.126193]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not vectorized: failed to find SLP opportunities in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&D.126211]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not consecutive access _130 = MEM[(const struct basic_string *)&D.126211]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: ===vect_slp_analyze_bb===
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_data_refs ===
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: get vectype with 2 units of type long unsigned int
+/usr/include/c++/4.8/bits/basic_string.h:539: note: vectype: vector(2) long unsigned int
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_pattern_recog ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_dependences ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_data_refs_alignment ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: vect_compute_data_ref_alignment:
+/usr/include/c++/4.8/bits/basic_string.h:539: note: misalign = 0 bytes of ref D.126210._M_dataplus._M_p
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_data_ref_accesses ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: not consecutive access _132 = D.126210._M_dataplus._M_p;
+
+/usr/include/c++/4.8/bits/basic_string.h:539: note: === vect_analyze_slp ===
+/usr/include/c++/4.8/bits/basic_string.h:539: note: Failed to SLP the basic block.
+/usr/include/c++/4.8/bits/basic_string.h:539: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&fileName]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not consecutive access _134 = MEM[(const struct basic_string *)&fileName]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not vectorized: failed to find SLP opportunities in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+testNTST.cc:92: note: ===vect_slp_analyze_bb===
+
+testNTST.cc:92: note: === vect_analyze_data_refs ===
+
+testNTST.cc:92: note: not vectorized: not enough data-refs in basic block.
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: ===vect_slp_analyze_bb===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs ===
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: get vectype with 2 units of type long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vectype: vector(2) long unsigned int
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_pattern_recog ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_dependences ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_refs_alignment ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: vect_compute_data_ref_alignment:
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: misalign = 0 bytes of ref MEM[(const struct basic_string *)&command]._M_dataplus._M_p
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_data_ref_accesses ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not consecutive access _136 = MEM[(const struct basic_string *)&command]._M_dataplus._M_p;
+
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: === vect_analyze_slp ===
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: Failed to SLP the basic block.
+/home/josh/Documents/geant4.10.0-install/include/Geant4/G4String.hh:121: note: not vectorized: failed to find SLP opportunities in basic block.
+
+/usr/include/c++/4.8/iostream:74: note: ===vect_slp_analyze_bb===
+
+/usr/include/c++/4.8/iostream:74: note: === vect_analyze_data_refs ===
+
+/usr/include/c++/4.8/iostream:74: note: not vectorized: not enough data-refs in basic block.
