@@ -88,7 +88,6 @@ protected:
   G4ChordFinder*          fChordFinder ;
   G4Mag_UsualEqRhs*       fEquation ; 
   G4MagneticField*        fMagneticField ; 
-  G4UniformMagField*      fTemplateField ; 
    
   NTSTGradientField *pAField1;
   NTSTTabulatedField3d *pAField2;
