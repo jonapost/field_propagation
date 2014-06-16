@@ -91,7 +91,6 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 				yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
 			}
 			TRightHandSide(yTemp, ak2) ;              // 2nd Step
-
 			for(i=0;i<N;i++)
 			{
 				yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
@@ -207,4 +206,3 @@ class TCashKarpRKF45 : public G4CashKarpRKF45
 		TCashKarpRKF45* fAuxStepper; 
 		T_Equation* fEquation_Rhs;
 };
-
