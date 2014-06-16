@@ -531,6 +531,7 @@ void report_endPV(G4ThreeVector    Position,
 {
 	const G4int verboseLevel=1;
 
+
 	if( Step == 0 && verboseLevel <= 3 )
 	{
 		G4cout.precision(6);
