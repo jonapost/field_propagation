@@ -446,10 +446,10 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4ThreeVector Spin(1.0, 0.0, 0.0);
                                                    // Momentum in Mev/c ?
        // pMagFieldPropagator
-       //equationOfMotion->SetChargeMomentumMass(
-		 //     +1,                    // charge in e+ units
-		   //   momentum, 
-		     // proton_mass_c2); 
+       equationOfMotion->SetChargeMomentumMass(
+		      +1,                    // charge in e+ units
+		      momentum, 
+		      proton_mass_c2); 
        /*//G4cout << G4endl;
        //G4cout << "Test PropagateMagField: ***********************" << G4endl
             << " Starting New Particle with Position " << Position << G4endl 
