@@ -248,9 +248,18 @@ G4VPhysicalVolume* BuildGeometry()
 //=============test template mode================
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
-typedef G4CachedMagneticField Field_t;
+#include "TCachedMagneticField.hh"
+#include "TQuadrupoleMagField.hh"
+
+//typedef G4CachedMagneticField Field_t;
+//typedef TCachedMagneticField<G4QuadrupoleMagField> Field_t;
+typedef TCachedMagneticField<TQuadrupoleMagField> Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
+
+TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
+//G4QuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
+Field_t  myMagField( &tQuadrupoleMagField, 1.0 * cm); 
 //===============================================
 #include "globals.hh"
 
@@ -258,8 +267,8 @@ G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
 // G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
 // G4String   fieldName("Uniform 10Tesla"); 
 
-G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
+//G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
+//G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
 G4FieldManager* SetupField(G4int type)
@@ -269,8 +278,9 @@ G4FieldManager* SetupField(G4int type)
     G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
     G4MagIntegratorStepper *pStepper;
     //=============test template mode================
-     Equation_t *tEquation = new Equation_t(&myMagField);
+    Equation_t *tEquation = new Equation_t(& myMagField);
     //===============================================
+
     G4cout << " Setting up field of type: " << fieldName << G4endl;
 
     switch ( type ) 

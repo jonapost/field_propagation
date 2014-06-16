@@ -18,7 +18,7 @@ $MAKE -s  $target
 echo  "Executing $target ..."
 for n in 8 
 do
-  ./$target $n > $target.newout$n \
+  ./$target 14 > $target.newout$n \
 		     2> $target.newerr$n
   echo  ".. difference from expected output: "
   diff -wb $target.out$n $target.newout$n

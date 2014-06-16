@@ -498,8 +498,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
 	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
-	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
-	       EndPosition, EndUnitMomentum, istep, located );
+	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
+	    //   EndPosition, EndUnitMomentum, istep, located );
 
 	  assert(safety>=0);
 	  pNavig->SetGeometricallyLimitedStep();
@@ -510,7 +510,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  physStep *= 2.; 
        } // ...........................  end for ( istep )
        G4cout << "=============="<<total<<"================="<<G4endl;
-	   myMagField.ReportStatistics(); 
+	   tMagField.ReportStatistics(); 
 
     }    // ..............................  end for ( iparticle )
 
