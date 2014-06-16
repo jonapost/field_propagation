@@ -252,7 +252,11 @@ G4VPhysicalVolume* BuildGeometry()
 //=============test template mode================
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
-typedef G4CachedMagneticField Field_t;
+#include "TCachedMagneticField.hh"
+#include "TQuadrupoleMagField.hh"
+
+//typedef G4CachedMagneticField Field_t;
+typedef TCachedMagneticField<TQuadrupoleMagField> Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
 //===============================================
@@ -273,7 +277,9 @@ G4FieldManager* SetupField(G4int type)
 	G4ChordFinder    *pChordFinder;
 	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
 	//=============test template mode================
-	Equation_t *tEquation = new Equation_t(&myMagField);
+    TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
+    Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 
+	Equation_t *tEquation = new Equation_t(&tMagField);
 	//===============================================
 
 	G4MagIntegratorStepper *pStepper;
@@ -440,10 +446,10 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4ThreeVector Spin(1.0, 0.0, 0.0);
                                                    // Momentum in Mev/c ?
        // pMagFieldPropagator
-       equationOfMotion->SetChargeMomentumMass(
-		      +1,                    // charge in e+ units
-		      momentum, 
-		      proton_mass_c2); 
+       //equationOfMotion->SetChargeMomentumMass(
+		 //     +1,                    // charge in e+ units
+		   //   momentum, 
+		     // proton_mass_c2); 
        /*//G4cout << G4endl;
        //G4cout << "Test PropagateMagField: ***********************" << G4endl
             << " Starting New Particle with Position " << Position << G4endl 
@@ -471,7 +477,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   0              // or &Spin
 				   ); 
 		  clock_t t;
-		  t = clock();
+		  t = clock(); 
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
 						     safety,
@@ -572,7 +578,7 @@ int main(int argc, char **argv)
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
 	// Do the tests without voxels
     //G4cout << " Test with no voxels" << G4endl; 
-    testG4PropagatorInField(myTopNode, type);
+	testG4PropagatorInField(myTopNode, type);
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
     pMagFieldPropagator->SetVerboseLevel( 0 ); 
