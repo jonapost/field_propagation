@@ -55,7 +55,8 @@ void ReportStatistics()
 	  << "   Number of evaluations : " << fCountEvaluations << G4endl;
 }
 
-inline void  GetFieldValue( const G4double Point[4],
+virtual
+void  GetFieldValue( const G4double Point[4],
 		G4double *Bfield ) const
 {
 	G4ThreeVector newLocation( Point[0], Point[1], Point[2] );

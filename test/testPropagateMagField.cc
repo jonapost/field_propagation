@@ -270,6 +270,8 @@ G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
+TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
+Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 
 
 G4FieldManager* SetupField(G4int type)
 {
@@ -277,8 +279,6 @@ G4FieldManager* SetupField(G4int type)
 	G4ChordFinder    *pChordFinder;
 	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
 	//=============test template mode================
-    TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
-    Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 
 	Equation_t *tEquation = new Equation_t(&tMagField);
 	//===============================================
 
@@ -320,9 +320,9 @@ G4FieldManager* SetupField(G4int type)
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
 
-    pFieldMgr->SetDetectorField( &myMagField );
+    pFieldMgr->SetDetectorField( &tMagField );
 
-    pChordFinder = new G4ChordFinder( &myMagField,
+    pChordFinder = new G4ChordFinder( &tMagField,
 				      1.0e-2 * mm,
 				      pStepper);
     pChordFinder->SetVerbose(0);  // ity();
