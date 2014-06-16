@@ -2,20 +2,19 @@
 #ifndef TQUADRUPOLEMAGFIELD_HH
 #define TQUADRUPOLEMAGFIELD_HH
 
-#include "G4QuadrupoleMagField.hh"
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
+#include "G4MagneticField.hh"
 
 static G4RotationMatrix IdentityMatrix; 
 
 //template
 //<class T_Field>
-class TQuadrupoleMagField : public G4QuadrupoleMagField 
+class TQuadrupoleMagField : public G4MagneticField 
 {
 public: // with description
 
 	TQuadrupoleMagField(G4double pGradient)
-		         :G4QuadrupoleMagField(pGradient)
 	{
 		fGradient = pGradient ;
 		fOrigin   = G4ThreeVector( 0.0, 0.0, 0.0) ;
@@ -25,9 +24,6 @@ public: // with description
 	TQuadrupoleMagField(G4double pGradient, 
 						G4ThreeVector pOrigin, 
 						G4RotationMatrix* pMatrix)
-				:G4QuadrupoleMagField(pGradient,
-									   pOrigin, 
-									   pMatrix)
 	{
 		fGradient    = pGradient ;
 		fOrigin      = pOrigin ;

@@ -5,19 +5,17 @@
 #include "G4Types.hh"
 #include "G4ThreeVector.hh"
 #include "G4MagneticField.hh"
-#include "G4CachedMagneticField.hh" 
 
 template
 <class T_Field>
-class TCachedMagneticField : public G4CachedMagneticField
+class TCachedMagneticField : public G4MagneticField
 {
 public:  // with description
 
 TCachedMagneticField(T_Field* pTField, G4double distance)
-	  : G4CachedMagneticField(pTField, distance),
-	    fLastLocation(DBL_MAX,DBL_MAX,DBL_MAX),
-	    fLastValue(DBL_MAX,DBL_MAX,DBL_MAX),
-	    fCountCalls(0),  fCountEvaluations(0)
+	    : fLastLocation(DBL_MAX,DBL_MAX,DBL_MAX),
+	      fLastValue(DBL_MAX,DBL_MAX,DBL_MAX),
+	      fCountCalls(0),  fCountEvaluations(0)
 {
 	fpMagneticField= pTField;
 	fDistanceConst= distance;
@@ -35,8 +33,9 @@ TCachedMagneticField(const TCachedMagneticField<T_Field> &rightCMF)
 	this->ClearCounts(); 
 }
 
-virtual TCachedMagneticField* Clone() const
+TCachedMagneticField* Clone() const
 {
+	G4cout << "Clone is called" << G4endl;
 	//Cannot use copy constructor: I need to clone the associated magnetif field
 	T_Field* aF = this->fpMagneticField->T_Field::Clone();
 	TCachedMagneticField* cloned = new TCachedMagneticField( aF ,
@@ -71,7 +70,7 @@ inline void  GetFieldValue( const G4double Point[4],
 		Bfield[2] = fLastValue.z();
 	}else{
 		// G4CachedMagneticField* thisNonC= const_cast<G4CachedMagneticField*>(this);
-		fpMagneticField->GetFieldValue( Point, Bfield );
+		fpMagneticField->T_Field::GetFieldValue( Point, Bfield );
 		// G4cout << " Evaluating. " << G4endl;
 		fCountEvaluations++;
 		// thisNonC->
