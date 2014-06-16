@@ -1,1 +1,1 @@
-g++ -g -O2 -ftree-vectorize -I ${G4INCLUDE} testPropagateMagField.cc -L${G4LIB}/../ -lG4Tree -lG4FR -lG4GMocren -lG4visHepRep -lG4RayTracer -lG4VRML -lG4vis_management -lG4modeling -lG4interfaces -lG4persistency -lG4analysis -lG4error_propagation -lG4readout -lG4physicslists -lG4run -lG4event -lG4tracking -lG4parmodels -lG4processes -lG4digits_hits -lG4track -lG4particles -lG4geometry -lG4materials -lG4graphics_reps -lG4intercoms -lG4global -lG4clhep
+g++ -g -O2 -ftree-vectorizer-verbose=1 -ffast-math  -I ${G4INCLUDE} testPropagateMagField.cc `geant4-config --libs`

@@ -249,6 +249,7 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4ConstRK4.hh"
 #include "G4NystromRK4.hh"
 #include "G4HelixMixedStepper.hh"
+#include "globals.hh"
 //=============test template mode================
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
@@ -256,11 +257,15 @@ G4VPhysicalVolume* BuildGeometry()
 #include "TQuadrupoleMagField.hh"
 
 //typedef G4CachedMagneticField Field_t;
+//typedef TCachedMagneticField<G4QuadrupoleMagField> Field_t;
 typedef TCachedMagneticField<TQuadrupoleMagField> Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
+
+TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
+//G4QuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
+Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 
 //===============================================
-#include "globals.hh"
 
 //G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
 // G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
@@ -270,15 +275,12 @@ G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
-
 G4FieldManager* SetupField(G4int type)
 {
 	G4FieldManager   *pFieldMgr;
 	G4ChordFinder    *pChordFinder;
-	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
+	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&tMagField); 
 	//=============test template mode================
-    TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
-    Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 
 	Equation_t *tEquation = new Equation_t(&tMagField);
 	//===============================================
 
@@ -320,9 +322,9 @@ G4FieldManager* SetupField(G4int type)
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
 
-    pFieldMgr->SetDetectorField( &myMagField );
+    pFieldMgr->SetDetectorField( &tMagField );
 
-    pChordFinder = new G4ChordFinder( &myMagField,
+    pChordFinder = new G4ChordFinder( &tMagField,
 				      1.0e-2 * mm,
 				      pStepper);
     pChordFinder->SetVerbose(0);  // ity();
@@ -373,7 +375,7 @@ G4PropagatorInField *pMagFieldPropagator=0;
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
 			       G4int             type)
 {
-    /*void report_endPV(G4ThreeVector    Position, 
+    void report_endPV(G4ThreeVector    Position, 
                   G4ThreeVector UnitVelocity,
 		  G4double step_len, 
                   G4double physStep, 
@@ -382,7 +384,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                   G4ThreeVector EndUnitVelocity,
                   G4int             Step, 
                   G4VPhysicalVolume* startVolume);
-    */
+   
     G4UniformMagField MagField(10.*tesla, 0., 0.);
     G4Navigator   *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
@@ -495,9 +497,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  G4ThreeVector MoveVec = EndPosition - Position;
 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
-	  // //G4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
-	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
-	//	       EndPosition, EndUnitMomentum, istep, located );
+	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
+	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
+	       EndPosition, EndUnitMomentum, istep, located );
 
 	  assert(safety>=0);
 	  pNavig->SetGeometricallyLimitedStep();
@@ -516,6 +518,88 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 }
 
 
+void report_endPV(G4ThreeVector    Position, 
+		G4ThreeVector    InitialUnitVelocity,
+		G4double step_len, 
+		G4double physStep, 
+		G4double safety,
+		G4ThreeVector EndPosition, 
+		G4ThreeVector EndUnitVelocity,
+		G4int             Step, 
+		G4VPhysicalVolume* startVolume)
+	//   G4VPhysicalVolume* endVolume)
+{
+	const G4int verboseLevel=1;
+
+	if( Step == 0 && verboseLevel <= 3 )
+	{
+		G4cout.precision(6);
+		  //G4cout.setf(ios_base::fixed,ios_base::floatfield);
+		  G4cout << std::setw( 5) << "Step#" << " "
+		  << std::setw( 9) << "X(mm)" << " "
+		  << std::setw( 9) << "Y(mm)" << " "  
+		  << std::setw( 9) << "Z(mm)" << " "
+		  << std::setw( 9) << " N_x " << " "
+		  << std::setw( 9) << " N_y " << " "
+		  << std::setw( 9) << " N_z " << " "
+		  << std::setw( 9) << " Delta|N|" << " "
+		  << std::setw( 9) << " Delta(N_z) " << " "
+		  << std::setw( 9) << "KinE(MeV)" << " "
+		  << std::setw( 9) << "dE(MeV)" << " "  
+		  << std::setw( 9) << "StepLen" << " "  
+		  << std::setw( 9) << "PhsStep" << " "  
+		  << std::setw( 9) << "Safety" << " "  
+		  << std::setw(18) << "NextVolume" << " "
+		  << G4endl;
+	}
+	//
+	//
+	if( verboseLevel > 3 )
+	{
+		G4cout << "End  Position is " << EndPosition << G4endl 
+			<< " and UnitVelocity is " << EndUnitVelocity << G4endl;
+		G4cout << "Step taken was " << step_len  
+			<< " out of PhysicalStep= " <<  physStep << G4endl;
+		G4cout << "Final safety is: " << safety << G4endl;
+
+		G4cout << "Chord length = " << (EndPosition-Position).mag() << G4endl;
+		G4cout << G4endl; 
+	}
+	else // if( verboseLevel > 0 )
+	{
+		G4cout.precision(6);
+		G4cout << std::setw( 5) << Step << " "
+			<< std::setw( 9) << Position.x() << " "
+			<< std::setw( 9) << Position.y() << " "
+			<< std::setw( 9) << Position.z() << " "
+			<< std::setw( 9) << EndUnitVelocity.x() << " "
+			<< std::setw( 9) << EndUnitVelocity.y() << " "
+			<< std::setw( 9) << EndUnitVelocity.z() << " ";
+		G4cout.precision(2); 
+		G4cout
+			<< std::setw( 9) << EndUnitVelocity.mag()-InitialUnitVelocity.mag() << " "
+			<< std::setw( 9) << EndUnitVelocity.z() - InitialUnitVelocity.z() << " ";
+		//    << std::setw( 9) << KineticEnergy << " "
+		//    << std::setw( 9) << EnergyDifference << " "
+		G4cout.precision(6);
+		G4cout 
+			<< std::setw( 9) << step_len << " "
+			<< std::setw( 9) << physStep << " "
+			<< std::setw( 9) << safety << " ";
+		if( startVolume != 0) {
+			G4cout << std::setw(12) << startVolume->GetName() << " ";
+		} else {
+			G4cout << std::setw(12) << "OutOfWorld" << " ";
+		}
+#if 0
+		if( endVolume != 0) 
+			G4cout << std::setw(12) << endVolume()->GetName() << " ";
+		else 
+			G4cout << std::setw(12) << "OutOfWorld" << " ";
+#endif
+		G4cout << G4endl;
+	}
+}
 // Main program
 // -------------------------------
 int main(int argc, char **argv)
