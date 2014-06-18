@@ -1,10 +1,11 @@
 
 target=testNTST
-
-for i in $(seq 1 15)
+#1 to 11
+for i in $(seq 1 10)
 do
 k=${k}0
-for n in 3 4 8 13
+for n in 8 14 4 15 
+#3 4 8 13
 do
 echo "/control/verbose 2 
 /NTST/setDebug 0 
@@ -17,7 +18,7 @@ echo "/control/verbose 2
 /run/initialize
 /field/setMinEpsilon 0.00${k}1
 /field/setMaxEpsilon 0.${k}1
-#/field/setMinStep 0.${k}1
+/field/setMinStep 0.${k}1
 /field/update
 /run/beamOn  1000
 /NTST/getFieldStats
