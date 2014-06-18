@@ -102,11 +102,10 @@ NTSTFieldSetup::InitialiseAll()
 NTSTFieldSetup::~NTSTFieldSetup()
 {
 	// GetGlobalFieldManager()->SetDetectorField(0);
-	// G4cout<<" Deleting NTSTFieldSetup"<<G4endl;
-	//  if(fMagneticField) delete fMagneticField;
+	//G4cout<<" Deleting NTSTFieldSetup"<<G4endl;
+	//if(fMagneticField) delete fMagneticField;
 	if(fChordFinder)   delete fChordFinder;
 	if(fStepper)       delete fStepper;
-
 	//G4cout<<"End of Deleting NTSTFieldSetup"<<G4endl;
 }
 
@@ -162,16 +161,19 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 //
 
 //=============test template mode================
+
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
+#include "TClassicalRK4.hh"
 typedef G4UniformMagField Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
+typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
+typedef TClassicalRK4<Equation_t, 8> StepperRK4_t;
+
 //===============================================
 
 void NTSTFieldSetup::SetStepper()
 {
-
 	switch ( fStepperType ) 
 	{
 		case 0:  
@@ -233,19 +235,29 @@ void NTSTFieldSetup::SetStepper()
 
 			G4cout<<"G4NystromRK4 is called"<<G4endl;
 			break;
-		//=============test template mode================
+			//=============test template mode================
 		case 14:
 			{
-				Equation_t *tEquation = new Equation_t(
+				Equation_t* pEquation = new Equation_t(
 						dynamic_cast<Field_t*>(fMagneticField));
-				fStepper = new  Stepper_t(tEquation);
+
+				fStepper = new  Stepper_t(pEquation);
 			}
 			G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
 			break;
-		//===============================================
+		case 15:
+			{
+				Equation_t* pEquation = new Equation_t(
+						dynamic_cast<Field_t*>(fMagneticField));
+
+				fStepper = new  StepperRK4_t(pEquation);
+			}
+			G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+			break;
+			//===============================================
 		default: fStepper = 0;
-  }
-  return; 
+	}
+	return; 
 }
 #include "NTSTField.hh"
 #include "NTSTGradientField.hh"
