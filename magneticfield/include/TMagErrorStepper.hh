@@ -20,7 +20,6 @@ TMagErrorStepper(T_Equation *EqRhs,
 	  fEquation_Rhs(EqRhs)
 {
 	G4int nvar = std::max(this->GetNumberOfVariables(), 8);
-	assert(nvar == N);
 }
 
 virtual ~TMagErrorStepper()
@@ -124,10 +123,10 @@ G4ThreeVector fInitialPoint, fMidPoint, fFinalPoint;
 // Data stored in order to find the chord
 
 // Dependent Objects, owned --- part of the STATE 
-G4double yInitial[N];
-G4double yMiddle[N];
-G4double dydxMid[N];
-G4double yOneStep[N];
+G4double yInitial[N<8?8:N];
+G4double yMiddle[N<8?8:N];
+G4double dydxMid[N<8?8:N];
+G4double yOneStep[N<8?8:N];
 // The following arrays are used only for temporary storage
 // they are allocated at the class level only for efficiency -
 // so that calls to new and delete are not made in Stepper().

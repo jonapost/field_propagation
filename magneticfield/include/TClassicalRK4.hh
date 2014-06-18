@@ -14,7 +14,6 @@ class TClassicalRK4 : public  TMagErrorStepper
 			fEquation_Rhs(EqRhs)
 {
    unsigned int noVariables= std::max(numberOfVariables,8); // For Time .. 7+1 
-   assert(noVariables == N);
 }
 
 ~TClassicalRK4()
@@ -91,11 +90,10 @@ inline void  DumbStepper( const G4double  yIn[],
 	private:
 
 	// G4int fNumberOfVariables ; // is set default to 6 in constructor
-
-	G4double dydxm[N]; 
-	G4double dydxt[N]; 
-	G4double yt[N]; 
+	G4double dydxm[N<8?8:N]; 
+	G4double dydxt[N<8?8:N]; 
+	G4double yt[N<8?8:N]; 
 	// scratch space - not state 
 
-	T_Equation *fEquation_Rhs;
+T_Equation *fEquation_Rhs;
 };

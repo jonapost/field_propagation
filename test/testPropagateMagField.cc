@@ -261,7 +261,7 @@ G4VPhysicalVolume* BuildGeometry()
 typedef TCachedMagneticField<TQuadrupoleMagField> Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
-typedef TClassicalRK4<Equation_t, 8> StepperRK4_t;
+typedef TClassicalRK4<Equation_t, 6> StepperRK4_t;
 TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
 //G4QuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
 Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 

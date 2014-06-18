@@ -168,7 +168,7 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 typedef G4UniformMagField Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
-typedef TClassicalRK4<Equation_t, 8> StepperRK4_t;
+typedef TClassicalRK4<Equation_t, 6> StepperRK4_t;
 
 //===============================================
 
