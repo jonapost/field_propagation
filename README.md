@@ -2,13 +2,21 @@
 
 ## Added files:
 
-* add files class diagram to `documents/`
-* add file `TCashKarpRKF45.hh` to `em/include/`
-* add file `TMagFieldEquation.hh` to `em/include/`
+``````
+	TCashKarpRKF45.hh
+	TMagFieldEquation.hh
+	TCachedMagneticField.hh
+	TQuadrupoleMagField.hh
+	TMagErrorStepper.hh
+	TClassicalRK4.hh
+`````
 
 ## Test:
 
-* compile `make testPropagateMagField` at `test/`, 
-	and run `testPropagateMagField 14`
-* note that revise `G4BASE` and `G4GITBASE` before compiling
+* /test directory
+* read the [functionality report](https://bitbucket.org/quarkxie/vecem/wiki/functionality) 
 
+## BenchMark:
+
+* /benchmark directory
+* read the [benchmark report](https://bitbucket.org/quarkxie/vecem/wiki/benchmark)
