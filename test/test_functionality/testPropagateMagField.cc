@@ -250,13 +250,13 @@ G4VPhysicalVolume* BuildGeometry()
 #include "TCashKarpRKF45.hh"
 #include "TCachedMagneticField.hh"
 #include "TQuadrupoleMagField.hh"
-
+#include "TClassicalRK4.hh"
 //typedef G4CachedMagneticField Field_t;
 //typedef TCachedMagneticField<G4QuadrupoleMagField> Field_t;
 typedef TCachedMagneticField<TQuadrupoleMagField> Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
-
+typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
+typedef TClassicalRK4<Equation_t, 8> StepperRK4_t;
 TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
 //G4QuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
 Field_t  myMagField( &tQuadrupoleMagField, 1.0 * cm); 
@@ -278,7 +278,7 @@ G4FieldManager* SetupField(G4int type)
     G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
     G4MagIntegratorStepper *pStepper;
     //=============test template mode================
-    Equation_t *tEquation = new Equation_t(& myMagField);
+    Equation_t *tEquation = new Equation_t(&myMagField);
     //===============================================
 
     G4cout << " Setting up field of type: " << fieldName << G4endl;
@@ -301,6 +301,7 @@ G4FieldManager* SetupField(G4int type)
       case 13: pStepper = new G4NystromRK4( fEquation ); break; 
       //=============test template mode================
       case 14: pStepper = new Stepper_t(tEquation); break;
+      case 15: pStepper = new StepperRK4_t(tEquation); break; 
       //===============================================
       default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
