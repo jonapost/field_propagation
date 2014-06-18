@@ -167,97 +167,97 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 #include "TClassicalRK4.hh"
 typedef G4UniformMagField Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
+typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
 typedef TClassicalRK4<Equation_t, 6> StepperRK4_t;
 
 //===============================================
 
 void NTSTFieldSetup::SetStepper()
 {
-	switch ( fStepperType ) 
-	{
-		case 0:  
-			fStepper = new G4ExplicitEuler( fEquation ); 
-			G4cout<<"G4ExplicitEuler is called"<<G4endl;     
-			break;
-		case 1:  
-			fStepper = new G4ImplicitEuler( fEquation );      
-			G4cout<<"G4ImplicitEuler is called"<<G4endl;     
-			break;
-		case 2:  
-			fStepper = new G4SimpleRunge( fEquation );        
-			G4cout<<"G4SimpleRunge is called"<<G4endl;     
-			break;
-		case 3:  
-			fStepper = new G4SimpleHeum( fEquation );         
-			G4cout<<"G4SimpleHeum is called"<<G4endl;     
-			break;
-		case 4:  
-			fStepper = new G4ClassicalRK4( fEquation );       
-			G4cout<<"G4ClassicalRK4 (default) is called"<<G4endl;     
-			break;
-		case 5:  
-			fStepper = new G4HelixExplicitEuler( fEquation ); 
-			G4cout<<"G4HelixExplicitEuler is called"<<G4endl;     
-			break;
-		case 6:  
-			fStepper = new G4HelixImplicitEuler( fEquation ); 
-			G4cout<<"G4HelixImplicitEuler is called"<<G4endl;     
-			break;
-		case 7:  
-			fStepper = new G4HelixSimpleRunge( fEquation );   
-			G4cout<<"G4HelixSimpleRunge is called"<<G4endl;     
-			break;
-		case 8:  
-			fStepper = new G4CashKarpRKF45( fEquation );      
-			G4cout<<"G4CashKarpRKF45 is called"<<G4endl;     
-			break;
-		case 9:  
-			fStepper = new G4ExactHelixStepper( fEquation );       
-			G4cout<<"G4ExactHelixStepper is called"<<G4endl;     
-			break;
-		case 10:  
-			fStepper = new G4RKG3_Stepper( fEquation );       
-			G4cout<<"G4RKG3_Stepper is called"<<G4endl;     
-			break;
-		case 11:  
-			fStepper = new G4HelixMixedStepper( fEquation );
-
-			G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
-			break;
-		case 12:  
-			fStepper = new G4HelixMixedStepper( fEquation,8 );
-
-			G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
-			break;
-		case 13:
-			fStepper = new G4NystromRK4( fEquation);
-
-			G4cout<<"G4NystromRK4 is called"<<G4endl;
-			break;
-			//=============test template mode================
-		case 14:
-			{
-				Equation_t* pEquation = new Equation_t(
-						dynamic_cast<Field_t*>(fMagneticField));
-
-				fStepper = new  Stepper_t(pEquation);
-			}
-			G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
-			break;
-		case 15:
-			{
-				Equation_t* pEquation = new Equation_t(
-						dynamic_cast<Field_t*>(fMagneticField));
-
-				fStepper = new  StepperRK4_t(pEquation);
-			}
-			G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
-			break;
-			//===============================================
-		default: fStepper = 0;
-	}
-	return; 
+  switch ( fStepperType ) 
+    {
+    case 0:  
+      fStepper = new G4ExplicitEuler( fEquation ); 
+      G4cout<<"G4ExplicitEuler is called"<<G4endl;     
+      break;
+    case 1:  
+      fStepper = new G4ImplicitEuler( fEquation );      
+      G4cout<<"G4ImplicitEuler is called"<<G4endl;     
+      break;
+    case 2:  
+      fStepper = new G4SimpleRunge( fEquation );        
+      G4cout<<"G4SimpleRunge is called"<<G4endl;     
+      break;
+    case 3:  
+      fStepper = new G4SimpleHeum( fEquation );         
+      G4cout<<"G4SimpleHeum is called"<<G4endl;     
+      break;
+    case 4:  
+      fStepper = new G4ClassicalRK4( fEquation );       
+      G4cout<<"G4ClassicalRK4 (default) is called"<<G4endl;     
+      break;
+    case 5:  
+      fStepper = new G4HelixExplicitEuler( fEquation ); 
+      G4cout<<"G4HelixExplicitEuler is called"<<G4endl;     
+      break;
+    case 6:  
+      fStepper = new G4HelixImplicitEuler( fEquation ); 
+      G4cout<<"G4HelixImplicitEuler is called"<<G4endl;     
+      break;
+    case 7:  
+      fStepper = new G4HelixSimpleRunge( fEquation );   
+      G4cout<<"G4HelixSimpleRunge is called"<<G4endl;     
+      break;
+    case 8:  
+      fStepper = new G4CashKarpRKF45( fEquation );      
+      G4cout<<"G4CashKarpRKF45 is called"<<G4endl;     
+      break;
+    case 9:  
+      fStepper = new G4ExactHelixStepper( fEquation );       
+      G4cout<<"G4ExactHelixStepper is called"<<G4endl;     
+      break;
+    case 10:  
+      fStepper = new G4RKG3_Stepper( fEquation );       
+      G4cout<<"G4RKG3_Stepper is called"<<G4endl;     
+      break;
+    case 11:  
+      fStepper = new G4HelixMixedStepper( fEquation );
+      
+      G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
+      break;
+    case 12:  
+      fStepper = new G4HelixMixedStepper( fEquation,8 );
+      
+      G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
+      break;
+    case 13:
+      fStepper = new G4NystromRK4( fEquation);
+      
+      G4cout<<"G4NystromRK4 is called"<<G4endl;
+      break;
+      //=============test template mode================
+    case 14:
+      {
+	Equation_t* pEquation = new Equation_t(
+					       dynamic_cast<Field_t*>(fMagneticField));
+	
+	fStepper = new  Stepper_t(pEquation);
+      }
+      G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+      break;
+    case 15:
+      {
+	Equation_t* pEquation = new Equation_t(
+					       dynamic_cast<Field_t*>(fMagneticField));
+	
+	fStepper = new  StepperRK4_t(pEquation);
+      }
+      G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+      break;
+      //===============================================
+    default: fStepper = 0;
+    }
+  return; 
 }
 #include "NTSTField.hh"
 #include "NTSTGradientField.hh"
