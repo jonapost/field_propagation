@@ -1,7 +1,7 @@
 
 target=testNTST
 #1 to 11
-for i in $(seq 1 10)
+for i in $(seq 2 7)
 do
 k=${k}0
 for n in 8 14 4 15 
@@ -18,13 +18,12 @@ echo "/control/verbose 2
 /run/initialize
 /field/setMinEpsilon 0.00${k}1
 /field/setMaxEpsilon 0.${k}1
-/field/setMinStep 0.${k}1
 /field/update
 /run/beamOn  1000
 /NTST/getFieldStats
 /field/getChordFinderStats" >loglog.mac
 
-$G4BIN/$G4SYSTEM/$target loglog.mac > ./data/$target.stepper${n}.${i}.out 
+./$target loglog.mac > ./data/$target.stepper${n}.${i}.out 
 echo "stepper${n}, with 0.1^${i}" >> newdata_${n}.out 
 cat ./data/$target.stepper${n}.${i}.out | grep "User=" >> newdata_${n}.out 
 done
