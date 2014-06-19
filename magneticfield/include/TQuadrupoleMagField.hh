@@ -12,67 +12,67 @@ static G4RotationMatrix IdentityMatrix;
 //<class T_Field>
 class TQuadrupoleMagField : public G4MagneticField 
 {
-public: // with description
+    public: // with description
 
-	TQuadrupoleMagField(G4double pGradient)
-	{
-		fGradient = pGradient ;
-		fOrigin   = G4ThreeVector( 0.0, 0.0, 0.0) ;
-		fpMatrix  = &IdentityMatrix;
-	}
+        TQuadrupoleMagField(G4double pGradient)
+        {
+            fGradient = pGradient ;
+            fOrigin   = G4ThreeVector( 0.0, 0.0, 0.0) ;
+            fpMatrix  = &IdentityMatrix;
+        }
 
-	TQuadrupoleMagField(G4double pGradient, 
-						G4ThreeVector pOrigin, 
-						G4RotationMatrix* pMatrix)
-	{
-		fGradient    = pGradient ;
-		fOrigin      = pOrigin ;
-		fpMatrix     = pMatrix ;
-	}
+        TQuadrupoleMagField(G4double pGradient, 
+                G4ThreeVector pOrigin, 
+                G4RotationMatrix* pMatrix)
+        {
+            fGradient    = pGradient ;
+            fOrigin      = pOrigin ;
+            fpMatrix     = pMatrix ;
+        }
 
-	virtual ~TQuadrupoleMagField() {;}
+        virtual ~TQuadrupoleMagField() {;}
 
-	inline void GetFieldValue(const G4double y[7],
-			                 G4double B[3]     ) const
-	{
-		G4ThreeVector r_global = G4ThreeVector(
-				y[0] - fOrigin.x(), 
-				y[1] - fOrigin.y(), 
-				y[2] - fOrigin.z());
+        inline void GetFieldValue(const G4double y[7],
+                G4double B[3]     ) const
+        {
+            G4ThreeVector r_global = G4ThreeVector(
+                    y[0] - fOrigin.x(), 
+                    y[1] - fOrigin.y(), 
+                    y[2] - fOrigin.z());
 
-		G4ThreeVector r_local = G4ThreeVector(
-				fpMatrix->colX() * r_global,
-				fpMatrix->colY() * r_global,
-				fpMatrix->colZ() * r_global);
+            G4ThreeVector r_local = G4ThreeVector(
+                    fpMatrix->colX() * r_global,
+                    fpMatrix->colY() * r_global,
+                    fpMatrix->colZ() * r_global);
 
-		G4ThreeVector B_local = G4ThreeVector(
-				fGradient * r_local.y(),
-				fGradient * r_local.x(),
-				0);
+            G4ThreeVector B_local = G4ThreeVector(
+                    fGradient * r_local.y(),
+                    fGradient * r_local.x(),
+                    0);
 
-		G4ThreeVector B_global = G4ThreeVector(
-				fpMatrix->inverse().rowX() * B_local,
-				fpMatrix->inverse().rowY() * B_local,
-				fpMatrix->inverse().rowZ() * B_local);
+            G4ThreeVector B_global = G4ThreeVector(
+                    fpMatrix->inverse().rowX() * B_local,
+                    fpMatrix->inverse().rowY() * B_local,
+                    fpMatrix->inverse().rowZ() * B_local);
 
-		B[0] = B_global.x() ;
-		B[1] = B_global.y() ;
-		B[2] = B_global.z() ;
-	}
+            B[0] = B_global.x() ;
+            B[1] = B_global.y() ;
+            B[2] = B_global.z() ;
+        }
 
-	TQuadrupoleMagField* Clone() const
-	{
-		//TODO: Can the fpMatrix be shared??
-		return new TQuadrupoleMagField(this->fGradient,
-                                        this->fOrigin,
-				                        this->fpMatrix);
-	}
+        TQuadrupoleMagField* Clone() const
+        {
+            //TODO: Can the fpMatrix be shared??
+            return new TQuadrupoleMagField(this->fGradient,
+                    this->fOrigin,
+                    this->fpMatrix);
+        }
 
-private:
+    private:
 
-	G4double          fGradient;
-	G4ThreeVector     fOrigin;
-	G4RotationMatrix* fpMatrix;
+        G4double          fGradient;
+        G4ThreeVector     fOrigin;
+        G4RotationMatrix* fpMatrix;
 };
 #endif
 
