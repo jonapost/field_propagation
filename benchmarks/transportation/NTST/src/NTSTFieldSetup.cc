@@ -60,53 +60,53 @@
 //
 //  Constructors:
 
-	NTSTFieldSetup::NTSTFieldSetup(G4MagneticField *pCommonField)
+    NTSTFieldSetup::NTSTFieldSetup(G4MagneticField *pCommonField)
 : fChordFinder(0),fEquation(0), fMagneticField(0),
-	pAField1(0),pAField2(0),
-	ffield(0),
-	fStepper(0),fStepperType(4),
-	fFieldName(0),fMinStep(0.01),fGradofField(0.000001)
+    pAField1(0),pAField2(0),
+    ffield(0),
+    fStepper(0),fStepperType(4),
+    fFieldName(0),fMinStep(0.01),fGradofField(0.000001)
 {
-	fMagneticField = pCommonField; 
-	fFieldMessenger = new NTSTFieldMessenger(this) ; 
+    fMagneticField = pCommonField; 
+    fFieldMessenger = new NTSTFieldMessenger(this) ; 
 
 }
 
-	NTSTFieldSetup::NTSTFieldSetup()
+    NTSTFieldSetup::NTSTFieldSetup()
 :  fChordFinder(0),fEquation(0), fMagneticField(0),
-	pAField1(0),pAField2(0),
-	ffield(0),
-	fStepper(0),fStepperType(4),
-	fFieldName(0),fMinStep(0.01),fGradofField(0.000001)
+    pAField1(0),pAField2(0),
+    ffield(0),
+    fStepper(0),fStepperType(4),
+    fFieldName(0),fMinStep(0.01),fGradofField(0.000001)
 {
-	fMagneticField = new G4UniformMagField( G4ThreeVector(0.0, 0.0, 0.0 ) );
-	G4cout << " NTSTFieldSetup: magnetic field set to Uniform( 0.0, 0, 0 ) " << G4endl;
-	InitialiseAll();
+    fMagneticField = new G4UniformMagField( G4ThreeVector(0.0, 0.0, 0.0 ) );
+    G4cout << " NTSTFieldSetup: magnetic field set to Uniform( 0.0, 0, 0 ) " << G4endl;
+    InitialiseAll();
 }
 
-	void
+    void
 NTSTFieldSetup::InitialiseAll()
 {
 
 
-	fMinStep = 1.0*mm ; // minimal step of 1 mm is default
-	fMaxEpsilon= 0.0000001;
-	fMinEpsilon= 0.1*fMaxEpsilon;
-	fFieldManager = G4TransportationManager::GetTransportationManager()
-		->GetFieldManager();
-	CreateStepperAndChordFinder();
+    fMinStep = 1.0*mm ; // minimal step of 1 mm is default
+    fMaxEpsilon= 0.0000001;
+    fMinEpsilon= 0.1*fMaxEpsilon;
+    fFieldManager = G4TransportationManager::GetTransportationManager()
+        ->GetFieldManager();
+    CreateStepperAndChordFinder();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 NTSTFieldSetup::~NTSTFieldSetup()
 {
-	// GetGlobalFieldManager()->SetDetectorField(0);
-	//G4cout<<" Deleting NTSTFieldSetup"<<G4endl;
-	//if(fMagneticField) delete fMagneticField;
-	if(fChordFinder)   delete fChordFinder;
-	if(fStepper)       delete fStepper;
-	//G4cout<<"End of Deleting NTSTFieldSetup"<<G4endl;
+    // GetGlobalFieldManager()->SetDetectorField(0);
+    //G4cout<<" Deleting NTSTFieldSetup"<<G4endl;
+    //if(fMagneticField) delete fMagneticField;
+    if(fChordFinder)   delete fChordFinder;
+    if(fStepper)       delete fStepper;
+    //G4cout<<"End of Deleting NTSTFieldSetup"<<G4endl;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -116,43 +116,43 @@ NTSTFieldSetup::~NTSTFieldSetup()
 #include "G4MagIntegratorDriver.hh"
 void NTSTFieldSetup::CreateStepperAndChordFinder()
 {
-	SetField();  
-	if(fEquation) delete fEquation;
-	fEquation = new G4Mag_UsualEqRhs(fMagneticField);
-	
-	SetStepper();
-	G4cout<<"The minimal step is equal to "<<fMinStep/mm<<" mm"<<G4endl ;
+    SetField();  
+    if(fEquation) delete fEquation;
+    fEquation = new G4Mag_UsualEqRhs(fMagneticField);
 
-	fFieldManager->SetDetectorField(fMagneticField );
+    SetStepper();
+    G4cout<<"The minimal step is equal to "<<fMinStep/mm<<" mm"<<G4endl ;
 
-	if(fChordFinder) delete fChordFinder;
+    fFieldManager->SetDetectorField(fMagneticField );
 
-	fChordFinder = new G4ChordFinder( fMagneticField, fMinStep,fStepper);
+    if(fChordFinder) delete fChordFinder;
 
-	fFieldManager->SetChordFinder( fChordFinder );
+    fChordFinder = new G4ChordFinder( fMagneticField, fMinStep,fStepper);
 
-	fFieldManager->SetMinimumEpsilonStep( fMinEpsilon );    // Old value
-	fFieldManager->SetMaximumEpsilonStep( fMaxEpsilon );      // FIX - old value
-	fFieldManager->SetDeltaOneStep( 0.25 * mm );       // original value
-	fFieldManager->SetDeltaIntersection( 0.10 * mm );  // original value
+    fFieldManager->SetChordFinder( fChordFinder );
 
-	G4cout << "Field Manager's parameters are " 
-		<< " minEpsilonStep= " << fFieldManager->GetMinimumEpsilonStep() << " "
-		<< " maxEpsilonStep= " << fFieldManager->GetMaximumEpsilonStep() << " " 
-		<< " deltaOneStep=   " << fFieldManager->GetDeltaOneStep() << " "
-		<< " deltaIntersection= " << fFieldManager->GetDeltaIntersection() 
-		<< G4endl;
-	//G4MagInt_Driver *pDriver;
-	//To have verbose from MagInt_Driver
-	//fChordFinder->SetVerbose(1);
-	//  pDriver=fpChordFinder->GetIntegratorDriver();
-	//pDriver=new G4MagInt_Driver(fMinStep, 
-	//                                   fStepper, 
-	//                                   fStepper->GetNumberOfVariables(),2 );
+    fFieldManager->SetMinimumEpsilonStep( fMinEpsilon );    // Old value
+    fFieldManager->SetMaximumEpsilonStep( fMaxEpsilon );      // FIX - old value
+    fFieldManager->SetDeltaOneStep( 0.25 * mm );       // original value
+    fFieldManager->SetDeltaIntersection( 0.10 * mm );  // original value
 
-	//fChordFinder->SetIntegrationDriver(pDriver);
-	//fFieldManager->SetChordFinder( fpChordFinder );
-	return;
+    G4cout << "Field Manager's parameters are " 
+        << " minEpsilonStep= " << fFieldManager->GetMinimumEpsilonStep() << " "
+        << " maxEpsilonStep= " << fFieldManager->GetMaximumEpsilonStep() << " " 
+        << " deltaOneStep=   " << fFieldManager->GetDeltaOneStep() << " "
+        << " deltaIntersection= " << fFieldManager->GetDeltaIntersection() 
+        << G4endl;
+    //G4MagInt_Driver *pDriver;
+    //To have verbose from MagInt_Driver
+    //fChordFinder->SetVerbose(1);
+    //  pDriver=fpChordFinder->GetIntegratorDriver();
+    //pDriver=new G4MagInt_Driver(fMinStep, 
+    //                                   fStepper, 
+    //                                   fStepper->GetNumberOfVariables(),2 );
+
+    //fChordFinder->SetIntegrationDriver(pDriver);
+    //fFieldManager->SetChordFinder( fpChordFinder );
+    return;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -167,151 +167,151 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 #include "TClassicalRK4.hh"
 typedef G4UniformMagField Field_t;
 typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, Field_t, 6> Stepper_t;
+typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
 typedef TClassicalRK4<Equation_t, 6> StepperRK4_t;
 
 //===============================================
 
 void NTSTFieldSetup::SetStepper()
 {
-  switch ( fStepperType ) 
+    switch ( fStepperType ) 
     {
-    case 0:  
-      fStepper = new G4ExplicitEuler( fEquation ); 
-      G4cout<<"G4ExplicitEuler is called"<<G4endl;     
-      break;
-    case 1:  
-      fStepper = new G4ImplicitEuler( fEquation );      
-      G4cout<<"G4ImplicitEuler is called"<<G4endl;     
-      break;
-    case 2:  
-      fStepper = new G4SimpleRunge( fEquation );        
-      G4cout<<"G4SimpleRunge is called"<<G4endl;     
-      break;
-    case 3:  
-      fStepper = new G4SimpleHeum( fEquation );         
-      G4cout<<"G4SimpleHeum is called"<<G4endl;     
-      break;
-    case 4:  
-      fStepper = new G4ClassicalRK4( fEquation );       
-      G4cout<<"G4ClassicalRK4 (default) is called"<<G4endl;     
-      break;
-    case 5:  
-      fStepper = new G4HelixExplicitEuler( fEquation ); 
-      G4cout<<"G4HelixExplicitEuler is called"<<G4endl;     
-      break;
-    case 6:  
-      fStepper = new G4HelixImplicitEuler( fEquation ); 
-      G4cout<<"G4HelixImplicitEuler is called"<<G4endl;     
-      break;
-    case 7:  
-      fStepper = new G4HelixSimpleRunge( fEquation );   
-      G4cout<<"G4HelixSimpleRunge is called"<<G4endl;     
-      break;
-    case 8:  
-      fStepper = new G4CashKarpRKF45( fEquation );      
-      G4cout<<"G4CashKarpRKF45 is called"<<G4endl;     
-      break;
-    case 9:  
-      fStepper = new G4ExactHelixStepper( fEquation );       
-      G4cout<<"G4ExactHelixStepper is called"<<G4endl;     
-      break;
-    case 10:  
-      fStepper = new G4RKG3_Stepper( fEquation );       
-      G4cout<<"G4RKG3_Stepper is called"<<G4endl;     
-      break;
-    case 11:  
-      fStepper = new G4HelixMixedStepper( fEquation );
-      
-      G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
-      break;
-    case 12:  
-      fStepper = new G4HelixMixedStepper( fEquation,8 );
-      
-      G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
-      break;
-    case 13:
-      fStepper = new G4NystromRK4( fEquation);
-      
-      G4cout<<"G4NystromRK4 is called"<<G4endl;
-      break;
-      //=============test template mode================
-    case 14:
-      {
-	Equation_t* pEquation = new Equation_t(
-					       dynamic_cast<Field_t*>(fMagneticField));
-	
-	fStepper = new  Stepper_t(pEquation);
-      }
-      G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
-      break;
-    case 15:
-      {
-	Equation_t* pEquation = new Equation_t(
-					       dynamic_cast<Field_t*>(fMagneticField));
-	
-	fStepper = new  StepperRK4_t(pEquation);
-      }
-      G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
-      break;
-      //===============================================
-    default: fStepper = 0;
+        case 0:  
+            fStepper = new G4ExplicitEuler( fEquation ); 
+            G4cout<<"G4ExplicitEuler is called"<<G4endl;     
+            break;
+        case 1:  
+            fStepper = new G4ImplicitEuler( fEquation );      
+            G4cout<<"G4ImplicitEuler is called"<<G4endl;     
+            break;
+        case 2:  
+            fStepper = new G4SimpleRunge( fEquation );        
+            G4cout<<"G4SimpleRunge is called"<<G4endl;     
+            break;
+        case 3:  
+            fStepper = new G4SimpleHeum( fEquation );         
+            G4cout<<"G4SimpleHeum is called"<<G4endl;     
+            break;
+        case 4:  
+            fStepper = new G4ClassicalRK4( fEquation );       
+            G4cout<<"G4ClassicalRK4 (default) is called"<<G4endl;     
+            break;
+        case 5:  
+            fStepper = new G4HelixExplicitEuler( fEquation ); 
+            G4cout<<"G4HelixExplicitEuler is called"<<G4endl;     
+            break;
+        case 6:  
+            fStepper = new G4HelixImplicitEuler( fEquation ); 
+            G4cout<<"G4HelixImplicitEuler is called"<<G4endl;     
+            break;
+        case 7:  
+            fStepper = new G4HelixSimpleRunge( fEquation );   
+            G4cout<<"G4HelixSimpleRunge is called"<<G4endl;     
+            break;
+        case 8:  
+            fStepper = new G4CashKarpRKF45( fEquation );      
+            G4cout<<"G4CashKarpRKF45 is called"<<G4endl;     
+            break;
+        case 9:  
+            fStepper = new G4ExactHelixStepper( fEquation );       
+            G4cout<<"G4ExactHelixStepper is called"<<G4endl;     
+            break;
+        case 10:  
+            fStepper = new G4RKG3_Stepper( fEquation );       
+            G4cout<<"G4RKG3_Stepper is called"<<G4endl;     
+            break;
+        case 11:  
+            fStepper = new G4HelixMixedStepper( fEquation );
+
+            G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
+            break;
+        case 12:  
+            fStepper = new G4HelixMixedStepper( fEquation,8 );
+
+            G4cout<<"G4HelixMixedStepper is called"<<G4endl;     
+            break;
+        case 13:
+            fStepper = new G4NystromRK4( fEquation);
+
+            G4cout<<"G4NystromRK4 is called"<<G4endl;
+            break;
+            //=============test template mode================
+        case 14:
+            {
+                Equation_t* pEquation = new Equation_t(
+                        dynamic_cast<Field_t*>(fMagneticField));
+
+                fStepper = new  Stepper_t(pEquation);
+            }
+            G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+            break;
+        case 15:
+            {
+                Equation_t* pEquation = new Equation_t(
+                        dynamic_cast<Field_t*>(fMagneticField));
+
+                fStepper = new  StepperRK4_t(pEquation);
+            }
+            G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+            break;
+            //===============================================
+        default: fStepper = 0;
     }
-  return; 
+    return; 
 }
 #include "NTSTField.hh"
 #include "NTSTGradientField.hh"
 #include "NTSTTabulatedField3d.hh"
 void NTSTFieldSetup::SetField()
 {
-   switch(fFieldName)
+    switch(fFieldName)
     { 
-    case 0: G4cout<<"Field set to  UniformField(default)"<<G4endl;break;
+        case 0: G4cout<<"Field set to  UniformField(default)"<<G4endl;break;
 
-    case 1: if(pAField1)delete pAField1;
-            pAField1= new NTSTGradientField(fGradofField);
-            fMagneticField=pAField1;
-            G4cout<<"Field set to Gradient Field"<<G4endl;break;
-    case 2: pAField2= new NTSTTabulatedField3d("TableST5.dat", 0.0);
-            fMagneticField=pAField2;
-            G4cout<<"Field set to Tabulated Solenoid Field"<<G4endl;break;
-   
-    case 3: ffield= new NTSTField(1.5*tesla,0.,0.);
-            fMagneticField=ffield; 
-            G4cout<<"Field set to  UniformField with new value"<<G4endl;break;
-    default: G4cout<<"Field set to  UniformField(default)"<<G4endl;break;
+        case 1: if(pAField1)delete pAField1;
+                    pAField1= new NTSTGradientField(fGradofField);
+                fMagneticField=pAField1;
+                G4cout<<"Field set to Gradient Field"<<G4endl;break;
+        case 2: pAField2= new NTSTTabulatedField3d("TableST5.dat", 0.0);
+                fMagneticField=pAField2;
+                G4cout<<"Field set to Tabulated Solenoid Field"<<G4endl;break;
+
+        case 3: ffield= new NTSTField(1.5*tesla,0.,0.);
+                fMagneticField=ffield; 
+                G4cout<<"Field set to  UniformField with new value"<<G4endl;break;
+        default: G4cout<<"Field set to  UniformField(default)"<<G4endl;break;
     };
- 
+
 }
 
-    
+
 void NTSTFieldSetup::GetChordFinderStats()
 {
-   if(fChordFinder){
-      fChordFinder->PrintStatistics();
-  }
-   else{
-     G4cout<<"Copy of ChordFinder doesn't exist"<<G4endl;
-   }
-  
+    if(fChordFinder){
+        fChordFinder->PrintStatistics();
+    }
+    else{
+        G4cout<<"Copy of ChordFinder doesn't exist"<<G4endl;
+    }
+
 }
 
 void NTSTFieldSetup::GetFieldCallStats()
 {
-   if(fChordFinder){
-    G4cout << "Number calls to field = " ;
-    switch(fFieldName)
-     { 
-     case 0: G4cout<<"use NTST/getFieldStats command"<<G4endl;break;
-     case 1: G4cout<< pAField1->GetCount()<<G4endl;pAField1->ClearCount();break;      
-     case 2: G4cout<< pAField2->GetCount()<<G4endl;pAField2->ClearCount();break;
-     case 3: G4cout<< ffield->GetCount()<<G4endl;ffield->ClearCount();break;
-     default:G4cout<<"no field"<<G4endl;break;
-    };
-  }
-   else{
-     G4cout<<"Field doesn't exist"<<G4endl;
-     }  
+    if(fChordFinder){
+        G4cout << "Number calls to field = " ;
+        switch(fFieldName)
+        { 
+            case 0: G4cout<<"use NTST/getFieldStats command"<<G4endl;break;
+            case 1: G4cout<< pAField1->GetCount()<<G4endl;pAField1->ClearCount();break;      
+            case 2: G4cout<< pAField2->GetCount()<<G4endl;pAField2->ClearCount();break;
+            case 3: G4cout<< ffield->GetCount()<<G4endl;ffield->ClearCount();break;
+            default:G4cout<<"no field"<<G4endl;break;
+        };
+    }
+    else{
+        G4cout<<"Field doesn't exist"<<G4endl;
+    }  
 }
 
 
@@ -322,6 +322,6 @@ void NTSTFieldSetup::GetFieldCallStats()
 
 G4FieldManager*  NTSTFieldSetup::GetGlobalFieldManager()
 {
-  return G4TransportationManager::GetTransportationManager()
-	                        ->GetFieldManager();
+    return G4TransportationManager::GetTransportationManager()
+        ->GetFieldManager();
 }
