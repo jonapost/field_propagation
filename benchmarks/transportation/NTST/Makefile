@@ -9,7 +9,7 @@ GEANT4LIBFLAGS := `geant4-config --libs`
 	$(CXX) $(CUSTOMFLAGS) -c -o $@ $< 
 
 testNTST: $(OBJECTS)
-	$(CC) $(OBJECTS) -o NTSTbench $(GEANT4LIBFLAGS)
+	$(CXX) $(OBJECTS) -o $@ $(GEANT4LIBFLAGS)
 
 
 clean:
