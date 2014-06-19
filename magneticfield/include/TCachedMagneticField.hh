@@ -13,7 +13,8 @@ class TCachedMagneticField : public G4MagneticField
 public:  // with description
 
 TCachedMagneticField(T_Field* pTField, G4double distance)
-	    : fLastLocation(DBL_MAX,DBL_MAX,DBL_MAX),
+	    : G4MagneticField(),
+		  fLastLocation(DBL_MAX,DBL_MAX,DBL_MAX),
 	      fLastValue(DBL_MAX,DBL_MAX,DBL_MAX),
 	      fCountCalls(0),  fCountEvaluations(0)
 {
@@ -60,8 +61,6 @@ void  GetFieldValue( const G4double Point[4],
 		G4double *Bfield ) const
 {
 	G4ThreeVector newLocation( Point[0], Point[1], Point[2] );
-
-	// G4cout << "Cache-B-field called at " << newLocation << G4endl;
 
 	G4double      distSq= (newLocation-fLastLocation).mag2();
 	fCountCalls++;

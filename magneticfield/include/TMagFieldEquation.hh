@@ -16,10 +16,7 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
 			itsField = f;
 		}
 
-		~TMagFieldEquation()
-		{
-			delete itsField;
-		}
+		virtual ~TMagFieldEquation(){;}
 
 		inline void TGetFieldValue(const G4double Point[4],
 				G4double Field[]) const
@@ -27,14 +24,15 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
 			itsField->T_Field::GetFieldValue(Point, Field);
 		}
 
-		inline void TRightHandSide(const G4double y[], G4double dydx[] ) const
+		inline void TRightHandSide(const G4double y[], G4double dydx[] )
+		   //	const
 		{
 			G4double Field[G4maximum_number_of_field_components]; 
 			G4double  PositionAndTime[4];
 			PositionAndTime[0] = y[0];
 			PositionAndTime[1] = y[1];
 			PositionAndTime[2] = y[2];
-			PositionAndTime[3] = y[7];     
+			PositionAndTime[3] = y[7];   
 			TGetFieldValue(PositionAndTime, Field) ;
 			TEvaluateRhsGivenB(y, Field, dydx);
 		}

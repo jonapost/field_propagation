@@ -30,7 +30,7 @@ public: // with description
 		fpMatrix     = pMatrix ;
 	}
 
-	~TQuadrupoleMagField() {;}
+	virtual ~TQuadrupoleMagField() {;}
 
 	inline void GetFieldValue(const G4double y[7],
 			                 G4double B[3]     ) const

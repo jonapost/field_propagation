@@ -16,9 +16,8 @@ class TClassicalRK4 : public  TMagErrorStepper
    unsigned int noVariables= std::max(numberOfVariables,8); // For Time .. 7+1 
 }
 
-~TClassicalRK4()
+virtual ~TClassicalRK4()
 {
-	delete fEquation_Rhs;
 }
 
 inline void TRightHandSide(G4double y[], G4double dydx[]) 

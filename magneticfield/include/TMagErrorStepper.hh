@@ -22,10 +22,7 @@ TMagErrorStepper(T_Equation *EqRhs,
 	G4int nvar = std::max(this->GetNumberOfVariables(), 8);
 }
 
-virtual ~TMagErrorStepper()
-{
-	delete fEquation_Rhs;
-}
+virtual ~TMagErrorStepper() {;}
 
 
 inline void TRightHandSide(G4double y[], G4double dydx[]) 
