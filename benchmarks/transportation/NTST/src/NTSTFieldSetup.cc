@@ -55,10 +55,12 @@
 #include "G4ExactHelixStepper.hh"
 #include "G4HelixMixedStepper.hh"
 #include "G4NystromRK4.hh"
-
+#include "NTSTField.hh"
 //////////////////////////////////////////////////////////////////////////
 //
 //  Constructors:
+
+bool fieldFlag = true;
 
     NTSTFieldSetup::NTSTFieldSetup(G4MagneticField *pCommonField)
 : fChordFinder(0),fEquation(0), fMagneticField(0),
@@ -82,6 +84,7 @@
     fMagneticField = new G4UniformMagField( G4ThreeVector(0.0, 0.0, 0.0 ) );
     G4cout << " NTSTFieldSetup: magnetic field set to Uniform( 0.0, 0, 0 ) " << G4endl;
     InitialiseAll();
+    fieldFlag = false;
 }
 
     void
@@ -90,8 +93,8 @@ NTSTFieldSetup::InitialiseAll()
 
 
     fMinStep = 1.0*mm ; // minimal step of 1 mm is default
-    fMaxEpsilon= 0.0000001;
-    fMinEpsilon= 0.1*fMaxEpsilon;
+    fMaxEpsilon= 0.00001;
+    fMinEpsilon= 0.001;
     fFieldManager = G4TransportationManager::GetTransportationManager()
         ->GetFieldManager();
     CreateStepperAndChordFinder();
@@ -165,11 +168,15 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
 #include "TClassicalRK4.hh"
-typedef G4UniformMagField Field_t;
-typedef TMagFieldEquation<Field_t> Equation_t;
-typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
-typedef TClassicalRK4<Equation_t, 6> StepperRK4_t;
 
+typedef NTSTField Field_t1;
+typedef G4UniformMagField Field_t2;
+typedef TMagFieldEquation<Field_t1> Equation_t1;
+typedef TMagFieldEquation<Field_t2> Equation_t2;
+typedef TCashKarpRKF45<Equation_t1, 6> Stepper_t1;
+typedef TCashKarpRKF45<Equation_t2, 6> Stepper_t2;
+typedef TClassicalRK4<Equation_t1, 6> StepperRK4_t1;
+typedef TClassicalRK4<Equation_t2, 6> StepperRK4_t2;
 //===============================================
 
 void NTSTFieldSetup::SetStepper()
@@ -238,21 +245,33 @@ void NTSTFieldSetup::SetStepper()
             //=============test template mode================
         case 14:
             {
-                Equation_t* pEquation = new Equation_t(
-                        dynamic_cast<Field_t*>(fMagneticField));
+                if (fieldFlag)
+                {
+                    Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
+                    fStepper = new  Stepper_t1(pEquation);
+                }
+                else{
 
-                fStepper = new  Stepper_t(pEquation);
+                    Equation_t2* pEquation = new Equation_t2( static_cast<Field_t2*>(fMagneticField) );
+                    fStepper = new  Stepper_t2(pEquation);
+                }
             }
             G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
             break;
         case 15:
             {
-                Equation_t* pEquation = new Equation_t(
-                        dynamic_cast<Field_t*>(fMagneticField));
+                if (fieldFlag)
+                {
+                    Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
+                    fStepper = new  StepperRK4_t1(pEquation);
+                }
+                else{
 
-                fStepper = new  StepperRK4_t(pEquation);
+                    Equation_t2* pEquation = new Equation_t2( static_cast<Field_t2*>(fMagneticField) );
+                    fStepper = new  StepperRK4_t2(pEquation);
+                }
             }
-            G4cout<<"Templated CashKarpRKF45 is called"<<G4endl;
+            G4cout<<"Templated ClassicalRK4 is called"<<G4endl;
             break;
             //===============================================
         default: fStepper = 0;
@@ -308,7 +327,7 @@ void NTSTFieldSetup::GetFieldCallStats()
             case 3: G4cout<< ffield->GetCount()<<G4endl;ffield->ClearCount();break;
             default:G4cout<<"no field"<<G4endl;break;
         };
-    }
+    } 
     else{
         G4cout<<"Field doesn't exist"<<G4endl;
     }  
