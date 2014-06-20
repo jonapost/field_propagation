@@ -79,7 +79,7 @@ class TClassicalRK4 : public  TMagErrorStepper
 
     public:  // without description
 
-        G4int IntegratorOrder() const { return 4; }
+        inline G4int IntegratorOrder() const { return 4; }
 
     private:
         TClassicalRK4(const TClassicalRK4&);

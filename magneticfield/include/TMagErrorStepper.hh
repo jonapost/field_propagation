@@ -42,7 +42,8 @@ class TMagErrorStepper : public G4MagIntegratorStepper
 
             G4int i;
             // correction for Richardson Extrapolation.
-            G4double  correction = 1. / ( (1 << IntegratorOrder()) -1 );
+            G4double  correction = 1. / ( (1 << 
+                        static_cast<T_Stepper*>(this)->IntegratorOrder()) -1 );
 
             //  Saving yInput because yInput and yOutput can be aliases for same array
 
