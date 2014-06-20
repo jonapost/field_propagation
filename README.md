@@ -10,6 +10,7 @@
 	TQuadrupoleMagField.hh
 	TMagErrorStepper.hh
 	TClassicalRK4.hh
+        TUniformMagField.hh
 ```
 
 ## Test:
