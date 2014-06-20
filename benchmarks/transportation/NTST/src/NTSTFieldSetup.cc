@@ -165,12 +165,13 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 
 //=============test template mode================
 
+#include "TUniformMagField.hh"
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
 #include "TClassicalRK4.hh"
 
 typedef NTSTField Field_t1;
-typedef G4UniformMagField Field_t2;
+typedef TUniformMagField Field_t2;
 typedef TMagFieldEquation<Field_t1> Equation_t1;
 typedef TMagFieldEquation<Field_t2> Equation_t2;
 typedef TCashKarpRKF45<Equation_t1, 6> Stepper_t1;
