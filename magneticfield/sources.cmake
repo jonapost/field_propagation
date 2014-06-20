@@ -94,6 +94,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	TQuadrupoleMagField.hh
 	TMagErrorStepper.hh
 	TClassicalRK4.hh
+   TUniformMagField.hh
     SOURCES
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
