@@ -82,8 +82,6 @@ class TClassicalRK4 : public  TMagErrorStepper
         __attribute__((always_inline)) 
         G4int IntegratorOrder() const { return 4; }
         
-        inline G4int TIntegratorOrder() const { return 4; }
-
     private:
         TClassicalRK4(const TClassicalRK4&);
         TClassicalRK4& operator=(const TClassicalRK4&);
