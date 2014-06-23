@@ -47,6 +47,7 @@ class G4Mag_UsualEqRhs;
 class G4MagIntegratorStepper;
 class NTSTFieldMessenger;
 
+
 class NTSTFieldSetup
 {
 public:
@@ -86,6 +87,7 @@ protected:
   G4FieldManager*         fFieldManager ;
   G4ChordFinder*          fChordFinder ;
   G4Mag_UsualEqRhs*       fEquation ; 
+  Field_t*                pEquation ;
   G4MagneticField*        fMagneticField ; 
    
   NTSTGradientField *pAField1;

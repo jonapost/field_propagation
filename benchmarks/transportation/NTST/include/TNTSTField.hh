@@ -23,63 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: NTSTDetectorConstruction.hh,v 1.2 2007-10-26 09:51:28 gcosmo Exp $
+// $Id: NTSTField.hh,v 1.2 2007-10-26 09:51:28 gcosmo Exp $
 // GEANT4 tag $Name: not supported by cvs2svn $
 //
 
-#ifndef NTSTDetectorConstruction_H
-#define NTSTDetectorConstruction_H 1
-#include "G4Transform3D.hh"
-#include "globals.hh"
+#ifndef NTSTField_hh
+#define NTSTField_hh
 
-class NTSTFileRead;
-class G4VPhysicalVolume;
-class NTSTDetectorMessenger;
-class G4LogicalVolume;
-class G4ChordFinder;
-class NTSTFieldSetup;
+#include "TUniformMagField.hh"
 
-#include "G4VUserDetectorConstruction.hh"
-
-#include "NTSTField.hh"
-#include "TNTSTField.hh"
-
-class NTSTDetectorConstruction : public G4VUserDetectorConstruction
+class NTSTField : public TUniformMagField
 {
-public:
-    NTSTDetectorConstruction();
-    ~NTSTDetectorConstruction();
-    void SetInputFileName(G4String);
-    void SetDebugCmd(G4int);
-    void SetOuterRadius(G4double);
-    void SetNSubLayer(G4int);
-    void PrintCorners(const G4Transform3D&, G4LogicalVolume*);
-    void DisableDetector(G4String);
-    
-public:
-    G4VPhysicalVolume* Construct();
-    
-    void GetFieldCallStats()
- 
-   {
-    	G4cout << "Number calls to field = " << field.GetCount() << G4endl;
-  	field.ClearCount();
-    }
-  
-private:
-    NTSTFileRead* _FileRead;
-    G4bool debug;
-    G4double radius; // outer radius of the SVT mother volume
-    NTSTDetectorMessenger* DetectorMessenger;
-    G4int NSubLayer; // default number of layers
-    G4bool disableSVT;
-    G4bool disableDCH;
-    
-    NTSTFieldSetup *fEmFieldSetup;     
-    NTSTField field;
-    TNTSTField tfield;
- 
+	public:
+	NTSTField( const G4ThreeVector& FieldVector )
+		: TUniformMagField(FieldVector),
+		  count(0) {;}
+	NTSTField( G4double vField,
+                   G4double vTheta,
+                   G4double vPhi     )
+		: TUniformMagField( vField, vTheta, vPhi ),
+		  count(0) {;}
+	virtual ~NTSTField() {;}
+	
+	
+	void GetFieldValue( const G4double yTrack[3] ,
+                                  G4double *MagField ) const 
+	{
+		count++;
+		TUniformMagField::GetFieldValue( yTrack, MagField );
+	}
+	
+	G4int GetCount() const { return count; }
+	void ClearCount() { count = 0; }
+	
+	protected:
+	mutable G4int count;
 };
 
 #endif
-

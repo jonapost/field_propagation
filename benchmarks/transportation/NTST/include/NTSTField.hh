@@ -30,18 +30,18 @@
 #ifndef NTSTField_hh
 #define NTSTField_hh
 
-#include "TUniformMagField.hh"
+#include "G4UniformMagField.hh"
 
-class NTSTField : public TUniformMagField
+class NTSTField : public G4UniformMagField
 {
 	public:
 	NTSTField( const G4ThreeVector& FieldVector )
-		: TUniformMagField(FieldVector),
+		: G4UniformMagField(FieldVector),
 		  count(0) {;}
 	NTSTField( G4double vField,
                    G4double vTheta,
                    G4double vPhi     )
-		: TUniformMagField( vField, vTheta, vPhi ),
+		: G4UniformMagField( vField, vTheta, vPhi ),
 		  count(0) {;}
 	virtual ~NTSTField() {;}
 	
@@ -50,7 +50,7 @@ class NTSTField : public TUniformMagField
                                   G4double *MagField ) const 
 	{
 		count++;
-		TUniformMagField::GetFieldValue( yTrack, MagField );
+		G4UniformMagField::GetFieldValue( yTrack, MagField );
 	}
 	
 	G4int GetCount() const { return count; }
