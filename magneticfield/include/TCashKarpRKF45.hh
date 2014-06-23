@@ -19,7 +19,6 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
             fEquation_Rhs(EqRhs)
     {
         const G4int numberOfVariables = noIntegrationVariables;
-        assert(numberOfVariables==N);
 
         fLastInitialVector = new G4double[N] ;
         fLastFinalVector = new G4double[N] ;
@@ -45,10 +44,10 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
             delete fAuxStepper;
         }
 
-        inline void TRightHandSide(G4double y[], G4double dydx[]) 
+        __attribute__((always_inline)) void TRightHandSide(G4double y[], G4double dydx[]) 
         {fEquation_Rhs->T_Equation::TRightHandSide(y, dydx);}
 
-        void Stepper(const G4double __restrict__ yInput[],
+        inline void Stepper(const G4double __restrict__ yInput[],
                 const G4double __restrict__ dydx[],
                 G4double Step,
                 G4double __restrict__ yOut[],
@@ -94,33 +93,33 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
             {
                 yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
             }
-            TRightHandSide(yTemp, ak2) ;              // 2nd Step
+            this->TRightHandSide(yTemp, ak2) ;              // 2nd Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
             }
-            TRightHandSide(yTemp, ak3) ;              // 3rd Step
+            this->TRightHandSide(yTemp, ak3) ;              // 3rd Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b41*dydx[i] + b42*ak2[i] + b43*ak3[i]) ;
             }
-            TRightHandSide(yTemp, ak4) ;              // 4th Step
+            this->TRightHandSide(yTemp, ak4) ;              // 4th Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b51*dydx[i] + b52*ak2[i] + b53*ak3[i] +
                         b54*ak4[i]) ;
             }
-            TRightHandSide(yTemp, ak5) ;              // 5th Step
+            this->TRightHandSide(yTemp, ak5) ;              // 5th Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b61*dydx[i] + b62*ak2[i] + b63*ak3[i] +
                         b64*ak4[i] + b65*ak5[i]) ;
             }
-            TRightHandSide(yTemp, ak6) ;              // 6th Step
+            this->TRightHandSide(yTemp, ak6) ;              // 6th Step
 
             for(i=0;i<N;i++)
             {
@@ -188,11 +187,11 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
             return distChord;
         }
 
-        G4int IntegratorOrder() const { return 4; }
+        inline G4int IntegratorOrder() const { return 4; }
 
     private:
         TCashKarpRKF45(const TCashKarpRKF45&);
-        TCashKarpRKF45& operator=(const G4CashKarpRKF45&);
+        TCashKarpRKF45& operator=(const TCashKarpRKF45&);
         //private copy constructor and assignment operator.
 
     private:
