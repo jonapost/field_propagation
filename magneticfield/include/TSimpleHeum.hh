@@ -16,7 +16,7 @@ class TSimpleHeum : public  TMagErrorStepper
             IntegratorCorrection = 0.14285714285714285;
 
         TSimpleHeum(T_Equation *EqRhs, 
-                G4int numberOfVariables=6)
+                    G4int numberOfVariables=6)
             :  TMagErrorStepper
                <TSimpleHeum<T_Equation, N>, T_Equation, N>
                (EqRhs, numberOfVariables),
@@ -26,19 +26,21 @@ class TSimpleHeum : public  TMagErrorStepper
              assert( fNumberOfVariables == N );
         }
 
-        virtual ~TSimpleHeum() {;}
+        ~TSimpleHeum() {;}
         // Constructor and destructor.
 
 
         __attribute__((always_inline)) 
-            void TRightHandSide(G4double y[], G4double dydx[]) 
+        void 
+        TRightHandSide(G4double y[], G4double dydx[]) 
             { fEquation_Rhs->T_Equation::TRightHandSide(y, dydx); }
 
         __attribute__((always_inline)) 
-            void DumbStepper( const G4double  yIn[],
-                const G4double  dydx[],
-                G4double  h,
-                G4double  yOut[])
+        void
+        DumbStepper( const G4double  yIn[],
+                     const G4double  dydx[],
+                     G4double  h,
+                     G4double  yOut[])
         {
             G4int i;
             for( i = 0; i < N; i++ ) 
@@ -68,7 +70,8 @@ class TSimpleHeum : public  TMagErrorStepper
     public:  // without description
 
         __attribute__((always_inline)) 
-            G4int IntegratorOrder() const { return 3; }
+        G4int 
+        IntegratorOrder() const { return 3; }
 
     private:
 
