@@ -15,12 +15,13 @@ class TSimpleHeum : public  TMagErrorStepper
         static const double 
             IntegratorCorrection = 0.14285714285714285;
 
-        TSimpleHeum(T_Equation *EqRhs, G4int num_variables=6)
+        TSimpleHeum(T_Equation *EqRhs, 
+                G4int numberOfVariables=6)
             :  TMagErrorStepper
-               <TClassicalRK4<T_Equation, N>, T_Equation, N>
+               <TSimpleHeum<T_Equation, N>, T_Equation, N>
                (EqRhs, numberOfVariables),
                fEquation_Rhs(EqRhs),
-               fNumberOfVariables(num_variables)
+               fNumberOfVariables(numberOfVariables)
         {
              assert( fNumberOfVariables == N );
         }
@@ -33,7 +34,8 @@ class TSimpleHeum : public  TMagErrorStepper
             void TRightHandSide(G4double y[], G4double dydx[]) 
             { fEquation_Rhs->T_Equation::TRightHandSide(y, dydx); }
 
-        void DumbStepper( const G4double  yIn[],
+        __attribute__((always_inline)) 
+            void DumbStepper( const G4double  yIn[],
                 const G4double  dydx[],
                 G4double  h,
                 G4double  yOut[])
@@ -58,7 +60,8 @@ class TSimpleHeum : public  TMagErrorStepper
                 yOut[i] = yIn[i] + h * (0.25 * dydx[i] + 0.75 * dydxTemp2[i]);
             }
 
-            if ( fNumberOfVariables == 12 ) {  this->NormalisePolarizationVector( yOut ); }
+            if ( fNumberOfVariables == 12 ) 
+            {  this->NormalisePolarizationVector( yOut ); }
         }  
 
 
