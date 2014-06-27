@@ -48,15 +48,28 @@ class G4LineSection
 {
   public:  // with description
 
-     G4LineSection( const G4ThreeVector& PntA, const G4ThreeVector& PntB );
+  G4LineSection( const G4ThreeVector& PntA, 
+		 const G4ThreeVector& PntB )
+  : EndpointA(PntA), 
+    VecAtoB(PntB-PntA)
+  { 
+    fABdistanceSq = VecAtoB.mag2() ;  
+  }
 
-     G4double Dist( G4ThreeVector OtherPnt ) const;
 
-     G4double GetABdistanceSq() const { return fABdistanceSq ; }
+  G4double Dist( G4ThreeVector OtherPnt ) const;
 
-     static G4double Distline( const G4ThreeVector& OtherPnt, 
-                               const G4ThreeVector& LinePntA, 
-                               const G4ThreeVector& LinePntB );
+  G4double GetABdistanceSq() const { return fABdistanceSq ; }
+
+  static G4double Distline( const G4ThreeVector& OtherPnt, 
+			    const G4ThreeVector& LinePntA, 
+			    const G4ThreeVector& LinePntB )
+  {
+    G4LineSection LineAB( LinePntA, LinePntB );  // Line from A to B
+    return LineAB.Dist( OtherPnt );
+  }
+
+
   private:
 
      G4ThreeVector   EndpointA;
