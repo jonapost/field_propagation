@@ -12,7 +12,7 @@ class TExplicitEuler : public TMagErrorStepper
     public:  // with description
  
     static const double 
-    IntegratorCorrection = 1;
+    IntegratorCorrection = 1.;
     
     TExplicitEuler(T_Equation* EqRhs, 
                    G4int numberOfVariables = 6)

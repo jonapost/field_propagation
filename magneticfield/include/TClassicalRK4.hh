@@ -9,7 +9,7 @@ class TClassicalRK4 : public  TMagErrorStepper
     public:  // with description
 
         static const double 
-            IntegratorCorrection = 0.06666666666666667;
+            IntegratorCorrection = 1./((1<<4)-1);
 
         TClassicalRK4(T_Equation *EqRhs, 
                       G4int numberOfVariables = 8)
@@ -25,7 +25,8 @@ class TClassicalRK4 : public  TMagErrorStepper
         virtual ~TClassicalRK4(){;}
 
         __attribute__((always_inline)) 
-        void TRightHandSide(G4double y[], G4double dydx[]) 
+        void 
+        TRightHandSide(G4double y[], G4double dydx[]) 
         { fEquation_Rhs->T_Equation::TRightHandSide(y, dydx); }
 
 
@@ -33,10 +34,11 @@ class TClassicalRK4 : public  TMagErrorStepper
         // It is used by the MagErrorStepper stepper.
 
         __attribute__((always_inline)) 
-        void  DumbStepper( const G4double  yIn[],
-                           const G4double  dydx[],
-                           G4double  h,
-                           G4double  yOut[])
+        void  
+        DumbStepper( const G4double  yIn[],
+                     const G4double  dydx[],
+                     G4double  h,
+                     G4double  yOut[])
         // Given values for the variables y[0,..,n-1] and their derivatives
         // dydx[0,...,n-1] known at x, use the classical 4th Runge-Kutta
         // method to advance the solution over an interval h and return the
@@ -86,7 +88,8 @@ class TClassicalRK4 : public  TMagErrorStepper
     public:  // without description
 
         __attribute__((always_inline)) 
-            G4int IntegratorOrder() const { return 4; }
+        G4int 
+        IntegratorOrder() const { return 4; }
 
     private:
         TClassicalRK4(const TClassicalRK4&);
