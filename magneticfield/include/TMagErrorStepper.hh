@@ -25,8 +25,8 @@ class TMagErrorStepper : public G4MagIntegratorStepper
         virtual ~TMagErrorStepper() {;}
 
 
-        inline void TRightHandSide(G4double y[], G4double dydx[]) 
-        {fEquation_Rhs->T_Equation::TRightHandSide(y, dydx);}
+        inline void RightHandSide(G4double y[], G4double dydx[]) 
+        {fEquation_Rhs->T_Equation::RightHandSide(y, dydx);}
 
         inline void Stepper( const G4double yInput[],
                 const G4double dydx[],
@@ -42,9 +42,8 @@ class TMagErrorStepper : public G4MagIntegratorStepper
 
             G4int i;
             // correction for Richardson Extrapolation.
-            G4double  correction = 1. / ( (1 << 
-                        static_cast<T_Stepper*>(this)->T_Stepper::IntegratorOrder()) -1 );
-
+            //G4double  correction = 1. / ( (1 << 
+              //          static_cast<T_Stepper*>(this)->T_Stepper::IntegratorOrder()) -1 );
             //  Saving yInput because yInput and yOutput can be aliases for same array
 
             for(i=0;i<N;i++) yInitial[i]=yInput[i];
@@ -60,7 +59,7 @@ class TMagErrorStepper : public G4MagIntegratorStepper
             // Do two half steps
 
             static_cast<T_Stepper*>(this)->DumbStepper (yInitial,  dydx,   halfStep, yMiddle);
-            TRightHandSide(yMiddle, dydxMid);    
+            this->RightHandSide(yMiddle, dydxMid);    
             static_cast<T_Stepper*>(this)->DumbStepper (yMiddle, dydxMid, halfStep, yOutput); 
 
             // Store midpoint, chord calculation
@@ -71,7 +70,7 @@ class TMagErrorStepper : public G4MagIntegratorStepper
             static_cast<T_Stepper*>(this)->DumbStepper(yInitial, dydx, hstep, yOneStep);
             for(i=0;i<N;i++) {
                 yError [i] = yOutput[i] - yOneStep[i] ;
-                yOutput[i] += yError[i]*correction ;  // Provides accuracy increased
+                yOutput[i] += yError[i]*T_Stepper::IntegratorCorrection ;  // Provides accuracy increased
                 // by 1 order via the 
                 // Richardson Extrapolation  
             }
