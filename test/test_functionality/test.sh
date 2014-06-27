@@ -11,20 +11,21 @@ echo "Running on `hostname`, which is a `uname -a` machine"
 host=`hostname`
 
 #
-MAKE=make
+#MAKE=make
 target=testPropagateMagField
 echo  "Compiling $target ... "
-$MAKE -s  $target   
+#$MAKE -s  $target   
+sh maketest.sh
 echo  "Executing $target ..."
-for n in 8 
+for n in 0 2 3 4 8 
 do
-  ./$target 14 > $target.newout$n \
+  ./$target $n > $target.newout$n \
 		     2> $target.newerr$n
   echo  ".. difference from expected output: "
-  diff -wb $target.out$n $target.newout$n
+  diff -wby $target.out$n $target.newout$n > diff.newout$n
   sleep 1;
   echo  ".. difference from expected error: "
-  diff -wb $target.err$n $target.newerr$n
+  diff -wby $target.err$n $target.newerr$n > diff.newerr$n
   sleep 1;
   echo  " "
 done
