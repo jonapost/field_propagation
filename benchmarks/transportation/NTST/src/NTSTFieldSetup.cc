@@ -169,6 +169,9 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
 #include "TClassicalRK4.hh"
+#include "TExplicitEuler.hh"
+#include "TSimpleRunge.hh"
+#include "TSimpleHeum.hh"
 
 typedef NTSTField Field_t1;
 typedef TUniformMagField Field_t2;
@@ -178,6 +181,9 @@ typedef TCashKarpRKF45<Equation_t1, 6> Stepper_t1;
 typedef TCashKarpRKF45<Equation_t2, 6> Stepper_t2;
 typedef TClassicalRK4<Equation_t1, 6> StepperRK4_t1;
 typedef TClassicalRK4<Equation_t2, 6> StepperRK4_t2;
+typedef TSimpleHeum<Equation_t1, 6>   StepperHeum_t;
+typedef TSimpleRunge<Equation_t1, 6>  StepperRunge_t;
+typedef TExplicitEuler<Equation_t1, 6> StepperExEuler_t;
 //===============================================
 
 void NTSTFieldSetup::SetStepper()
@@ -273,6 +279,30 @@ void NTSTFieldSetup::SetStepper()
                 }
             }
             G4cout<<"Templated ClassicalRK4 is called"<<G4endl;
+            break;
+        case 16:
+            {
+                assert(fieldFlag);
+                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
+                fStepper = new  StepperHeum_t(pEquation);
+            }
+            G4cout<<"Templated SimpleHeum is called"<<G4endl;
+            break;
+        case 17:
+            {
+                assert(fieldFlag);
+                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
+                fStepper = new  StepperRunge_t(pEquation);
+            }
+            G4cout<<"Templated SimpleRunge is called"<<G4endl;
+            break;
+        case 18:
+            {
+                assert(fieldFlag);
+                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
+                fStepper = new  StepperExEuler_t(pEquation);
+            }
+            G4cout<<"Templated ExEuler is called"<<G4endl;
             break;
             //===============================================
         default: fStepper = 0;

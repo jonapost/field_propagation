@@ -64,8 +64,7 @@ NTSTDetectorConstruction::NTSTDetectorConstruction()
   _FileRead = new NTSTFileRead("SVT.dat");
   // create commands necessary for the definition of the SVT
   DetectorMessenger = new NTSTDetectorMessenger(this);
-  //fEmFieldSetup= new NTSTFieldSetup((G4MagneticField *)&field  ) ;         
-  fEmFieldSetup= new NTSTFieldSetup((G4MagneticField *)&tfield  ) ;         
+  fEmFieldSetup= new NTSTFieldSetup((G4MagneticField *)&field  ) ;         
 }
 
 NTSTDetectorConstruction::~NTSTDetectorConstruction()

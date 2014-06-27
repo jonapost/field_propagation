@@ -76,9 +76,8 @@ private:
     G4bool disableDCH;
     
     NTSTFieldSetup *fEmFieldSetup;     
-    NTSTField field;
-    TNTSTField tfield;
- 
+    //NTSTField field;
+    TNTSTField field;//template mode
 };
 
 #endif

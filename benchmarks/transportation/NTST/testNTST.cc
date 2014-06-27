@@ -105,6 +105,8 @@ int main(int argc,char** argv)
 
    G4VUserPhysicsList* thePL = 0;
 
+
+   
 #ifdef flagQGSP
   thePL = new QGSP;   
 #else
@@ -140,7 +142,8 @@ int main(int argc,char** argv)
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();
 #endif
-    
+  
+  
   // set user action classes
   runManager->SetUserAction(new NTSTPrimaryGeneratorAction);
   runManager->SetUserAction(new NTSTRunAction);
@@ -157,13 +160,12 @@ int main(int argc,char** argv)
       session->SessionStart();
       delete session;
     }
-  else           // Batch mode
+  else           // Batch mode*/
     { 
       G4String command = "/control/execute ";
       G4String fileName = argv[1];
       UI->ApplyCommand(command+fileName);
     }
-
   // job termination
 #ifdef G4VIS_USE
   delete visManager;

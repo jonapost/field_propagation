@@ -6,12 +6,10 @@ ifndef G4INSTALL
   G4INSTALL = ../..
 endif
 
-CPPFLAGS += -g
-CPPFLAGS += -O3
-CPPFLAGS += -msse
-CPPFLAGS += -ftree-vectorizer-verbose=3
-CPPFLAGS += -ffast-math
-
+#CPPFLAGS += -g
+#CPPFLAGS += -O2
+#CPPFLAGS += -ftree-vectorize
+#CPPFLAGS += -ftree-vectorizer-verbose=0
 
 ifdef LHEP
   CPPFLAGS += -DflagLHEP

@@ -27,23 +27,23 @@
 // GEANT4 tag $Name: not supported by cvs2svn $
 //
 
-#ifndef NTSTField_hh
-#define NTSTField_hh
+#ifndef TNTSTField_hh
+#define TNTSTField_hh
 
 #include "TUniformMagField.hh"
 
-class NTSTField : public TUniformMagField
+class TNTSTField : public TUniformMagField
 {
 	public:
-	NTSTField( const G4ThreeVector& FieldVector )
+	TNTSTField( const G4ThreeVector& FieldVector )
 		: TUniformMagField(FieldVector),
 		  count(0) {;}
-	NTSTField( G4double vField,
+	TNTSTField( G4double vField,
                    G4double vTheta,
                    G4double vPhi     )
 		: TUniformMagField( vField, vTheta, vPhi ),
 		  count(0) {;}
-	virtual ~NTSTField() {;}
+	virtual ~TNTSTField() {;}
 	
 	
 	void GetFieldValue( const G4double yTrack[3] ,

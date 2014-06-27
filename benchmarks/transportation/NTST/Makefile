@@ -1,5 +1,5 @@
 CURRENTDIR:=`pwd`
-CUSTOMFLAGS := -O2 -ftree-vectorize -ftree-vectorizer-verbose=2 -I $(G4INCLUDE) -I $(CURRENTDIR)/include
+CUSTOMFLAGS := -O2 -ftree-vectorize -ftree-vectorizer-verbose=0 -I $(G4INCLUDE) -I $(CURRENTDIR)/include
 SOURCES := $(wildcard src/*.cc)
 SOURCES += testNTST.cc
 OBJECTS := $(SOURCES:.cc=.o)
