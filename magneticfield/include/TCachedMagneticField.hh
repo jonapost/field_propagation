@@ -7,11 +7,11 @@
 #include "G4MagneticField.hh"
 
 template
-<class T_Field>
+<class Field>
 class TCachedMagneticField : public G4MagneticField
 {
     public:  // with description
-
+        typedef Field T_Field;
         TCachedMagneticField(T_Field* pTField, G4double distance)
             : G4MagneticField(),
             fLastLocation(DBL_MAX,DBL_MAX,DBL_MAX),

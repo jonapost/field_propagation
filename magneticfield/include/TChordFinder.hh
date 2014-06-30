@@ -6,12 +6,12 @@
 #include "G4SystemOfUnits.hh"
 
 template
-<class T_Field, class T_Equation, class T_Stepper, class T_Driver>
+< class T_Driver>
 class TChordFinder : public G4ChordFinder
 {
-    /*typedef T_Driver::T_Stepper T_Stepper;
-      typedef T_Stepper::Equation T_Equation;
-      typedef T_Equation::T_Field T_Field;*/
+      typedef typename T_Driver::T_Stepper T_Stepper;
+      typedef typename T_Stepper::T_Equation T_Equation;
+      typedef typename T_Equation::T_Field T_Field;
 
     public:  // with description
 

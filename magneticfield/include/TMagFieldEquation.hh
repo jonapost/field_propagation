@@ -5,10 +5,12 @@
 
 
 template 
-<class T_Field>
+<class Field_t>
 class TMagFieldEquation : public G4Mag_UsualEqRhs
 {
     public:
+
+        typedef Field_t T_Field;
 
         TMagFieldEquation(T_Field* f)
             : G4Mag_UsualEqRhs(f)

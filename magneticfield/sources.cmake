@@ -98,6 +98,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
    TSimpleHeum.hh
    TSimpleRunge.hh
    TExplicitEuler.hh
+   TChordFinder.hh
+   TMagIntegratorDriver.hh
     SOURCES
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc

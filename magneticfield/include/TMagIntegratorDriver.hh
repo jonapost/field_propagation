@@ -13,11 +13,9 @@
 #endif
 
 template
-<class T_Stepper>
+<class Stepper>
 class TMagInt_Driver : public G4MagInt_Driver
-{
-
-
+{ 
     //  Stepsize can increase by no more than 5.0
     //           and decrease by no more than 1/10. = 0.1
     //
@@ -31,6 +29,7 @@ class TMagInt_Driver : public G4MagInt_Driver
 
     public:  // with description
 
+    typedef Stepper T_Stepper;
 
     G4bool
         AccurateAdvance(G4FieldTrack& y_current,

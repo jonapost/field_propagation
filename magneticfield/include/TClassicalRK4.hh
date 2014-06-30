@@ -2,12 +2,14 @@
 #include "G4ThreeVector.hh"
 #include "G4MagIntegratorStepper.hh"
 template
-<class T_Equation, int N>
+<class Equation, int N>
 class TClassicalRK4 : public  TMagErrorStepper
-                      <TClassicalRK4<T_Equation, N>, T_Equation, N>
+                      <TClassicalRK4<Equation, N>, Equation, N>
 {
     public:  // with description
-
+    
+        typedef Equation T_Equation;
+        
         static const double 
             IntegratorCorrection = 1./((1<<4)-1);
 
