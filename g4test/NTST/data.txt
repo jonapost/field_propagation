@@ -1,0 +1,5 @@
+output from stepper 4=RK4 3=Heum 2=Runge 0=ExEuler 
+ 
+case:4
+ 
+31.13
