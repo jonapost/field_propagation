@@ -1,0 +1,76 @@
+
+*************************************************************
+ Geant4 version Name: geant4-10-00-patch-01    (28-February-2014)
+                      Copyright : Geant4 Collaboration
+                      Reference : NIM A 506 (2003), 250-303
+                            WWW : http://cern.ch/geant4
+*************************************************************
+
+Opened input file SVT.dat
+G4VUserPhysicsList::SetVerboseLevel  : Verbose level is set to 2
+### instantiated gun generator
+### Instantiated /gen/print cmd
+### SetGuidance for /gen/print
+### Set default value for /gen/print cmd
+/NTST/setDebug 0
+Reset debug flag to false
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+/run/onlyTransport true
+/gen/choose evt
+### instantiated evt generator
+/field/setStepperType 4
+/run/initialize
+Field set to  UniformField(default)
+G4ClassicalRK4 (default) is called
+The minimal step is equal to 1 mm
+Field Manager's parameters are  minEpsilonStep= 0.001  maxEpsilonStep= 0.001  deltaOneStep=   0.25  deltaIntersection= 0.1
+G4VUserPhysicsList::Construct()
+Construct processes 
+ +^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^+ 
+ +v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v+ 
+ +---                                                   ---+ 
+ +---                 G4Transportation                  ---+ 
+ +---                      USED !!                      ---+ 
+ +---                                                   ---+ 
+ +^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^+ 
+ +v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v+ 
+!!!Only Transportation Process No Physics
+G4VUserPhysicsList::SetDefaultCutValue:default cut value is changed to   :2[mm]
+G4VUserPhysicsList::SetDefaultCutValue:default cut value is changed to   :2[mm]
+G4VUserPhysicsList::SetCuts:   
+Cut for gamma: 2[mm]
+Cut  for e-: 2[mm]
+Cut  for e+: 2[mm]
+Cut  for proton: 2[mm]
+/field/setMinEpsilon 0.0001
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/field/setMaxEpsilon 0.01
+/field/update
+Field set to  UniformField(default)
+G4ClassicalRK4 (default) is called
+The minimal step is equal to 1 mm
+Field Manager's parameters are  minEpsilonStep= 0.0001  maxEpsilonStep= 0.01  deltaOneStep=   0.25  deltaIntersection= 0.1
+/run/beamOn 1000
+
+========= Table of registered couples ==============================
+
+Index : 0     used in the geometry : Yes
+ Material : ArgonGas
+ Range cuts        :  gamma  2 mm     e-  2 mm     e+  2 mm  proton 2 mm 
+ Energy thresholds :  gamma  990 eV     e-  1.61707 keV    e+  1.60218 keV proton 200 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 1     used in the geometry : Yes
+ Material : Silicon
+ Range cuts        :  gamma  2 mm     e-  2 mm     e+  2 mm  proton 2 mm 
+ Energy thresholds :  gamma  9.66055 keV    e-  926.09 keV    e+  889.493 keV proton 200 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+====================================================================
+
+### Run 0 starts.
+### Run 0 start.

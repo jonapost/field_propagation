@@ -1,0 +1,15 @@
+/control/verbose 2 
+/NTST/setDebug 0 
+/run/verbose 1
+/event/verbose 0 
+/tracking/verbose 0 
+/run/onlyTransport true
+/gen/choose evt
+/field/setStepperType 4
+/run/initialize
+/field/setMinEpsilon 0.0001
+/field/setMaxEpsilon 0.01
+/field/update
+/run/beamOn 1000 
+/NTST/getFieldStats
+/field/getChordFinderStats

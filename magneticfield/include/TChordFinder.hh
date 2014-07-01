@@ -6,9 +6,10 @@
 #include "G4SystemOfUnits.hh"
 
 template
-< class T_Driver>
+< class Driver>
 class TChordFinder : public G4ChordFinder
 {
+      typedef Driver T_Driver;
       typedef typename T_Driver::T_Stepper T_Stepper;
       typedef typename T_Stepper::T_Equation T_Equation;
       typedef typename T_Equation::T_Field T_Field;

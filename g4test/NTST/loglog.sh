@@ -3,6 +3,8 @@ make clean -f Makefile
 make -f Makefile
 target=testNTST
 
+echo "\n Benchmark is running... \n"
+
 #main script
 #testing error stepper
 echo "output from stepper 4=RK4 3=Heum 2=Runge 0=ExEuler " > data.txt
