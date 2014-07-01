@@ -1,0 +1,118 @@
+$Id: README-CPU,v 1.1 2007-10-26 08:34:11 gcosmo Exp $
+-------------------------------------------------------------------
+
+ BaBar silicon vertex tracker CPU benchmark
+ ------------------------------------------
+
+  In this directory you can find a CPU benchmark test of Geant4 
+  based on simulation of the BaBar silicon vertex tracker and 40-layer
+  drift chamber. By default the Uniform Magnetic Field of 1.5 tesla is applied.
+  The field can be changed to GradientField or Tabulated Solenoid Field.
+
+This test can be run : 
+     - for transportation in magnetic field only  
+     - with 'predifined' Physics list as QGSP_EMV Physics list
+     - with NTST Physics list(Electromagnetic physics only with choice for cuts
+       and activation of processes)
+       
+To select Only Transportation in Magnetic Field you have to define enviromental
+variable :
+   - NTST : for only transportation process 
+  
+To select a Physics List you have to define one of the following
+environmental variables:
+   - LHEP :      for the  LHEP       Physics List;
+   - QGSP :      for the  QGSP       Physics List;
+   - QGSP_EMV :  for the  QGSP_EMV   Physics List;
+   - QGSC :      for the  QGSC       Physics List;
+   - FTFP :      for the  FTFP       Physics List;
+   - QGSP_BIC :  for the  QGSP_BIC   Physics List;
+   - QGSP_BERT : for the  QGSP_BERT  Physics List.
+   - NTST:       for the  NTSTPhysicsList Home-made Physics List 
+                     with choise of cuts for Energy,Loooping particles
+
+ For example, if you want to use QGSP_EMV Physics List you can
+ do:  
+                    export QGSP_EMV=1
+ or, equivalently:
+                    make QGSP_EMV=1
+
+ To build the application, first setup your environmental variables
+ (the Bash-shell setup file,  setup.sh , shows an example), and then
+ do:
+                                make XXX=1
+ where "XXX" is the name of the Physics List or NTST, or, equivalently:
+                                export XXX=1 ; make
+ and you get the executable:
+                                $G4BIN/$G4SYSTEM/testNTST
+ and to run it:
+                                $G4BIN/$G4SYSTEM/testNTST bench1.g4
+                            
+ You can run this application with the following macro file:
+   -  bench1.g4 : 1000 events,ONLY Transportation process,
+                  Uniform Magnetic Feild of 1.5 tesla.
+                  Application has to be build with NTST=1: make NTST=1.
+                  Each event consisting of reading B-Babar event
+                  from file 'babarevt.out'
+                  NB) You can replace the events redden from file by 
+                      chooting a single particles as chargedgeantinos.
+                      For this you have to use command '/gen/choose gun'
+                      and then '/gen/gun/particle ...'.
+    - bench2.g4 : 1000 events, each consisting of reading B-Babar event
+                   from file 'babarevt.out' with chosen Physics list
+                   Uniform Magnetic Field of 1.5 tesla 	
+    - bench3.g4 : 1000 events, each consisting of reading B-Babar event
+                   from file 'babarevt.out' with chosen Physics list
+                   Tabulated Solenoid Field of 1.5 tesla
+                   (Simulation of Babar Solenoid) 	             
+
+ The CPU time for this test can be obtained in two ways
+ (which should be, more or less, in agreement):
+   - Look at the value "User=..." at the end of the running,
+     after the line "Run Summary": this is the total time,
+     in seconds, for all (1000) events, excluding the 
+     initialization.
+   - Look at the value " Event user time= ..." at the end of the running
+     to have time per event, excluding the initialisation 
+   - Use:
+            time $G4BIN/$G4SYSTEM/testNTST bench1.g4
+     when launching the program: you would get, at the end
+     of the program, the value: "user ..."  which is the 
+     total time for all (1000) events, including the 
+     initialization.
+
+  In the end of the run you will also have the information about number of
+  calls to the field.
+  It can be useful to see the reason of the time fluctuations.
+
+  The accuracy of propagation in Field can be changed by commands :
+  'field/setMinStep ...'    Set Minimum Step for G4MagIntergatorDriver 
+  'field/setMinEpsilon ...' Set MinimumEpsilonStep for G4PropagatorInField
+  'field/setMaxEpsilon ...' Set MaximumEpsilonStep for G4PropagatorInField
+  If you use these commands after initialisation 
+  you have to use command  'field/update'  
+ 
+           
+
+More macros to use with NTST physics list:
+ 
+for 1000 events
+file    	Transportation	 range cut	looper cut	e-cut
+---------------------------------------------------------------------------
+run2a.mac	G4Transportation 2 mm		< 200 MeV	< 1 MeV
+run2b.mac		"	 2 mm 		< 200 MeV	not applied
+run2c.mac		"	 2 mm		not applied	not applied
+---------------------------------------------------------------------------
+
+
+for 100 events
+file    	Transportation	 range cut	looper cut	e-cut
+---------------------------------------------------------------------------
+run2xa.mac	G4Transportation 2 mm		< 200 MeV	< 1 MeV
+run2xb.mac		"	 2 mm 		< 200 MeV	not applied
+run2xc.mac		"	 2 mm		not applied	not applied
+---------------------------------------------------------------------------
+
+runall2xc.mac = run 100 events with differents Steppers 
+runall2c.mac  = run 1000 events with differents Steppers
+	
