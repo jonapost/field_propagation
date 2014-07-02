@@ -105,7 +105,7 @@ class G4MagInt_Driver
         // ii) calculates "errcon" according to the above values.
 
      virtual inline void SetSafety(G4double valS);
-     virtual inline void SetPshrnk(G4double valPs);
+     inline void SetPshrnk(G4double valPs);
      virtual inline void SetPgrow (G4double valPg);
      virtual inline void SetErrcon(G4double valEc);
         // When setting safety or pgrow, errcon will be set to a 

@@ -7,6 +7,7 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
+#include "G4MagIntegratorStepper.hh"
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
@@ -127,7 +128,8 @@ class TMagInt_Driver : public G4MagInt_Driver
                 // Old method - inline call to Equation of Motion
                 //   pIntStepper->RightHandSide( y, dydx );
                 // New method allows to cache field, or state (eg momentum magnitude)
-                pIntStepper->T_Stepper::RightHandSide( y, dydx );
+                pIntStepper
+                    ->RightHandSide( y, dydx );
                 fNoTotalSteps++;
 
                 // Perform the Integration
@@ -376,11 +378,13 @@ class TMagInt_Driver : public G4MagInt_Driver
         s_start = y_posvel.GetCurveLength();
 
         // Do an Integration Step
-        pIntStepper-> T_Stepper::Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
+        pIntStepper
+            ->Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
         //            *******
 
         // Estimate curve-chord distance
-        dchord_step= pIntStepper-> T_Stepper::DistChord();
+        dchord_step= pIntStepper
+            -> DistChord();
         //                         *********
 
         // Put back the values.  yarrout ==> y_posvel
@@ -438,7 +442,7 @@ class TMagInt_Driver : public G4MagInt_Driver
     //
 
     TMagInt_Driver( G4double                hminimum, 
-            T_Stepper *pStepper,
+            G4MagIntegratorStepper *pStepper,
             G4int                   numComponents=6,
             G4int                   statisticsVerbose=1)
         : fSmallestFraction( 1.0e-12 ), 
@@ -459,7 +463,9 @@ class TMagInt_Driver : public G4MagInt_Driver
 
         RenewStepperAndAdjust( pStepper );
         fMinimumStep= hminimum;
-        fMaxNoSteps = fMaxStepBase / pIntStepper->T_Stepper::IntegratorOrder();
+        fMaxNoSteps = fMaxStepBase / 
+            pIntStepper
+            ->IntegratorOrder();
 #ifdef G4DEBUG_FIELD
         fVerboseLevel=2;
 #endif
@@ -549,8 +555,10 @@ class TMagInt_Driver : public G4MagInt_Driver
         void ReSetParameters(G4double new_safety=0.9)
         {
             safety = new_safety;
-            pshrnk = -1.0 / pIntStepper->T_Stepper::IntegratorOrder();
-            pgrow  = -1.0 / (1.0 + pIntStepper->T_Stepper::IntegratorOrder());
+            pshrnk = -1.0 /
+                pIntStepper->IntegratorOrder();
+            pgrow  = -1.0 / (1.0 + 
+                    pIntStepper->IntegratorOrder());
             ComputeAndSetErrcon();
         }
 
@@ -575,20 +583,20 @@ class TMagInt_Driver : public G4MagInt_Driver
         }
 
     inline
-        void RenewStepperAndAdjust(T_Stepper *pItsStepper)
+        void RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper)
         {  
             pIntStepper = pItsStepper; 
             ReSetParameters();
         }
 
     inline
-        const T_Stepper* GetStepper() const
+        const G4MagIntegratorStepper* GetStepper() const
         {
             return pIntStepper;
         }
 
     inline
-        T_Stepper* GetStepper() 
+        G4MagIntegratorStepper* GetStepper() 
         {
             return pIntStepper;
         }
@@ -611,7 +619,8 @@ class TMagInt_Driver : public G4MagInt_Driver
         { 
             G4double  tmpValArr[G4FieldTrack::ncompSVEC];
             y_curr.DumpToArray( tmpValArr  );
-            pIntStepper -> T_Stepper::RightHandSide( tmpValArr , dydx );
+            pIntStepper 
+                -> RightHandSide( tmpValArr , dydx );
         }
 
     inline
@@ -679,7 +688,8 @@ class TMagInt_Driver : public G4MagInt_Driver
             for (iter=0; iter<max_trials ;iter++)
             {
                 tot_no_trials++;
-                pIntStepper-> T_Stepper::Stepper(y,dydx,h,ytemp,yerr); 
+                pIntStepper
+                    ->Stepper(y,dydx,h,ytemp,yerr); 
                 //            *******
                 G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
                 G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
@@ -1187,7 +1197,7 @@ class TMagInt_Driver : public G4MagInt_Driver
 
     // ---------------------------------------------------------------
     // DEPENDENT Objects
-    T_Stepper *pIntStepper;
+    G4MagIntegratorStepper *pIntStepper;
 
     // ---------------------------------------------------------------
     //  STATE

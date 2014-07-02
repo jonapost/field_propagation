@@ -4,6 +4,7 @@
 #include "G4FieldTrack.hh"
 #include <iomanip>
 #include "G4SystemOfUnits.hh"
+#include "G4MagIntegratorStepper.hh"
 
 template
 < class Driver>
@@ -45,7 +46,7 @@ class TChordFinder : public G4ChordFinder
 
         TChordFinder( T_Field*        theMagField,
                 G4double                stepMinimum, 
-                T_Stepper* pItsStepper )
+                G4MagIntegratorStepper* pItsStepper )
             : fDefaultDeltaChord( 0.25 * mm ),     // Constants 
             fDeltaChord( fDefaultDeltaChord ),   // Parameters
             fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 
@@ -795,7 +796,7 @@ class TChordFinder : public G4ChordFinder
         //  DEPENDENT Objects
         //  ---------------------
         T_Driver*        fIntgrDriver;
-        T_Stepper* fDriversStepper; 
+        G4MagIntegratorStepper* fDriversStepper; 
         G4bool                  fAllocatedStepper;  // Bookkeeping of dependent object
         T_Equation*     fEquation; 
 
