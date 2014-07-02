@@ -46,5 +46,6 @@ cat ./data/$target.stepper${n}.${i}.out | grep -o "User=.*s R" | sed -s 's/User=
 done
 k=0
 done
+date
 exit
 
