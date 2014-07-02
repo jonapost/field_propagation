@@ -60,7 +60,7 @@ class G4ChordFinder
       
       virtual ~G4ChordFinder();
 
-      G4double    AdvanceChordLimited( G4FieldTrack& yCurrent,
+      virtual G4double    AdvanceChordLimited( G4FieldTrack& yCurrent,
                                        G4double stepInitial,
                                        G4double epsStep_Relative,
                                        const G4ThreeVector latestSafetyOrigin,
@@ -69,7 +69,7 @@ class G4ChordFinder
         // the chord criterion: that d_chord < delta_chord
         // -> Returns Length of Step taken.
      
-      G4FieldTrack ApproxCurvePointS( const G4FieldTrack&  curveAPointVelocity,
+     virtual G4FieldTrack ApproxCurvePointS( const G4FieldTrack&  curveAPointVelocity,
                                       const G4FieldTrack&  curveBPointVelocity,
                                       const G4FieldTrack&  ApproxCurveV,
                                       const G4ThreeVector& currentEPoint,
@@ -77,55 +77,55 @@ class G4ChordFinder
                                       const G4ThreeVector& PointG,
                                             G4bool first,  G4double epsStep);
  
-      G4FieldTrack ApproxCurvePointV( const G4FieldTrack&  curveAPointVelocity,
+      virtual G4FieldTrack ApproxCurvePointV( const G4FieldTrack&  curveAPointVelocity,
                                       const G4FieldTrack&  curveBPointVelocity,
                                       const G4ThreeVector& currentEPoint,
                                             G4double       epsStep);
 
-      inline G4double InvParabolic( const G4double xa, const G4double ya,
+      virtual inline G4double InvParabolic( const G4double xa, const G4double ya,
                                     const G4double xb, const G4double yb,
                                     const G4double xc, const G4double yc );
 
-      inline G4double  GetDeltaChord() const;
-      inline void      SetDeltaChord(G4double newval);
+      virtual inline G4double  GetDeltaChord() const;
+      virtual inline void      SetDeltaChord(G4double newval);
 
-      inline void SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver);
-      inline G4MagInt_Driver* GetIntegrationDriver();
+      virtual inline void SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver);
+      virtual inline G4MagInt_Driver* GetIntegrationDriver();
         // Access and set Driver.
 
-      inline void ResetStepEstimate();
+      virtual inline void ResetStepEstimate();
         // Clear internal state (last step estimate)
 
-      inline G4int GetNoCalls(); 
-      inline G4int GetNoTrials();        // Total number of trials
-      inline G4int GetNoMaxTrials();     // Maximum # of trials for one call
+      virtual inline G4int GetNoCalls(); 
+      virtual inline G4int GetNoTrials();        // Total number of trials
+      virtual inline G4int GetNoMaxTrials();     // Maximum # of trials for one call
         // Get statistics about number of calls & trials in FindNextChord
 
       virtual void   PrintStatistics(); 
         // A report with the above -- and possibly other stats
-      inline G4int SetVerbose( G4int newvalue=1); 
+      virtual inline G4int SetVerbose( G4int newvalue=1); 
         // Set verbosity and return old value
 
-      void SetFractions_Last_Next( G4double fractLast= 0.90, 
+      virtual void SetFractions_Last_Next( G4double fractLast= 0.90, 
                                    G4double fractNext= 0.95 ); 
         // Parameters for  performance ... change with great care
 
-      inline void SetFirstFraction(G4double fractFirst);
+      virtual inline void SetFirstFraction(G4double fractFirst);
         // Parameter for  performance ... change with great care
 
    public:  // without description
 
-      void     TestChordPrint( G4int    noTrials, 
+      virtual void     TestChordPrint( G4int    noTrials, 
                                G4int    lastStepTrial, 
                                G4double dChordStep, 
                                G4double nextStepTrial );
 
         //   Printing for monitoring ...
  
-      inline   G4double GetFirstFraction();         // Originally 0.999
-      inline   G4double GetFractionLast();          // Originally 1.000
-      inline   G4double GetFractionNextEstimate();  // Originally 0.980
-      inline   G4double GetMultipleRadius();        // No original value
+      virtual inline   G4double GetFirstFraction();         // Originally 0.999
+      virtual inline   G4double GetFractionLast();          // Originally 1.000
+      virtual inline   G4double GetFractionNextEstimate();  // Originally 0.980
+      virtual inline   G4double GetMultipleRadius();        // No original value
         //  Parameters for adapting performance ... use with great care
 
    protected:   // .........................................................
