@@ -12,4 +12,9 @@
 
 # How to run test/?
 
-not yet.
+1. `test/` for non-templated classes and `Ttest/` for templated classes.
+
+2. compile: run `sh maketest.sh`.
+
+3. correctness test: run `sh test.sh`. 
+
