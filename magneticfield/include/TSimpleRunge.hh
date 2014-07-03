@@ -5,68 +5,75 @@
 #include "G4ThreeVector.hh"
 
 template
-<class T_Equation, int N>
+<class Equation, int N>
 class TSimpleRunge : public TMagErrorStepper            
                      <TSimpleRunge<T_Equation, N>, T_Equation, N>
 {
 
     public:  // with description
+        
+        typedef Equation T_Equation;
 
         static const double 
-        IntegratorCorrection = 1./((1<<2)-1);
+            IntegratorCorrection = 1./((1<<2)-1);
 
         TSimpleRunge(T_Equation* EqRhs, 
-                     G4int numberOfVariables = 6)
+                G4int numberOfVariables = 6)
             :  TMagErrorStepper
-              <TSimpleRunge<T_Equation, N>, T_Equation, N>
-              (EqRhs, numberOfVariables),
-              fEquation_Rhs(EqRhs),
-              fNumberOfVariables(numberOfVariables)
-        {
-            //default GetNumberOfStateVariables() == 12 
-            assert (this->GetNumberOfStateVariables() <= 12);
-        }
+               <TSimpleRunge<T_Equation, N>, T_Equation, N>
+               (EqRhs, numberOfVariables),
+               fEquation_Rhs(EqRhs),
+               fNumberOfVariables(numberOfVariables)
+    {
+        //default GetNumberOfStateVariables() == 12 
+        assert (this->GetNumberOfStateVariables() <= 12);
+    }
 
 
         ~TSimpleRunge(){;}
 
 
         __attribute__((always_inline)) 
-        void 
-        RightHandSide(G4double y[], G4double dydx[]) 
-        { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
+            void 
+            RightHandSide(G4double y[], G4double dydx[]) 
+            { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
 
+//#if INLINEDUMBSTEPPERS
+//#define DUMBSTEPPERINLINE __attribute__((always_inline))
+//#else
+//#define DUMBSTEPPERINLINE  
 
-        __attribute__((always_inline)) 
-        void
-        DumbStepper( const G4double  yIn[],
-                     const G4double  dydx[],
-                     G4double  h,
-                     G4double  yOut[])
-        {
-            // Initialise time to t0, needed when it is not updated by the integration.
-            yTemp[7] = yOut[7] = yIn[7];   //  Better to set it to NaN;  // TODO
-
-            G4int i;
-
-            for( i = 0; i < N; i++ ) 
+//        DUMSTEPPERINLINE
+            void
+            DumbStepper( const G4double  yIn[],
+                    const G4double  dydx[],
+                    G4double  h,
+                    G4double  yOut[])
             {
-                yTemp[i] = yIn[i] + 0.5 * h*dydx[i] ;
-            }
+                // Initialise time to t0, needed when it is not updated by the integration.
+                yTemp[7] = yOut[7] = yIn[7];   //  Better to set it to NaN;  // TODO
 
-            this->RightHandSide(yTemp,dydxTemp);
+                G4int i;
 
-            for( i = 0; i < N; i++ ) 
-            {
-                yOut[i] = yIn[i] + h * ( dydxTemp[i] );
-            }
-        } 
+                for( i = 0; i < N; i++ ) 
+                {
+                    yTemp[i] = yIn[i] + 0.5 * h*dydx[i] ;
+                }
+
+                this->RightHandSide(yTemp,dydxTemp);
+
+                for( i = 0; i < N; i++ ) 
+                {
+                    yOut[i] = yIn[i] + h * ( dydxTemp[i] );
+                }
+            } 
+//#endif /* DUMSTEPPERINLINE */
 
     public:  // without description
 
         __attribute__((always_inline)) 
-        G4int  
-        IntegratorOrder() const { return 2; }
+            G4int  
+            IntegratorOrder() const { return 2; }
 
     private:
 

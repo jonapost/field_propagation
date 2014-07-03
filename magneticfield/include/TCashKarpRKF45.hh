@@ -5,10 +5,12 @@
 #include "G4MagIntegratorStepper.hh"
 
 template
-<class T_Equation, int N>
+<class Equation, int N>
 class TCashKarpRKF45 : public G4MagIntegratorStepper
 {
     public:
+        typedef Equation T_Equation;
+
         TCashKarpRKF45(T_Equation *EqRhs,
                 G4int noIntegrationVariables=6, 
                 G4bool primary=true)

@@ -5,12 +5,13 @@
 #include "G4ThreeVector.hh"
 
 template
-<class T_Equation, int N>
+<class Equation, int N>
 class TExplicitEuler : public TMagErrorStepper            
                     <TExplicitEuler<T_Equation, N>, T_Equation, N>
 {
     public:  // with description
- 
+    typedef Equation T_Equation;
+
     static const double 
     IntegratorCorrection = 1.;
     

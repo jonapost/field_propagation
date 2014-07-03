@@ -12,66 +12,74 @@ class TSimpleHeum : public  TMagErrorStepper
 {
 
     public:  // with description
+        
+        typedef Equation T_Equation;
+
         static const double 
             IntegratorCorrection = 1./((1<<3)-1);
 
         TSimpleHeum(T_Equation *EqRhs, 
-                    G4int numberOfVariables=6)
+                G4int numberOfVariables=6)
             :  TMagErrorStepper
                <TSimpleHeum<T_Equation, N>, T_Equation, N>
                (EqRhs, numberOfVariables),
                fEquation_Rhs(EqRhs),
                fNumberOfVariables(numberOfVariables)
-        {
-             assert( fNumberOfVariables == N );
-        }
+    {
+        assert( fNumberOfVariables == N );
+    }
 
         ~TSimpleHeum() {;}
         // Constructor and destructor.
 
 
         __attribute__((always_inline)) 
-        void 
-        RightHandSide(G4double y[], G4double dydx[]) 
+            void 
+            RightHandSide(G4double y[], G4double dydx[]) 
             { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
 
-        __attribute__((always_inline)) 
-        void
-        DumbStepper( const G4double  yIn[],
-                     const G4double  dydx[],
-                     G4double  h,
-                     G4double  yOut[])
-        {
-            G4int i;
-            for( i = 0; i < N; i++ ) 
+//#if INLINEDUMBSTEPPERS
+//#define DUMBSTEPPERINLINE __attribute__((always_inline))
+//#else
+//#define DUMBSTEPPERINLINE  
+
+//        DUMSTEPPERINLINE
+            void
+            DumbStepper( const G4double  yIn[],
+                    const G4double  dydx[],
+                    G4double  h,
+                    G4double  yOut[])
             {
-                yTemp[i] = yIn[i] + (1.0/3.0) * h *  dydx[i] ;
-            }
+                G4int i;
+                for( i = 0; i < N; i++ ) 
+                {
+                    yTemp[i] = yIn[i] + (1.0/3.0) * h *  dydx[i] ;
+                }
 
-            this->RightHandSide(yTemp,dydxTemp);
+                this->RightHandSide(yTemp,dydxTemp);
 
-            for( i = 0; i < N; i++ ) 
-            {
-                yTemp2[i] = yIn[i] + (2.0/3.0) * h * dydxTemp[i] ;
-            }
+                for( i = 0; i < N; i++ ) 
+                {
+                    yTemp2[i] = yIn[i] + (2.0/3.0) * h * dydxTemp[i] ;
+                }
 
-            this->RightHandSide(yTemp2,dydxTemp2);
+                this->RightHandSide(yTemp2,dydxTemp2);
 
-            for( i = 0; i < N; i++ ) 
-            {
-                yOut[i] = yIn[i] + h * (0.25 * dydx[i] + 0.75 * dydxTemp2[i]);
-            }
+                for( i = 0; i < N; i++ ) 
+                {
+                    yOut[i] = yIn[i] + h * (0.25 * dydx[i] + 0.75 * dydxTemp2[i]);
+                }
 
-            if ( fNumberOfVariables == 12 ) 
-            {  this->NormalisePolarizationVector( yOut ); }
-        }  
-
+                if ( fNumberOfVariables == 12 ) 
+                {  this->NormalisePolarizationVector( yOut ); }
+            }  
+//#endif /* DUMSTEPPERINLINE */
 
     public:  // without description
 
         __attribute__((always_inline)) 
-        G4int 
-        IntegratorOrder() const { return 3; }
+            G4int 
+            IntegratorOrder() const { return 3; }
 
     private:
 
