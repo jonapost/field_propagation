@@ -32,33 +32,34 @@ class TQuadrupoleMagField : public G4MagneticField
 
         virtual ~TQuadrupoleMagField() {;}
 
-        inline void GetFieldValue(const G4double y[7],
-                G4double B[3]     ) const
-        {
-            G4ThreeVector r_global = G4ThreeVector(
-                    y[0] - fOrigin.x(), 
-                    y[1] - fOrigin.y(), 
-                    y[2] - fOrigin.z());
+        __attribute__((always_inline))
+            void GetFieldValue(const G4double y[7],
+                    G4double B[3]     ) const
+            {
+                G4ThreeVector r_global = G4ThreeVector(
+                        y[0] - fOrigin.x(), 
+                        y[1] - fOrigin.y(), 
+                        y[2] - fOrigin.z());
 
-            G4ThreeVector r_local = G4ThreeVector(
-                    fpMatrix->colX() * r_global,
-                    fpMatrix->colY() * r_global,
-                    fpMatrix->colZ() * r_global);
+                G4ThreeVector r_local = G4ThreeVector(
+                        fpMatrix->colX() * r_global,
+                        fpMatrix->colY() * r_global,
+                        fpMatrix->colZ() * r_global);
 
-            G4ThreeVector B_local = G4ThreeVector(
-                    fGradient * r_local.y(),
-                    fGradient * r_local.x(),
-                    0);
+                G4ThreeVector B_local = G4ThreeVector(
+                        fGradient * r_local.y(),
+                        fGradient * r_local.x(),
+                        0);
 
-            G4ThreeVector B_global = G4ThreeVector(
-                    fpMatrix->inverse().rowX() * B_local,
-                    fpMatrix->inverse().rowY() * B_local,
-                    fpMatrix->inverse().rowZ() * B_local);
+                G4ThreeVector B_global = G4ThreeVector(
+                        fpMatrix->inverse().rowX() * B_local,
+                        fpMatrix->inverse().rowY() * B_local,
+                        fpMatrix->inverse().rowZ() * B_local);
 
-            B[0] = B_global.x() ;
-            B[1] = B_global.y() ;
-            B[2] = B_global.z() ;
-        }
+                B[0] = B_global.x() ;
+                B[1] = B_global.y() ;
+                B[2] = B_global.z() ;
+            }
 
         TQuadrupoleMagField* Clone() const
         {

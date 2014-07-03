@@ -25,10 +25,11 @@ class TMagErrorStepper : public G4MagIntegratorStepper
         virtual ~TMagErrorStepper() {;}
 
 
-        inline void RightHandSide(G4double y[], G4double dydx[]) 
-        {fEquation_Rhs->T_Equation::RightHandSide(y, dydx);}
+        __attribute__((always_inline))
+            void RightHandSide(G4double y[], G4double dydx[]) 
+            {fEquation_Rhs->T_Equation::RightHandSide(y, dydx);}
 
-        inline void Stepper( const G4double yInput[],
+        void Stepper( const G4double yInput[],
                 const G4double dydx[],
                 G4double hstep,
                 G4double yOutput[],
@@ -43,7 +44,7 @@ class TMagErrorStepper : public G4MagIntegratorStepper
             G4int i;
             // correction for Richardson Extrapolation.
             //G4double  correction = 1. / ( (1 << 
-              //          static_cast<T_Stepper*>(this)->T_Stepper::IntegratorOrder()) -1 );
+            //          static_cast<T_Stepper*>(this)->T_Stepper::IntegratorOrder()) -1 );
             //  Saving yInput because yInput and yOutput can be aliases for same array
 
             for(i=0;i<N;i++) yInitial[i]=yInput[i];

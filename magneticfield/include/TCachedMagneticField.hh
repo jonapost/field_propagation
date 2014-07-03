@@ -56,7 +56,7 @@ class TCachedMagneticField : public G4MagneticField
                 << "   Number of evaluations : " << fCountEvaluations << G4endl;
         }
 
-        virtual
+        __attribute__((always_inline))    
             void  GetFieldValue( const G4double Point[4],
                     G4double *Bfield ) const
             {
