@@ -271,13 +271,14 @@ G4FieldManager* SetupField(G4int type)
                 //case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
         case 4: 
                 {
-                    pStepper = new StepperRK4_t(tEquation);
+                    StepperRK4_t *tStepper;
+                    tStepper = new StepperRK4_t(tEquation);
                     pChordFinder = 
                         new TChordFinder
                         <TMagInt_Driver<StepperRK4_t> >
                             (&myMagField,
                              1.0e-2 * mm,
-                             pStepper);
+                             tStepper);
                 }
                 break;
         case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
