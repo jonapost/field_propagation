@@ -6,9 +6,9 @@
 #include "G4ThreeVector.hh"
 
 template
-<class T_Equation, int N>
+<class Equation, int N>
 class TSimpleHeum : public  TMagErrorStepper
-                    <TSimpleHeum<T_Equation, N>, T_Equation, N>
+                    <TSimpleHeum<Equation, N>, Equation, N>
 {
 
     public:  // with description

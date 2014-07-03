@@ -7,7 +7,7 @@
 template
 <class Equation, int N>
 class TSimpleRunge : public TMagErrorStepper            
-                     <TSimpleRunge<T_Equation, N>, T_Equation, N>
+                     <TSimpleRunge<Equation, N>, Equation, N>
 {
 
     public:  // with description

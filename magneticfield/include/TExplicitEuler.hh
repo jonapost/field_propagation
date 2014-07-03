@@ -7,7 +7,7 @@
 template
 <class Equation, int N>
 class TExplicitEuler : public TMagErrorStepper            
-                    <TExplicitEuler<T_Equation, N>, T_Equation, N>
+                    <TExplicitEuler<Equation, N>, Equation, N>
 {
     public:  // with description
     typedef Equation T_Equation;
