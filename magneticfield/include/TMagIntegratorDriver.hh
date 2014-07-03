@@ -7,7 +7,6 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
-#include "G4MagIntegratorStepper.hh"
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
@@ -126,10 +125,9 @@ class TMagInt_Driver : public G4MagInt_Driver
 #endif
 
                 // Old method - inline call to Equation of Motion
-                //   pIntStepper->RightHandSide( y, dydx );
+                //   pIntStepper->T_Stepper::RightHandSide( y, dydx );
                 // New method allows to cache field, or state (eg momentum magnitude)
-                pIntStepper
-                    ->RightHandSide( y, dydx );
+                pIntStepper->T_Stepper::RightHandSide( y, dydx );
                 fNoTotalSteps++;
 
                 // Perform the Integration
@@ -378,13 +376,11 @@ class TMagInt_Driver : public G4MagInt_Driver
         s_start = y_posvel.GetCurveLength();
 
         // Do an Integration Step
-        pIntStepper
-            ->Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
+        pIntStepper->T_Stepper::Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
         //            *******
 
         // Estimate curve-chord distance
-        dchord_step= pIntStepper
-            -> DistChord();
+        dchord_step= pIntStepper->T_Stepper:: DistChord();
         //                         *********
 
         // Put back the values.  yarrout ==> y_posvel
@@ -442,7 +438,7 @@ class TMagInt_Driver : public G4MagInt_Driver
     //
 
     TMagInt_Driver( G4double                hminimum, 
-            G4MagIntegratorStepper *pStepper,
+            T_Stepper *pStepper,
             G4int                   numComponents=6,
             G4int                   statisticsVerbose=1)
         : fSmallestFraction( 1.0e-12 ), 
@@ -464,8 +460,7 @@ class TMagInt_Driver : public G4MagInt_Driver
         RenewStepperAndAdjust( pStepper );
         fMinimumStep= hminimum;
         fMaxNoSteps = fMaxStepBase / 
-            pIntStepper
-            ->IntegratorOrder();
+            pIntStepper->T_Stepper::IntegratorOrder();
 #ifdef G4DEBUG_FIELD
         fVerboseLevel=2;
 #endif
@@ -556,9 +551,9 @@ class TMagInt_Driver : public G4MagInt_Driver
         {
             safety = new_safety;
             pshrnk = -1.0 /
-                pIntStepper->IntegratorOrder();
+                pIntStepper->T_Stepper::IntegratorOrder();
             pgrow  = -1.0 / (1.0 + 
-                    pIntStepper->IntegratorOrder());
+                    pIntStepper->T_Stepper::IntegratorOrder());
             ComputeAndSetErrcon();
         }
 
@@ -583,20 +578,20 @@ class TMagInt_Driver : public G4MagInt_Driver
         }
 
     inline
-        void RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper)
+        void RenewStepperAndAdjust(T_Stepper *pItsStepper)
         {  
             pIntStepper = pItsStepper; 
             ReSetParameters();
         }
 
     inline
-        const G4MagIntegratorStepper* GetStepper() const
+        const T_Stepper* GetStepper() const
         {
             return pIntStepper;
         }
 
     inline
-        G4MagIntegratorStepper* GetStepper() 
+        T_Stepper* GetStepper() 
         {
             return pIntStepper;
         }
@@ -619,8 +614,7 @@ class TMagInt_Driver : public G4MagInt_Driver
         { 
             G4double  tmpValArr[G4FieldTrack::ncompSVEC];
             y_curr.DumpToArray( tmpValArr  );
-            pIntStepper 
-                -> RightHandSide( tmpValArr , dydx );
+            pIntStepper->T_Stepper:: RightHandSide( tmpValArr , dydx );
         }
 
     inline
@@ -688,8 +682,7 @@ class TMagInt_Driver : public G4MagInt_Driver
             for (iter=0; iter<max_trials ;iter++)
             {
                 tot_no_trials++;
-                pIntStepper
-                    ->Stepper(y,dydx,h,ytemp,yerr); 
+                pIntStepper->T_Stepper::Stepper(y,dydx,h,ytemp,yerr); 
                 //            *******
                 G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
                 G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
@@ -1197,7 +1190,8 @@ class TMagInt_Driver : public G4MagInt_Driver
 
     // ---------------------------------------------------------------
     // DEPENDENT Objects
-    G4MagIntegratorStepper *pIntStepper;
+    //T_Stepper 
+        T_Stepper *pIntStepper;
 
     // ---------------------------------------------------------------
     //  STATE
