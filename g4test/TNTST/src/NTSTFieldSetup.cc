@@ -40,6 +40,7 @@
 #include "G4TransportationManager.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4MagIntegratorStepper.hh"
+#include "TChordFinder.hh"
 #include "G4ChordFinder.hh"
 
 #include "G4ExplicitEuler.hh"
@@ -118,7 +119,6 @@ NTSTFieldSetup::~NTSTFieldSetup()
 //
 // Update field
 //
-#include "G4MagIntegratorDriver.hh"
 void NTSTFieldSetup::CreateStepperAndChordFinder()
 {
     SetField();  
@@ -129,11 +129,6 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
     G4cout<<"The minimal step is equal to "<<fMinStep/mm<<" mm"<<G4endl ;
 
     fFieldManager->SetDetectorField(fMagneticField );
-
-    if(fChordFinder) delete fChordFinder;
-
-    fChordFinder = new G4ChordFinder( fMagneticField, fMinStep,fStepper);
-
     fFieldManager->SetChordFinder( fChordFinder );
 
     fFieldManager->SetMinimumEpsilonStep( fMinEpsilon );    // Old value
@@ -174,29 +169,39 @@ void NTSTFieldSetup::CreateStepperAndChordFinder()
 #include "TExplicitEuler.hh"
 #include "TSimpleRunge.hh"
 #include "TSimpleHeum.hh"
+#include "TMagIntegratorDriver.hh"
 
-typedef TNTSTField Field_t1;
+typedef TNTSTField Field_t;
 typedef TUniformMagField Field_t2;
-typedef TMagFieldEquation<Field_t1> Equation_t1;
+typedef TMagFieldEquation<Field_t> Equation_t;
 typedef TMagFieldEquation<Field_t2> Equation_t2;
-typedef TCashKarpRKF45<Equation_t1, 6> Stepper_t1;
+typedef TCashKarpRKF45<Equation_t, 6> Stepper_t;
 typedef TCashKarpRKF45<Equation_t2, 6> Stepper_t2;
-typedef TClassicalRK4<Equation_t1, 6> StepperRK4_t1;
+typedef TClassicalRK4<Equation_t, 6> StepperRK4_t;
 typedef TClassicalRK4<Equation_t2, 6> StepperRK4_t2;
-typedef TSimpleHeum<Equation_t1, 6>   StepperHeum_t;
-typedef TSimpleRunge<Equation_t1, 6>  StepperRunge_t;
-typedef TExplicitEuler<Equation_t1, 6> StepperExEuler_t;
+typedef TSimpleHeum<Equation_t, 6>   StepperHeum_t;
+typedef TSimpleRunge<Equation_t, 6>  StepperRunge_t;
+typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //===============================================
 
 void NTSTFieldSetup::SetStepper()
 {
+    if(fChordFinder) delete fChordFinder;
+    Equation_t* tEquation = new Equation_t( static_cast<Field_t*>(fMagneticField) );
     switch ( fStepperType ) 
     {
         case 0:  
             {
                 assert(fieldFlag);
-                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
-                fStepper = new  StepperExEuler_t(pEquation);
+                
+                StepperExEuler_t *tStepper;
+                tStepper = new StepperExEuler_t(tEquation);
+                fChordFinder = 
+                    new TChordFinder
+                    <TMagInt_Driver<StepperExEuler_t> >
+                    (static_cast<Field_t*>(fMagneticField),
+                     fMinStep,
+                     tStepper);
             }
 
             G4cout<<"TExplicitEuler is called"<<G4endl;     
@@ -208,25 +213,43 @@ void NTSTFieldSetup::SetStepper()
         case 2:  
             {
                 assert(fieldFlag);
-                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
-                fStepper = new  StepperRunge_t(pEquation);
+                StepperRunge_t *tStepper;
+                tStepper = new StepperRunge_t(tEquation);
+                fChordFinder = 
+                    new TChordFinder
+                    <TMagInt_Driver<StepperRunge_t> >            
+                    (static_cast<Field_t*>(fMagneticField),
+                     fMinStep,
+                     tStepper);
             } 
 
             G4cout<<"TSimpleRunge is called"<<G4endl;     
             break;
         case 3:  
             {
-                assert(fieldFlag);
-                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
-                fStepper = new  StepperHeum_t(pEquation);
+                assert(fieldFlag); 
+                StepperHeum_t *tStepper;
+                tStepper = new StepperHeum_t(tEquation);
+                fChordFinder = 
+                    new TChordFinder
+                    <TMagInt_Driver<StepperHeum_t> >
+                    (static_cast<Field_t*>(fMagneticField),
+                     fMinStep,
+                     tStepper);
             }
             G4cout<<"TSimpleHeum is called"<<G4endl;     
             break;
         case 4:  
             {
-                assert(fieldFlag);
-                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
-                fStepper = new  StepperRK4_t1(pEquation);
+                assert(fieldFlag); 
+                StepperRK4_t *tStepper;
+                tStepper = new StepperRK4_t(tEquation);
+                fChordFinder = 
+                    new TChordFinder
+                    <TMagInt_Driver<StepperRK4_t> >
+                    (static_cast<Field_t*>(fMagneticField),
+                     fMinStep,
+                     tStepper);
             } 
 
             G4cout<<"G4ClassicalRK4 (default) is called"<<G4endl;     
@@ -245,9 +268,15 @@ void NTSTFieldSetup::SetStepper()
             break;
         case 8:  
             {
-                assert (fieldFlag);
-                Equation_t1* pEquation = new Equation_t1( static_cast<Field_t1*>(fMagneticField) );
-                fStepper = new  Stepper_t1(pEquation);
+                assert (fieldFlag); 
+                Stepper_t *tStepper;
+                tStepper = new Stepper_t(tEquation);
+                fChordFinder = 
+                    new TChordFinder
+                    <TMagInt_Driver<Stepper_t> >
+                    (static_cast<Field_t*>(fMagneticField),
+                     fMinStep,
+                     tStepper);
             }
 
             G4cout<<"G4CashKarpRKF45 is called"<<G4endl;     

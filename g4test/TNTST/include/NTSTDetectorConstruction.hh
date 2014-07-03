@@ -36,7 +36,7 @@ class NTSTFileRead;
 class G4VPhysicalVolume;
 class NTSTDetectorMessenger;
 class G4LogicalVolume;
-class G4ChordFinder;
+//class G4ChordFinder;
 class NTSTFieldSetup;
 
 #include "G4VUserDetectorConstruction.hh"

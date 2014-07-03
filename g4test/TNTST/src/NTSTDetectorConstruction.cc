@@ -34,7 +34,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4TransportationManager.hh"
 #include "G4FieldManager.hh"
-#include "G4ChordFinder.hh"
+//#include "G4ChordFinder.hh"
 #include "G4Material.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"

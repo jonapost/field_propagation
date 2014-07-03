@@ -35,14 +35,14 @@
 
 #include "G4MagneticField.hh"
 #include "G4UniformMagField.hh"
-
+#include "TChordFinder.hh"
+#include "G4ChordFinder.hh"
 
 class NTSTGradientField;
 class NTSTTabulatedField3d;
 class TNTSTField;
 
 class G4FieldManager;
-class G4ChordFinder;
 class G4Mag_UsualEqRhs;
 class G4MagIntegratorStepper;
 class NTSTFieldMessenger;
