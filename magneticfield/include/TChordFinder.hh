@@ -4,6 +4,7 @@
 #include "G4FieldTrack.hh"
 #include <iomanip>
 #include "G4SystemOfUnits.hh"
+#include "G4ChordFinder.hh"
 
 template
 < class Driver>
