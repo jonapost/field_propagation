@@ -20,7 +20,8 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
 
         virtual ~TMagFieldEquation(){;}
 
-        inline void GetFieldValue(const G4double Point[4],
+        __attribute__((always_inline)) 
+        void GetFieldValue(const G4double Point[4],
                 G4double Field[]) const
         {
             itsField->T_Field::GetFieldValue(Point, Field);
@@ -40,7 +41,8 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
                 TEvaluateRhsGivenB(y, Field, dydx);
         }
 
-        inline void TEvaluateRhsGivenB( const G4double y[],
+        __attribute__((always_inline)) 
+        void TEvaluateRhsGivenB( const G4double y[],
                 const G4double B[3],
                 G4double dydx[] ) const
         {
