@@ -50,9 +50,6 @@ __attribute__((always_inline))
             // which returns derivatives dydx at x. The source is routine rk4 from
             // NRC p. 712-713 .
             {
-#ifdef INLINEDUMBSTEPPERS
-                G4cout << "I CAN HEAR YOU";
-#endif
                 G4int i;
                 G4double  hh = h*0.5 , h6 = h/6.0  ;
 
