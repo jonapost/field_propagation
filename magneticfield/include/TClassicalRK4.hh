@@ -32,15 +32,11 @@ class TClassicalRK4 : public  TMagErrorStepper
             { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
 
 
-//#if INLINEDUMBSTEPPERS
-//#define DUMBSTEPPERINLINE __attribute__((always_inline))
-//#else
-//#define DUMBSTEPPERINLINE  
-
         // A stepper that does not know about errors.
         // It is used by the MagErrorStepper stepper.
-
-        //DUMBSTEPPERINLINE
+#ifdef INLINEDUMBSTEPPERS
+__attribute__((always_inline))
+#endif
             void  
             DumbStepper( const G4double  yIn[],
                     const G4double  dydx[],
@@ -54,6 +50,9 @@ class TClassicalRK4 : public  TMagErrorStepper
             // which returns derivatives dydx at x. The source is routine rk4 from
             // NRC p. 712-713 .
             {
+#ifdef INLINEDUMBSTEPPERS
+                G4cout << "I CAN HEAR YOU";
+#endif
                 G4int i;
                 G4double  hh = h*0.5 , h6 = h/6.0  ;
 
@@ -89,7 +88,6 @@ class TClassicalRK4 : public  TMagErrorStepper
                 if ( N == 12 )  { this->NormalisePolarizationVector ( yOut ); }
 
             }  // end of DumbStepper ....................................................
-//#endif /* DUMSTEPPERINLINE */
 
 
     public:  // without description

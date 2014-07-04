@@ -12,7 +12,7 @@ class TSimpleHeum : public  TMagErrorStepper
 {
 
     public:  // with description
-        
+
         typedef Equation T_Equation;
 
         static const double 
@@ -38,12 +38,9 @@ class TSimpleHeum : public  TMagErrorStepper
             RightHandSide(G4double y[], G4double dydx[]) 
             { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
 
-//#if INLINEDUMBSTEPPERS
-//#define DUMBSTEPPERINLINE __attribute__((always_inline))
-//#else
-//#define DUMBSTEPPERINLINE  
-
-//        DUMSTEPPERINLINE
+#ifdef INLINEDUMBSTEPPERS
+        __attribute__((always_inline))
+#endif
             void
             DumbStepper( const G4double  yIn[],
                     const G4double  dydx[],
@@ -73,7 +70,6 @@ class TSimpleHeum : public  TMagErrorStepper
                 if ( fNumberOfVariables == 12 ) 
                 {  this->NormalisePolarizationVector( yOut ); }
             }  
-//#endif /* DUMSTEPPERINLINE */
 
     public:  // without description
 
