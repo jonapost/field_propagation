@@ -7,6 +7,7 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
+#include "inv.h"
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
@@ -409,7 +410,7 @@ class TMagInt_Driver : public G4MagInt_Driver
 
 #ifdef RETURN_A_NEW_STEP_LENGTH
         // The following step cannot be done here because "eps" is not known.
-        dyerr_len = std::sqrt( dyerr_len_sq ); 
+        dyerr_len = vdt::fast_inv( dyerr_len_sq ); 
         dyerr_len_sq /= eps ;
 
         // Look at the velocity deviation ?
@@ -421,12 +422,12 @@ class TMagInt_Driver : public G4MagInt_Driver
 
         if( dyerr_pos_sq > ( dyerr_mom_rel_sq * sqr(hstep) ) )
         {
-            dyerr = std::sqrt(dyerr_pos_sq);
+            dyerr = vdt::fast_inv(dyerr_pos_sq);
         }
         else
         {
             // Scale it to the current step size - for now
-            dyerr = std::sqrt(dyerr_mom_rel_sq) * hstep;
+            dyerr = vdt::fast_inv(dyerr_mom_rel_sq) * hstep;
         }
 
         return true;
@@ -1109,8 +1110,8 @@ class TMagInt_Driver : public G4MagInt_Driver
         G4cout << "MID dyerr: " 
             << " maximum= " << fDyerr_max 
             << " Sum small= " << fDyerrPos_smTot 
-            << " std::sqrt(Sum large^2): pos= " << std::sqrt(fDyerrPos_lgTot)
-            << " vel= " << std::sqrt( fDyerrVel_lgTot )
+            << " vdt::fast_inv(Sum large^2): pos= " << vdt::fast_inv(fDyerrPos_lgTot)
+            << " vel= " << vdt::fast_inv( fDyerrVel_lgTot )
             << " Total h-distance: small= " << fSumH_sm 
             << " large= " << fSumH_lg
             << G4endl;

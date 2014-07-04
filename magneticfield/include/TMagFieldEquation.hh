@@ -2,7 +2,7 @@
 
 #include "G4ChargeState.hh"
 #include "G4Mag_UsualEqRhs.hh"
-
+#include "sqrt.h"
 
 template 
 <class Field_t>
@@ -47,7 +47,7 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
                 G4double dydx[] ) const
         {
             G4double momentum_mag_square = y[3]*y[3] + y[4]*y[4] + y[5]*y[5];
-            G4double inv_momentum_magnitude = 1.0 / std::sqrt( momentum_mag_square );
+            G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
             G4double cof = FCof()*inv_momentum_magnitude;
 
             dydx[0] = y[3]*inv_momentum_magnitude;       //  (d/ds)x = Vx/V
