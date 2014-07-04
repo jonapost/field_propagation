@@ -100,7 +100,10 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
    TExplicitEuler.hh
    TChordFinder.hh
    TMagIntegratorDriver.hh
-    SOURCES
+   sqrt.h
+   vdtcore_common.h
+   inv.h
+   SOURCES
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
         G4ChargeState.cc
