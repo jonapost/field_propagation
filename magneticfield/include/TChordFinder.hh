@@ -5,7 +5,7 @@
 #include <iomanip>
 #include "G4SystemOfUnits.hh"
 #include "G4ChordFinder.hh"
-#include "inv.h"
+#include "sqrt.h"
 
 template
 < class Driver>
@@ -581,7 +581,7 @@ class TChordFinder : public G4ChordFinder
             if (dChordStep > 0.0)
             {
                 stepEstimate_Unconstrained =
-                    stepTrialOld*vdt::fast_inv( fDeltaChord / dChordStep );
+                    stepTrialOld/vdt::fast_isqrt_general( fDeltaChord / dChordStep,4);
                 stepTrial =  fFractionNextEstimate * stepEstimate_Unconstrained;
             }
             else
