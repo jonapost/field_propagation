@@ -1,0 +1,247 @@
+ Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-sa	 Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-sa
+ Testing with stepper number    8				 Testing with stepper number    8
+              voxel optimisation      On			              voxel optimisation      On
+              Propagator safety optim On			              Propagator safety optim On
+							      >	 Setting up field of type: Cached Quadropole field, 20T/meter
+							      >	Over-riding  PropagatorInField to use Multi Locator. ( In the
+ Using default values for  Min Eps = 5e-05 and  MaxEps = 0.00	 Using default values for  Min Eps = 5e-05 and  MaxEps = 0.00
+ Test with no voxels						 Test with no voxels
+							      >	 Setting up field of type: Cached Quadropole field, 20T/meter
+							      >	Over-riding  PropagatorInField to use Multi Locator. ( In the
+
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)			 Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)					 and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV			 Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0         0         0         0         0       0.6      	    0         0         0         0         0       0.6      
+    1         0       1.5         2         0       0.6      	    1         0       1.5         2         0       0.6      
+    2         0       4.5         6         0  0.600581  0.79 |	    2         0       4.5         6         0  0.600002  0.79
+    3         0   10.5026   13.9981         0   0.60365  0.79 |	    3         0     4.521     6.028         0  0.600002  0.79
+    4         0   22.5385   29.9711         0  0.618063  0.78 |	    4         0     4.521     6.028         0  0.600002  0.79
+    5         0    46.933   61.6706         0   0.67384  0.73 |	    5         0     4.521     6.028         0  0.600002  0.79
+    6         0   98.3519   122.934         0  0.871174  0.49 |	    6         0     4.521   6.02801         0  0.600002  0.79
+    7         0   220.972   224.655         0  0.542618  -0.8 |	    7         0     4.521   6.02801         0  0.600002  0.79
+    8         0   508.321   185.845         0 -0.664595  0.74 |	    8         0     4.521   6.02801         0  0.600002  0.79
+    9         0   108.607   83.6728         0  0.919789  0.39 |	    9         0     4.521   6.02801         0  0.600002  0.79
+   10         0  -265.089   219.087         0 -0.803775 -0.59 |	   10         0     4.521   6.02801         0  0.600002  0.79
+   11         0  -479.912   1117.82         0 -0.070845 -0.99 |	   11         0     4.521   6.02801         0  0.600002  0.79
+   12         0   550.578   2414.36         0 -0.377824  0.92 |	   12         0     4.521   6.02801         0  0.600002  0.79
+   13         0  -101.766      5000         0  0.769187 -0.63 |	   13         0     4.521   6.02801         0  0.600002  0.79
+ Cached field: 0x608720					      |	 Cached field: 
+   Number of calls:        13627			      |	   Number of calls:        154139
+   Number of evaluations : 3791				      |	   Number of evaluations : 2
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)		 Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)			 and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV			 Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.80 |	    0       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.80 |	    1       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    2  0.749924   4.69942   6.44919 0.0733184  0.586618  0.80 |	    2       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    3   1.48313   10.5654   14.5147 0.0732984  0.586765  0.80 |	    3       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    4   2.94934    22.299   30.6446 0.0732097   0.58745  0.80 |	    4       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    5   5.87973   45.7814   62.8934 0.0728739  0.590092   0.8 |	    5       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    6   11.7247   92.8699   127.302 0.0715095  0.601017  0.79 |	    6       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    7   23.2872   188.062   255.382 0.0662867  0.644327  0.76 |	    7       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    8   45.4171   386.574   505.336 0.0490397  0.805028  0.59 |	    8       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    9   82.6317   845.918   947.284 0.0396252  0.887126 -0.45 |	    9       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   10    130.32    2044.5   1138.91  0.155848  -0.85172  0.50 |	   10       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   11   480.067    1111.5  -32.3761 -0.0137283 -0.595196  0.8 |	   11       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   12   541.728       550   498.927 -0.0305475 -0.578675  0.8 |	   12       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   13   540.332    512.97       550  0.709436 -0.357904 -0.60 |	   13       0.2       0.3       0.4 0.0733236  0.586588  0.80
+ Cached field: 0x608720					      |	 Cached field: 
+   Number of calls:        23582			      |	   Number of calls:        154447
+   Number of evaluations : 9089				      |	   Number of evaluations : 3
+Set Driver verbosity to -1					Set Driver verbosity to -1
+ Test with full voxels						 Test with full voxels
+							      >	 Setting up field of type: Cached Quadropole field, 20T/meter
+							      >	Over-riding  PropagatorInField to use Multi Locator. ( In the
+
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)			 Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)					 and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV			 Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0         0         0         0         0       0.6       |	    0         0         0         0 -4.66233e-31       0.6   
+    1         0       1.5         2         0       0.6       |	    1 -5.31502e-56 1.36799e-25 1.82399e-25 -8.85844e-31      
+    2         0       4.5         6         0  0.600581  0.79 |	    2 -1.91872e-55 2.59918e-25 3.46557e-25 -1.26349e-30      
+    3         0   10.5026   13.9981         0   0.60365  0.79 |	    3 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+    4         0   22.5385   29.9711         0  0.618063  0.78 |	    4 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+    5         0    46.933   61.6706         0   0.67384  0.73 |	    5 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+    6         0   98.3519   122.934         0  0.871174  0.49 |	    6 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+    7         0   220.972   224.655         0  0.542618  -0.8 |	    7 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+    8         0   508.321   185.845         0 -0.664595  0.74 |	    8 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+    9         0   108.607   83.6728         0  0.919789  0.39 |	    9 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+   10         0  -265.089   219.087         0 -0.803775 -0.59 |	   10 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+   11         0  -479.912   1117.82         0 -0.070845 -0.99 |	   11 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+   12         0   550.578   2414.36         0 -0.377824  0.92 |	   12 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+   13         0  -101.766      5000         0  0.769187 -0.63 |	   13 -3.90341e-55 3.70725e-25 4.943e-25 -1.26349e-30       0
+ Cached field: 0x608720					      |	 Cached field: 
+   Number of calls:        37209			      |	   Number of calls:        154755
+   Number of evaluations : 12880			      |	   Number of evaluations : 3
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)		 Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)			 and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV			 Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.80 |	    0       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.80 |	    1       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    2  0.749924   4.69942   6.44919 0.0733184  0.586618  0.80 |	    2       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    3   1.48313   10.5654   14.5147 0.0732984  0.586765  0.80 |	    3       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    4   2.94934    22.299   30.6446 0.0732097   0.58745  0.80 |	    4       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    5   5.87973   45.7814   62.8934 0.0728739  0.590092   0.8 |	    5       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    6   11.7247   92.8699   127.302 0.0715095  0.601017  0.79 |	    6       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    7   23.2872   188.062   255.382 0.0662867  0.644327  0.76 |	    7       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    8   45.4171   386.574   505.336 0.0490397  0.805028  0.59 |	    8       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    9   82.6317   845.918   947.284 0.0396252  0.887126 -0.45 |	    9       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   10    130.32    2044.5   1138.91  0.155848  -0.85172  0.50 |	   10       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   11   480.067    1111.5  -32.3761 -0.0137283 -0.595196  0.8 |	   11       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   12   541.728       550   498.927 -0.0305475 -0.578675  0.8 |	   12       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   13   540.332    512.97       550  0.709436 -0.357904 -0.60 |	   13       0.2       0.3       0.4 0.0733236  0.586588  0.80
+ Cached field: 0x608720					      |	 Cached field: 
+   Number of calls:        47164			      |	   Number of calls:        155063
+   Number of evaluations : 18178			      |	   Number of evaluations : 3
+
+----------------------------------------------------------	----------------------------------------------------------
+Test with more accurate parameters 				Test with more accurate parameters 
+ Setting values for Min Eps = 2.5e-08 and MaxEps = 0.001	 Setting values for Min Eps = 2.5e-08 and MaxEps = 0.001
+							      >	 Setting up field of type: Cached Quadropole field, 20T/meter
+							      >	Over-riding  PropagatorInField to use Multi Locator. ( In the
+
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)			 Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)					 and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV			 Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0         0         0         0         0       0.6       |	    0         0         0         0 -1.6692e-64       0.6    
+    1         0       1.5         2         0       0.6       |
+    2         0       4.5         6         0  0.600581  0.79 |	-------- WWWW ------- G4Exception-START -------- WWWW -------
+    3         0   10.5026   13.9981         0   0.60365  0.79 |
+    4         0   22.5385   29.9711         0  0.618063  0.78 |	*** ExceptionHandler is not defined ***
+    5         0    46.933   61.6706         0   0.67384  0.73 |	*** G4Exception : GeomNav1002
+    6         0   98.3519   122.934         0  0.871174  0.49 |	      issued by : G4PropagatorInField::ComputeStep()
+    7         0   220.972   224.655         0  0.546023  -0.8 |	Particle is stuck; it will be killed.
+    8         0   508.571   186.287         0 -0.661783  0.74 |	  Zero progress for 51 attempted steps.
+    9         0   109.934    84.077         0  0.931672  0.36 |	  Proposed Step is 7.34645e-59 but Step Taken is 7.34645e-59
+   10         0  -276.792   228.525         0 -0.924469 -0.38 |	 in volume World
+   11         0   -444.37   1188.62         0 -0.548371 -0.83 |	*** This is just a warning message. ***
+   12         0   523.266   2258.02         0  0.405337  0.91 |	-------- WWWW -------- G4Exception-END --------- WWWW -------
+   13         0  -3.20117      5000         0  0.383771  0.92 |
+ Cached field: 0x608720					      |	    1 -6.81259e-123 4.89764e-59 6.53018e-59 -3.17147e-64     
+   Number of calls:        193051			      |	    2 -2.45935e-122 9.30551e-59 1.24073e-58 -2.04487e-05  0.6
+   Number of evaluations : 31824			      |	 G4PropagateInField::ComputeStep(): 
+							      >	  Killing looping particle  after 1000 field substeps  totali
+							      >	    3 -0.000102244   6.00015   7.99988 -2.04665e-05  0.600031
+							      >	 G4PropagateInField::ComputeStep(): 
+							      >	  Killing looping particle  after 1000 field substeps  totali
+							      >	    4 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	 G4PropagateInField::ComputeStep(): 
+							      >	  Killing looping particle  after 1000 field substeps  totali
+							      >	    5 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	 G4PropagateInField::ComputeStep(): 
+							      >	  Killing looping particle  after 1000 field substeps  totali
+							      >	    6 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	    7 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	    8 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	    9 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	   10 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	   11 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	   12 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	   13 -0.000102422   6.00536   8.00683 -2.04665e-05  0.600031
+							      >	 Cached field: 
+							      >	   Number of calls:        243278
+							      >	   Number of evaluations : 3
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)		 Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)			 and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV			 Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.80 |	    0       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.80 |	    1       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    2  0.749924   4.69942   6.44919 0.0733184  0.586618  0.80 |	    2       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    3   1.48313   10.5654   14.5147 0.0732984  0.586765  0.80 |	    3       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    4   2.94934    22.299   30.6446 0.0732097   0.58745  0.80 |	    4       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    5   5.87973   45.7814   62.8934 0.0728739  0.590092   0.8 |	    5       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    6   11.7247   92.8699   127.302 0.0715095  0.601017  0.79 |	    6       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    7   23.2872   188.062   255.382 0.0662867  0.644327  0.76 |	    7       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    8   45.4171   386.574   505.336 0.0490397  0.805028  0.59 |	    8       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    9   82.6317   845.918   947.284 0.0396252  0.887126 -0.45 |	    9       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   10    130.32    2044.5   1138.91  0.155766  -0.85128  0.50 |	   10       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   11   480.034   1111.61  -31.9792 -0.014231 -0.593904   0.8 |	   11       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   12   541.559       550   500.745 -0.0304484 -0.577927   0. |	   12       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   13   540.202   514.379       550  0.622147 -0.422831 -0.65 |	   13       0.2       0.3       0.4 0.0733236  0.586588  0.80
+ Cached field: 0x608720					      |	 Cached field: 
+   Number of calls:        223043			      |	   Number of calls:        243586
+   Number of evaluations : 42035			      |	   Number of evaluations : 3
+ Now test with optimisation off					 Now test with optimisation off
+							      >	 Setting up field of type: Cached Quadropole field, 20T/meter
+							      >	Over-riding  PropagatorInField to use Multi Locator. ( In the
+
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)			 Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)					 and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV			 Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0         0         0         0         0       0.6       |	    0         0         0         0 -5.08763e-35       0.6   
+    1         0       1.5         2         0       0.6       |	    1 -6.32891e-64 1.49278e-29 1.99037e-29 -9.6665e-35       
+    2         0       4.5         6         0  0.600581  0.79 |	    2 -2.28474e-63 2.83628e-29 3.7817e-29 -1.37875e-34       
+    3         0   10.5026   13.9981         0   0.60365  0.79 |	    3 -4.64802e-63 4.04543e-29 5.3939e-29 -1.74964e-34       
+    4         0   22.5385   29.9711         0  0.618063  0.78 |	    4 -7.48503e-63 5.13366e-29 6.84488e-29 -2.08344e-34      
+    5         0    46.933   61.6706         0   0.67384  0.73 |	    5 -1.06135e-62 6.11307e-29 8.15076e-29 -2.38386e-34      
+    6         0   98.3519   122.934         0  0.871174  0.49 |	    6 -1.3895e-62 6.99454e-29 9.32605e-29 -2.65423e-34       
+    7         0   220.972   224.655         0  0.546023  -0.8 |	    7 -1.72257e-62 7.78786e-29 1.03838e-28 -2.89757e-34      
+    8         0   508.571   186.287         0 -0.661783  0.74 |	    8 -2.05289e-62 8.50185e-29 1.13358e-28 -3.11658e-34      
+    9         0   109.934    84.077         0  0.931672  0.36 |	    9 -2.37495e-62 9.14445e-29 1.21926e-28 -3.31368e-34      
+   10         0  -276.792   228.525         0 -0.924469 -0.38 |	   10 -2.68485e-62 9.72278e-29 1.29637e-28 -3.31368e-34      
+   11         0   -444.37   1188.62         0 -0.548371 -0.83 |	   11 -2.68485e-62 9.72278e-29 1.29637e-28 -3.31368e-34      
+   12         0   523.266   2258.02         0  0.405337  0.91 |	   12 -2.68485e-62 9.72278e-29 1.29637e-28 -3.31368e-34      
+   13         0  -3.20117      5000         0  0.383771  0.92 |	   13 -2.68485e-62 9.72278e-29 1.29637e-28 -3.31368e-34      
+ Cached field: 0x608720					      |	 Cached field: 
+   Number of calls:        368930			      |	   Number of calls:        243894
+   Number of evaluations : 55681			      |	   Number of evaluations : 3
+
+Test PropagateMagField: ***********************			Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)		 Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)			 and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV			 Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       	Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.80 |	    0       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.80 |	    1       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    2  0.749924   4.69942   6.44919 0.0733184  0.586618  0.80 |	    2       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    3   1.48313   10.5654   14.5147 0.0732984  0.586765  0.80 |	    3       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    4   2.94934    22.299   30.6446 0.0732097   0.58745  0.80 |	    4       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    5   5.87973   45.7814   62.8934 0.0728739  0.590092   0.8 |	    5       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    6   11.7247   92.8699   127.302 0.0715095  0.601017  0.79 |	    6       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    7   23.2872   188.062   255.382 0.0662867  0.644327  0.76 |	    7       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    8   45.4171   386.574   505.336 0.0490397  0.805028  0.59 |	    8       0.2       0.3       0.4 0.0733236  0.586588  0.80
+    9   82.6317   845.918   947.284 0.0396252  0.887126 -0.45 |	    9       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   10    130.32    2044.5   1138.91  0.155766  -0.85128  0.50 |	   10       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   11   480.034   1111.61  -31.9792 -0.014231 -0.593904   0.8 |	   11       0.2       0.3       0.4 0.0733236  0.586588  0.80
+   12   541.559       550   500.745 -0.0304484 -0.577927   0. |
+   13   540.202   514.379       550  0.622147 -0.422831 -0.65 |	-------- WWWW ------- G4Exception-START -------- WWWW -------
+ Cached field: 0x608720					      |
+   Number of calls:        398922			      |	*** ExceptionHandler is not defined ***
+   Number of evaluations : 65892			      |	*** G4Exception : GeomNav1002
+							      >	      issued by : G4PropagatorInField::ComputeStep()
+							      >	Particle is stuck; it will be killed.
+							      >	  Zero progress for 51 attempted steps.
+							      >	  Proposed Step is 4.746e-67 but Step Taken is 4.746e-67
+							      >	 in volume World
+							      >	*** This is just a warning message. ***
+							      >	-------- WWWW -------- G4Exception-END --------- WWWW -------
+							      >
+							      >	   12       0.2       0.3       0.4 0.0733236  0.586588  0.80
+							      >	 G4PropagateInField::ComputeStep(): 
+							      >	  Killing looping particle  after 1000 field substeps  totali
+							      >	   13       0.2       0.3       0.4 0.0733236  0.586588  0.80
+							      >	 Cached field: 
+							      >	   Number of calls:        266180
+							      >	   Number of evaluations : 3
