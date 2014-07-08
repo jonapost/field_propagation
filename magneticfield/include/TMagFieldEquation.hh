@@ -50,19 +50,17 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
 
                 Blaze3DVec yv(y[3],y[4],y[5]);
                 Blaze3DVec Fieldv(3UL, Field);
-                Blaze8DVec dydxv;
-
-                TEvaluateRhsGivenB(yv, Fieldv, dydxv);
+                Blaze8DVec dydxv( TEvaluateRhsGivenB(yv, Fieldv) );
 
                 for (int i = 0; i < 6; i ++)
                 { dydx[i] = dydxv[i]; }
             }
 
         __attribute__((always_inline)) 
-            void TEvaluateRhsGivenB( const Blaze3DVec y,
-			             const Blaze3DVec B,
-				          Blaze8DVec& dydxv ) const
+            Blaze8DVec TEvaluateRhsGivenB( const Blaze3DVec y,
+			             const Blaze3DVec B) const
             {
+                Blaze8DVec dydxv;
                 //dot product
                 G4double momentum_mag_square = (y, y);
                 G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
@@ -76,8 +74,7 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
                 dydxv[3] = cof*(y[1]*B[2] - y[2]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
                 dydxv[4] = cof*(y[2]*B[0] - y[0]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
                 dydxv[5] = cof*(y[0]*B[1] - y[1]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
-
-                return ;
+                return dydxv;
             }
 
     private:
