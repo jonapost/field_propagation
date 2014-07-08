@@ -58,22 +58,23 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
 
         __attribute__((always_inline)) 
             Blaze8DVec TEvaluateRhsGivenB( const Blaze3DVec y,
-			             const Blaze3DVec B) const
+			                                  const Blaze3DVec B ) const
             {
                 Blaze8DVec dydxv;
+                
                 //dot product
                 G4double momentum_mag_square = (y, y);
+                
                 G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
                 G4double cof = FCof()*inv_momentum_magnitude;
+                
                 //scalar product
                 subvector(dydxv, 0UL, 3UL) = 
                     inv_momentum_magnitude*y;
-		//cross product
-                //subvector(dydx, 3UL, 3UL) = 
-                //cof*( y % trans(B) );
-                dydxv[3] = cof*(y[1]*B[2] - y[2]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
-                dydxv[4] = cof*(y[2]*B[0] - y[0]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
-                dydxv[5] = cof*(y[0]*B[1] - y[1]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
+		          
+                //cross product
+                subvector(dydxv, 3UL, 3UL) = cof*( y % B );
+                
                 return dydxv;
             }
 
