@@ -20,7 +20,7 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
     public:
 
         typedef Field_t T_Field;
-        
+
         TMagFieldEquation(T_Field* f)
             : G4Mag_UsualEqRhs(f)
         {
@@ -30,16 +30,16 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
         virtual ~TMagFieldEquation(){;}
 
         __attribute__((always_inline)) 
-        void GetFieldValue(const G4double Point[4],
-                G4double Field[]) const
-        {
-            itsField->T_Field::GetFieldValue(Point, Field);
-        }
+            void GetFieldValue(const G4double Point[4],
+                    G4double Field[]) const
+            {
+                itsField->T_Field::GetFieldValue(Point, Field);
+            }
 
         __attribute__((always_inline)) 
-        void RightHandSide(const G4double y[], G4double dydx[] )
+            void RightHandSide(const G4double y[], G4double dydx[] )
             //	const
-        {
+            {
                 G4double Field[G4maximum_number_of_field_components]; 
                 G4double  PositionAndTime[4];
                 PositionAndTime[0] = y[0];
@@ -47,38 +47,38 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
                 PositionAndTime[2] = y[2];
                 PositionAndTime[3] = y[7];   
                 GetFieldValue(PositionAndTime, Field) ;
-                TEvaluateRhsGivenB(y, Field, dydx);
-        }
+
+                Blaze3DVec yv(y[3],y[4],y[5]);
+                Blaze3DVec Fieldv(3UL, Field);
+                Blaze8DVec dydxv;
+
+                TEvaluateRhsGivenB(yv, Fieldv, dydxv);
+
+                for (int i = 0; i < 6; i ++)
+                { dydx[i] = dydxv[i]; }
+            }
 
         __attribute__((always_inline)) 
-        void TEvaluateRhsGivenB( const G4double y[],
-                const G4double B[3],
-                G4double dydx[] ) const
-        {
-            Blaze3DVec Bv(3, B);
-            Blaze3DVec yv(y[3],y[4],y[5]);
-            Blaze8DVec dydxv;
+            void TEvaluateRhsGivenB( const Blaze3DVec y,
+			             const Blaze3DVec B,
+				          Blaze8DVec& dydxv ) const
+            {
+                //dot product
+                G4double momentum_mag_square = (y, y);
+                G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
+                G4double cof = FCof()*inv_momentum_magnitude;
+                //scalar product
+                subvector(dydxv, 0UL, 3UL) = 
+                    inv_momentum_magnitude*y;
+		//cross product
+                //subvector(dydx, 3UL, 3UL) = 
+                //cof*( y % trans(B) );
+                dydxv[3] = cof*(y[1]*B[2] - y[2]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
+                dydxv[4] = cof*(y[2]*B[0] - y[0]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
+                dydxv[5] = cof*(y[0]*B[1] - y[1]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
 
-            //inner product
-            G4double momentum_mag_square = (yv, yv);
-
-            G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
-            G4double cof = FCof()*inv_momentum_magnitude;
-
-            //scalar product
-            subvector(dydxv, 0UL, 3UL) = 
-                inv_momentum_magnitude*yv;
-
-            dydx[0] = dydxv[0];
-            dydx[1] = dydxv[1];
-            dydx[2] = dydxv[2];
-
-            dydx[3] = cof*(y[4]*B[2] - y[5]*B[1]) ;  // Ax = a*(Vy*Bz - Vz*By)
-            dydx[4] = cof*(y[5]*B[0] - y[3]*B[2]) ;  // Ay = a*(Vz*Bx - Vx*Bz)
-            dydx[5] = cof*(y[3]*B[1] - y[4]*B[0]) ;  // Az = a*(Vx*By - Vy*Bx)
-
-            return ;
-        }
+                return ;
+            }
 
     private:
         enum { G4maximum_number_of_field_components = 24 };
