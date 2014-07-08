@@ -5,8 +5,10 @@
 #include "sqrt.h"
 
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/DenseSubvector.h>
 
-using blaze::StaticVector;
+
+using namespace blaze; 
 
 typedef StaticVector<G4double, 3UL> Blaze3DVec;
 typedef StaticVector<G4double, 8UL> Blaze8DVec;
@@ -63,9 +65,13 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
             G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
             G4double cof = FCof()*inv_momentum_magnitude;
 
-            dydx[0] = y[3]*inv_momentum_magnitude;       //  (d/ds)x = Vx/V
-            dydx[1] = y[4]*inv_momentum_magnitude;       //  (d/ds)y = Vy/V
-            dydx[2] = y[5]*inv_momentum_magnitude;       //  (d/ds)z = Vz/V
+            //scalar product
+            subvector(dydxv, 0UL, 3UL) = 
+                inv_momentum_magnitude*yv;
+
+            dydx[0] = dydxv[0];
+            dydx[1] = dydxv[1];
+            dydx[2] = dydxv[2];
 
             dydx[3] = cof*(y[4]*B[2] - y[5]*B[1]) ;  // Ax = a*(Vy*Bz - Vz*By)
             dydx[4] = cof*(y[5]*B[0] - y[3]*B[2]) ;  // Ay = a*(Vz*Bx - Vx*Bz)
