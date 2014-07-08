@@ -4,6 +4,13 @@
 #include "G4Mag_UsualEqRhs.hh"
 #include "sqrt.h"
 
+#include <blaze/math/StaticVector.h>
+
+using blaze::StaticVector;
+
+typedef StaticVector<G4double, 3UL> Blaze3DVec;
+typedef StaticVector<G4double, 8UL> Blaze8DVec;
+
 template 
 <class Field_t>
 class TMagFieldEquation : public G4Mag_UsualEqRhs
@@ -11,7 +18,7 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
     public:
 
         typedef Field_t T_Field;
-
+        
         TMagFieldEquation(T_Field* f)
             : G4Mag_UsualEqRhs(f)
         {
@@ -46,7 +53,13 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
                 const G4double B[3],
                 G4double dydx[] ) const
         {
-            G4double momentum_mag_square = y[3]*y[3] + y[4]*y[4] + y[5]*y[5];
+            Blaze3DVec Bv(3, B);
+            Blaze3DVec yv(y[3],y[4],y[5]);
+            Blaze8DVec dydxv;
+
+            //inner product
+            G4double momentum_mag_square = (yv, yv);
+
             G4double inv_momentum_magnitude = vdt::fast_isqrt_general( momentum_mag_square, 4);
             G4double cof = FCof()*inv_momentum_magnitude;
 
