@@ -8,6 +8,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
 #include "sqrt.h"
+#include "fastonebigheader.h"
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
@@ -543,7 +544,7 @@ class TMagInt_Driver : public G4MagInt_Driver
     inline
         G4double ComputeAndSetErrcon()
         {
-            errcon = std::pow(max_stepping_increase/GetSafety(),1.0/GetPgrow());
+            errcon = fastpow(max_stepping_increase/GetSafety(),1.0/GetPgrow());
             return errcon;
         } 
 
@@ -711,7 +712,7 @@ class TMagInt_Driver : public G4MagInt_Driver
                 if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
 
                 // Step failed; compute the size of retrial Step.
-                htemp = GetSafety()*h* std::pow( errmax_sq, 0.5*GetPshrnk() );
+                htemp = GetSafety()*h* fastpow( errmax_sq, 0.5*GetPshrnk() );
 
                 if (htemp >= 0.1*h)  { h = htemp; }  // Truncation error too large,
                 else  { h = 0.1*h; }                 // reduce stepsize, but no more
@@ -739,7 +740,7 @@ class TMagInt_Driver : public G4MagInt_Driver
             // Compute size of next Step
             if (errmax_sq > errcon*errcon)
             { 
-                hnext = GetSafety()*h*std::pow(errmax_sq, 0.5*GetPgrow());
+                hnext = GetSafety()*h*fastpow(errmax_sq, 0.5*GetPgrow());
             }
             else
             {
@@ -768,10 +769,10 @@ class TMagInt_Driver : public G4MagInt_Driver
             if(errMaxNorm > 1.0 )
             {
                 // Step failed; compute the size of retrial Step.
-                hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPshrnk()) ;
+                hnew = GetSafety()*hstepCurrent*fastpow(errMaxNorm,GetPshrnk()) ;
             } else if(errMaxNorm > 0.0 ) {
                 // Compute size of next Step for a successful step
-                hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPgrow()) ;
+                hnew = GetSafety()*hstepCurrent*fastpow(errMaxNorm,GetPgrow()) ;
             } else {
                 // if error estimate is zero (possible) or negative (dubious)
                 hnew = max_stepping_increase * hstepCurrent; 
@@ -798,7 +799,7 @@ class TMagInt_Driver : public G4MagInt_Driver
             if (errMaxNorm > 1.0 )
             {
                 // Step failed; compute the size of retrial Step.
-                hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPshrnk()) ;
+                hnew = GetSafety()*hstepCurrent*fastpow(errMaxNorm,GetPshrnk()) ;
 
                 if (hnew < max_stepping_decrease*hstepCurrent)
                 {
@@ -811,7 +812,7 @@ class TMagInt_Driver : public G4MagInt_Driver
             {
                 // Compute size of next Step for a successful step
                 if (errMaxNorm > errcon)
-                { hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPgrow()); }
+                { hnew = GetSafety()*hstepCurrent*fastpow(errMaxNorm,GetPgrow()); }
                 else  // No more than a factor of 5 increase
                 { hnew = max_stepping_increase * hstepCurrent; }
             }
