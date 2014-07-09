@@ -17,13 +17,13 @@ class TCachedMagneticField : public G4MagneticField
             fLastLocation(DBL_MAX,DBL_MAX,DBL_MAX),
             fLastValue(DBL_MAX,DBL_MAX,DBL_MAX),
             fCountCalls(0),  fCountEvaluations(0)
-    {
-        fpMagneticField= pTField;
-        fDistanceConst= distance;
+	{
+	    fpMagneticField= pTField;
+	    fDistanceConst= distance;
 
-        // G4cout << " Cached-B-Field constructor> Distance = " << distance << G4endl;
-        this->ClearCounts();
-    }
+	    // G4cout << " Cached-B-Field constructor> Distance = " << distance << G4endl;
+	    this->ClearCounts();
+	}
 
         TCachedMagneticField(const TCachedMagneticField<T_Field> &rightCMF)
         {
@@ -57,28 +57,28 @@ class TCachedMagneticField : public G4MagneticField
         }
 
         virtual
-            void  GetFieldValue( const G4double Point[4],
-                    G4double *Bfield ) const
-            {
-                G4ThreeVector newLocation( Point[0], Point[1], Point[2] );
+	void  GetFieldValue( const G4double Point[4],
+		G4double *Bfield ) const
+	{
+	    G4ThreeVector newLocation( Point[0], Point[1], Point[2] );
 
-                G4double      distSq= (newLocation-fLastLocation).mag2();
-                fCountCalls++;
-                if( distSq < fDistanceConst*fDistanceConst ) { 
-                    Bfield[0] = fLastValue.x();
-                    Bfield[1] = fLastValue.y();
-                    Bfield[2] = fLastValue.z();
-                }else{
-                    // G4CachedMagneticField* thisNonC= const_cast<G4CachedMagneticField*>(this);
-                    fpMagneticField->T_Field::GetFieldValue( Point, Bfield );
-                    // G4cout << " Evaluating. " << G4endl;
-                    fCountEvaluations++;
-                    // thisNonC->
-                    fLastLocation= G4ThreeVector( Point[0],  Point[1],  Point[2] );
-                    // thisNonC->
-                    fLastValue=    G4ThreeVector( Bfield[0], Bfield[1], Bfield[2] );
-                }
-            }
+	    G4double      distSq= (newLocation-fLastLocation).mag2();
+	    fCountCalls++;
+	    if( distSq < fDistanceConst*fDistanceConst ) { 
+		Bfield[0] = fLastValue.x();
+		Bfield[1] = fLastValue.y();
+		Bfield[2] = fLastValue.z();
+	    }else{
+		// G4CachedMagneticField* thisNonC= const_cast<G4CachedMagneticField*>(this);
+		fpMagneticField->T_Field::GetFieldValue( Point, Bfield );
+		// G4cout << " Evaluating. " << G4endl;
+		fCountEvaluations++;
+		// thisNonC->
+		fLastLocation= G4ThreeVector( Point[0],  Point[1],  Point[2] );
+		// thisNonC->
+		fLastValue=    G4ThreeVector( Bfield[0], Bfield[1], Bfield[2] );
+	    }
+	}
 
         G4double GetConstDistance() const         { return fDistanceConst; } 
         void     SetConstDistance( G4double dist ){ fDistanceConst= dist;}

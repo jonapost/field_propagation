@@ -17,21 +17,21 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
                     noIntegrationVariables),
             fLastStepLength(0.), fAuxStepper(0),
             fEquation_Rhs(EqRhs)
-    {
-        const G4int numberOfVariables = noIntegrationVariables;
+	{
+	    const G4int numberOfVariables = noIntegrationVariables;
 
-        fLastInitialVector = new G4double[N] ;
-        fLastFinalVector = new G4double[N] ;
-        fLastDyDx = new G4double[N];
+	    fLastInitialVector = new G4double[N] ;
+	    fLastFinalVector = new G4double[N] ;
+	    fLastDyDx = new G4double[N];
 
-        fMidVector = new G4double[N];
-        fMidError =  new G4double[N];
+	    fMidVector = new G4double[N];
+	    fMidError =  new G4double[N];
 
-        if( primary )
-        { 
-            fAuxStepper = new TCashKarpRKF45(EqRhs, numberOfVariables, !primary);
-        }
-    }
+	    if( primary )
+	    { 
+		fAuxStepper = new TCashKarpRKF45(EqRhs, numberOfVariables, !primary);
+	    }
+	}
 
         virtual ~TCashKarpRKF45()
         {
