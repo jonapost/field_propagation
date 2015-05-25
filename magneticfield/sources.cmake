@@ -88,18 +88,21 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
-	TCashKarpRKF45.hh
-	TMagFieldEquation.hh
-	TCachedMagneticField.hh
-	TQuadrupoleMagField.hh
-	TMagErrorStepper.hh
-	TClassicalRK4.hh
-   TUniformMagField.hh
-   TSimpleHeum.hh
-   TSimpleRunge.hh
-   TExplicitEuler.hh
-   TMagIntegratorDriver.hh
-   TChordFinder.hh
+	    TCashKarpRKF45.hh
+	    TMagFieldEquation.hh
+	    TCachedMagneticField.hh
+	    TQuadrupoleMagField.hh
+	    TMagErrorStepper.hh
+	    TClassicalRK4.hh
+        TUniformMagField.hh
+        TSimpleHeum.hh
+        TSimpleRunge.hh
+        TExplicitEuler.hh
+        TMagIntegratorDriver.hh
+        TChordFinder.hh
+        DormandPrince745.hh 
+        BogackiShampine23.hh
+
     SOURCES
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
@@ -151,6 +154,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
+        DormandPrince745.cc
+        BogackiShampine23.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES
