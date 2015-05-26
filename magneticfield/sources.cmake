@@ -102,6 +102,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         TChordFinder.hh
         DormandPrince745.hh 
         BogackiShampine23.hh
+        BogackiShampine45.hh
 
     SOURCES
         G4CachedMagneticField.cc
@@ -156,6 +157,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformMagField.cc
         DormandPrince745.cc
         BogackiShampine23.cc
+        BogackiShampine45.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES
