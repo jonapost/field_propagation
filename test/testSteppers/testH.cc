@@ -7,76 +7,145 @@
 #include "BogackiShampine23.hh"
 #include "G4LineSection.hh"
 #include "G4MagIntegratorStepper.hh"
+#include "DormandPrince745.hh"
+#include <iomanip>
 
 //#include <system.h>
 //#include "G4Types.h"
 
-#define C 299.792458000
-
 using namespace std;
+using namespace CLHEP;
 
+//Version 2.0 - Includes direct comparison with G4ExactHelix and New 1 new stepper
 
-//Made changes in yerr, heading not what you see in ouput
+/* Stepper No.
+    0. G4ExactHelix
+    1. G4CashKarpRKF45
+    2. BogackiShampine23
+    3. DormandPrince745
+ */
 
 
 int main(int argc, char *args[]){
 
-//	cout<<"#With Recommended Settings";
+    /* -----------------------------SETTINGS-------------------------------- */
+    
+/* USER SPACE
+    - Modify values here */
+    
+    int no_of_steps = 100;          //No. of Steps for the stepper
+    int stepper_no = 3;             //Choose stepper no., for refernce see above
+    G4double step_len = 1*mm;   //Step length in milimeters
+  
+    //Set coordinates here
+    G4double
+    x_pos = 0.,                 //pos - position
+    y_pos = 0.,
+    z_pos = 0.,
 
-	int stepper_no = 2;
-	G4double step_len = .1*CLHEP::mm;
-	if(argc>1)
-		stepper_no = atoi(args[1]);
-	if(argc > 2)
-		step_len = stof(args[2]);
+    x_mom = 0.,                 //mom - momentum
+    y_mom = 100.0*gram*m*(1/s),
+    z_mom = 0.,
+    
+    x_field = 0.,               //Uniform Magnetic Field (x,y,z)
+    y_field = 0.,
+    z_field = -0.001*tesla ;
+    
+    
+    //Set Charge etc.
+    G4double particleCharge = +1.0*coulomb,     // in e+ units
+    spin=0.0,                                   // ignore the spin
+    magneticMoment= 0.0,                        // ignore the magnetic moment
+    mass = 1*gram;
+    
+    //Choice of output coordinates
+    int
+    columns[] =
+    {
+        1 ,  //x_pos
+        1 ,  //y_pos
+        0 ,  //z_pos
+        0 ,  //x_mom
+        0 ,  //y_mom
+        0    //z_mom
+        
+    }; //Variables in yOut[] you want to display - 0 for No, 1 for yes
+    
+    /*----------------------------END-SETTINGS-------------------------------*/
+
+/************************************XXXXXX*****************************************/
+
+    
+    
+    
+    /*-------------------------PREPARING STEPPER-----------------------------*/
+    
+/* CODER SPACE
+    - don't modify values here */
+    
+    
+    //Checking for command line values :
+    if(argc>1)
+        stepper_no = atoi(args[1]);
+    if(argc > 2)
+        step_len = stof(args[2]);
+    
+    //Intialising coordinates
+    G4double yIn[] = {x_pos,y_pos,z_pos,x_mom,y_mom,z_mom};
+    G4double yInX[] = {x_pos,y_pos,z_pos,x_mom,y_mom,z_mom};
+    G4double dydx[] = {0,0,0,0,0,0};    //Setting initial dydx, we calculate it later using RHS
+    G4double yout[6], youtX[6], yerr[6], yerrX[6];
+
+    //1. Create a field :
+    G4UniformMagField myField(G4ThreeVector(x_field, y_field, z_field));
+
+    //Create an Equation :
+    G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myField);
 
 
-	//1. Create a field :
-	G4UniformMagField myField(0.01*tesla,0.0,0.0);
-
-	//Create an Equation :
-	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myField);
-
-
-    G4double particleCharge= +1.0*coulomb;  // in e+ units
-    G4double spin=0.0;              // ignore the spin
-    G4double magneticMoment= 0.0;   // ignore the magnetic moment
 
     G4ChargeState chargeState(particleCharge,             // The charge can change (dynamic)
                               spin=0.0,
                               magneticMoment=0.0);
 
-	fEquation->SetChargeMomentumMass( chargeState,
-	           0.01*kg*m*(1/s),
-			1*gram);
-
-	//Create a stepper :
-	G4MagIntegratorStepper *myStepper, *exactStepper;
-
-
-	//Choose the stepper based on the command line argument
-	switch(stepper_no){
-		case 1: myStepper = new G4CashKarpRKF45(fEquation);
-			break;
-		case 2: myStepper = new G4ExactHelixStepper(fEquation);
-			break;
-		case 3: myStepper = new BogackiShampine23(fEquation);
-			break;
-		default : myStepper = 0 ;
-	}
+    fEquation->SetChargeMomentumMass( chargeState,
+                                G4ThreeVector(x_field, y_field, z_field).mag(), //momentum magnitude
+                                mass);
     
-    exactStepper = new G4ExactHelixStepper(fEquation);
+    //Create a stepper :
+    G4MagIntegratorStepper *myStepper, *exactStepper;
 
-	G4double yIn[] = {0.,0.,0.,0.01*kg*m*(1/s),0.,0.0};
-    G4double dydx[] = {0,0,0,0,0,0};
-	G4double yout[6], yerr[6];
+
+    //Choose the stepper based on the command line argument
+    switch(stepper_no){
+        case 1: myStepper = new G4CashKarpRKF45(fEquation);
+            break;
+        case 0: myStepper = new G4ExactHelixStepper(fEquation);
+            break;
+        case 2: myStepper = new BogackiShampine23(fEquation);
+            break;
+        case 3: myStepper = new DormandPrince745(fEquation);
+            break;
+        default : myStepper = 0 ;
+    }
+    
+    //Creating the soulution stepper
+    exactStepper = new G4ExactHelixStepper(fEquation);
     
 //        -> First Print the (commented) title header
     
-        cout<<"\n#  ";
-        for(int i=0; i<6;i++){
-            cout<<"yout["<<i<<"]"<<"\t\t";
-        }
+    
+        cout<<"\n#";
+        cout<<setw(7)<<"StepNo";
+    
+    for (int i=0; i<6;i++)
+        if (columns[i])
+            cout << setw(13) << "yOut[" << i << "]" << setw(13) << "yErr[" << i << "]"
+                             << setw(13) << "yOut-yOutX[" << i << "]";
+
+    
+    //  for (int i=0; i<6;i++) cout << setw(13) <<
+//      for (int i=0; i<6;i++) cout << setw(13) <<
 
     
         //-> Then print the data
@@ -84,30 +153,46 @@ int main(int argc, char *args[]){
     
     cout.setf (ios_base::scientific);
     cout.precision(3);
+    
+/*-----------------------END PREPARING STEPPER---------------------------*/
+    
 
-        for(int j=0; j<25000; j++){
+    
+    /*----------------NOW STEPPING-----------------*/
+    
+        for(int j=0; j<no_of_steps; j++){
+        
+            cout<<setw(8)<<j + 1;           //Printing Step number
             
-//            cout<<j+1<<" :\t\t";
+            myStepper->RightHandSide(yIn, dydx);                    //compute the value of dydx to supply to the stepper
+            myStepper->Stepper(yIn,dydx,step_len,yout,yerr);        //call the stepper
             
-        //compute the value of dydx to supply to the stepper :
-        	myStepper->RightHandSide(yIn, dydx);
-        //call the stepper
-            myStepper->Stepper(yIn,dydx,step_len,yout,yerr);
+        
+            exactStepper->RightHandSide(yInX, dydx);                    //compute the value of dydx for the exact stepper
+                                                                            // ^ Same dydx space being used
+            exactStepper->Stepper(yInX,dydx,step_len,youtX,yerrX);      //call the exact stepper
+
             
 
         //-> Then print the data
-        for(int i=0; i<6;i++){
-            cout<<yout[i]<<"\t\t";
-        }
+            for(int i=0; i<6;i++)
+                if(columns[i]){
+                    cout<<setw(15)<<yout[i];
+                    cout<<setw(15)<<yerr[i];
+                    cout<<setw(15)<<yout[i] - youtX[i];
+                }
         
         //Copy yout into yIn
             for(int i=0; i<6;i++){
                 yIn[i] = yout[i];
+                yInX[i] = youtX[i];
             }
             
-//
+
         cout<<"\n";
-    }
+        }
+    
+    /*-----------------END-STEPPING------------------*/
     
     
     
