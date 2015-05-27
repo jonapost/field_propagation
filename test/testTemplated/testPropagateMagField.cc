@@ -317,6 +317,8 @@ G4FieldManager* SetupField(G4int type)
       case 16: pStepper = new StepperHeum_t(tEquation); break;
       case 17: pStepper = new StepperRunge_t(tEquation); break;
       case 18: pStepper = new StepperExEuler_t(tEquation); break;
+      
+      case 19: pStepper = new ChawlaSharmaRKNstepper(tEquation); break;
       //===============================================
 		default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
