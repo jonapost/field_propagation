@@ -27,6 +27,8 @@ using namespace CLHEP;
     2. BogackiShampine23
     3. DormandPrince745
     4. BogackiShampine45
+    5. G4ClassicalRK4
+    6. G4SimpleHeum
  */
 
 
@@ -122,7 +124,7 @@ int main(int argc, char *args[]){
                               magneticMoment=0.0);
 
     fEquation->SetChargeMomentumMass( chargeState,
-                                G4ThreeVector(x_field, y_field, z_field).mag(), //momentum magnitude
+                                G4ThreeVector(x_mom, y_mom, z_mom).mag(), //momentum magnitude
                                 mass);//No place fo mass in fEquation though
     
     //Create a stepper :
