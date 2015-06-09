@@ -1,8 +1,8 @@
-#include "ChawlaSharmaRKNstepper.hh"
+#include "ChawlaSharmaRKNstepper_with_renormalization.hh"
 using namespace CLHEP;
 
 
-ChawlaSharmaRKNstepper::~ChawlaSharmaRKNstepper()
+ChawlaSharmaRKNstepper_with_renormalization::~ChawlaSharmaRKNstepper_with_renormalization()
 {
    delete[] yMiddle;
    delete[] dydxMid;
@@ -10,7 +10,7 @@ ChawlaSharmaRKNstepper::~ChawlaSharmaRKNstepper()
    delete[] yOneStep;
 }
 
-void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
+void ChawlaSharmaRKNstepper_with_renormalization::Stepper(  const G4double yInput[],
 		            const G4double dydx[],
 		                  G4double hstep,
 		                  G4double yOutput[],
@@ -20,9 +20,15 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    const G4int maxvar= GetNumberOfStateVariables();
    
    G4int i;
+   
+   //for (i = 0; i < 6; i ++)
+   //         std::cerr << yInput[i] << ", ";
+   //     std::cerr << std::endl;
+   
    // correction for Richardson Extrapolation.
    G4double  correction = 1. / ( (1 << (IntegratorOrder()-1)) -1 ); // IntegratorOrder() - 1 because we 
                                                                     //falsely report to higher classes integrator order 4
+   
    
    //  Saving yInput because yInput and yOutput can be aliases for same array
 
@@ -43,6 +49,8 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    for(i = 3; i < 6; i++) yInitial[i] /= m_mom;
    
    DumbStepper  (yInitial, halfStep, yMiddle);
+   
+   //std::cout << std::sqrt( yMiddle[3]*yMiddle[3] + yMiddle[4]*yMiddle[4] + yMiddle[5]*yMiddle[5] ) << std::endl;
    
    /*G4double yMiddle_momentum_sqrt = std::sqrt( yMiddle[3]*yMiddle[3] + yMiddle[4]*yMiddle[4] + yMiddle[5]*yMiddle[5] );
    for(i = 3; i < 6; i ++){
@@ -90,7 +98,7 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    return ;
 }
 
-void ChawlaSharmaRKNstepper::DumbStepper( 
+void ChawlaSharmaRKNstepper_with_renormalization::DumbStepper( 
 										const G4double yIn[],
 										// const G4double dydx[],
 										G4double Step,
@@ -130,8 +138,12 @@ void ChawlaSharmaRKNstepper::DumbStepper(
    for(i = 0; i < 3; i ++){
       pos[i] = yIn[i];
       mom[i] = yIn[i+3];
+      //std::cerr << "yIn[i] -> mom[i] : " <<  yIn[i+3] << ", " << mom[i] << std::endl;
       //m_mom_sqrd += mom[i]*mom[i];
    }
+   //for (i = 0; i < 3; i ++)
+   //   std::cerr << "(Step, mom[i]) = " << Step << ", " << mom[i] << ";  ";
+   //std::cerr << std::endl;
    /*m_mom = std::sqrt(m_mom_sqrd);
    for(i = 0; i < 3; i ++){
       mom[i] /= m_mom;
@@ -148,6 +160,8 @@ void ChawlaSharmaRKNstepper::DumbStepper(
 	temp_eval_pt[7] = t + alpha1*Step;
 	
 	mEvaluateRhs(temp_eval_pt, K1);
+   
+   //std::cerr << "K1 = { " << K1[0] << ", " << K1[1] << ", " << K1[2] << " }\n";
 	
 	for(i = 0; i < 3; i ++){
 		temp_eval_pt[i] = pos[i] + alpha2*Step*mom[i] + Step*Step*beta21*K1[i];
@@ -158,6 +172,8 @@ void ChawlaSharmaRKNstepper::DumbStepper(
 	temp_eval_pt[7] = t + alpha2*Step;
    
 	mEvaluateRhs(temp_eval_pt, K2);
+	
+	//std::cerr << "K2 = { " << K2[0] << ", " << K2[1] << ", " << K2[2] << " }\n";
 
 	for(i = 0; i < 3; i ++){
 		temp_eval_pt[i] = pos[i] + alpha3*Step*mom[i] + Step*Step*
@@ -170,12 +186,15 @@ void ChawlaSharmaRKNstepper::DumbStepper(
    
 	mEvaluateRhs(temp_eval_pt, K3);
    
+   //std::cerr << "K3 = { " << K3[0] << ", " << K3[1] << ", " << K3[2] << " }\n";
+   
 	for(i = 0; i < 3; i ++)
 	{
 	// Accumulate increments with proper weights
 
 		yOut[i] = pos[i] + Step*mom[i] + Step*Step*
 				(a1*K1[i] + a2*K2[i] + a3*K3[i]);
+	   //std::cerr << "pos = " <<  pos[i] << ", Step*mom[i] = " << Step*mom[i] << ", last part = " << Step*Step*(a1*K1[i] + a2*K2[i] + a3*K3[i]) << std::endl;
 	}
 	for(i = 0; i < 3; i ++){
 		yOut[i+3] = mom[i] + Step*( b1*K1[i] + b2*K2[i] + b3*K3[i] );
@@ -192,15 +211,26 @@ void ChawlaSharmaRKNstepper::DumbStepper(
 
 
 void
-ChawlaSharmaRKNstepper::mEvaluateRhs( const G4double y[],
+ChawlaSharmaRKNstepper_with_renormalization::mEvaluateRhs( const G4double y[],
 				           G4double dmom[] ) const
 { 
    G4double Point[4] = { y[0], y[1], y[2], y[7] };
    G4double B[3];
    m_fEq->GetFieldObj()->GetFieldValue( Point, B );
    
+   // Temp change:
+   G4double momentum_mag_square = y[3]*y[3] + y[4]*y[4] + y[5]*y[5];
+   G4double inv_momentum_magnitude = 1.0 / std::sqrt( momentum_mag_square );
+   // Temp change.
+   
    G4double cof = m_fEq->FCof() ; //* inv_momentum_magnitude;
-
+   
+   // Temp insertion:
+   cof *= inv_momentum_magnitude;
+   
+   // try this:
+   //G4double cof = inv_momentum_magnitude;
+   //G4double cof = 1.;
    /*
    dmom[0] = (y[4]*B[2] - y[5]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
    dmom[1] = (y[5]*B[0] - y[3]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
@@ -214,7 +244,7 @@ ChawlaSharmaRKNstepper::mEvaluateRhs( const G4double y[],
    return ;
 }
 
-G4double ChawlaSharmaRKNstepper::DistChord() const 
+G4double ChawlaSharmaRKNstepper_with_renormalization::DistChord() const 
 {
   // Estimate the maximum distance from the curve to the chord
   //
