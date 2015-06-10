@@ -10,17 +10,17 @@
 
 #include "G4MagIntegratorStepper.hh"
 
-class modifiedBogackiShampine23 : public G4MagIntegratorStepper{
+class BogackiShampine23modified : public G4MagIntegratorStepper{
 
 
  public:
  	//constructor using equation
- 	modifiedBogackiShampine23( G4EquationOfMotion *EqRhs,
+ 	BogackiShampine23modified( G4EquationOfMotion *EqRhs,
                      G4int numberOfVariables = 6,
                      G4bool primary= true ) ;
 
  	//destructor
- 	~modifiedBogackiShampine23() ;
+ 	~BogackiShampine23modified() ;
 
  	//The Stepper
  	 void Stepper( const G4double y[],
@@ -32,8 +32,8 @@ class modifiedBogackiShampine23 : public G4MagIntegratorStepper{
     G4double  DistChord()   const;
     G4int IntegratorOrder() const { return 2; }
 
-	modifiedBogackiShampine23(const modifiedBogackiShampine23&);
-   modifiedBogackiShampine23& operator=(const modifiedBogackiShampine23&);
+	BogackiShampine23modified(const BogackiShampine23modified&);
+   BogackiShampine23modified& operator=(const BogackiShampine23modified&);
    
    void modifiedRightHandSide(const G4double yIn[], G4double dydx[]);
 
@@ -48,12 +48,12 @@ class modifiedBogackiShampine23 : public G4MagIntegratorStepper{
              *fLastDyDx, *fMidVector, *fMidError;
       // for DistChord calculations
 
-    modifiedBogackiShampine23* fAuxStepper;
+    BogackiShampine23modified* fAuxStepper;
 
 
 };
 
-#endif /* modifiedBogackiShampine23 */
+#endif /* BogackiShampine23modified */
 
 
 

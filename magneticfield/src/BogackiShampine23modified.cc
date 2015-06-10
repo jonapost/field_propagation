@@ -21,13 +21,13 @@ The Bogacki shampine method has the following Butcher's tableau
 
 */
 
-#include "modifiedBogackiShampine23.hh"
+#include "BogackiShampine23modified.hh"
 #include "G4LineSection.hh"
 
 using namespace std;
 
 //Constructor
-modifiedBogackiShampine23::modifiedBogackiShampine23(G4EquationOfMotion *EqRhs,
+BogackiShampine23modified::BogackiShampine23modified(G4EquationOfMotion *EqRhs,
 				 G4int noIntegrationVariables,
 				 G4bool primary)
   : G4MagIntegratorStepper(EqRhs, noIntegrationVariables),
@@ -51,13 +51,13 @@ modifiedBogackiShampine23::modifiedBogackiShampine23(G4EquationOfMotion *EqRhs,
   fMidError =  new G4double[numberOfVariables];
   if( primary )
   {
-    fAuxStepper = new modifiedBogackiShampine23(EqRhs, numberOfVariables, !primary);
+    fAuxStepper = new BogackiShampine23modified(EqRhs, numberOfVariables, !primary);
   }
 }
 
 
 //Destructor
-modifiedBogackiShampine23::~modifiedBogackiShampine23()
+BogackiShampine23modified::~BogackiShampine23modified()
 {
 
 
@@ -79,7 +79,7 @@ modifiedBogackiShampine23::~modifiedBogackiShampine23()
   delete fAuxStepper;
 }
 
-void modifiedBogackiShampine23::Stepper(const G4double yInput[],
+void BogackiShampine23modified::Stepper(const G4double yInput[],
                          const G4double dydx[],
                                G4double Step,
                                G4double yOut[],
@@ -155,7 +155,7 @@ void modifiedBogackiShampine23::Stepper(const G4double yInput[],
 
 //The following has not been tested
 //The DistChord() function - must define it here
-G4double  modifiedBogackiShampine23::DistChord() const
+G4double  BogackiShampine23modified::DistChord() const
 {
   G4double distLine, distChord;
   G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -192,7 +192,7 @@ G4double  modifiedBogackiShampine23::DistChord() const
 
 
 
-void modifiedBogackiShampine23::modifiedRightHandSide(const G4double y[], G4double dydx[]){
+void BogackiShampine23modified::modifiedRightHandSide(const G4double y[], G4double dydx[]){
    
    G4double y_mom_mag = sqrt( y[3]*y[3] + y[4]*y[4] + y[5]*y[5] );
    RightHandSide(y, dydx);                    //compute the value of dydx to supply to the stepper

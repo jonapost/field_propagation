@@ -8,13 +8,13 @@
 #include "G4ThreeVector.hh"
 #include "G4LineSection.hh"
 
-class ChawlaSharmaRKNstepper_with_renormalization : public G4MagIntegratorStepper
+class ChawlaSharmaRKNstepperFullRenormalization : public G4MagIntegratorStepper
 {
 	public:
-	ChawlaSharmaRKNstepper_with_renormalization(G4Mag_EqRhs *EquationMotion,
+	ChawlaSharmaRKNstepperFullRenormalization(G4Mag_EqRhs *EquationMotion,
 					G4int numberOfVariables = 6, G4int numStateVariables = 12);
 	
-	~ChawlaSharmaRKNstepper_with_renormalization();
+	~ChawlaSharmaRKNstepperFullRenormalization();
 	
 	void Stepper( const G4double y[],
                   const G4double dydx[],
@@ -58,7 +58,7 @@ class ChawlaSharmaRKNstepper_with_renormalization : public G4MagIntegratorSteppe
 
 
 inline
-ChawlaSharmaRKNstepper_with_renormalization::ChawlaSharmaRKNstepper_with_renormalization(G4Mag_EqRhs *EquationRhs,
+ChawlaSharmaRKNstepperFullRenormalization::ChawlaSharmaRKNstepperFullRenormalization(G4Mag_EqRhs *EquationRhs,
                                      G4int numberOfVariables, 
 				     G4int numStateVariables)
      : G4MagIntegratorStepper(EquationRhs,numberOfVariables,numStateVariables)

@@ -1,8 +1,8 @@
-#include "ChawlaSharmaRKNstepper_with_renormalization.hh"
+#include "ChawlaSharmaRKNstepperFullRenormalization.hh"
 using namespace CLHEP;
 
 
-ChawlaSharmaRKNstepper_with_renormalization::~ChawlaSharmaRKNstepper_with_renormalization()
+ChawlaSharmaRKNstepperFullRenormalization::~ChawlaSharmaRKNstepperFullRenormalization()
 {
    delete[] yMiddle;
    delete[] dydxMid;
@@ -10,7 +10,7 @@ ChawlaSharmaRKNstepper_with_renormalization::~ChawlaSharmaRKNstepper_with_renorm
    delete[] yOneStep;
 }
 
-void ChawlaSharmaRKNstepper_with_renormalization::Stepper(  const G4double yInput[],
+void ChawlaSharmaRKNstepperFullRenormalization::Stepper(  const G4double yInput[],
 		            const G4double dydx[],
 		                  G4double hstep,
 		                  G4double yOutput[],
@@ -98,7 +98,7 @@ void ChawlaSharmaRKNstepper_with_renormalization::Stepper(  const G4double yInpu
    return ;
 }
 
-void ChawlaSharmaRKNstepper_with_renormalization::DumbStepper( 
+void ChawlaSharmaRKNstepperFullRenormalization::DumbStepper( 
 										const G4double yIn[],
 										// const G4double dydx[],
 										G4double Step,
@@ -211,7 +211,7 @@ void ChawlaSharmaRKNstepper_with_renormalization::DumbStepper(
 
 
 void
-ChawlaSharmaRKNstepper_with_renormalization::mEvaluateRhs( const G4double y[],
+ChawlaSharmaRKNstepperFullRenormalization::mEvaluateRhs( const G4double y[],
 				           G4double dmom[] ) const
 { 
    G4double Point[4] = { y[0], y[1], y[2], y[7] };
@@ -244,7 +244,7 @@ ChawlaSharmaRKNstepper_with_renormalization::mEvaluateRhs( const G4double y[],
    return ;
 }
 
-G4double ChawlaSharmaRKNstepper_with_renormalization::DistChord() const 
+G4double ChawlaSharmaRKNstepperFullRenormalization::DistChord() const 
 {
   // Estimate the maximum distance from the curve to the chord
   //
