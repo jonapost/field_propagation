@@ -267,6 +267,27 @@ int main(int argc, char *args[]){
           yIn[i] = yout[i];
       cout<<"\n";
    }
+   
+   switch(stepper_no){
+      case 7:
+         delete myBogackiShampine23modified;
+         break;
+      case 8:
+         delete myChawlaStepper;
+         break;
+      case 9:
+         delete myChawlaStepper;
+         break;
+      case 10:
+         delete myChawlaSharmaRKNstepperFullRenormalization;
+         break;
+      case 11:
+         delete myNystromStepper;
+         break;
+      default:
+         delete myStepper;
+         break;
+   }
     
 /*-----------------END-STEPPING------------------*/    
 }
