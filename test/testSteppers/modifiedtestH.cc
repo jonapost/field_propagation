@@ -17,6 +17,7 @@
 #include "ChawlaSharmaRKNstepper.hh"
 #include "ChawlaSharmaRKNstepper_with_renormalization.hh"
 #include "modifiedBogackiShampine23.hh"
+#include "G4NystromRK4.hh"
 
 //#include
 //#include <system.h>
@@ -101,7 +102,7 @@ int main(int argc, char *args[]){
         no_of_steps = atoi(args[2]);
     if(argc > 3)
         step_len = (float)(atof(args[3])*mm);
-    
+    cout << "Test -4 \n";
     //Initialising coordinates
     G4double yIn[] = {x_pos,y_pos,z_pos,x_mom,y_mom,z_mom};
     G4double yInX[] = {x_pos,y_pos,z_pos,x_mom,y_mom,z_mom};
@@ -136,7 +137,9 @@ int main(int argc, char *args[]){
     ChawlaSharmaRKNstepper *myChawlaStepper;
     ChawlaSharmaRKNstepper_with_renormalization *myChawlaStepper_with_renormalization;
     modifiedBogackiShampine23 *myModifiedBogackiShampine23;
-
+    cout << "Test -3 \n";
+    G4NystromRK4 *myNystromStepper;
+    cout << "Test -2 \n";
 
     //Choose the stepper based on the command line argument
     switch(stepper_no){
@@ -160,8 +163,14 @@ int main(int argc, char *args[]){
             break;
         case 9: myChawlaStepper = new ChawlaSharmaRKNstepper(fEquation); // Renormalization in between steps.
             break;
-        case 10: myChawlaStepper_with_renormalization = new ChawlaSharmaRKNstepper_with_renormalization(fEquation);
-            // Normalization inbetween steps, and inside of steps.
+        case 10: 
+                myChawlaStepper_with_renormalization = new ChawlaSharmaRKNstepper_with_renormalization(fEquation);
+                // Normalization inbetween steps, and inside of steps.
+            break;
+        case 11:
+                cout << "Test -1 \n";
+                myNystromStepper = new G4NystromRK4(fEquation);
+                cout << "Test 0 \n";
             break;
         default : myStepper = 0 ;
     }
@@ -196,6 +205,8 @@ int main(int argc, char *args[]){
 
     
     /*----------------NOW STEPPING-----------------*/
+    
+    cout << " Test 1 \n";
     
         G4double mom_norm;
         
@@ -232,6 +243,14 @@ int main(int argc, char *args[]){
                   }
                   
                   myChawlaStepper_with_renormalization->DumbStepper(yIn, step_len, yout);
+                  break;
+               
+               case 11:
+                  cout << "Test 2 \n";
+                  myNystromStepper->ComputeRightHandSide(yIn, dydx);
+                  cout << "Test 3 \n";
+                  myNystromStepper->Stepper(yIn,dydx,step_len,yout,yerr);
+                  cout << "Test 4 \n";
                   break;
                   
                default :
