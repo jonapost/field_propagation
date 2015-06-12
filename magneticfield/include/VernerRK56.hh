@@ -1,9 +1,21 @@
-/*
- * VernerRK56.hh
- *
- *  Created on: 9-Jun-2015
- *      Author: hackabot
- */
+//  Verner - 9 - 6(5) FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+//  Sponsored by Google in Google Summer of Code 2015.
+// 
+//  First version:  9 June 2015
+//
+//  This code is made available subject to the Geant4 license, a copy of
+//  which is available at
+//  http://geant4.org/license
+//  
+//  History
+// -----------------------------
+//  Created by Somnath on 9 June 2015.
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef VERNER_RK56_H
 #define VERNER_RK56_H
@@ -39,7 +51,8 @@ public:
     
 private:
     
-	   G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *ak9,       // for storing intermediate 'k' values in stepper
+	   G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *ak9,       
+       // for storing intermediate 'k' values in stepper
     *yTemp, *yIn;
     
     G4double fLastStepLength;

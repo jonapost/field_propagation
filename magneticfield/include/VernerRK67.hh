@@ -1,9 +1,21 @@
-/*
- * VernerRK67.hh
- *
- *  Created on: 8-Jun-2015
- *      Author: hackabot
- */
+//  Verner - 10 - 7(6) implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+//  Sponsored by Google in Google Summer of Code 2015.
+// 
+//  First version:  9 June 2015
+//
+//  This code is made available subject to the Geant4 license, a copy of
+//  which is available at
+//  http://geant4.org/license
+//  
+//  History
+// -----------------------------
+//  Created by Somnath on 9 June 2015.
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef VERNER_RK67_H
 #define VERNER_RK67_H

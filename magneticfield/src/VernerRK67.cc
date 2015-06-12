@@ -1,7 +1,7 @@
 /*
  ********************************************************************
- // Acknowledgement
- //
+ //                     |   Acknowledgement   |
+ //                    -------------------------
  // The following code uses the work of Jim Verner, obtained from
  // http://people.math.sfu.ca/~jverner/
  //
@@ -12,10 +12,25 @@
  // product arising using any set of coefficients acknowledges this
  // source and includes the URL for this site within the produced
  // item.
- 
+ //
  ********************************************************************
  */
 
+//  Verner - 10 - 7(6) implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+//  Sponsored by Google in Google Summer of Code 2015.
+// 
+//  First version:  9 June 2015
+//
+//  This code is made available subject to the Geant4 license, a copy of
+//  which is available at
+//  http://geant4.org/license
+//  
+//  History
+// -----------------------------
+//  Created by Somnath on 9 June 2015.
+//
 
 #include "VernerRK67.hh"
 #include "G4LineSection.hh"

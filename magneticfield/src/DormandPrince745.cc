@@ -1,9 +1,22 @@
+
+//  DormandPrince7 - 5(4) implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
 //
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 25 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
 //  DormandPrince745.cc
 //  Geant4
 //
+//  History
+// -----------------------------
 //  Created by Somnath on 25/05/15.
-//
+
+
 //This is the source file of DormandPrince745 class containing the 
 //definition of the stepper() method that evaluates one step in 
 //field propagation.
@@ -19,6 +32,7 @@
 // ------------------------------------------------------------------------     
 //      35/384       0        500/1113    125/192  −2187/6784    11/84   0
 //      5179/57600   0       7571/16695  393/640  −92097/339200 187/2100 1/40
+
 
 
 #include "DormandPrince745.hh"

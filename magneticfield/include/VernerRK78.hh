@@ -1,9 +1,22 @@
-/*
- * VernerRK78.hh
- *
- *  Created on: 8-Jun-2015
- *      Author: hackabot
- */
+//  Verner - 13 - 8(7) implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+//  Sponsored by Google in Google Summer of Code 2015.
+// 
+//  First version:  8 June 2015
+//
+//  This code is made available subject to the Geant4 license, a copy of
+//  which is available at
+//  http://geant4.org/license
+//  
+//  History
+// -----------------------------
+//  Created by Somnath on 8 June 2015.
+//
+//
+//
+/////////////////////////////////////////////////////////////////////////
+
 
 #ifndef VERNER_RK78_H
 #define VERNER_RK78_H

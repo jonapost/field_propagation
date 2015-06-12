@@ -1,9 +1,23 @@
-/*
- * BogackiShampine23.hh
- *
- *  Created on: 20-May-2015
- *      Author: hackabot
- */
+//  Bogacki-Shampine - 4 - 3(2) FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 20 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//  DormandPrince745.cc
+//  Geant4
+//
+//  History
+// -----------------------------
+//  Created by Somnath on 20 May 2015
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef BOGACKI_SHAMPINE23_H
 #define BOGACKI_SHAMPINE23_H

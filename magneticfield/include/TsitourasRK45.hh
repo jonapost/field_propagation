@@ -1,10 +1,21 @@
+//  Tsitouras- 7 - 5(4) FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
 //
-//  TsitourasRK45.hh
-//  Geant4
+//  Sponsored by Google in Google Summer of Code 2015.
+// 
+//  First version:  11 June 2015
 //
-//  Created by hackabot on 11/06/15.
+//  This code is made available subject to the Geant4 license, a copy of
+//  which is available at
+//  http://geant4.org/license
+//  
+//  History
+// -----------------------------
+//  Created by Somnath on 11 June 2015.
 //
 //
+///////////////////////////////////////////////////////////////////////////
+
 
 #ifndef Tsitouras_RK45
 #define Tsitouras_RK45

@@ -1,9 +1,19 @@
+//  Bogacki-Shampine - 8 - 5(4) implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
 //
-//  BogackiShampine45.hh
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 26 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//  DormandPrince745.cc
 //  Geant4
 //
-//  Created by Somnath on 26/05/15.
-//
+//  History
+// -----------------------------
+//  Created by Somnath on 26 May 2015
 //
 
 #ifndef Bogacki_Shampine_45

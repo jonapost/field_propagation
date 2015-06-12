@@ -1,7 +1,20 @@
-//  BogackiShampine45.cc
+//  Bogacki-Shampine - 8 - 5(4) implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 25 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//  DormandPrince745.cc
 //  Geant4
 //
+//  History
+// -----------------------------
 //  Created by Somnath on 25/05/15.
+//
 //
 //This is the source file of BogackiShampine45 class containing the
 //definition of the stepper() method that evaluates one step in
