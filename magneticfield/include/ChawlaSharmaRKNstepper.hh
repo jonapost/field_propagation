@@ -32,8 +32,8 @@ class ChawlaSharmaRKNstepper : public G4MagIntegratorStepper
    
    G4double DistChord() const;
    
-   void mEvaluateRhs( const G4double y[],
-				           G4double dmom[] ) const;
+   // void mEvaluateRhs( const G4double y[],
+	//			           G4double dmom[] ) const;
 	
 	private:
    

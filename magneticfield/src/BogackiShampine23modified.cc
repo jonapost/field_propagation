@@ -119,19 +119,19 @@ void BogackiShampine23modified::Stepper(const G4double yInput[],
 	 {
 	   yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
 	 }
-	 modifiedRightHandSide(yTemp, ak2) ;              // 2nd Step
+	 RightHandSide(yTemp, ak2) ;              // 2nd Step
 
 	 for(i=0;i<numberOfVariables;i++)
 	 {
 		yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
 	 }
-	 modifiedRightHandSide(yTemp, ak3) ;              // 3rd Step
+	 RightHandSide(yTemp, ak3) ;              // 3rd Step
 
 	 for(i=0;i<numberOfVariables;i++)
 	 {
 		yTemp[i] = yIn[i] + Step*(b41*dydx[i] + b42*ak2[i] + b43*ak3[i]) ;
 	 }
-	 modifiedRightHandSide(yTemp, ak4) ;              // 4th Step
+	 RightHandSide(yTemp, ak4) ;              // 4th Step
 
 	 for(i=0;i<numberOfVariables;i++)
 	 {
@@ -147,7 +147,7 @@ void BogackiShampine23modified::Stepper(const G4double yInput[],
 	 }
  // NormaliseTangentVector( yOut ); // Not wanted
 
- fLastStepLength =Step;
+ fLastStepLength = Step;
 
  return ;
 }

@@ -84,8 +84,11 @@ G4MagHelicalStepper::AdvanceHelix( const G4double  yIn[],
   G4ThreeVector initVelocity= G4ThreeVector( pIn[0], pIn[1], pIn[2]);
   G4double      velocityVal = initVelocity.mag();
   G4ThreeVector initTangent = (1.0/velocityVal) * initVelocity;
-  
+  // G4ThreeVector initTangent = initVelocity;
+
   R_1=GetInverseCurve(velocityVal,Bmag);
+
+  R_1 *= velocityVal; // Correction to undo normalization by mag_momentum in GetInverseCurve() (Jason S.)
 
   // for too small magnetic fields there is no curvature
   // (include momentum here) FIXME
@@ -116,10 +119,11 @@ G4MagHelicalStepper::AdvanceHelix( const G4double  yIn[],
     vperp= initTangent - vpar;  // the component perpendicular to B
     
     B_v_P  = std::sqrt( 1 - B_d_P * B_d_P); // Fraction of P perp to B
+    // B_v_P  = std::sqrt(velocityVal*velocityVal - B_d_P * B_d_P); // Fraction of P perp to B
 
     // calculate  the stepping angle
   
-    Theta   = R_1 * h; // * B_v_P;
+    Theta   = R_1 * h * velocityVal; // * B_v_P; // Added * velocityVal (Jason S.)
 
     // Trigonometrix
       
@@ -141,8 +145,8 @@ G4MagHelicalStepper::AdvanceHelix( const G4double  yIn[],
 
     G4double R = 1.0 / R_1;
 
-    positionMove  = R * ( SinT * vperp + (1-CosT) * B_x_P) + h * vpar;
-    endTangent    = CosT * vperp + SinT * B_x_P + vpar;
+    positionMove  = R * ( SinT * vperp + (1-CosT) * B_x_P) + velocityVal * h * vpar;
+    endTangent    =  (CosT * vperp + SinT * B_x_P) + vpar;
 
     // Store the resulting position and tangent
 
@@ -155,7 +159,8 @@ G4MagHelicalStepper::AdvanceHelix( const G4double  yIn[],
 
     // Store 2*h step Helix if exist
 
-    if(yHelix2)
+    if(yHelix2) // yHelix2 is not passed by G4ExactHelixStepper so this doesn't matter in my case
+                // but should remember to take care of this.
     {
       SinT2     = 2.0 * SinT * CosT;
       CosT2     = 1.0 - 2.0 * SinT * SinT;

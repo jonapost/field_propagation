@@ -43,24 +43,27 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+#include <iomanip>
+using namespace std;
+
 const G4double G4Mag_EqRhs::fUnitConstant = 0.299792458 * (GeV/(tesla*m)); 
 
 // Constructor Implementation
 //
 G4Mag_EqRhs::G4Mag_EqRhs( G4MagneticField *magField ) 
-   : G4EquationOfMotion(magField), fCof_val(0.)
+   : G4EquationOfMotion(magField), fCof_val(0.), fMass(0.)
 { 
 }
 
 void  
 G4Mag_EqRhs::SetChargeMomentumMass( G4ChargeState particleCharge,
-			            G4double,                // MomentumXc
-                                    G4double )               // particleMass
+			            G4double MomentumXc,                // MomentumXc
+                                    G4double particleMass )               // particleMass
 {
    G4double pcharge = particleCharge.GetCharge();
    fCof_val = pcharge*eplus*c_light ; //  B must be in Tesla
    //  fCof_val = fUnitConstant*pcharge/MomentumXc; //  B must be in Tesla
-   // fMass = particleMass;
+   fMass = particleMass;
 }
 
 G4Mag_EqRhs::~G4Mag_EqRhs() { }

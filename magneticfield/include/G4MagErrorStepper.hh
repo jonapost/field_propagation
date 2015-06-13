@@ -67,7 +67,7 @@ class G4MagErrorStepper : public G4MagIntegratorStepper
                                const G4double dydx[],
                                      G4double h,
                                      G4double yout[] ) = 0;
-      // Performs a 'dump' Step without error calculation.
+      // Performs a 'dumb' Step without error calculation.
 
     G4double DistChord() const;
 

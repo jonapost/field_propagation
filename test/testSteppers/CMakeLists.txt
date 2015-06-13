@@ -10,5 +10,7 @@ file(GLOB_RECURSE SOURCE_FILES_TMP "*.cc")
 add_executable( modifiedtestH modifiedtestH.cc ${headers} ${sources})
 
 add_dependencies(modifiedtestH magfield)
-target_link_libraries(modifiedtestH ${Geant4_LIBRARIES})
+
 target_link_libraries(modifiedtestH magfield)
+
+target_link_libraries(modifiedtestH ${Geant4_LIBRARIES})
