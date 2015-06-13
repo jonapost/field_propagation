@@ -1,3 +1,15 @@
+// Nystrom stepper implemenations and testing by Jason Suagee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+//
+// First version: 27 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+
+
 /*
  * BogackiShampine23.cc
  *
