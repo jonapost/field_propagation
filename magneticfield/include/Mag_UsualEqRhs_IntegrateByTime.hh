@@ -1,4 +1,4 @@
-// Nystrom stepper implemenations and testing by Jason Suagee
+// Nystrom stepper implemenation by Jason Suagee
 //  Supervision / code review: John Apostolakis
 //
 // Sponsored by Google in Google Summer of Code 2015.

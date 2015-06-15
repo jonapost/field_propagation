@@ -1,4 +1,4 @@
-// Nystrom stepper implemenations and testing by Jason Suagee
+// Nystrom stepper implemenation by Jason Suagee
 //  Supervision / code review: John Apostolakis
 //
 // Sponsored by Google in Google Summer of Code 2015.
@@ -8,7 +8,6 @@
 // This code is made available subject to the Geant4 license, a copy of
 // which is available at
 //   http://geant4.org/license
-
 
 
 #include "ChawlaSharmaRKNstepper.hh"
@@ -57,12 +56,8 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    
    DumbStepper  (yInitial, halfStep, yMiddle);
    
-   /*G4double yMiddle_momentum_sqrt = std::sqrt( yMiddle[3]*yMiddle[3] + yMiddle[4]*yMiddle[4] + yMiddle[5]*yMiddle[5] );
-   for(i = 3; i < 6; i ++){
-      yMiddle[i] /= yMiddle_momentum_sqrt;
-   }*/
-   
-   //RightHandSide(yMiddle, dydxMid);
+   // Might put in for one of the set of coefficients:
+   // RightHandSide(yMiddle, dydxMid);
    
    // Comment (**):
    // Function evaluations f(x,y,y') are not at (x_k, y_k, y'_k)
@@ -121,7 +116,8 @@ void ChawlaSharmaRKNstepper::DumbStepper(
  									beta21 = -1./9., beta31 = 2./9., beta32 = 0.,
  									gamma21 = 2./3., gamma31 = 1./3., gamma32 = 1./3.;
  	
-   /*
+   /* Another set of coefficients to try:
+    *
    const G4double   a1 = 0. , a2 = 1./2., a3 = 0.,
  									b1 = 0., b2 = 3./4., b3 = 1./4.,
  									alpha1 = 1./3., alpha2 = 1./3., alpha3 = 1.,
@@ -138,7 +134,7 @@ void ChawlaSharmaRKNstepper::DumbStepper(
    // const G4int numberOfVariables= this->GetNumberOfVariables(); 
    // The number of variables to be integrated over
    // Does this actually vary??
-   //  Saving yInput because yInput and yOut can be aliases for same array
+   // Saving yInput because yInput and yOut can be aliases for same array
    
    for(i = 0; i < 3; i ++){
       pos[i] = yIn[i];
@@ -202,25 +198,6 @@ void ChawlaSharmaRKNstepper::DumbStepper(
 	
 	return ;
 }
-
-/*
-void
-ChawlaSharmaRKNstepper::mEvaluateRhs( const G4double y[],
-				           G4double dmom[] ) const
-{ 
-   G4double Point[4] = { y[0], y[1], y[2], y[7] };
-   G4double B[3];
-   m_fEq->GetFieldObj()->GetFieldValue( Point, B );
-   
-   G4double cof = m_fEq->FCof() ; // inv_momentum_magnitude;
-   
-   dmom[0] = cof*(y[4]*B[2] - y[5]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
-   dmom[1] = cof*(y[5]*B[0] - y[3]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
-   dmom[2] = cof*(y[3]*B[1] - y[4]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
-   
-   return ;
-}
-*/
 
 G4double ChawlaSharmaRKNstepper::DistChord() const 
 {
