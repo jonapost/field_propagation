@@ -28,7 +28,7 @@ int main(int argc, char *args[]){
 	if(argc>1)
 		stepper_no = atoi(args[1]);
 	if(argc > 2)
-		step_len = stof(args[2]);
+		step_len = atof(args[2]);
 
 
 	//1. Create a field :

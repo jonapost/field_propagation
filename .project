@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>field_propogation@field_propagation</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.make.core.makeBuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enabledIncrementalBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.command</key>
+					<value>/usr/bin/make</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.inc</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.arguments</key>
+					<value>-j4</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.environment</key>
+					<value>VERBOSE=1|CMAKE_NO_VERBOSE=1|</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.auto</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.clean</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.location</key>
+					<value>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.core.errorOutputParser</key>
+					<value>org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.make.core.ScannerConfigBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.make.core.makeNature</nature>
+		<nature>org.eclipse.cdt.make.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[Subprojects]</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Subprojects]/magfield</name>
+			<type>2</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield</location>
+		</link>
+		<link>
+			<name>[Subprojects]/testers</name>
+			<type>2</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test</location>
+		</link>
+		<link>
+			<name>[Targets]</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/Mag_UsualEqRhs_IntegrateByTime.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/Mag_UsualEqRhs_IntegrateByTime.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4DELPHIMagField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4DELPHIMagField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ChargeState.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ChargeState.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4HelixSimpleRunge.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixSimpleRunge.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4EquationOfMotion.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EquationOfMotion.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4LineCurrentMagField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4LineCurrentMagField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/NystromRK4noNormalization.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/NystromRK4noNormalization.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4Mag_EqRhs.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4Mag_EqRhs.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4Mag_UsualEqRhs.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4Mag_UsualEqRhs.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4CachedMagneticField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4CachedMagneticField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ChordFinder.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ChordFinder.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4Field.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4Field.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4SimpleRunge.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4SimpleRunge.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4HelixExplicitEuler.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixExplicitEuler.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4QuadrupoleMagField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4QuadrupoleMagField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4NystromRK4.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4NystromRK4.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4TrialsCounter.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4TrialsCounter.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4EqEMFieldWithEDM.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqEMFieldWithEDM.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/ChawlaSharmaRKNstepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaRKNstepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4HarmonicPolMagField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HarmonicPolMagField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/BogackiShampine45.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine45.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4LineSection.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4LineSection.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4UniformMagField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4UniformMagField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ErrorMag_UsualEqRhs.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ErrorMag_UsualEqRhs.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4MonopoleEq.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MonopoleEq.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ConstRK4.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ConstRK4.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4CashKarpRKF45.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4CashKarpRKF45.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ElectroMagneticField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ElectroMagneticField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ClassicalRK4.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ClassicalRK4.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4MagErrorStepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagErrorStepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4FieldManager.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4FieldManager.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ImplicitEuler.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ImplicitEuler.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4SimpleHeum.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4SimpleHeum.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4MagIntegratorStepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagIntegratorStepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4HelixMixedStepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixMixedStepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4HelixImplicitEuler.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixImplicitEuler.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ChordFinderSaf.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ChordFinderSaf.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4Mag_SpinEqRhs.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4Mag_SpinEqRhs.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4RepleteEofM.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4RepleteEofM.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4MagneticField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagneticField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/ChawlaSharmaRKNstepperFullRenormalization.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaRKNstepperFullRenormalization.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ElectricField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ElectricField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ExplicitEuler.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ExplicitEuler.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4UniformGravityField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4UniformGravityField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4RKG3_Stepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4RKG3_Stepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4MagIntegratorDriver.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagIntegratorDriver.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4EqMagElectricField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqMagElectricField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4EqGravityField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqGravityField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4EqEMFieldWithSpin.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqEMFieldWithSpin.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4FieldManagerStore.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4FieldManagerStore.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4HelixHeum.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixHeum.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/DormandPrince745.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/DormandPrince745.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4ExactHelixStepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ExactHelixStepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4UniformElectricField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4UniformElectricField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/G4MagHelicalStepper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagHelicalStepper.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/BogackiShampine23.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine23.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/BogackiShampine23modified.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine23modified.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4HelixExplicitEuler.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4HelixExplicitEuler.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4MonopoleEq.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4MonopoleEq.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ExplicitEuler.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ExplicitEuler.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4Mag_EqRhs.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4Mag_EqRhs.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4HelixMixedStepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4HelixMixedStepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4MagHelicalStepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4MagHelicalStepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4HelixImplicitEuler.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4HelixImplicitEuler.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4HarmonicPolMagField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4HarmonicPolMagField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ElectricField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ElectricField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/ChawlaSharmaRKNstepperFullRenormalization.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/ChawlaSharmaRKNstepperFullRenormalization.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4RKG3_Stepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4RKG3_Stepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4Field.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4Field.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ElectroMagneticField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ElectroMagneticField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ChordFinder.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ChordFinder.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/NystromRK4noNormalization.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/NystromRK4noNormalization.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ChordFinderSaf.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ChordFinderSaf.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4Mag_SpinEqRhs.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4Mag_SpinEqRhs.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4CachedMagneticField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4CachedMagneticField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ConstRK4.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ConstRK4.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/Mag_UsualEqRhs_IntegrateByTime.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/Mag_UsualEqRhs_IntegrateByTime.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ChargeState.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ChargeState.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4DELPHIMagField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4DELPHIMagField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4UniformGravityField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4UniformGravityField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/BogackiShampine23modified.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/BogackiShampine23modified.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4MagIntegratorStepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4MagIntegratorStepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4EqGravityField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4EqGravityField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4LineSection.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4LineSection.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4HelixHeum.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4HelixHeum.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4FieldManagerStore.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4FieldManagerStore.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/BogackiShampine23.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/BogackiShampine23.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4EquationOfMotion.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4EquationOfMotion.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ErrorMag_UsualEqRhs.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ErrorMag_UsualEqRhs.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/BogackiShampine45.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/BogackiShampine45.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4MagErrorStepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4MagErrorStepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4MagneticField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4MagneticField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/DormandPrince745.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/DormandPrince745.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4MagIntegratorDriver.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4MagIntegratorDriver.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4TrialsCounter.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4TrialsCounter.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4FieldManager.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4FieldManager.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4EqEMFieldWithEDM.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4EqEMFieldWithEDM.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ExactHelixStepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ExactHelixStepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4HelixSimpleRunge.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4HelixSimpleRunge.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/ChawlaSharmaRKNstepper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/ChawlaSharmaRKNstepper.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ImplicitEuler.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ImplicitEuler.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4NystromRK4.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4NystromRK4.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4LineCurrentMagField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4LineCurrentMagField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4CashKarpRKF45.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4CashKarpRKF45.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4EqEMFieldWithSpin.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4EqEMFieldWithSpin.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4UniformElectricField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4UniformElectricField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4Mag_UsualEqRhs.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4Mag_UsualEqRhs.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4ClassicalRK4.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ClassicalRK4.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4SimpleRunge.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4SimpleRunge.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4QuadrupoleMagField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4QuadrupoleMagField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4SimpleHeum.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4SimpleHeum.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4EqMagElectricField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4EqMagElectricField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4UniformMagField.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4UniformMagField.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/G4RepleteEofM.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4RepleteEofM.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/Source Files/modifiedtestH.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/testSteppers/modifiedtestH.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] modifiedtestH/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

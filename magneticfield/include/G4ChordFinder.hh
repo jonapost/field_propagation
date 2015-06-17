@@ -44,6 +44,7 @@
 
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
+#include "Mag_UsualEqRhs_IntegrateByTime.hh"
 
 class G4MagneticField;  
 

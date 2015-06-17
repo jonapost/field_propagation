@@ -13,6 +13,8 @@
 #include "ChawlaSharmaRKNstepper.hh"
 using namespace CLHEP;
 
+#include <iomanip>
+using namespace std;
 
 ChawlaSharmaRKNstepper::~ChawlaSharmaRKNstepper()
 {
@@ -28,6 +30,9 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
 		                  G4double yOutput[],
 		                  G4double yError [] ){
 		                  
+   G4double mass = m_fEq->FMass();
+   G4double iMass = 1. / mass;
+
    const G4int nvar = this->GetNumberOfVariables() ;
    const G4int maxvar= GetNumberOfStateVariables();
    
@@ -39,6 +44,9 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    //  Saving yInput because yInput and yOutput can be aliases for same array
 
    for(i=0;i<nvar;i++) yInitial[i]=yInput[i];
+
+   for(i=3;i<nvar;i++) yInitial[i] *= iMass;
+
    yInitial[7]= yInput[7];    // Copy the time in case ... even if not really needed
    yMiddle[7] = yInput[7];  // Copy the time from initial value 
    yOneStep[7] = yInput[7]; // As it contributes to final value of yOutput ?
@@ -51,8 +59,9 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    // Comment (*):
    // Do two half steps 
    
-   G4double m_imom = 1. / std::sqrt(yInitial[3]*yInitial[3]+yInitial[4]*yInitial[4]+yInitial[5]*yInitial[5]);
-   for(i = 3; i < 6; i++) yInitial[i] *= m_imom;
+   // No renormalization yet:
+   //G4double m_imom = 1. / std::sqrt(yInitial[3]*yInitial[3]+yInitial[4]*yInitial[4]+yInitial[5]*yInitial[5]);
+   //for(i = 3; i < 6; i++) yInitial[i] *= m_imom;
    
    DumbStepper  (yInitial, halfStep, yMiddle);
    
@@ -85,15 +94,20 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
                                             // when it should be reported as 3+1 = 4 ?
    }
    
+   for(i=3;i<nvar;i++) yOutput[i] *= mass;
+
+
    // Now renomalize momentum
-   G4double momentum_sqrt = std::sqrt( yOutput[3]*yOutput[3] + yOutput[4]*yOutput[4] + yOutput[5]*yOutput[5] );
+   //G4double momentum_sqrt =1. / std::sqrt( yOutput[3]*yOutput[3] + yOutput[4]*yOutput[4] + yOutput[5]*yOutput[5] );
    
-   for(i = 3; i < 6; i ++){
-      yOutput[i] /= momentum_sqrt;
-   }
+   //for(i = 3; i < 6; i ++){
+   //   yOutput[i] *= momentum_sqrt;
+   //}
    
    fInitialPoint = G4ThreeVector( yInitial[0], yInitial[1], yInitial[2]); 
    fFinalPoint   = G4ThreeVector( yOutput[0],  yOutput[1],  yOutput[2]); 
+
+   cout << DistChord() << endl;
 
    return ;
 }

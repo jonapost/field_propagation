@@ -13,6 +13,8 @@ endif()
 # (3)
 include(${Geant4_USE_FILE})
 
+message("${Geant4_USE_FILE}")
+
 add_subdirectory(magneticfield)
 add_subdirectory(test)
 

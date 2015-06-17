@@ -38,7 +38,7 @@ Mag_UsualEqRhs_IntegrateByTime::EvaluateRhsGivenB( const G4double y[],
    // if ( FMass() == 0. )
    //   cout << "FMass was zero \n";
 
-   cof /= FMass();   // Correction because we are using dynamic variables
+   // cof /= FMass();   // Correction because we are using dynamic variables
                      // position and velocity (not momentum).
 
    dydx[0] = y[3];

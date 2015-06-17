@@ -66,7 +66,7 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
 // ..........................................................................
 
 G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
-                              G4double                stepMinimum, 
+                              G4double                stepMinimum,
                               G4MagIntegratorStepper* pItsStepper )
   : fDefaultDeltaChord( 0.25 * mm ),     // Constants 
     fDeltaChord( fDefaultDeltaChord ),   // Parameters
@@ -81,7 +81,7 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
 
-  G4Mag_EqRhs *pEquation = new G4Mag_UsualEqRhs(theMagField);
+  G4Mag_EqRhs *pEquation = new Mag_UsualEqRhs_IntegrateByTime(theMagField); // changed from G4Mag_UsualEqRhs
   fEquation = pEquation;                            
   fLastStepEstimate_Unconstrained = DBL_MAX;          // Should move q, p to
                                                      //    G4FieldTrack ??

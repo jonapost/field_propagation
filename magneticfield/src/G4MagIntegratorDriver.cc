@@ -47,6 +47,9 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
 
+#include <iostream>
+using namespace std;
+
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
 //
@@ -693,7 +696,8 @@ G4bool  G4MagInt_Driver::QuickAdvance(
   // A single measure of the error   
   //      TO-DO :  account for  energy,  spin, ... ? 
   vel_mag_sq   = ( sqr(yarrout[3])+sqr(yarrout[4])+sqr(yarrout[5]) );
-  inv_vel_mag_sq = 1.0 / vel_mag_sq; 
+  inv_vel_mag_sq = 1.0 / vel_mag_sq;
+
   dyerr_pos_sq = ( sqr(yerr_vec[0])+sqr(yerr_vec[1])+sqr(yerr_vec[2]));
   dyerr_mom_sq = ( sqr(yerr_vec[3])+sqr(yerr_vec[4])+sqr(yerr_vec[5]));
   dyerr_mom_rel_sq = dyerr_mom_sq * inv_vel_mag_sq;
