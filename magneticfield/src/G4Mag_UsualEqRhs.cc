@@ -55,15 +55,10 @@ G4Mag_UsualEqRhs::EvaluateRhsGivenB( const G4double y[],
    G4double inv_momentum_magnitude = 1.0 / std::sqrt( momentum_mag_square );
 
    G4double cof = FCof() * inv_momentum_magnitude;
-	//G4double cof = FCof();
-	//G4double inv_momentum_magnitude = 1.;
-	//cof = 1.;
 
-   //G4cout << G4ThreeVector(B[0],B[1],B[2]) << G4endl;
-
-   dydx[0] = y[3]*inv_momentum_magnitude / FMass();       //  (d/ds)x = Vx/V
-   dydx[1] = y[4]*inv_momentum_magnitude / FMass();       //  (d/ds)y = Vy/V
-   dydx[2] = y[5]*inv_momentum_magnitude / FMass();       //  (d/ds)z = Vz/V
+   dydx[0] = y[3]*inv_momentum_magnitude;       //  (d/ds)x = Vx/V
+   dydx[1] = y[4]*inv_momentum_magnitude;       //  (d/ds)y = Vy/V
+   dydx[2] = y[5]*inv_momentum_magnitude;       //  (d/ds)z = Vz/V
 
    dydx[3] = cof*(y[4]*B[2] - y[5]*B[1]) ;   // Ax = a*(Vy*Bz - Vz*By)
    dydx[4] = cof*(y[5]*B[0] - y[3]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)

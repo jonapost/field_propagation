@@ -49,8 +49,8 @@ void ChawlaSharmaWrapper::Stepper(const G4double yInput[],
 	   // Do two half steps
 
 	   // No renormalization yet:
-	   //G4double m_imom = 1. / std::sqrt(yInitial[3]*yInitial[3]+yInitial[4]*yInitial[4]+yInitial[5]*yInitial[5]);
-	   //for(i = 3; i < 6; i++) yInitial[i] *= m_imom;
+	   //G4double m_ivelocity = 1. / std::sqrt(yInitial[3]*yInitial[3]+yInitial[4]*yInitial[4]+yInitial[5]*yInitial[5]);
+	   //for(i = 3; i < 6; i++) yInitial[i] *= m_ivelocity;
 
 	   DumbStepper  (yInitial, halfStep, yMiddle);
 
@@ -95,11 +95,11 @@ void ChawlaSharmaWrapper::Stepper(const G4double yInput[],
 	   //for(i=3;i<nvar;i++) yOutput[i] *= mass;
 
 
-	   // Now renomalize momentum
-	   //G4double momentum_sqrt =1. / std::sqrt( yOutput[3]*yOutput[3] + yOutput[4]*yOutput[4] + yOutput[5]*yOutput[5] );
+	   // Now renomalize velocityentum
+	   //G4double velocityentum_sqrt =1. / std::sqrt( yOutput[3]*yOutput[3] + yOutput[4]*yOutput[4] + yOutput[5]*yOutput[5] );
 
 	   //for(i = 3; i < 6; i ++){
-	   //   yOutput[i] *= momentum_sqrt;
+	   //   yOutput[i] *= velocityentum_sqrt;
 	   //}
 
 	   fInitialPoint = G4ThreeVector( yInitial[0], yInitial[1], yInitial[2]);
@@ -121,11 +121,10 @@ void ChawlaSharmaWrapper::DumbStepper(
 	G4double iMass = 1. / mass;
 	G4int i;
 
-
 	G4double K1[6], K2[6], K3[6];
-	G4double pos[3], mom[3], t;
+	G4double pos[3], velocity[3], t;
 	G4double temp_eval_pt[8];
-	//G4double m_mom_sqrd = 0., m_mom;
+	//G4double m_velocity_sqrd = 0., m_velocity;
 	const G4double   a1 = 1./4. , a2 = 0., a3 = 1./4.,
  									b1 = 1./4., b2 = 0., b3 = 3./4.,
  									alpha1 = 0., alpha2 = 2./3., alpha3 = 2./3.,
@@ -154,46 +153,44 @@ void ChawlaSharmaWrapper::DumbStepper(
 
    for(i = 0; i < 3; i ++){
       pos[i] = yIn[i];
-      mom[i] = yIn[i+3] * iMass;
-      //m_mom_sqrd += mom[i]*mom[i];
+      velocity[i] = yIn[i+3] * iMass;
+      //m_velocity_sqrd += velocity[i]*velocity[i];
    }
-   /*m_mom = std::sqrt(m_mom_sqrd);
-   for(i = 0; i < 3; i ++){
-      mom[i] /= m_mom;
-   }*/
 
-   //G4cout << G4ThreeVector(mom[0],mom[1],mom[2]) << G4endl;
+   G4double Delta_time = Step; // / G4ThreeVector( velocity[0], velocity[1], velocity[2] ).mag();
+   G4double Delta_arc_len = Step * G4ThreeVector( velocity[0], velocity[1], velocity[2] ).mag();
+   // redundant I know, but it's just for another test
 
    t = yIn[7];
 
 	for(i = 0; i < 3; i ++){
-		temp_eval_pt[i] = pos[i] + alpha1*Step*mom[i];
+		temp_eval_pt[i] = pos[i] + alpha1*Step*velocity[i];
 	}
 	for(i = 0; i < 3; i ++){
-		temp_eval_pt[i+3] = mom[i];
+		temp_eval_pt[i+3] = velocity[i];
 	}
-	temp_eval_pt[7] = t + alpha1*Step;
+	temp_eval_pt[6] = t + alpha1*Step;
 
 	ComputeRightHandSide(temp_eval_pt, K1);
 
 	for(i = 0; i < 3; i ++){
-		temp_eval_pt[i] = pos[i] + alpha2*Step*mom[i] + Step*Step*beta21*K1[i+3];
+		temp_eval_pt[i] = pos[i] + alpha2*Step*velocity[i] + Step*Step*beta21*K1[i+3];
 	}
 	for(i = 0; i < 3; i ++){
-		temp_eval_pt[i+3] = mom[i] + Step*gamma21*K1[i+3];
+		temp_eval_pt[i+3] = velocity[i] + Step*gamma21*K1[i+3];
 	}
-	temp_eval_pt[7] = t + alpha2*Step;
+	temp_eval_pt[6] = t + alpha2*Step;
 
 	ComputeRightHandSide(temp_eval_pt, K2);
 
 	for(i = 0; i < 3; i ++){
-		temp_eval_pt[i] = pos[i] + alpha3*Step*mom[i] + Step*Step*
+		temp_eval_pt[i] = pos[i] + alpha3*Step*velocity[i] + Step*Step*
 					(beta31*K1[i+3] + beta32*K2[i+3]);
 	}
 	for(i = 0; i < 3; i ++){
-	temp_eval_pt[i+3] = mom[i] + Step*(gamma31*K1[i+3] + gamma32*K2[i+3]);
+	temp_eval_pt[i+3] = velocity[i] + Step*(gamma31*K1[i+3] + gamma32*K2[i+3]);
 	}
-	temp_eval_pt[7] = t + alpha3*Step;
+	temp_eval_pt[6] = t + alpha3*Step;
 
 	ComputeRightHandSide(temp_eval_pt, K3);
 
@@ -201,34 +198,18 @@ void ChawlaSharmaWrapper::DumbStepper(
 	{
 	// Accumulate increments with proper weights
 
-		yOut[i] = pos[i] + Step*mom[i] + Step*Step*
+		yOut[i] = pos[i] + Step*velocity[i] + Step*Step*
 				(a1*K1[i+3] + a2*K2[i+3] + a3*K3[i+3]);
 	}
 	for(i = 0; i < 3; i ++){
-		yOut[i+3] = mom[i] + Step*( b1*K1[i+3] + b2*K2[i+3] + b3*K3[i+3] );
+		yOut[i+3] = velocity[i] + Step*( b1*K1[i+3] + b2*K2[i+3] + b3*K3[i+3] );
 	}
 
 	for (i = 3; i < 6; i ++){
 				yOut[i] *= mass;
 		}
 
-
-	//G4double normF = 1. / std::sqrt(yOut[3]*yOut[3] + yOut[4]*yOut[4] + yOut[5]*yOut[5]);
-	//yOut[3] *= normF; yOut[4] *= normF; yOut[5] *= normF;
-
-	// Nomalization above is commented out because we need to not
-	// normalize in between the half steps
-
+	yOut[6] = yIn[6] + Delta_time;
+	yOut[7] = yIn[7] + Delta_arc_len;
 	return ;
 }
-
-
-void ChawlaSharmaWrapper::ComputeRightHandSide(const G4double y[], G4double dydx[] ){
-	G4double momentum_mag_square = sqrt( y[3]*y[3] + y[4]*y[4] + y[5]*y[5] );
-	ChawlaSharmaRKNstepper::ComputeRightHandSide(y, dydx);
-	for(int i = 0; i < 6; i ++)
-		dydx[i] *= momentum_mag_square;
-	return;
-}
-
-

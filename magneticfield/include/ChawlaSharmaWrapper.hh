@@ -29,7 +29,7 @@ public:
 						G4double yOut[] );
 
 
-	void ComputeRightHandSide(const G4double y[], G4double dydx[] );
+	//void ComputeRightHandSide(const G4double y[], G4double dydx[] );
 
 };
 

@@ -30,12 +30,10 @@
 #include "G4SimpleHeum.hh"
 #include "G4ChargeState.hh"
 
-#include "Mag_UsualEqRhs_IntegrateByTime.hh"
-
-#include "ChawlaSharmaRKNstepper.hh"
 #include "G4NystromRK4.hh"
-#include "ChawlaSharmaRKNstepperFullRenormalization.hh"
-#include "NystromRK4noNormalization.hh"
+
+#include "Mag_UsualEqRhs_IntegrateByTime.hh"
+#include "ChawlaSharmaRKNstepper.hh"
 #include "ChawlaSharmaWrapper.hh"
 
 using namespace std;
@@ -58,13 +56,8 @@ using namespace CLHEP;
  4: BogackiShampine45
  5: G4ClassicalRK4
  6: G4SimpleHeum
- Not included in this version: 7: BogackiShampine23modified (No renormalization inside of a step.)
- 8: ChawlaSharmaRKNstepper
- 9: ChawlaSharmaRKNstepper (Renormalization in between steps.)
- 10: ChawlaSharmaRKNstepperFullRenormalization
- (Normalization in between steps, and inside of steps.)
- 11: G4NystromRK4
- 12: NystromRK4noNormalization
+ 7: G4NystromRK4
+ 8: ChawlaSharmaWrapper
  */
 
 int main(int argc, char *args[]) {
@@ -75,7 +68,7 @@ int main(int argc, char *args[]) {
     - Modify values here */
 
    int no_of_steps = 100;        //Default No. of Steps for the stepper
-   int stepper_no = 3;           //Choose stepper no., for reference see above
+   int stepper_choices[2];       //Choose stepper no., for reference see above
    G4double step_len = 10 * mm;    //Step length in milimeters
 
    //Set coordinates here
@@ -122,50 +115,93 @@ int main(int argc, char *args[]) {
 
    //Checking for command line values :
    if (argc > 1)
-      stepper_no = atoi(args[1]);
+      stepper_choices[0] = atoi(args[1]);
    if (argc > 2)
-      no_of_steps = atoi(args[2]);
+      stepper_choices[1] = atoi(args[2]);
    if (argc > 3)
-      step_len = (float) (atof(args[3]) * mm);
+      no_of_steps = atoi(args[3]);
+   if (argc > 4)
+      step_len = (float) (atof(args[4]) * mm);
 
    //Initialising coordinates
-   G4double yIn[] = { x_pos, y_pos, z_pos, x_mom/proton_mass_c2, y_mom/proton_mass_c2, z_mom/proton_mass_c2, 0., 0., 0., 0. };
-   if (stepper_no != 8){
-	   yIn[3] *= proton_mass_c2;
-	   yIn[4] *= proton_mass_c2;
-	   yIn[5] *= proton_mass_c2;
+   G4double **yIn = new G4double*[2];
+
+   G4double Begining_vals[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+   G4double zeros[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+
+   for (int i = 0; i < 2; i ++){
+      yIn[i] = new G4double[10];
+      for (int j = 0; j < 10; j ++)
+         yIn[i][j] = Begining_vals[j];
    }
 
+   //yIn[0] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+   //yIn[1] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+
    //Empty buckets for results
-   G4double dydx[10]    =  { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. },
-            yout[10]    =  { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. },
-            yerr[10]    =  { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   G4double **dydx = new G4double*[2];
+   G4double **yout = new G4double*[2];
+   G4double **yerr = new G4double*[2];
+
+   for (int i = 0; i < 2; i ++){
+      dydx[i] = new G4double[10];
+      yout[i] = new G4double[10];
+      yerr[i] = new G4double[10];
+      for (int j = 0; j < 10; j ++) {
+         dydx[i][j] = zeros[j];
+         yout[i][j] = zeros[j];
+         yerr[i][j] = zeros[j];
+      }
+   }
+   /*
+   dydx[0] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   yout[0] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   yerr[0] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   dydx[1] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   yout[1] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   yerr[1] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   */
 
    //1. Create a field :
    //Mag_UsualEqRhs_IntegrateByTime *fEquation;
-   G4Mag_EqRhs *fEquation;
+   G4Mag_EqRhs **fEquation = new G4Mag_EqRhs*[2];
    G4UniformMagField *myUniformField;
    G4QuadrupoleMagField *quadrupoleMagField;
    G4CachedMagneticField *myQuadField;
 
    // Process args for type of Mag field:
-   if (argc > 4) {
-      G4int type_mag_field = atoi(args[4]);
+   G4int type_mag_field;
+   if (argc > 5)
+      type_mag_field = atoi(args[5]);
+   if (type_mag_field) {
       switch (type_mag_field) {
          case 1:
         	myUniformField = new G4UniformMagField(
                   G4ThreeVector(x_field, y_field, z_field));
-        	if (stepper_no == 8)
-        		fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
+        	if (stepper_choices[0] == 8)
+        		fEquation[0] = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
         	else
-        		fEquation = new G4Mag_UsualEqRhs(myUniformField);
-            break;
+        		fEquation[0] = new G4Mag_UsualEqRhs(myUniformField);
+         if (stepper_choices[1] == 8)
+            fEquation[1] = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
+         else
+            fEquation[1] = new G4Mag_UsualEqRhs(myUniformField);
+         break;
+
          case 2:
             quadrupoleMagField = new G4QuadrupoleMagField(
                   10. * tesla / (50. * cm));
             myQuadField = new G4CachedMagneticField(quadrupoleMagField,
                   1.0 * cm);
-            fEquation = new Mag_UsualEqRhs_IntegrateByTime(myQuadField);
+            if (stepper_choices[0] == 8)
+               fEquation[0] = new Mag_UsualEqRhs_IntegrateByTime(myQuadField);
+            else
+               fEquation[0] = new G4Mag_UsualEqRhs(myQuadField);
+            if (stepper_choices[1] == 8)
+               fEquation[1] = new Mag_UsualEqRhs_IntegrateByTime(myQuadField);
+            else
+               fEquation[1] = new G4Mag_UsualEqRhs(myQuadField);
             break;
          default:
             cout
@@ -183,204 +219,207 @@ int main(int argc, char *args[]) {
    //Create an Equation :
    //G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myField);
 
-   G4ChargeState chargeState(particleCharge, // The charge can change (dynamic)
+   G4ChargeState chargeState1(particleCharge, // The charge can change (dynamic)
          spin = 0.0, magneticMoment = 0.0);
 
-   fEquation->SetChargeMomentumMass(chargeState,
+   G4ChargeState chargeState2(particleCharge, // The charge can change (dynamic)
+            spin = 0.0, magneticMoment = 0.0);
+
+
+   fEquation[0]->SetChargeMomentumMass(chargeState1,
          G4ThreeVector(x_mom, y_mom, z_mom).mag(),
          //momentum magnitude
          mass);               //No place for mass in fEquation though
+   fEquation[1]->SetChargeMomentumMass(chargeState2,
+            G4ThreeVector(x_mom, y_mom, z_mom).mag(),
+            //momentum magnitude
+            mass);               //No place for mass in fEquation though
 
 
    //Create a stepper :
-   G4MagIntegratorStepper * myStepper; // * exactStepper;
+   G4MagIntegratorStepper **myStepper = new G4MagIntegratorStepper*[2]; // a length 2 array to hold our steppers we want to compare
 
-   G4SimpleHeum *simpleHeumStepper;
-   ChawlaSharmaRKNstepper *myChawlaStepper;
-   ChawlaSharmaRKNstepperFullRenormalization *myChawlaSharmaRKNstepperFullRenormalization;
+   //G4SimpleHeum *simpleHeumStepper;
    G4NystromRK4 *myNystromStepper;
-   NystromRK4noNormalization *myNystromStepper_noNormalization;
-
    ChawlaSharmaWrapper *myCSWStepper;
 
    //Choose the stepper based on the command line argument
-   switch (stepper_no) {
-      // case 0:
-      //	myStepper = new G4ExactHelixStepper(fEquation);
-      //	break;
-      case 1:
-         myStepper = new G4CashKarpRKF45(fEquation);
-         break;
-      case 2:
-         myStepper = new BogackiShampine23(fEquation);
-         break;
-      case 3:
-         myStepper = new DormandPrince745(fEquation);
-         break;
-      case 4:
-         myStepper = new BogackiShampine45(fEquation);
-         break;
-      case 5:
-         myStepper = new G4ClassicalRK4(fEquation);
-         break;
-      case 6:
-         myStepper = new G4SimpleHeum(fEquation);
-         break;
-      case 8:
-         myStepper = new ChawlaSharmaRKNstepper(fEquation);
-         break;
-      case 9:
-         myCSWStepper = new ChawlaSharmaWrapper(fEquation);
-         break;
-      case 10:
-         myStepper = new ChawlaSharmaRKNstepperFullRenormalization(fEquation);
-         // Normalization in between steps, and inside of steps.
-         break;
-      case 11:
-         myStepper = new G4NystromRK4(fEquation);
-         break;
-      case 12:
-         myStepper = new NystromRK4noNormalization(fEquation);
-         break;
-      default:
-         myStepper = 0;
+
+   G4int stepper_no;
+   for (int i = 0; i < 2; i ++) {
+      stepper_no = stepper_choices[i];
+
+      switch (stepper_no) {
+         // case 0:
+         //	myStepper = new G4ExactHelixStepper(fEquation);
+         //	break;
+         case 0:
+            if (type_mag_field != 1){
+               cout << "must use Uniform Mag field with Exact Helix Stepper!" << endl;
+               return 0;
+            }
+            else {
+               myStepper[i] = new G4ExactHelixStepper(fEquation[i]);
+               break;
+            }
+         case 1:
+            myStepper[i] = new G4CashKarpRKF45(fEquation[i]);
+            break;
+         case 2:
+            myStepper[i] = new BogackiShampine23(fEquation[i]);
+            break;
+         case 3:
+            myStepper[i] = new DormandPrince745(fEquation[i]);
+            break;
+         case 4:
+            myStepper[i] = new BogackiShampine45(fEquation[i]);
+            break;
+         case 5:
+            myStepper[i] = new G4ClassicalRK4(fEquation[i]);
+            break;
+         case 6:
+            myStepper[i] = new G4SimpleHeum(fEquation[i]);
+            break;
+         case 7:
+            myNystromStepper = new G4NystromRK4(fEquation[i]);
+            break;
+         case 8:
+            myCSWStepper = new ChawlaSharmaWrapper(fEquation[i]);
+            break;
+         default:
+            myStepper[i] = 0;
+      }
    }
+
 
    // For output to ipython notebook (for visualization)
    cout.setf(ios_base::fixed);
    cout.precision(10);
 
-
-   // Probably could be done differently, but it's just a test program
-   switch (stepper_no) {
-      case 6:
-         simpleHeumStepper = dynamic_cast<G4SimpleHeum*>(myStepper);
-         break;
-      case 8:
-         //myChawlaStepper = dynamic_cast<ChawlaSharmaRKNstepper*>(myStepper);
-         break;
-      case 9:
-         //myChawlaStepper = dynamic_cast<ChawlaSharmaRKNstepper*>(myStepper);
-         break;
-      case 10:
-         myChawlaSharmaRKNstepperFullRenormalization =
-               dynamic_cast<ChawlaSharmaRKNstepperFullRenormalization*>(myStepper);
-         break;
-      case 11:
-         myNystromStepper = dynamic_cast<G4NystromRK4*>(myStepper);
-         break;
-      case 12:
-         myNystromStepper_noNormalization =
-               dynamic_cast<NystromRK4noNormalization*>(myStepper);
-         break;
-      default:
-         break;
-   }
-
    /*-----------------------END PREPARING STEPPER---------------------------*/
 
    /*----------------NOW STEPPING-----------------*/
 
-   G4double mom_inorm;
+   G4double total_time[2] = {0., 0.};
+   G4double total_distance[2] = {0., 0.};
+   G4double stored_vals[10] = { 0., 0., 0., 0., 0., 0., 0., 0.};
+   G4double difference_values[10] = { 0., 0., 0., 0., 0., 0., 0., 0.};
+   G4double mag = 0.;
+
+   G4String output_format;
+   if (argc > 6)
+      output_format = args[6];
 
    for (int j = 0; j < no_of_steps; j++) {
-      switch (stepper_no) {
-         case 6:
-            simpleHeumStepper->RightHandSide(yIn, dydx);
-            simpleHeumStepper->DumbStepper(yIn, dydx, step_len, yout);
-            break;
+      for (int i = 0; i < 2; i ++){
+         stepper_no = stepper_choices[i];
+         switch (stepper_no) {
+            /*case 6:
+               simpleHeumStepper->RightHandSide(yIn, dydx);
+               simpleHeumStepper->DumbStepper(yIn, dydx, step_len, yout);
+               break;
+            */
+            case 7:
+               myNystromStepper->ComputeRightHandSide(yIn[i], dydx[i]);
+               myNystromStepper->Stepper(yIn[i], dydx[i], step_len, yout[i], yerr[i]);
+               break;
+            case 8:
+               //myCSWStepper->Stepper(yIn, dydx, step_len, yout, yerr);
+               myCSWStepper->DumbStepper(yIn[i], step_len, yout[i]);
+               break;
+
+            default:
+               myStepper[i]->RightHandSide(yIn[i], dydx[i]);
+               myStepper[i]->Stepper(yIn[i], dydx[i], step_len, yout[i], yerr[i]); //call the stepper
+               //mom_inorm = 1. / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
+         }
+
+         if (output_format == G4String("values")) {
+            // Position output:
+            for (int k = 0; k < 3; k++) {
+               // Uncomment out if you want to print error
+               // cout << yout[i] - youtX[i] << ",";
+               //cout << yout[i][k] << ",";
+            }
+            // Uncomment out if you want to print error
+            //cout << yout[2] - youtX[2] << endl;
+
+            // Velocity output
+            for (int k = 3; k < 6; k++) {
+               // Uncomment out if you want to print error
+               // cout << yout[i] - youtX[i] << ",";
+               //cout << yout[i][k] / mass << ",";
+            }
+
+
+            // Total time:
+            if (stepper_no == 8)
+               total_time[i] = yout[i][6];
+            else
+               total_time[i] += step_len / ( G4ThreeVector( yIn[i][3], yIn[i][4], yIn[i][5] ).mag() / mass ); // Step / ||v||. Remember that yIn[3..5] represents momentum.
+            cout << total_time[i] << ",";
+
+
+            // Total Arc Length:
+            if (stepper_no == 8)
+               total_distance[i] = yout[i][7];
+            else
+               total_distance[i] += step_len;
+            cout << total_distance[i];
+
+            if (i == 0)
+               cout << "|";
+            else
+               cout << endl;
+         }
+         else {
+            if (i == 0) {
+               for (int k = 0; k < 8; k ++)
+                  stored_vals[k] = yout[i][k];
+            }
+            else {
+               for (int k = 0; k < 8; k ++)
+                  difference_values[k] = yout[i][k] - yout[i-1][k]; // stored_vals[k];
+
+               mag = 0.;
+               for (int k = 0; k < 3; k ++)
+                  mag += difference_values[k] * difference_values[k];
+               cout << sqrt(mag) << ",";
+
+               mag = 0.;
+               for (int k = 3; k < 6; k ++)
+                  mag += difference_values[k] * difference_values[k];
+               cout << sqrt(mag);
+               cout << endl;
+            }
+         }
+         //Copy yout into yIn
+         for (int k = 0; k < 8; k++){
+            yIn[i][k] = yout[i][k];
+         }
+      }
+
+   }
+
+   for (int i = 0; i < 2; i ++) {
+      switch (stepper_choices[i]) {
          case 8:
-            //myChawlaStepper->DumbStepper(yIn, step_len, yout);
-        	myStepper->Stepper(yIn, dydx, step_len, yout, yerr);
-
-        	 break;
-         case 9:
-            //myCSWStepper->Stepper(yIn, dydx, step_len, yout, yerr);
-        	 myCSWStepper->DumbStepper(yIn, step_len, yout);
-        	 break;
-         case 10:
-            // Renormalize momentum before the first step, and during each step.
-            mom_inorm = 1.
-                  / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
-            for (int k = 3; k < 6; k++) {
-               yIn[k] *= mom_inorm;
-            }
-
-            myChawlaSharmaRKNstepperFullRenormalization->DumbStepper(yIn,
-                  step_len, yout);
+            delete myCSWStepper;
             break;
-
-         case 11:
-            myNystromStepper->ComputeRightHandSide(yIn, dydx);
-            myNystromStepper->Stepper(yIn, dydx, step_len, yout, yerr);
-            break;
-         case 12:
-            // Normalize momentum before compute RHS
-            mom_inorm = 1.
-                  / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
-            for (int k = 3; k < 6; k++) {
-               yIn[k] *= mom_inorm;
-            }
-
-            myNystromStepper_noNormalization->ComputeRightHandSide(yIn, dydx);
-            myNystromStepper_noNormalization->Stepper(yIn, dydx, step_len, yout,
-                  yerr);
+         case 7:
+            delete myNystromStepper;
             break;
          default:
-            myStepper->RightHandSide(yIn, dydx);
-            myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
-            mom_inorm = 1. / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
-			for (int k = 3; k < 6; k++) {
-			   yIn[k] *= mom_inorm;
-			}
-
+            delete myStepper[i];
+            break;
       }
-
-      // exactStepper->RightHandSide(yInX, dydxRef);
-      // exactStepper->Stepper(yInX, dydxRef, step_len, youtX, yerrX);
-
-      //-> Then print the data
-      // Modified to just print out X,Y,Z position data,
-      // so is easier to feed into ipython notebook.
-      //for (int i = 0; i < 6; i++){
-      for (int i = 0; i < 2; i++) {
-         // Uncomment out if you want to print error
-         // cout << yout[i] - youtX[i] << ",";
-         cout << yout[i] << ",";
-      }
-      // Uncomment out if you want to print error
-      //cout << yout[2] - youtX[2] << endl;
-      cout << yout[2];
-
-      //Copy yout into yIn
-      for (int i = 0; i < 6; i++) {
-         yIn[i] = yout[i];      }
-      cout << "\n";
+      delete fEquation[i];
    }
-
-   switch (stepper_no) {
-      case 8:
-         delete myStepper;
-         break;
-      case 9:
-         delete myCSWStepper;
-         break;
-      case 10:
-         delete myChawlaSharmaRKNstepperFullRenormalization;
-         break;
-      case 11:
-         delete myNystromStepper;
-         break;
-      case 12:
-         delete myNystromStepper_noNormalization;
-         break;
-      case 6:
-         delete simpleHeumStepper;
-         break;
-      default:
-         delete myStepper;
-         break;
-
-   }
-   // delete exactStepper;
+   delete[] dydx;
+   delete[] yIn;
+   delete[] yout;
+   delete[] yerr;
+   delete[] myStepper;
+   delete[] fEquation;
 }
+

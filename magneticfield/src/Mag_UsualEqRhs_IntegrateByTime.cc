@@ -19,7 +19,6 @@
 #include "G4Mag_EqRhs.hh"
 #include "G4MagneticField.hh"
 
-#include "G4ThreeVector.hh"
 
 using namespace std;
 
@@ -40,7 +39,6 @@ Mag_UsualEqRhs_IntegrateByTime::EvaluateRhsGivenB( const G4double y[],
 
    cof /= FMass();   // Correction because we are using dynamic variables
                      // position and velocity (not momentum).
-   //cof *= FCof();
 
    dydx[0] = y[3];
    dydx[1] = y[4];
@@ -50,8 +48,6 @@ Mag_UsualEqRhs_IntegrateByTime::EvaluateRhsGivenB( const G4double y[],
    dydx[4] = cof*(y[5]*B[0] - y[3]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
    dydx[5] = cof*(y[3]*B[1] - y[4]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
 
-   //G4cout << G4ThreeVector(dydx[3], dydx[4], dydx[5]) << G4endl;
-   //G4cout << G4ThreeVector(dydx[0], dydx[1], dydx[2]) << G4endl;
 
    return ;
 }
