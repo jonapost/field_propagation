@@ -45,7 +45,7 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
 
    for(i=0;i<nvar;i++) yInitial[i]=yInput[i];
 
-   for(i=3;i<nvar;i++) yInitial[i] *= iMass;
+   //for(i=3;i<nvar;i++) yInitial[i] *= iMass;
 
    yInitial[7]= yInput[7];    // Copy the time in case ... even if not really needed
    yMiddle[7] = yInput[7];  // Copy the time from initial value 
@@ -94,7 +94,7 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
                                             // when it should be reported as 3+1 = 4 ?
    }
    
-   for(i=3;i<nvar;i++) yOutput[i] *= mass;
+   //for(i=3;i<nvar;i++) yOutput[i] *= mass;
 
 
    // Now renomalize momentum
@@ -107,7 +107,7 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    fInitialPoint = G4ThreeVector( yInitial[0], yInitial[1], yInitial[2]); 
    fFinalPoint   = G4ThreeVector( yOutput[0],  yOutput[1],  yOutput[2]); 
 
-   cout << DistChord() << endl;
+   //cout << DistChord() << endl;
 
    return ;
 }
@@ -160,6 +160,8 @@ void ChawlaSharmaRKNstepper::DumbStepper(
       mom[i] /= m_mom;
    }*/
    
+   //G4cout << G4ThreeVector(mom[0],mom[1],mom[2]) << G4endl;
+
    t = yIn[7];
       
 	for(i = 0; i < 3; i ++){

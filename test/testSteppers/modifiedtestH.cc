@@ -36,6 +36,7 @@
 #include "G4NystromRK4.hh"
 #include "ChawlaSharmaRKNstepperFullRenormalization.hh"
 #include "NystromRK4noNormalization.hh"
+#include "ChawlaSharmaWrapper.hh"
 
 using namespace std;
 using namespace CLHEP;
@@ -83,17 +84,32 @@ int main(int argc, char *args[]) {
 
 
          // Might want to play around with the momentum values:
-         x_mom = 0.9,                   //mom - momentum
-         y_mom = 10., z_mom = 1.,
+         x_mom = 0.0,                   //mom - momentum
+         y_mom = 0.6, z_mom = 0.8,
 
          x_field = 0.0 * tesla,         //Uniform Magnetic Field (x,y,z)
-         y_field = 0.0 * tesla, z_field = -0.1 * tesla;
+         y_field = 0.0 * tesla, z_field = -1. * tesla;
+
+
+
+   G4double momentum = 0.5 * proton_mass_c2;
+   G4double imom = 1. / sqrt( x_mom * x_mom + y_mom * y_mom + z_mom * z_mom );
+
+   x_mom *= momentum * imom;
+   y_mom *= momentum * imom;
+   z_mom *= momentum * imom;
+
+
+   G4double kineticEnergy =  momentum*momentum /
+                     ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 )
+   		    + proton_mass_c2 );
+          // G4double velocity = momentum / ( proton_mass_c2 + kineticEnergy );
 
    //Set Charge etc.
    G4double particleCharge = +1.0,  // in e+ units
          spin = 0.0,                        // ignore the spin
          magneticMoment = 0.0,             // ignore the magnetic moment
-         mass = 1.;
+         mass = proton_mass_c2 + kineticEnergy;
 
    /*----------------------------END-SETTINGS-------------------------------*/
 
@@ -113,7 +129,12 @@ int main(int argc, char *args[]) {
       step_len = (float) (atof(args[3]) * mm);
 
    //Initialising coordinates
-   G4double yIn[] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+   G4double yIn[] = { x_pos, y_pos, z_pos, x_mom/proton_mass_c2, y_mom/proton_mass_c2, z_mom/proton_mass_c2, 0., 0., 0., 0. };
+   if (stepper_no != 8){
+	   yIn[3] *= proton_mass_c2;
+	   yIn[4] *= proton_mass_c2;
+	   yIn[5] *= proton_mass_c2;
+   }
 
    //Empty buckets for results
    G4double dydx[10]    =  { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. },
@@ -121,7 +142,8 @@ int main(int argc, char *args[]) {
             yerr[10]    =  { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
    //1. Create a field :
-   Mag_UsualEqRhs_IntegrateByTime *fEquation;
+   //Mag_UsualEqRhs_IntegrateByTime *fEquation;
+   G4Mag_EqRhs *fEquation;
    G4UniformMagField *myUniformField;
    G4QuadrupoleMagField *quadrupoleMagField;
    G4CachedMagneticField *myQuadField;
@@ -131,9 +153,12 @@ int main(int argc, char *args[]) {
       G4int type_mag_field = atoi(args[4]);
       switch (type_mag_field) {
          case 1:
-            myUniformField = new G4UniformMagField(
+        	myUniformField = new G4UniformMagField(
                   G4ThreeVector(x_field, y_field, z_field));
-            fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
+        	if (stepper_no == 8)
+        		fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
+        	else
+        		fEquation = new G4Mag_UsualEqRhs(myUniformField);
             break;
          case 2:
             quadrupoleMagField = new G4QuadrupoleMagField(
@@ -166,6 +191,7 @@ int main(int argc, char *args[]) {
          //momentum magnitude
          mass);               //No place for mass in fEquation though
 
+
    //Create a stepper :
    G4MagIntegratorStepper * myStepper; // * exactStepper;
 
@@ -174,6 +200,8 @@ int main(int argc, char *args[]) {
    ChawlaSharmaRKNstepperFullRenormalization *myChawlaSharmaRKNstepperFullRenormalization;
    G4NystromRK4 *myNystromStepper;
    NystromRK4noNormalization *myNystromStepper_noNormalization;
+
+   ChawlaSharmaWrapper *myCSWStepper;
 
    //Choose the stepper based on the command line argument
    switch (stepper_no) {
@@ -202,8 +230,7 @@ int main(int argc, char *args[]) {
          myStepper = new ChawlaSharmaRKNstepper(fEquation);
          break;
       case 9:
-         myStepper = new ChawlaSharmaRKNstepper(fEquation);
-         // Renormalization in between steps.
+         myCSWStepper = new ChawlaSharmaWrapper(fEquation);
          break;
       case 10:
          myStepper = new ChawlaSharmaRKNstepperFullRenormalization(fEquation);
@@ -230,10 +257,10 @@ int main(int argc, char *args[]) {
          simpleHeumStepper = dynamic_cast<G4SimpleHeum*>(myStepper);
          break;
       case 8:
-         myChawlaStepper = dynamic_cast<ChawlaSharmaRKNstepper*>(myStepper);
+         //myChawlaStepper = dynamic_cast<ChawlaSharmaRKNstepper*>(myStepper);
          break;
       case 9:
-         myChawlaStepper = dynamic_cast<ChawlaSharmaRKNstepper*>(myStepper);
+         //myChawlaStepper = dynamic_cast<ChawlaSharmaRKNstepper*>(myStepper);
          break;
       case 10:
          myChawlaSharmaRKNstepperFullRenormalization =
@@ -263,17 +290,14 @@ int main(int argc, char *args[]) {
             simpleHeumStepper->DumbStepper(yIn, dydx, step_len, yout);
             break;
          case 8:
-            myChawlaStepper->DumbStepper(yIn, step_len, yout);
-            break;
+            //myChawlaStepper->DumbStepper(yIn, step_len, yout);
+        	myStepper->Stepper(yIn, dydx, step_len, yout, yerr);
+
+        	 break;
          case 9:
-            // Renormalize momentum before the first step.
-            mom_inorm = 1.
-                  / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
-            for (int k = 3; k < 6; k++) {
-               yIn[k] *= mom_inorm;
-            }
-            myChawlaStepper->DumbStepper(yIn, step_len, yout);
-            break;
+            //myCSWStepper->Stepper(yIn, dydx, step_len, yout, yerr);
+        	 myCSWStepper->DumbStepper(yIn, step_len, yout);
+        	 break;
          case 10:
             // Renormalize momentum before the first step, and during each step.
             mom_inorm = 1.
@@ -305,6 +329,11 @@ int main(int argc, char *args[]) {
          default:
             myStepper->RightHandSide(yIn, dydx);
             myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+            mom_inorm = 1. / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
+			for (int k = 3; k < 6; k++) {
+			   yIn[k] *= mom_inorm;
+			}
+
       }
 
       // exactStepper->RightHandSide(yInX, dydxRef);
@@ -331,10 +360,10 @@ int main(int argc, char *args[]) {
 
    switch (stepper_no) {
       case 8:
-         delete myChawlaStepper;
+         delete myStepper;
          break;
       case 9:
-         delete myChawlaStepper;
+         delete myCSWStepper;
          break;
       case 10:
          delete myChawlaSharmaRKNstepperFullRenormalization;

@@ -21,19 +21,20 @@
 
 class ChawlaSharmaRKNstepper : public G4MagIntegratorStepper
 {
+	friend class ChawlaSharmaWrapper;
 	public:
 	ChawlaSharmaRKNstepper(G4Mag_EqRhs *EquationMotion,
 					G4int numberOfVariables = 6, G4int numStateVariables = 12);
 	
 	~ChawlaSharmaRKNstepper();
 	
-	void Stepper( const G4double y[],
+	virtual void Stepper( const G4double y[],
                   const G4double dydx[],
                         G4double h,
                         G4double yout[],
                         G4double yerr[]  );
 	
-	void DumbStepper( const G4double y[],
+	virtual void DumbStepper( const G4double y[],
 										//const G4double dydx[],
 										G4double h,
 										G4double yOut[] );

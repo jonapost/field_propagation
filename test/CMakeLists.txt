@@ -1,6 +1,6 @@
 # project(test_Steppers)
 
-#add_subdirectory(testSteppers)
+add_subdirectory(testSteppers)
 
 # project(test_Templated)
 
