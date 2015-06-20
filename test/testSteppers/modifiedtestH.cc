@@ -298,6 +298,18 @@ int main(int argc, char *args[]) {
    if (argc > 6)
       output_format = args[6];
 
+
+   /*
+   for (int k = 0; k < 3; k++) {
+      cout << yIn[0][k] << ",";
+   }
+   for (int k = 3; k < 6; k++) {
+      cout << yIn[0][k] / mass << ",";
+   }
+   cout << endl;
+   cout << endl;
+   */
+
    for (int j = 0; j < no_of_steps; j++) {
       for (int i = 0; i < 2; i ++){
          stepper_no = stepper_choices[i];
@@ -322,7 +334,7 @@ int main(int argc, char *args[]) {
                //mom_inorm = 1. / sqrt(yIn[3] * yIn[3] + yIn[4] * yIn[4] + yIn[5] * yIn[5]);
          }
 
-         if (output_format == G4String("values")) {
+         if (output_format == G4String("values") && i == 0) {
             // Position output:
             for (int k = 0; k < 3; k++) {
                cout << yout[i][k] << ",";
@@ -331,11 +343,15 @@ int main(int argc, char *args[]) {
             // Velocity output
             for (int k = 3; k < 6; k++) {
                // Uncomment to print out momentums:
-               //cout << yout[i][k] / mass << ",";
+               cout << yout[i][k] / mass << ",";
             }
+            cout << endl;
+         }
+
 
 
             // Total time:
+            /*
             if (stepper_no == 8)
                total_time[i] = yout[i][6];
             else
@@ -378,6 +394,7 @@ int main(int argc, char *args[]) {
                cout << endl;
             }
          }
+         */
          //Copy yout into yIn
          for (int k = 0; k < 8; k++){
             yIn[i][k] = yout[i][k];
