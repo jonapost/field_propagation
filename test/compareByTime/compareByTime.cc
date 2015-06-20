@@ -42,6 +42,15 @@ using namespace std;
 using namespace CLHEP;
 
 
+MagIntegratorStepper_byTime<G4CashKarpRKF45>  *myCashKarp;
+MagIntegratorStepper_byTime<BogackiShampine23> *myBogacki23;
+MagIntegratorStepper_byTime<DormandPrince745> *myDormand745;
+MagIntegratorStepper_byTime<BogackiShampine45> *myBogacki45;
+MagIntegratorStepper_byTime<G4ClassicalRK4> *myClassicRK;
+MagIntegratorStepper_byTime<G4SimpleHeum> *mySimpleHeum;
+MagIntegratorStepper_byTime<G4NystromRK4> *myNystrom;
+MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper> *myCharma;
+
 
 int main(int argc, char *args[]) {
    G4double x_pos = 0.,                   //pos - position
@@ -90,6 +99,55 @@ int main(int argc, char *args[]) {
          //momentum magnitude
          mass);
 
+   G4int stepper_no = 0, no_of_steps = 10;
+   G4double step_len = 1.;
+
+
+   if (argc > 1)
+         stepper_no = atoi(args[1]);
+   if (argc > 2)
+      no_of_steps = atoi(args[1]);
+   if (argc > 3)
+      step_len = (float) (atof(args[2]) * mm);
+
+
+   switch (stepper_no) {
+            // case 0:
+            // myStepper = new G4ExactHelixStepper(fEquation);
+            // break;
+            case 1:
+               myCashKarp = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+               break;
+            case 2:
+               myBogacki23 = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
+               break;
+            case 3:
+               myDormand745 = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
+               break;
+            case 4:
+               myBogacki45 = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
+               break;
+            case 5:
+               myClassicRK = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+               break;
+            case 6:
+               mySimpleHeum = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
+               break;
+            case 7:
+               myNystrom = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
+               break;
+            case 8:
+               myCharma = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+               break;
+            default:
+               myStepper = 0;
+         }
+      }
+
+
+
+
+
    MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
 
    // For output to ipython notebook (for visualization)
@@ -100,12 +158,6 @@ int main(int argc, char *args[]) {
 
    /*----------------NOW STEPPING-----------------*/
 
-   G4int no_of_steps = 10;
-   G4double step_len = 1.;
-   if (argc > 1)
-      no_of_steps = atoi(args[1]);
-   if (argc > 2)
-      step_len = (float) (atof(args[2]) * mm);
    G4double yout[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
    G4double yerr[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 

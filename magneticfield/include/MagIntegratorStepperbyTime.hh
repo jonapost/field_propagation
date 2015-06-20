@@ -37,7 +37,10 @@ public:
 
 
 private:
+   G4double yIn[10];
+   G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
 
+   G4Mag_EqRhs * m_fEq;
    BaseStepper *baseStepper;
 
 
@@ -49,6 +52,9 @@ template <class BaseStepper>
 inline
 void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4double yIn[], G4double dydx[]) {
    baseStepper->ComputeRightHandSide(yIn, dydx);
+   // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
+   //for (int i = 3; i < 6; i ++)
+   //   dydx[i] *= inv_mass;
 }
 
 template <class BaseStepper>
@@ -58,7 +64,13 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double hstep,
             G4double yOutput[],
             G4double yError [] ) {
+   for (int i = 0; i < 10; i ++)
+      yIn[i] = yInput[i];
+   for (int i = 3; i < 6; i ++)
+      yIn[i] *= inv_mass;
    baseStepper->Stepper( yInput, dydx, hstep, yOutput, yError );
+   for (int i = 3; i < 6; i ++)
+      yOutput[i] *= mass;
 }
 
 template <class BaseStepper>
@@ -80,14 +92,16 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
                                                                   G4int numStateVariables)
 : G4MagIntegratorStepper(EquationRhs, numberOfVariables, numStateVariables)
 {
+   m_fEq = EquationRhs;
    baseStepper = new BaseStepper(EquationRhs);  //, numberOfVariables, numStateVariables);
-   // TODO Auto-generated constructor stub
+   for (int i = 0; i < 10; i ++)
+      yIn[i] = 0.;
+   mass = mass = m_fEq->FMass();
+   inv_mass = 1. / mass;
 }
 template <class BaseStepper>
 inline MagIntegratorStepper_byTime<BaseStepper>::~MagIntegratorStepper_byTime() {
    delete baseStepper;
-   // TODO Auto-generated constructor stub
-
 }
 
 
