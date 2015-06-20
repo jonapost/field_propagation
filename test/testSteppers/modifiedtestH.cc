@@ -136,9 +136,6 @@ int main(int argc, char *args[]) {
          yIn[i][j] = Begining_vals[j];
    }
 
-   //yIn[0] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
-   //yIn[1] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
-
    //Empty buckets for results
    G4double **dydx = new G4double*[2];
    G4double **yout = new G4double*[2];
@@ -154,15 +151,6 @@ int main(int argc, char *args[]) {
          yerr[i][j] = zeros[j];
       }
    }
-   /*
-   dydx[0] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   yout[0] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   yerr[0] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   dydx[1] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   yout[1] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   yerr[1] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   */
-
    //1. Create a field :
    //Mag_UsualEqRhs_IntegrateByTime *fEquation;
    G4Mag_EqRhs **fEquation = new G4Mag_EqRhs*[2];
@@ -337,17 +325,12 @@ int main(int argc, char *args[]) {
          if (output_format == G4String("values")) {
             // Position output:
             for (int k = 0; k < 3; k++) {
-               // Uncomment out if you want to print error
-               // cout << yout[i] - youtX[i] << ",";
-               //cout << yout[i][k] << ",";
+               cout << yout[i][k] << ",";
             }
-            // Uncomment out if you want to print error
-            //cout << yout[2] - youtX[2] << endl;
 
             // Velocity output
             for (int k = 3; k < 6; k++) {
-               // Uncomment out if you want to print error
-               // cout << yout[i] - youtX[i] << ",";
+               // Uncomment to print out momentums:
                //cout << yout[i][k] / mass << ",";
             }
 
@@ -357,7 +340,8 @@ int main(int argc, char *args[]) {
                total_time[i] = yout[i][6];
             else
                total_time[i] += step_len / ( G4ThreeVector( yIn[i][3], yIn[i][4], yIn[i][5] ).mag() / mass ); // Step / ||v||. Remember that yIn[3..5] represents momentum.
-            cout << total_time[i] << ",";
+            // Uncomment to print out time
+            //cout << total_time[i] << ",";
 
 
             // Total Arc Length:
@@ -365,10 +349,11 @@ int main(int argc, char *args[]) {
                total_distance[i] = yout[i][7];
             else
                total_distance[i] += step_len;
-            cout << total_distance[i];
+            // Uncomment to print arc_length
+            //cout << total_distance[i];
 
             if (i == 0)
-               cout << "|";
+               cout << ",";
             else
                cout << endl;
          }
