@@ -30,8 +30,6 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
 		                  G4double yOutput[],
 		                  G4double yError [] ){
 		                  
-   G4double mass = m_fEq->FMass();
-   G4double iMass = 1. / mass;
 
    const G4int nvar = this->GetNumberOfVariables() ;
    const G4int maxvar= GetNumberOfStateVariables();

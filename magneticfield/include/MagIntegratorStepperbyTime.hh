@@ -24,7 +24,7 @@ public:
                                  G4int numStateVariables = 12);
    virtual ~MagIntegratorStepper_byTime();
 
-   inline void ComputeRightHandSide(const G4double yIn[], G4double dydx[]);
+   inline void ComputeRightHandSide(const G4double yInput[], G4double dydx[]);
 
    inline void Stepper(const G4double yInput[],
                        const G4double dydx[],
@@ -36,12 +36,16 @@ public:
    inline G4int IntegratorOrder() const;
 
 
+   //G4double mass, inv_mass;   // G4MagIntegratorStepper doesn't have these fields by default
+                              // only public for quickness!
+   BaseStepper *baseStepper;
+
+
 private:
    G4double yIn[10];
    G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
 
-   G4Mag_EqRhs * m_fEq;
-   BaseStepper *baseStepper;
+   G4Mag_EqRhs  *m_fEq;
 
 
 };
@@ -50,8 +54,10 @@ private:
 
 template <class BaseStepper>
 inline
-void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4double yIn[], G4double dydx[]) {
-   baseStepper->ComputeRightHandSide(yIn, dydx);
+void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4double yInput[], G4double dydx[]) {
+   //cout  << "MagIntegratorStepper_byTime: "<< G4ThreeVector( yInput[3], yInput[4], yInput[5] ).mag() << endl;
+   baseStepper->ComputeRightHandSide(yInput, dydx);
+
    // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
    //for (int i = 3; i < 6; i ++)
    //   dydx[i] *= inv_mass;
@@ -68,7 +74,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       yIn[i] = yInput[i];
    for (int i = 3; i < 6; i ++)
       yIn[i] *= inv_mass;
-   baseStepper->Stepper( yInput, dydx, hstep, yOutput, yError );
+   baseStepper->Stepper( yIn, dydx, hstep, yOutput, yError );
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= mass;
 }
@@ -96,7 +102,7 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
    baseStepper = new BaseStepper(EquationRhs);  //, numberOfVariables, numStateVariables);
    for (int i = 0; i < 10; i ++)
       yIn[i] = 0.;
-   mass = mass = m_fEq->FMass();
+   mass = m_fEq->FMass();
    inv_mass = 1. / mass;
 }
 template <class BaseStepper>

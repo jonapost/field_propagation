@@ -38,18 +38,13 @@
 
 #include "MagIntegratorStepperbyTime.hh"
 
+
+#include <iostream>
+#include "G4ThreeVector.hh"
+
 using namespace std;
 using namespace CLHEP;
 
-
-MagIntegratorStepper_byTime<G4CashKarpRKF45>  *myCashKarp;
-MagIntegratorStepper_byTime<BogackiShampine23> *myBogacki23;
-MagIntegratorStepper_byTime<DormandPrince745> *myDormand745;
-MagIntegratorStepper_byTime<BogackiShampine45> *myBogacki45;
-MagIntegratorStepper_byTime<G4ClassicalRK4> *myClassicRK;
-MagIntegratorStepper_byTime<G4SimpleHeum> *mySimpleHeum;
-MagIntegratorStepper_byTime<G4NystromRK4> *myNystrom;
-MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper> *myCharma;
 
 
 int main(int argc, char *args[]) {
@@ -83,15 +78,31 @@ int main(int argc, char *args[]) {
          magneticMoment = 0.0,             // ignore the magnetic moment
          mass = proton_mass_c2 + kineticEnergy;
 
+   G4double imass = 1. / mass;
 
    G4double yIn[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
    G4double dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
+   G4UniformMagField *myUniformField;
+   G4QuadrupoleMagField *quadrupoleMagField;
+   G4Mag_EqRhs *fEquation;
 
-   G4UniformMagField *myUniformField = new G4UniformMagField(
-                     G4ThreeVector(x_field, y_field, z_field));
-   G4Mag_EqRhs *fEquation = new G4Mag_UsualEqRhs(myUniformField);
+   G4int mag_field_choice = 2;
+   if (argc > 4)
+      mag_field_choice = atoi(args[4]);
 
+   if (mag_field_choice == 1){
+      myUniformField = new G4UniformMagField(
+                        G4ThreeVector(x_field, y_field, z_field));
+      fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
+   }
+   else {
+      quadrupoleMagField = new G4QuadrupoleMagField(
+                        10. * tesla / (50. * cm));
+      // myQuadField = new G4CachedMagneticField(quadrupoleMagField,
+      //      1.0 * cm);
+      fEquation = new Mag_UsualEqRhs_IntegrateByTime(quadrupoleMagField);
+   }
    G4ChargeState chargeState(particleCharge, // The charge can change (dynamic)
                spin = 0.0, magneticMoment = 0.0);
    fEquation->SetChargeMomentumMass(chargeState,
@@ -106,53 +117,58 @@ int main(int argc, char *args[]) {
    if (argc > 1)
          stepper_no = atoi(args[1]);
    if (argc > 2)
-      no_of_steps = atoi(args[1]);
+      no_of_steps = atoi(args[2]);
    if (argc > 3)
-      step_len = (float) (atof(args[2]) * mm);
+      step_len = (float) (atof(args[3]) * mm);
 
+   G4MagIntegratorStepper *myStepper;
+   MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper> *myChawla;
 
    switch (stepper_no) {
-            // case 0:
-            // myStepper = new G4ExactHelixStepper(fEquation);
-            // break;
-            case 1:
-               myCashKarp = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
-               break;
-            case 2:
-               myBogacki23 = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
-               break;
-            case 3:
-               myDormand745 = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
-               break;
-            case 4:
-               myBogacki45 = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
-               break;
-            case 5:
-               myClassicRK = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
-               break;
-            case 6:
-               mySimpleHeum = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
-               break;
-            case 7:
-               myNystrom = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
-               break;
-            case 8:
-               myCharma = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
-               break;
-            default:
-               myStepper = 0;
-         }
-      }
-
-
-
-
-
-   MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+      // case 0:
+      // myStepper = new G4ExactHelixStepper(fEquation);
+      // break;
+      case 1:
+         myStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+         break;
+      case 2:
+         myStepper = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
+         break;
+      case 3:
+         myStepper = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
+         break;
+      case 4:
+         myStepper = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
+         break;
+      case 5:
+         myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+         break;
+      case 6:
+         myStepper = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
+         break;
+      case 7:
+         myStepper = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
+         break;
+      case 8:
+         myChawla = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+         break;
+      case 9:
+         myStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+         break;
+      default:
+         myStepper = 0;
+   }
+   /*
+   if ( ! myStepper->mass ){
+      cout << "no mass" << endl;
+      return 0;
+   }
+   */
+   // MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
 
    // For output to ipython notebook (for visualization)
    cout.setf(ios_base::fixed);
-   cout.precision(10);
+   cout.precision(15);
 
    /*-----------------------END PREPARING STEPPER---------------------------*/
 
@@ -174,9 +190,31 @@ int main(int argc, char *args[]) {
    */
 
    for (int j = 0; j < no_of_steps; j++) {
-      myStepper->ComputeRightHandSide(yIn, dydx);
-      myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+      if (stepper_no == 8){
+         for (int i = 3; i < 6; i ++){
+            yIn[i] *= imass;
+         }
 
+         myChawla->baseStepper->DumbStepper(yIn,step_len,yout);
+         for (int i = 3; i < 6; i ++){
+            yout[i] *= mass;
+         }
+      }
+      else{
+         for (int i = 3; i < 6; i ++){
+            yIn[i] *= imass;
+         }
+
+         myStepper->ComputeRightHandSide(yIn, dydx);
+         //cout  << "compareByTime: "<< G4ThreeVector( yIn[3], yIn[4], yIn[5] ).mag() << endl;
+
+         for (int i = 3; i < 6; i ++){
+            yIn[i] *= mass;
+         }
+
+         //cout << G4ThreeVector( dydx[3], dydx[4], dydx[5] ).mag() << endl;
+         myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+      }
 
       // Position output:
       for (int k = 0; k < 3; k++) {
@@ -196,7 +234,11 @@ int main(int argc, char *args[]) {
    }
 
 
-   delete myStepper;
+   if (stepper_no == 8)
+      delete myChawla;
+   else
+      delete myStepper;
+
    delete fEquation;
 
 }
