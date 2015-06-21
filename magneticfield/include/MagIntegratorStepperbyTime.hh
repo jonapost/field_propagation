@@ -24,7 +24,10 @@ public:
                                  G4int numStateVariables = 12);
    virtual ~MagIntegratorStepper_byTime();
 
+   inline void ComputeRightHandSide2(const G4double yInput[], G4double dydx[]);
    inline void ComputeRightHandSide(const G4double yInput[], G4double dydx[]);
+
+
 
    inline void Stepper(const G4double yInput[],
                        const G4double dydx[],
@@ -42,7 +45,7 @@ public:
 
 
 private:
-   G4double yIn[10];
+   G4double yIn[10], dydx_copy[10];
    G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
 
    G4Mag_EqRhs  *m_fEq;
@@ -54,10 +57,30 @@ private:
 
 template <class BaseStepper>
 inline
-void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4double yInput[], G4double dydx[]) {
+void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide2(const G4double yInput[], G4double dydx[]) {
    //cout  << "MagIntegratorStepper_byTime: "<< G4ThreeVector( yInput[3], yInput[4], yInput[5] ).mag() << endl;
    baseStepper->ComputeRightHandSide(yInput, dydx);
 
+   // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
+   //for (int i = 3; i < 6; i ++)
+   //   dydx[i] *= inv_mass;
+}
+
+template <class BaseStepper>
+inline
+void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4double yInput[], G4double dydx[]) {
+   //cout  << "MagIntegratorStepper_byTime: "<< G4ThreeVector( yInput[3], yInput[4], yInput[5] ).mag() << endl;
+   //cout << "inside MagIntegratorStepper_byTime...:: ComputeRightHandSide()" << endl;
+
+   for (int i = 0; i < 10; i ++)
+      yIn[i] = yInput[i];
+   for (int i = 3; i < 6; i ++)
+      yIn[i] *= inv_mass;
+
+   baseStepper->ComputeRightHandSide(yIn, dydx);
+
+   for (int i = 3; i < 6; i ++)
+      dydx[i] *= mass;
    // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
    //for (int i = 3; i < 6; i ++)
    //   dydx[i] *= inv_mass;
@@ -70,11 +93,16 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double hstep,
             G4double yOutput[],
             G4double yError [] ) {
-   for (int i = 0; i < 10; i ++)
+   for (int i = 0; i < 10; i ++){
       yIn[i] = yInput[i];
-   for (int i = 3; i < 6; i ++)
+      dydx_copy[i] = dydx[i];
+   }
+   for (int i = 3; i < 6; i ++){
       yIn[i] *= inv_mass;
-   baseStepper->Stepper( yIn, dydx, hstep, yOutput, yError );
+      dydx_copy[i] *= inv_mass;
+   }
+   //cout << "inside MagIntegratorStepper_byTime<BaseStepper>::Stepper()" << endl;
+   baseStepper->Stepper( yIn, dydx_copy, hstep, yOutput, yError );
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= mass;
 }

@@ -122,7 +122,6 @@ int main(int argc, char *args[]) {
       step_len = (float) (atof(args[3]) * mm);
 
    G4MagIntegratorStepper *myStepper;
-   MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper> *myChawla;
 
    switch (stepper_no) {
       // case 0:
@@ -150,9 +149,6 @@ int main(int argc, char *args[]) {
          myStepper = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
          break;
       case 8:
-         myChawla = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
-         break;
-      case 9:
          myStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
          break;
       default:
@@ -190,31 +186,8 @@ int main(int argc, char *args[]) {
    */
 
    for (int j = 0; j < no_of_steps; j++) {
-      if (stepper_no == 8){
-         for (int i = 3; i < 6; i ++){
-            yIn[i] *= imass;
-         }
-
-         myChawla->baseStepper->DumbStepper(yIn,step_len,yout);
-         for (int i = 3; i < 6; i ++){
-            yout[i] *= mass;
-         }
-      }
-      else{
-         for (int i = 3; i < 6; i ++){
-            yIn[i] *= imass;
-         }
-
-         myStepper->ComputeRightHandSide(yIn, dydx);
-         //cout  << "compareByTime: "<< G4ThreeVector( yIn[3], yIn[4], yIn[5] ).mag() << endl;
-
-         for (int i = 3; i < 6; i ++){
-            yIn[i] *= mass;
-         }
-
-         //cout << G4ThreeVector( dydx[3], dydx[4], dydx[5] ).mag() << endl;
-         myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
-      }
+      myStepper->ComputeRightHandSide(yIn, dydx);
+      myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
 
       // Position output:
       for (int k = 0; k < 3; k++) {
@@ -233,12 +206,7 @@ int main(int argc, char *args[]) {
       }
    }
 
-
-   if (stepper_no == 8)
-      delete myChawla;
-   else
-      delete myStepper;
-
+   delete myStepper;
    delete fEquation;
 
 }
