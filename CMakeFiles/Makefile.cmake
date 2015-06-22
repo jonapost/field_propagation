@@ -19,7 +19,10 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "magneticfield/CMakeLists.txt"
   "magneticfield/src/CMakeLists.txt"
   "test/CMakeLists.txt"
+  "test/compareByTime/CMakeLists.txt"
+  "test/comparePairByTime/CMakeLists.txt"
   "test/testSteppers/CMakeLists.txt"
+  "test/testTemplated/CMakeLists.txt"
   "/opt/Qt5.4.1/5.4/gcc_64/lib/cmake/Qt5Core/Qt5CoreConfig.cmake"
   "/opt/Qt5.4.1/5.4/gcc_64/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake"
   "/opt/Qt5.4.1/5.4/gcc_64/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake"
@@ -93,10 +96,16 @@ SET(CMAKE_MAKEFILE_PRODUCTS
   "magneticfield/src/CMakeFiles/CMakeDirectoryInformation.cmake"
   "test/CMakeFiles/CMakeDirectoryInformation.cmake"
   "test/testSteppers/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "test/testTemplated/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "test/compareByTime/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "test/comparePairByTime/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 SET(CMAKE_DEPEND_INFO_FILES
   "magneticfield/src/CMakeFiles/magfield.dir/DependInfo.cmake"
   "test/testSteppers/CMakeFiles/modifiedtestH.dir/DependInfo.cmake"
+  "test/testTemplated/CMakeFiles/testPropagateMagField.dir/DependInfo.cmake"
+  "test/compareByTime/CMakeFiles/compareByTime.dir/DependInfo.cmake"
+  "test/comparePairByTime/CMakeFiles/comparePairByTime.dir/DependInfo.cmake"
   )

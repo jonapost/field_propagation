@@ -69,14 +69,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles/progress.marks
-	$(MAKE) -f CMakeFiles/Makefile2 all
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/testTemplated/CMakeFiles/progress.marks
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f CMakeFiles/Makefile2 test/testTemplated/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) -f CMakeFiles/Makefile2 clean
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f CMakeFiles/Makefile2 test/testTemplated/clean
 .PHONY : clean
 
 # The main clean target
@@ -85,83 +85,56 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f CMakeFiles/Makefile2 test/testTemplated/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f CMakeFiles/Makefile2 test/testTemplated/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named magfield
+# Convenience name for target.
+test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f CMakeFiles/Makefile2 test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule
+.PHONY : test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule
 
-# Build rule for target.
-magfield: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 magfield
-.PHONY : magfield
-
-# fast build rule for target.
-magfield/fast:
-	$(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/build
-.PHONY : magfield/fast
-
-#=============================================================================
-# Target rules for targets named modifiedtestH
-
-# Build rule for target.
-modifiedtestH: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 modifiedtestH
-.PHONY : modifiedtestH
-
-# fast build rule for target.
-modifiedtestH/fast:
-	$(MAKE) -f test/testSteppers/CMakeFiles/modifiedtestH.dir/build.make test/testSteppers/CMakeFiles/modifiedtestH.dir/build
-.PHONY : modifiedtestH/fast
-
-#=============================================================================
-# Target rules for targets named testPropagateMagField
-
-# Build rule for target.
-testPropagateMagField: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testPropagateMagField
+# Convenience name for target.
+testPropagateMagField: test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule
 .PHONY : testPropagateMagField
 
 # fast build rule for target.
 testPropagateMagField/fast:
-	$(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/build
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/build
 .PHONY : testPropagateMagField/fast
 
-#=============================================================================
-# Target rules for targets named compareByTime
+testPropagateMagField.o: testPropagateMagField.cc.o
+.PHONY : testPropagateMagField.o
 
-# Build rule for target.
-compareByTime: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 compareByTime
-.PHONY : compareByTime
+# target to build an object file
+testPropagateMagField.cc.o:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/testPropagateMagField.cc.o
+.PHONY : testPropagateMagField.cc.o
 
-# fast build rule for target.
-compareByTime/fast:
-	$(MAKE) -f test/compareByTime/CMakeFiles/compareByTime.dir/build.make test/compareByTime/CMakeFiles/compareByTime.dir/build
-.PHONY : compareByTime/fast
+testPropagateMagField.i: testPropagateMagField.cc.i
+.PHONY : testPropagateMagField.i
 
-#=============================================================================
-# Target rules for targets named comparePairByTime
+# target to preprocess a source file
+testPropagateMagField.cc.i:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/testPropagateMagField.cc.i
+.PHONY : testPropagateMagField.cc.i
 
-# Build rule for target.
-comparePairByTime: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 comparePairByTime
-.PHONY : comparePairByTime
+testPropagateMagField.s: testPropagateMagField.cc.s
+.PHONY : testPropagateMagField.s
 
-# fast build rule for target.
-comparePairByTime/fast:
-	$(MAKE) -f test/comparePairByTime/CMakeFiles/comparePairByTime.dir/build.make test/comparePairByTime/CMakeFiles/comparePairByTime.dir/build
-.PHONY : comparePairByTime/fast
+# target to generate assembly for a file
+testPropagateMagField.cc.s:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/testPropagateMagField.cc.s
+.PHONY : testPropagateMagField.cc.s
 
 # Help Target
 help:
@@ -171,11 +144,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... magfield"
-	@echo "... modifiedtestH"
 	@echo "... testPropagateMagField"
-	@echo "... compareByTime"
-	@echo "... comparePairByTime"
+	@echo "... testPropagateMagField.o"
+	@echo "... testPropagateMagField.i"
+	@echo "... testPropagateMagField.s"
 .PHONY : help
 
 
@@ -187,6 +159,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

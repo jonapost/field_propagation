@@ -12,7 +12,7 @@ file(GLOB Tfiles ../include/T*.hh ../include/T*.inl)
 
 list(REMOVE_ITEM headers ${Tfiles})
 
-# message( "Headers: ${headers}" )
+message( "Headers: ${headers}" )
 
 file(GLOB SOURCE_FILES_TMP *.cc)
 	set(sources ${SOURCE_FILES_TMP})

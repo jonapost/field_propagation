@@ -89,7 +89,7 @@ magneticfield/src/preinstall:
 magneticfield/src/CMakeFiles/magfield.dir/all:
 	$(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/depend
 	$(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
 	@echo "Built target magfield"
 .PHONY : magneticfield/src/CMakeFiles/magfield.dir/all
 
@@ -99,7 +99,7 @@ all: magneticfield/src/CMakeFiles/magfield.dir/all
 
 # Build rule for subdir invocation for target.
 magneticfield/src/CMakeFiles/magfield.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 57
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 60
 	$(MAKE) -f CMakeFiles/Makefile2 magneticfield/src/CMakeFiles/magfield.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 0
 .PHONY : magneticfield/src/CMakeFiles/magfield.dir/rule
@@ -122,14 +122,23 @@ clean: magneticfield/src/CMakeFiles/magfield.dir/clean
 
 # Convenience name for "all" pass in the directory.
 test/all: test/testSteppers/all
+test/all: test/testTemplated/all
+test/all: test/compareByTime/all
+test/all: test/comparePairByTime/all
 .PHONY : test/all
 
 # Convenience name for "clean" pass in the directory.
 test/clean: test/testSteppers/clean
+test/clean: test/testTemplated/clean
+test/clean: test/compareByTime/clean
+test/clean: test/comparePairByTime/clean
 .PHONY : test/clean
 
 # Convenience name for "preinstall" pass in the directory.
 test/preinstall: test/testSteppers/preinstall
+test/preinstall: test/testTemplated/preinstall
+test/preinstall: test/compareByTime/preinstall
+test/preinstall: test/comparePairByTime/preinstall
 .PHONY : test/preinstall
 
 #=============================================================================
@@ -154,7 +163,7 @@ test/testSteppers/preinstall:
 test/testSteppers/CMakeFiles/modifiedtestH.dir/all: magneticfield/src/CMakeFiles/magfield.dir/all
 	$(MAKE) -f test/testSteppers/CMakeFiles/modifiedtestH.dir/build.make test/testSteppers/CMakeFiles/modifiedtestH.dir/depend
 	$(MAKE) -f test/testSteppers/CMakeFiles/modifiedtestH.dir/build.make test/testSteppers/CMakeFiles/modifiedtestH.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  58
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  63
 	@echo "Built target modifiedtestH"
 .PHONY : test/testSteppers/CMakeFiles/modifiedtestH.dir/all
 
@@ -164,7 +173,7 @@ all: test/testSteppers/CMakeFiles/modifiedtestH.dir/all
 
 # Build rule for subdir invocation for target.
 test/testSteppers/CMakeFiles/modifiedtestH.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 58
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 61
 	$(MAKE) -f CMakeFiles/Makefile2 test/testSteppers/CMakeFiles/modifiedtestH.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 0
 .PHONY : test/testSteppers/CMakeFiles/modifiedtestH.dir/rule
@@ -180,6 +189,156 @@ test/testSteppers/CMakeFiles/modifiedtestH.dir/clean:
 
 # clean rule for target.
 clean: test/testSteppers/CMakeFiles/modifiedtestH.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory test/testTemplated
+
+# Convenience name for "all" pass in the directory.
+test/testTemplated/all: test/testTemplated/CMakeFiles/testPropagateMagField.dir/all
+.PHONY : test/testTemplated/all
+
+# Convenience name for "clean" pass in the directory.
+test/testTemplated/clean: test/testTemplated/CMakeFiles/testPropagateMagField.dir/clean
+.PHONY : test/testTemplated/clean
+
+# Convenience name for "preinstall" pass in the directory.
+test/testTemplated/preinstall:
+.PHONY : test/testTemplated/preinstall
+
+#=============================================================================
+# Target rules for target test/testTemplated/CMakeFiles/testPropagateMagField.dir
+
+# All Build rule for target.
+test/testTemplated/CMakeFiles/testPropagateMagField.dir/all: magneticfield/src/CMakeFiles/magfield.dir/all
+	$(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/depend
+	$(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  64
+	@echo "Built target testPropagateMagField"
+.PHONY : test/testTemplated/CMakeFiles/testPropagateMagField.dir/all
+
+# Include target in all.
+all: test/testTemplated/CMakeFiles/testPropagateMagField.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 61
+	$(MAKE) -f CMakeFiles/Makefile2 test/testTemplated/CMakeFiles/testPropagateMagField.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 0
+.PHONY : test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule
+
+# Convenience name for target.
+testPropagateMagField: test/testTemplated/CMakeFiles/testPropagateMagField.dir/rule
+.PHONY : testPropagateMagField
+
+# clean rule for target.
+test/testTemplated/CMakeFiles/testPropagateMagField.dir/clean:
+	$(MAKE) -f test/testTemplated/CMakeFiles/testPropagateMagField.dir/build.make test/testTemplated/CMakeFiles/testPropagateMagField.dir/clean
+.PHONY : test/testTemplated/CMakeFiles/testPropagateMagField.dir/clean
+
+# clean rule for target.
+clean: test/testTemplated/CMakeFiles/testPropagateMagField.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory test/compareByTime
+
+# Convenience name for "all" pass in the directory.
+test/compareByTime/all: test/compareByTime/CMakeFiles/compareByTime.dir/all
+.PHONY : test/compareByTime/all
+
+# Convenience name for "clean" pass in the directory.
+test/compareByTime/clean: test/compareByTime/CMakeFiles/compareByTime.dir/clean
+.PHONY : test/compareByTime/clean
+
+# Convenience name for "preinstall" pass in the directory.
+test/compareByTime/preinstall:
+.PHONY : test/compareByTime/preinstall
+
+#=============================================================================
+# Target rules for target test/compareByTime/CMakeFiles/compareByTime.dir
+
+# All Build rule for target.
+test/compareByTime/CMakeFiles/compareByTime.dir/all: magneticfield/src/CMakeFiles/magfield.dir/all
+	$(MAKE) -f test/compareByTime/CMakeFiles/compareByTime.dir/build.make test/compareByTime/CMakeFiles/compareByTime.dir/depend
+	$(MAKE) -f test/compareByTime/CMakeFiles/compareByTime.dir/build.make test/compareByTime/CMakeFiles/compareByTime.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  1
+	@echo "Built target compareByTime"
+.PHONY : test/compareByTime/CMakeFiles/compareByTime.dir/all
+
+# Include target in all.
+all: test/compareByTime/CMakeFiles/compareByTime.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+test/compareByTime/CMakeFiles/compareByTime.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 61
+	$(MAKE) -f CMakeFiles/Makefile2 test/compareByTime/CMakeFiles/compareByTime.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 0
+.PHONY : test/compareByTime/CMakeFiles/compareByTime.dir/rule
+
+# Convenience name for target.
+compareByTime: test/compareByTime/CMakeFiles/compareByTime.dir/rule
+.PHONY : compareByTime
+
+# clean rule for target.
+test/compareByTime/CMakeFiles/compareByTime.dir/clean:
+	$(MAKE) -f test/compareByTime/CMakeFiles/compareByTime.dir/build.make test/compareByTime/CMakeFiles/compareByTime.dir/clean
+.PHONY : test/compareByTime/CMakeFiles/compareByTime.dir/clean
+
+# clean rule for target.
+clean: test/compareByTime/CMakeFiles/compareByTime.dir/clean
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory test/comparePairByTime
+
+# Convenience name for "all" pass in the directory.
+test/comparePairByTime/all: test/comparePairByTime/CMakeFiles/comparePairByTime.dir/all
+.PHONY : test/comparePairByTime/all
+
+# Convenience name for "clean" pass in the directory.
+test/comparePairByTime/clean: test/comparePairByTime/CMakeFiles/comparePairByTime.dir/clean
+.PHONY : test/comparePairByTime/clean
+
+# Convenience name for "preinstall" pass in the directory.
+test/comparePairByTime/preinstall:
+.PHONY : test/comparePairByTime/preinstall
+
+#=============================================================================
+# Target rules for target test/comparePairByTime/CMakeFiles/comparePairByTime.dir
+
+# All Build rule for target.
+test/comparePairByTime/CMakeFiles/comparePairByTime.dir/all: magneticfield/src/CMakeFiles/magfield.dir/all
+	$(MAKE) -f test/comparePairByTime/CMakeFiles/comparePairByTime.dir/build.make test/comparePairByTime/CMakeFiles/comparePairByTime.dir/depend
+	$(MAKE) -f test/comparePairByTime/CMakeFiles/comparePairByTime.dir/build.make test/comparePairByTime/CMakeFiles/comparePairByTime.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles  2
+	@echo "Built target comparePairByTime"
+.PHONY : test/comparePairByTime/CMakeFiles/comparePairByTime.dir/all
+
+# Include target in all.
+all: test/comparePairByTime/CMakeFiles/comparePairByTime.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+test/comparePairByTime/CMakeFiles/comparePairByTime.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 61
+	$(MAKE) -f CMakeFiles/Makefile2 test/comparePairByTime/CMakeFiles/comparePairByTime.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles 0
+.PHONY : test/comparePairByTime/CMakeFiles/comparePairByTime.dir/rule
+
+# Convenience name for target.
+comparePairByTime: test/comparePairByTime/CMakeFiles/comparePairByTime.dir/rule
+.PHONY : comparePairByTime
+
+# clean rule for target.
+test/comparePairByTime/CMakeFiles/comparePairByTime.dir/clean:
+	$(MAKE) -f test/comparePairByTime/CMakeFiles/comparePairByTime.dir/build.make test/comparePairByTime/CMakeFiles/comparePairByTime.dir/clean
+.PHONY : test/comparePairByTime/CMakeFiles/comparePairByTime.dir/clean
+
+# clean rule for target.
+clean: test/comparePairByTime/CMakeFiles/comparePairByTime.dir/clean
 .PHONY : clean
 
 #=============================================================================

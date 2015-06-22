@@ -7,11 +7,7 @@
 <storageModule buildSystemId="org.eclipse.cdt.core.defaultConfigDataProvider" id="org.eclipse.cdt.core.default.config.1" moduleId="org.eclipse.cdt.core.settings" name="Configuration">
 <externalSettings/>
 <extensions>
-<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser">
-<attribute key="addr2line" value="addr2line"/>
-<attribute key="c++filt" value="c++filt"/>
-</extension>
+<error_toolchain_type/>
 </extensions>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.language.mapping">
@@ -33,8 +29,8 @@
 <pathentry kind="mac" name="__STDC_HOSTED__" path="" value="1"/>
 <pathentry kind="mac" name="__GNUC__" path="" value="4"/>
 <pathentry kind="mac" name="__GNUC_MINOR__" path="" value="8"/>
-<pathentry kind="mac" name="__GNUC_PATCHLEVEL__" path="" value="2"/>
-<pathentry kind="mac" name="__VERSION__" path="" value="&quot;4.8.2&quot;"/>
+<pathentry kind="mac" name="__GNUC_PATCHLEVEL__" path="" value="4"/>
+<pathentry kind="mac" name="__VERSION__" path="" value="&quot;4.8.4&quot;"/>
 <pathentry kind="mac" name="__ATOMIC_RELAXED" path="" value=" "/>
 <pathentry kind="mac" name="__ATOMIC_SEQ_CST" path="" value="5"/>
 <pathentry kind="mac" name="__ATOMIC_ACQUIRE" path="" value="2"/>
@@ -477,6 +473,27 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
+<target name="[obj] ChawlaSharmaWrapper.cc.o" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>ChawlaSharmaWrapper.cc.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] ChawlaSharmaWrapper.cc.i" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>ChawlaSharmaWrapper.cc.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] ChawlaSharmaWrapper.cc.s" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>ChawlaSharmaWrapper.cc.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
 <target name="[obj] DormandPrince745.cc.o" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j4</buildArguments>
@@ -495,6 +512,27 @@
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j4</buildArguments>
 <buildTarget>DormandPrince745.cc.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[obj] FineRKNG34.cc.o" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>FineRKNG34.cc.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] FineRKNG34.cc.i" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>FineRKNG34.cc.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] FineRKNG34.cc.s" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>FineRKNG34.cc.s</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
@@ -1527,6 +1565,27 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
+<target name="[obj] Interpolant.cc.o" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>Interpolant.cc.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] Interpolant.cc.i" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>Interpolant.cc.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] Interpolant.cc.s" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>Interpolant.cc.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
 <target name="[obj] Mag_UsualEqRhs_IntegrateByTime.cc.o" path="magneticfield/src" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j4</buildArguments>
@@ -1643,6 +1702,195 @@
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j4</buildArguments>
 <buildTarget>modifiedtestH.cc.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] testPropagateMagField" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>testPropagateMagField</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] testPropagateMagField/fast" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>testPropagateMagField/fast</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Build" path="[Targets]/[exe] testPropagateMagField" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-C "/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation" -j4</buildArguments>
+<buildTarget>testPropagateMagField</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Clean" path="[Targets]/[exe] testPropagateMagField" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/cmake</buildCommand>
+<buildArguments>-E chdir "/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/testTemplated" "/usr/bin/cmake" -P "CMakeFiles/testPropagateMagField.dir/cmake_clean.cmake"</buildArguments>
+<buildTarget></buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": all" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": clean" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[obj] testPropagateMagField.cc.o" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>testPropagateMagField.cc.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] testPropagateMagField.cc.i" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>testPropagateMagField.cc.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] testPropagateMagField.cc.s" path="test/testTemplated" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>testPropagateMagField.cc.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] compareByTime" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>compareByTime</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] compareByTime/fast" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>compareByTime/fast</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Build" path="[Targets]/[exe] compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-C "/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation" -j4</buildArguments>
+<buildTarget>compareByTime</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Clean" path="[Targets]/[exe] compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/cmake</buildCommand>
+<buildArguments>-E chdir "/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/compareByTime" "/usr/bin/cmake" -P "CMakeFiles/compareByTime.dir/cmake_clean.cmake"</buildArguments>
+<buildTarget></buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": all" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": clean" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[obj] compareByTime.cc.o" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>compareByTime.cc.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] compareByTime.cc.i" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>compareByTime.cc.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] compareByTime.cc.s" path="test/compareByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>compareByTime.cc.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] comparePairByTime" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>comparePairByTime</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] comparePairByTime/fast" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>comparePairByTime/fast</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Build" path="[Targets]/[exe] comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-C "/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation" -j4</buildArguments>
+<buildTarget>comparePairByTime</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Clean" path="[Targets]/[exe] comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/cmake</buildCommand>
+<buildArguments>-E chdir "/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/comparePairByTime" "/usr/bin/cmake" -P "CMakeFiles/comparePairByTime.dir/cmake_clean.cmake"</buildArguments>
+<buildTarget></buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": all" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": clean" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[obj] comparePairByTime.cc.o" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>comparePairByTime.cc.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] comparePairByTime.cc.i" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>comparePairByTime.cc.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] comparePairByTime.cc.s" path="test/comparePairByTime" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j4</buildArguments>
+<buildTarget>comparePairByTime.cc.s</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>

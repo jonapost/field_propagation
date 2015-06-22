@@ -9,6 +9,7 @@
 #define MAGNETICFIELD_INCLUDE_FINERKNG34_HH_
 
 #include "G4MagIntegratorStepper.hh"
+#include "Interpolant.hh"
 
 class FineRKNG34: public G4MagIntegratorStepper {
 public:
@@ -18,13 +19,15 @@ public:
          G4int numberOfStateVariables = 12);
 
    void Stepper( const G4double y[],
-                    const G4double dydx[],
-                    G4double h,
-                    G4double yout[],
-                    G4double yerr[] ) ;
+                 const G4double dydx[],
+                 G4double h,
+                 G4double yout[],
+                 G4double yerr[] ) ;
 
    G4double  DistChord()   const;
    G4int IntegratorOrder() const {return 4; }
+
+   void InterpolatePosition(G4double xi, G4double yout[]);
 
 private:
 
@@ -34,7 +37,13 @@ private:
    G4double b[5], bprime[5], c[5];
    G4double b_error[5], bprime_error[5];
 
+   Interpolant *position_interpolant;
 
+   G4double yInitial[8], yNext[3];
+   G4double fInitial[8], fNext[3];
+
+   G4double last_step_len;
+   // G4double last_time_value; // Hack to implement FSAL
 
 
 };

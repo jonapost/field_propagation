@@ -279,9 +279,32 @@ magneticfield/src/CMakeFiles/magfield.dir/G4CachedMagneticField.cc.o.provides: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4CachedMagneticField.cc.o.provides.build: magneticfield/src/CMakeFiles/magfield.dir/G4CachedMagneticField.cc.o
 
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o: magneticfield/src/FineRKNG34.cc
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_11)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/FineRKNG34.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/FineRKNG34.cc
+
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/magfield.dir/FineRKNG34.cc.i"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/FineRKNG34.cc > CMakeFiles/magfield.dir/FineRKNG34.cc.i
+
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/magfield.dir/FineRKNG34.cc.s"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/FineRKNG34.cc -o CMakeFiles/magfield.dir/FineRKNG34.cc.s
+
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.requires:
+.PHONY : magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.requires
+
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.provides: magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.requires
+	$(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.provides.build
+.PHONY : magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.provides
+
+magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.provides.build: magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o
+
 magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinder.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinder.cc.o: magneticfield/src/G4ChordFinder.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinder.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ChordFinder.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ChordFinder.cc
 
@@ -304,7 +327,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinder.cc.o.provides.build: mag
 
 magneticfield/src/CMakeFiles/magfield.dir/G4Field.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4Field.cc.o: magneticfield/src/G4Field.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_12)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_13)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4Field.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4Field.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4Field.cc
 
@@ -327,7 +350,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4Field.cc.o.provides.build: magneticf
 
 magneticfield/src/CMakeFiles/magfield.dir/G4SimpleRunge.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4SimpleRunge.cc.o: magneticfield/src/G4SimpleRunge.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_13)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_14)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4SimpleRunge.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4SimpleRunge.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4SimpleRunge.cc
 
@@ -350,7 +373,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4SimpleRunge.cc.o.provides.build: mag
 
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixExplicitEuler.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixExplicitEuler.cc.o: magneticfield/src/G4HelixExplicitEuler.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_14)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4HelixExplicitEuler.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4HelixExplicitEuler.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixExplicitEuler.cc
 
@@ -373,7 +396,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4HelixExplicitEuler.cc.o.provides.bui
 
 magneticfield/src/CMakeFiles/magfield.dir/G4QuadrupoleMagField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4QuadrupoleMagField.cc.o: magneticfield/src/G4QuadrupoleMagField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_15)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4QuadrupoleMagField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4QuadrupoleMagField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4QuadrupoleMagField.cc
 
@@ -396,7 +419,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4QuadrupoleMagField.cc.o.provides.bui
 
 magneticfield/src/CMakeFiles/magfield.dir/G4NystromRK4.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4NystromRK4.cc.o: magneticfield/src/G4NystromRK4.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_16)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4NystromRK4.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4NystromRK4.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4NystromRK4.cc
 
@@ -419,7 +442,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4NystromRK4.cc.o.provides.build: magn
 
 magneticfield/src/CMakeFiles/magfield.dir/G4TrialsCounter.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4TrialsCounter.cc.o: magneticfield/src/G4TrialsCounter.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_17)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4TrialsCounter.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4TrialsCounter.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4TrialsCounter.cc
 
@@ -442,7 +465,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4TrialsCounter.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithEDM.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithEDM.cc.o: magneticfield/src/G4EqEMFieldWithEDM.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_18)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_19)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithEDM.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4EqEMFieldWithEDM.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqEMFieldWithEDM.cc
 
@@ -465,7 +488,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithEDM.cc.o.provides.build
 
 magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepper.cc.o: magneticfield/src/ChawlaSharmaRKNstepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_19)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_20)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/ChawlaSharmaRKNstepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaRKNstepper.cc
 
@@ -488,7 +511,7 @@ magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepper.cc.o.provides.b
 
 magneticfield/src/CMakeFiles/magfield.dir/G4HarmonicPolMagField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4HarmonicPolMagField.cc.o: magneticfield/src/G4HarmonicPolMagField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_20)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4HarmonicPolMagField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4HarmonicPolMagField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HarmonicPolMagField.cc
 
@@ -511,7 +534,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4HarmonicPolMagField.cc.o.provides.bu
 
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine45.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine45.cc.o: magneticfield/src/BogackiShampine45.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_21)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_22)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine45.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/BogackiShampine45.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine45.cc
 
@@ -534,7 +557,7 @@ magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine45.cc.o.provides.build:
 
 magneticfield/src/CMakeFiles/magfield.dir/G4LineSection.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4LineSection.cc.o: magneticfield/src/G4LineSection.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_22)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_23)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4LineSection.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4LineSection.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4LineSection.cc
 
@@ -557,7 +580,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4LineSection.cc.o.provides.build: mag
 
 magneticfield/src/CMakeFiles/magfield.dir/G4UniformMagField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4UniformMagField.cc.o: magneticfield/src/G4UniformMagField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_23)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_24)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4UniformMagField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4UniformMagField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4UniformMagField.cc
 
@@ -580,7 +603,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4UniformMagField.cc.o.provides.build:
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ErrorMag_UsualEqRhs.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ErrorMag_UsualEqRhs.cc.o: magneticfield/src/G4ErrorMag_UsualEqRhs.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_24)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_25)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ErrorMag_UsualEqRhs.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ErrorMag_UsualEqRhs.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ErrorMag_UsualEqRhs.cc
 
@@ -603,7 +626,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ErrorMag_UsualEqRhs.cc.o.provides.bu
 
 magneticfield/src/CMakeFiles/magfield.dir/G4MonopoleEq.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4MonopoleEq.cc.o: magneticfield/src/G4MonopoleEq.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_25)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4MonopoleEq.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4MonopoleEq.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MonopoleEq.cc
 
@@ -626,7 +649,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4MonopoleEq.cc.o.provides.build: magn
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ConstRK4.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ConstRK4.cc.o: magneticfield/src/G4ConstRK4.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_26)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_27)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ConstRK4.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ConstRK4.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ConstRK4.cc
 
@@ -649,7 +672,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ConstRK4.cc.o.provides.build: magnet
 
 magneticfield/src/CMakeFiles/magfield.dir/G4CashKarpRKF45.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4CashKarpRKF45.cc.o: magneticfield/src/G4CashKarpRKF45.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_27)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_28)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4CashKarpRKF45.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4CashKarpRKF45.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4CashKarpRKF45.cc
 
@@ -672,7 +695,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4CashKarpRKF45.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ElectroMagneticField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ElectroMagneticField.cc.o: magneticfield/src/G4ElectroMagneticField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_28)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_29)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ElectroMagneticField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ElectroMagneticField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ElectroMagneticField.cc
 
@@ -695,7 +718,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ElectroMagneticField.cc.o.provides.b
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o: magneticfield/src/G4ClassicalRK4.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_29)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_30)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ClassicalRK4.cc
 
@@ -718,7 +741,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o.provides.build: ma
 
 magneticfield/src/CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o: magneticfield/src/G4MagErrorStepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_30)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_31)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagErrorStepper.cc
 
@@ -741,7 +764,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o.provides.build:
 
 magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o: magneticfield/src/G4FieldManager.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_31)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_32)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4FieldManager.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4FieldManager.cc
 
@@ -762,9 +785,32 @@ magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o.provides: magnetic
 
 magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o.provides.build: magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o
 
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o: magneticfield/src/Interpolant.cc
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_33)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/Interpolant.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/Interpolant.cc
+
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/magfield.dir/Interpolant.cc.i"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/Interpolant.cc > CMakeFiles/magfield.dir/Interpolant.cc.i
+
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/magfield.dir/Interpolant.cc.s"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/Interpolant.cc -o CMakeFiles/magfield.dir/Interpolant.cc.s
+
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.requires:
+.PHONY : magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.requires
+
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.provides: magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.requires
+	$(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.provides.build
+.PHONY : magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.provides
+
+magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.provides.build: magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o
+
 magneticfield/src/CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o: magneticfield/src/G4ImplicitEuler.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_32)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_34)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ImplicitEuler.cc
 
@@ -787,7 +833,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4SimpleHeum.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4SimpleHeum.cc.o: magneticfield/src/G4SimpleHeum.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_33)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_35)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4SimpleHeum.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4SimpleHeum.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4SimpleHeum.cc
 
@@ -810,7 +856,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4SimpleHeum.cc.o.provides.build: magn
 
 magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o: magneticfield/src/G4MagIntegratorStepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_34)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_36)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagIntegratorStepper.cc
 
@@ -833,7 +879,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o.provides.b
 
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixMixedStepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixMixedStepper.cc.o: magneticfield/src/G4HelixMixedStepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_35)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_37)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4HelixMixedStepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4HelixMixedStepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixMixedStepper.cc
 
@@ -856,7 +902,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4HelixMixedStepper.cc.o.provides.buil
 
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixImplicitEuler.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixImplicitEuler.cc.o: magneticfield/src/G4HelixImplicitEuler.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_36)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_38)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4HelixImplicitEuler.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4HelixImplicitEuler.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixImplicitEuler.cc
 
@@ -879,7 +925,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4HelixImplicitEuler.cc.o.provides.bui
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinderSaf.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinderSaf.cc.o: magneticfield/src/G4ChordFinderSaf.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_37)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_39)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinderSaf.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ChordFinderSaf.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ChordFinderSaf.cc
 
@@ -902,7 +948,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinderSaf.cc.o.provides.build: 
 
 magneticfield/src/CMakeFiles/magfield.dir/G4Mag_SpinEqRhs.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4Mag_SpinEqRhs.cc.o: magneticfield/src/G4Mag_SpinEqRhs.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_38)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_40)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4Mag_SpinEqRhs.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4Mag_SpinEqRhs.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4Mag_SpinEqRhs.cc
 
@@ -925,7 +971,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4Mag_SpinEqRhs.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4RepleteEofM.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4RepleteEofM.cc.o: magneticfield/src/G4RepleteEofM.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_39)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_41)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4RepleteEofM.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4RepleteEofM.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4RepleteEofM.cc
 
@@ -948,7 +994,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4RepleteEofM.cc.o.provides.build: mag
 
 magneticfield/src/CMakeFiles/magfield.dir/G4MagneticField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4MagneticField.cc.o: magneticfield/src/G4MagneticField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_40)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_42)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4MagneticField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4MagneticField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagneticField.cc
 
@@ -971,7 +1017,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4MagneticField.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepperFullRenormalization.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepperFullRenormalization.cc.o: magneticfield/src/ChawlaSharmaRKNstepperFullRenormalization.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_41)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_43)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepperFullRenormalization.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/ChawlaSharmaRKNstepperFullRenormalization.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaRKNstepperFullRenormalization.cc
 
@@ -994,7 +1040,7 @@ magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepperFullRenormalizat
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ElectricField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ElectricField.cc.o: magneticfield/src/G4ElectricField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_42)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_44)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ElectricField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ElectricField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ElectricField.cc
 
@@ -1017,7 +1063,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ElectricField.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ExplicitEuler.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ExplicitEuler.cc.o: magneticfield/src/G4ExplicitEuler.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_43)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_45)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ExplicitEuler.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ExplicitEuler.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ExplicitEuler.cc
 
@@ -1040,7 +1086,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ExplicitEuler.cc.o.provides.build: m
 
 magneticfield/src/CMakeFiles/magfield.dir/G4UniformGravityField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4UniformGravityField.cc.o: magneticfield/src/G4UniformGravityField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_44)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_46)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4UniformGravityField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4UniformGravityField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4UniformGravityField.cc
 
@@ -1063,7 +1109,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4UniformGravityField.cc.o.provides.bu
 
 magneticfield/src/CMakeFiles/magfield.dir/G4RKG3_Stepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4RKG3_Stepper.cc.o: magneticfield/src/G4RKG3_Stepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_45)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_47)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4RKG3_Stepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4RKG3_Stepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4RKG3_Stepper.cc
 
@@ -1086,7 +1132,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4RKG3_Stepper.cc.o.provides.build: ma
 
 magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorDriver.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorDriver.cc.o: magneticfield/src/G4MagIntegratorDriver.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_46)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_48)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorDriver.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4MagIntegratorDriver.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagIntegratorDriver.cc
 
@@ -1109,7 +1155,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorDriver.cc.o.provides.bu
 
 magneticfield/src/CMakeFiles/magfield.dir/G4EqMagElectricField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4EqMagElectricField.cc.o: magneticfield/src/G4EqMagElectricField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_47)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_49)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4EqMagElectricField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4EqMagElectricField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqMagElectricField.cc
 
@@ -1132,7 +1178,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4EqMagElectricField.cc.o.provides.bui
 
 magneticfield/src/CMakeFiles/magfield.dir/G4EqGravityField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4EqGravityField.cc.o: magneticfield/src/G4EqGravityField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_48)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_50)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4EqGravityField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4EqGravityField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqGravityField.cc
 
@@ -1155,7 +1201,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4EqGravityField.cc.o.provides.build: 
 
 magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithSpin.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithSpin.cc.o: magneticfield/src/G4EqEMFieldWithSpin.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_49)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_51)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithSpin.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4EqEMFieldWithSpin.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4EqEMFieldWithSpin.cc
 
@@ -1178,7 +1224,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4EqEMFieldWithSpin.cc.o.provides.buil
 
 magneticfield/src/CMakeFiles/magfield.dir/G4FieldManagerStore.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4FieldManagerStore.cc.o: magneticfield/src/G4FieldManagerStore.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_50)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_52)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4FieldManagerStore.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4FieldManagerStore.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4FieldManagerStore.cc
 
@@ -1201,7 +1247,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4FieldManagerStore.cc.o.provides.buil
 
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixHeum.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4HelixHeum.cc.o: magneticfield/src/G4HelixHeum.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_51)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_53)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4HelixHeum.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4HelixHeum.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4HelixHeum.cc
 
@@ -1224,7 +1270,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4HelixHeum.cc.o.provides.build: magne
 
 magneticfield/src/CMakeFiles/magfield.dir/DormandPrince745.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/DormandPrince745.cc.o: magneticfield/src/DormandPrince745.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_52)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_54)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/DormandPrince745.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/DormandPrince745.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/DormandPrince745.cc
 
@@ -1247,7 +1293,7 @@ magneticfield/src/CMakeFiles/magfield.dir/DormandPrince745.cc.o.provides.build: 
 
 magneticfield/src/CMakeFiles/magfield.dir/G4ExactHelixStepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4ExactHelixStepper.cc.o: magneticfield/src/G4ExactHelixStepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_53)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_55)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4ExactHelixStepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4ExactHelixStepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4ExactHelixStepper.cc
 
@@ -1270,7 +1316,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4ExactHelixStepper.cc.o.provides.buil
 
 magneticfield/src/CMakeFiles/magfield.dir/G4UniformElectricField.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4UniformElectricField.cc.o: magneticfield/src/G4UniformElectricField.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_54)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_56)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4UniformElectricField.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4UniformElectricField.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4UniformElectricField.cc
 
@@ -1293,7 +1339,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4UniformElectricField.cc.o.provides.b
 
 magneticfield/src/CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o: magneticfield/src/G4MagHelicalStepper.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_55)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_57)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4MagHelicalStepper.cc
 
@@ -1316,7 +1362,7 @@ magneticfield/src/CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o.provides.buil
 
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o: magneticfield/src/BogackiShampine23.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_56)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_58)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/BogackiShampine23.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine23.cc
 
@@ -1337,9 +1383,32 @@ magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o.provides: magne
 
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o.provides.build: magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o
 
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o: magneticfield/src/ChawlaSharmaWrapper.cc
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_59)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaWrapper.cc
+
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.i"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaWrapper.cc > CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.i
+
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.s"
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaWrapper.cc -o CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.s
+
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.requires:
+.PHONY : magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.requires
+
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.provides: magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.requires
+	$(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.provides.build
+.PHONY : magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.provides
+
+magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.provides.build: magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o
+
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o: magneticfield/src/CMakeFiles/magfield.dir/flags.make
 magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o: magneticfield/src/BogackiShampine23modified.cc
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_57)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/CMakeFiles $(CMAKE_PROGRESS_60)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o"
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o -c /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine23modified.cc
 
@@ -1372,6 +1441,7 @@ magfield_OBJECTS = \
 "CMakeFiles/magfield.dir/G4Mag_EqRhs.cc.o" \
 "CMakeFiles/magfield.dir/G4Mag_UsualEqRhs.cc.o" \
 "CMakeFiles/magfield.dir/G4CachedMagneticField.cc.o" \
+"CMakeFiles/magfield.dir/FineRKNG34.cc.o" \
 "CMakeFiles/magfield.dir/G4ChordFinder.cc.o" \
 "CMakeFiles/magfield.dir/G4Field.cc.o" \
 "CMakeFiles/magfield.dir/G4SimpleRunge.cc.o" \
@@ -1393,6 +1463,7 @@ magfield_OBJECTS = \
 "CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o" \
 "CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o" \
 "CMakeFiles/magfield.dir/G4FieldManager.cc.o" \
+"CMakeFiles/magfield.dir/Interpolant.cc.o" \
 "CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o" \
 "CMakeFiles/magfield.dir/G4SimpleHeum.cc.o" \
 "CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o" \
@@ -1418,6 +1489,7 @@ magfield_OBJECTS = \
 "CMakeFiles/magfield.dir/G4UniformElectricField.cc.o" \
 "CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o" \
 "CMakeFiles/magfield.dir/BogackiShampine23.cc.o" \
+"CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o" \
 "CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o"
 
 # External object files for target magfield
@@ -1433,6 +1505,7 @@ magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/Nystr
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4Mag_EqRhs.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4Mag_UsualEqRhs.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4CachedMagneticField.cc.o
+magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinder.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4Field.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4SimpleRunge.cc.o
@@ -1454,6 +1527,7 @@ magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4Ele
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o
+magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4SimpleHeum.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o
@@ -1479,6 +1553,7 @@ magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4Exa
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4UniformElectricField.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o
+magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/build.make
 magneticfield/src/libmagfield.a: magneticfield/src/CMakeFiles/magfield.dir/link.txt
@@ -1500,6 +1575,7 @@ magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4Mag_EqRhs.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4Mag_UsualEqRhs.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4CachedMagneticField.cc.o.requires
+magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4ChordFinder.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4Field.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4SimpleRunge.cc.o.requires
@@ -1521,6 +1597,7 @@ magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4ClassicalRK4.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4MagErrorStepper.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4FieldManager.cc.o.requires
+magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4ImplicitEuler.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4SimpleHeum.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4MagIntegratorStepper.cc.o.requires
@@ -1546,6 +1623,7 @@ magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4UniformElectricField.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/G4MagHelicalStepper.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23.cc.o.requires
+magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o.requires
 magneticfield/src/CMakeFiles/magfield.dir/requires: magneticfield/src/CMakeFiles/magfield.dir/BogackiShampine23modified.cc.o.requires
 .PHONY : magneticfield/src/CMakeFiles/magfield.dir/requires
 

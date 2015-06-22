@@ -232,6 +232,30 @@ ChawlaSharmaRKNstepperFullRenormalization.cc.s:
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaRKNstepperFullRenormalization.cc.s
 .PHONY : ChawlaSharmaRKNstepperFullRenormalization.cc.s
 
+ChawlaSharmaWrapper.o: ChawlaSharmaWrapper.cc.o
+.PHONY : ChawlaSharmaWrapper.o
+
+# target to build an object file
+ChawlaSharmaWrapper.cc.o:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.o
+.PHONY : ChawlaSharmaWrapper.cc.o
+
+ChawlaSharmaWrapper.i: ChawlaSharmaWrapper.cc.i
+.PHONY : ChawlaSharmaWrapper.i
+
+# target to preprocess a source file
+ChawlaSharmaWrapper.cc.i:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.i
+.PHONY : ChawlaSharmaWrapper.cc.i
+
+ChawlaSharmaWrapper.s: ChawlaSharmaWrapper.cc.s
+.PHONY : ChawlaSharmaWrapper.s
+
+# target to generate assembly for a file
+ChawlaSharmaWrapper.cc.s:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/ChawlaSharmaWrapper.cc.s
+.PHONY : ChawlaSharmaWrapper.cc.s
+
 DormandPrince745.o: DormandPrince745.cc.o
 .PHONY : DormandPrince745.o
 
@@ -255,6 +279,30 @@ DormandPrince745.s: DormandPrince745.cc.s
 DormandPrince745.cc.s:
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/DormandPrince745.cc.s
 .PHONY : DormandPrince745.cc.s
+
+FineRKNG34.o: FineRKNG34.cc.o
+.PHONY : FineRKNG34.o
+
+# target to build an object file
+FineRKNG34.cc.o:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.o
+.PHONY : FineRKNG34.cc.o
+
+FineRKNG34.i: FineRKNG34.cc.i
+.PHONY : FineRKNG34.i
+
+# target to preprocess a source file
+FineRKNG34.cc.i:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.i
+.PHONY : FineRKNG34.cc.i
+
+FineRKNG34.s: FineRKNG34.cc.s
+.PHONY : FineRKNG34.s
+
+# target to generate assembly for a file
+FineRKNG34.cc.s:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/FineRKNG34.cc.s
+.PHONY : FineRKNG34.cc.s
 
 G4CachedMagneticField.o: G4CachedMagneticField.cc.o
 .PHONY : G4CachedMagneticField.o
@@ -1432,6 +1480,30 @@ G4UniformMagField.cc.s:
 	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/G4UniformMagField.cc.s
 .PHONY : G4UniformMagField.cc.s
 
+Interpolant.o: Interpolant.cc.o
+.PHONY : Interpolant.o
+
+# target to build an object file
+Interpolant.cc.o:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.o
+.PHONY : Interpolant.cc.o
+
+Interpolant.i: Interpolant.cc.i
+.PHONY : Interpolant.i
+
+# target to preprocess a source file
+Interpolant.cc.i:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.i
+.PHONY : Interpolant.cc.i
+
+Interpolant.s: Interpolant.cc.s
+.PHONY : Interpolant.s
+
+# target to generate assembly for a file
+Interpolant.cc.s:
+	cd /home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation && $(MAKE) -f magneticfield/src/CMakeFiles/magfield.dir/build.make magneticfield/src/CMakeFiles/magfield.dir/Interpolant.cc.s
+.PHONY : Interpolant.cc.s
+
 Mag_UsualEqRhs_IntegrateByTime.o: Mag_UsualEqRhs_IntegrateByTime.cc.o
 .PHONY : Mag_UsualEqRhs_IntegrateByTime.o
 
@@ -1504,9 +1576,15 @@ help:
 	@echo "... ChawlaSharmaRKNstepperFullRenormalization.o"
 	@echo "... ChawlaSharmaRKNstepperFullRenormalization.i"
 	@echo "... ChawlaSharmaRKNstepperFullRenormalization.s"
+	@echo "... ChawlaSharmaWrapper.o"
+	@echo "... ChawlaSharmaWrapper.i"
+	@echo "... ChawlaSharmaWrapper.s"
 	@echo "... DormandPrince745.o"
 	@echo "... DormandPrince745.i"
 	@echo "... DormandPrince745.s"
+	@echo "... FineRKNG34.o"
+	@echo "... FineRKNG34.i"
+	@echo "... FineRKNG34.s"
 	@echo "... G4CachedMagneticField.o"
 	@echo "... G4CachedMagneticField.i"
 	@echo "... G4CachedMagneticField.s"
@@ -1654,6 +1732,9 @@ help:
 	@echo "... G4UniformMagField.o"
 	@echo "... G4UniformMagField.i"
 	@echo "... G4UniformMagField.s"
+	@echo "... Interpolant.o"
+	@echo "... Interpolant.i"
+	@echo "... Interpolant.s"
 	@echo "... Mag_UsualEqRhs_IntegrateByTime.o"
 	@echo "... Mag_UsualEqRhs_IntegrateByTime.i"
 	@echo "... Mag_UsualEqRhs_IntegrateByTime.s"

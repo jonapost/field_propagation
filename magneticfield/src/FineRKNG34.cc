@@ -21,12 +21,15 @@ FineRKNG34::~FineRKNG34() {
    }
    delete[] a;
    delete[] aprime;
+   delete position_interpolant;
 }
 
 FineRKNG34::FineRKNG34(G4EquationOfMotion *EqRhs,
       G4int numberOfVariables,
       G4int numberOfStateVariables)
 : G4MagIntegratorStepper(EqRhs, numberOfVariables){
+
+   position_interpolant = new Interpolant();
 
    f = new G4double*[5];
    for (int i = 0; i < 5; i ++) {
@@ -78,13 +81,16 @@ void FineRKNG34::Stepper( const G4double y[],
 
    // const G4int numberOfVariables= this->GetNumberOfVariables();
 
+   position_interpolant->DeInitialize(); // DeInitialize since we are on a new interval.
+                                         // Will have to take care of what to do when there
+                                         // is a rejected step later.
 
    G4double ytemp[10]; // temp value of numberOfVariables
 
    G4int i, j, k;
 
-   for (k = 0; k < 6; k ++) {
-      f[0][k] = dydx[k];
+   for (k = 0; k < 3; k ++) {
+      f[0][k] = fInitial[k] = dydx[k + 3];
    }
 
    for (i = 1; i < 5; i++) {
@@ -143,7 +149,25 @@ void FineRKNG34::Stepper( const G4double y[],
       yerr[k] *= h;
    }
 
+   for (k = 0; k < 6; k ++) {
+      yInitial[k] = y[k];
+      yNext[k] = yout[k];
+   }
+   for (k = 0; k < 3; k ++) {
+      fNext[k] = f[4][k];
+   }
+
+   last_step_len = h;
+
 }
+
+void FineRKNG34::InterpolatePosition(G4double xi, G4double yout[]) {
+   if (! position_interpolant->IsInitialized() ) {
+      position_interpolant->Initialize(yInitial, yNext, fInitial, fNext, last_step_len);
+   }
+   position_interpolant->InterpolatePosition(xi, yout);
+}
+
 
 G4double  FineRKNG34::DistChord()   const {
    // temporary function stub

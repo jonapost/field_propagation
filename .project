@@ -91,7 +91,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.core.errorOutputParser</key>
-					<value>org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;</value>
+					<value>org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;</value>
 				</dictionary>
 			</arguments>
 		</buildCommand>
@@ -114,14 +114,29 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>[Subprojects]/compare_by_time</name>
+			<type>2</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/compareByTime</location>
+		</link>
+		<link>
+			<name>[Subprojects]/compare_pair_by_time</name>
+			<type>2</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/comparePairByTime</location>
+		</link>
+		<link>
 			<name>[Subprojects]/magfield</name>
 			<type>2</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield</location>
 		</link>
 		<link>
-			<name>[Subprojects]/testers</name>
+			<name>[Subprojects]/modifiedTestH</name>
 			<type>2</type>
-			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test</location>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/testSteppers</location>
+		</link>
+		<link>
+			<name>[Subprojects]/test_Propagate_Mag_Field</name>
+			<type>2</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/testTemplated</location>
 		</link>
 		<link>
 			<name>[Targets]</name>
@@ -192,6 +207,11 @@
 			<name>[Targets]/[lib] magfield/Source Files/G4CachedMagneticField.cc</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4CachedMagneticField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/FineRKNG34.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/FineRKNG34.cc</location>
 		</link>
 		<link>
 			<name>[Targets]/[lib] magfield/Source Files/G4ChordFinder.cc</name>
@@ -297,6 +317,11 @@
 			<name>[Targets]/[lib] magfield/Source Files/G4FieldManager.cc</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/G4FieldManager.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Source Files/Interpolant.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/Interpolant.cc</location>
 		</link>
 		<link>
 			<name>[Targets]/[lib] magfield/Source Files/G4ImplicitEuler.cc</name>
@@ -424,6 +449,11 @@
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine23.cc</location>
 		</link>
 		<link>
+			<name>[Targets]/[lib] magfield/Source Files/ChawlaSharmaWrapper.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/ChawlaSharmaWrapper.cc</location>
+		</link>
+		<link>
 			<name>[Targets]/[lib] magfield/Source Files/BogackiShampine23modified.cc</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/src/BogackiShampine23modified.cc</location>
@@ -452,6 +482,11 @@
 			<name>[Targets]/[lib] magfield/Header Files/G4Mag_EqRhs.hh</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4Mag_EqRhs.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/FineRKNG34.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/FineRKNG34.hh</location>
 		</link>
 		<link>
 			<name>[Targets]/[lib] magfield/Header Files/G4HelixMixedStepper.hh</name>
@@ -549,6 +584,11 @@
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4UniformGravityField.hh</location>
 		</link>
 		<link>
+			<name>[Targets]/[lib] magfield/Header Files/ChawlaSharmaWrapper.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/ChawlaSharmaWrapper.hh</location>
+		</link>
+		<link>
 			<name>[Targets]/[lib] magfield/Header Files/BogackiShampine23modified.hh</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/BogackiShampine23modified.hh</location>
@@ -567,6 +607,11 @@
 			<name>[Targets]/[lib] magfield/Header Files/G4LineSection.hh</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4LineSection.hh</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] magfield/Header Files/Interpolant.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/Interpolant.hh</location>
 		</link>
 		<link>
 			<name>[Targets]/[lib] magfield/Header Files/G4HelixHeum.hh</name>
@@ -684,6 +729,11 @@
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4Mag_UsualEqRhs.hh</location>
 		</link>
 		<link>
+			<name>[Targets]/[lib] magfield/Header Files/MagIntegratorStepperbyTime.hh</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/MagIntegratorStepperbyTime.hh</location>
+		</link>
+		<link>
 			<name>[Targets]/[lib] magfield/Header Files/G4ClassicalRK4.hh</name>
 			<type>1</type>
 			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/magneticfield/include/G4ClassicalRK4.hh</location>
@@ -770,6 +820,126 @@
 		</link>
 		<link>
 			<name>[Targets]/[exe] modifiedtestH/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/Source Files/testPropagateMagField.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/testTemplated/testPropagateMagField.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] testPropagateMagField/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/Source Files/compareByTime.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/compareByTime/compareByTime.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] compareByTime/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/Source Files/comparePairByTime.cc</name>
+			<type>1</type>
+			<location>/home/jason/Documents/Work/GSoC2015/CERN2/git3/field_propagation/test/comparePairByTime/comparePairByTime.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] comparePairByTime/Object Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
