@@ -81,16 +81,19 @@ int main(int argc, char *args[]) {
 
    //G4double imass = 1. / mass;
 
-   G4double yIn[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
-   G4double dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   G4double yIn1[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+   G4double dydx1[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+   G4double yIn2[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+   G4double dydx2[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
    G4UniformMagField *myUniformField;
    G4QuadrupoleMagField *quadrupoleMagField;
    G4Mag_EqRhs *fEquation;
 
    G4int mag_field_choice = 2;
-   if (argc > 4)
-      mag_field_choice = atoi(args[4]);
+   if (argc > 5)
+      mag_field_choice = atoi(args[5]);
 
    if (mag_field_choice == 1){
       myUniformField = new G4UniformMagField(
@@ -111,52 +114,89 @@ int main(int argc, char *args[]) {
          //momentum magnitude
          mass);
 
-   G4int stepper_no = 0, no_of_steps = 10;
+   G4int stepper_no1 = 0, stepper_no2 = 0, no_of_steps = 10;
    G4double step_len = 1.;
 
 
    if (argc > 1)
-         stepper_no = atoi(args[1]);
+         stepper_no1 = atoi(args[1]);
    if (argc > 2)
-      no_of_steps = atoi(args[2]);
+            stepper_no2 = atoi(args[2]);
    if (argc > 3)
-      step_len = (float) (atof(args[3]) * mm);
+      no_of_steps = atoi(args[3]);
+   if (argc > 4)
+      step_len = (float) (atof(args[4]) * mm);
 
-   G4MagIntegratorStepper *myStepper;
+   G4MagIntegratorStepper *myStepper1;
+   G4MagIntegratorStepper *myStepper2;
 
-   switch (stepper_no) {
+   switch (stepper_no1) {
       // case 0:
       // myStepper = new G4ExactHelixStepper(fEquation);
       // break;
       case 1:
-         myStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
          break;
       case 2:
-         myStepper = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
          break;
       case 3:
-         myStepper = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
          break;
       case 4:
-         myStepper = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
          break;
       case 5:
-         myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
          break;
       case 6:
-         myStepper = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
          break;
       case 7:
-         myStepper = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
          break;
       case 8:
-         myStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
          break;
       case 9:
-         myStepper = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
+         myStepper1 = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
          break;
       default:
-         myStepper = 0;
+         myStepper1 = 0;
+   }
+   switch (stepper_no2) {
+      // case 0:
+      // myStepper = new G4ExactHelixStepper(fEquation);
+      // break;
+      case 1:
+         myStepper2 = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+         break;
+      case 2:
+         myStepper2 = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
+         break;
+      case 3:
+         myStepper2 = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
+         break;
+      case 4:
+         myStepper2 = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
+         break;
+      case 5:
+         myStepper2 = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+         break;
+      case 6:
+         myStepper2 = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
+         break;
+      case 7:
+         myStepper2 = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
+         break;
+      case 8:
+         myStepper2 = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+         break;
+      case 9:
+         myStepper2 = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
+         break;
+      default:
+         myStepper2 = 0;
    }
    /*
    if ( ! myStepper->mass ){
@@ -168,14 +208,18 @@ int main(int argc, char *args[]) {
 
    // For output to ipython notebook (for visualization)
    cout.setf(ios_base::fixed);
-   cout.precision(15);
+   cout.precision(25);
 
    /*-----------------------END PREPARING STEPPER---------------------------*/
 
    /*----------------NOW STEPPING-----------------*/
 
-   G4double yout[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-   G4double yerr[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   G4double yout1[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   G4double yerr1[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+   G4double yout2[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+   G4double yerr2[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
 
 
    /*
@@ -192,11 +236,19 @@ int main(int argc, char *args[]) {
    G4double error;
 
    for (int j = 0; j < no_of_steps; j++) {
-      myStepper->ComputeRightHandSide(yIn, dydx);
-      myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+      myStepper1->ComputeRightHandSide(yIn1, dydx1);
+      myStepper1->Stepper(yIn1, dydx1, step_len, yout1, yerr1); //call the stepper
+      myStepper2->ComputeRightHandSide(yIn2, dydx2);
+      myStepper2->Stepper(yIn2, dydx2, step_len, yout2, yerr2); //call the stepper
+
+      // Error Magnitude output:
+      error = 0.;
+      for (int k = 0; k < 3; k++)
+         error += ( yout1[k] - yout2[k] ) * ( yout1[k] - yout2[k] );
+      cout << sqrt(error);
 
       // Position output:
-      for (int k = 0; k < 3; k++) {
+      /* for (int k = 0; k < 3; k++) {
          cout << yout[k] << ",";
       }
       // Velocity output
@@ -204,16 +256,19 @@ int main(int argc, char *args[]) {
          // Uncomment to print out momentums:
          cout << yout[k] / mass << ",";
       }
-
+      */
       cout << endl;
 
       //Copy yout into yIn
       for (int k = 0; k < 8; k++){
-         yIn[k] = yout[k];
+         yIn1[k] = yout1[k];
+         yIn2[k] = yout2[k];
+
       }
    }
 
-   delete myStepper;
+   delete myStepper1;
+   delete myStepper2;
    delete fEquation;
 
 }

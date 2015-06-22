@@ -55,6 +55,7 @@ private:
 
 #endif /* MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_ */
 
+/*
 template <class BaseStepper>
 inline
 void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide2(const G4double yInput[], G4double dydx[]) {
@@ -65,6 +66,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide2(const G4dou
    //for (int i = 3; i < 6; i ++)
    //   dydx[i] *= inv_mass;
 }
+*/
 
 template <class BaseStepper>
 inline
