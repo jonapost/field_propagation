@@ -1,21 +1,9 @@
-//  Verner - 9 - 6(5) FSAL implementation by Somnath Banerjee
-//  Supervision / code review: John Apostolakis
-//
-//  Sponsored by Google in Google Summer of Code 2015.
-// 
-//  First version:  9 June 2015
-//
-//  This code is made available subject to the Geant4 license, a copy of
-//  which is available at
-//  http://geant4.org/license
-//  
-//  History
-// -----------------------------
-//  Created by Somnath on 9 June 2015.
-//
-//
-/////////////////////////////////////////////////////////////////////////////
-
+/*
+ * VernerRK56.hh
+ *
+ *  Created on: 9-Jun-2015
+ *      Author: hackabot
+ */
 
 #ifndef VERNER_RK56_H
 #define VERNER_RK56_H
@@ -41,9 +29,17 @@ public:
                  G4double yout[],
                  G4double yerr[] ) ;
     
+    void interpolate( const G4double yInput[],
+                     const G4double dydx[],
+                     G4double yOut[],
+                     G4double Step,
+                     G4double tau
+                     ) ;
+    
     G4double  DistChord()   const;
     G4int IntegratorOrder() const { return 5; }
      G4bool isFSAL() const{ return false; }
+//    G4double *getLastDydx() {return 0;};
     
     VernerRK56(const VernerRK56&);
     VernerRK56& operator=(const VernerRK56&);
@@ -51,8 +47,7 @@ public:
     
 private:
     
-	   G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *ak9,       
-       // for storing intermediate 'k' values in stepper
+       G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *ak9,       // for storing intermediate 'k' values in stepper
     *yTemp, *yIn;
     
     G4double fLastStepLength;
@@ -62,10 +57,10 @@ private:
     
     VernerRK56* fAuxStepper;
     
-    //	G4int No_of_vars;
-    //	G4double hinit, tinit, tmax, *yinit;
-    //	double hmax, hmin, safe_const, err0, Step_factor;
-    //	void (*derivs)(double, double *, double *);
+    //  G4int No_of_vars;
+    //  G4double hinit, tinit, tmax, *yinit;
+    //  double hmax, hmin, safe_const, err0, Step_factor;
+    //  void (*derivs)(double, double *, double *);
     
     
 };
