@@ -59,6 +59,10 @@ class G4MagIntegratorStepper
      virtual ~G4MagIntegratorStepper();
        // Constructor and destructor. No actions.
 
+     inline void LastStepSucceeded() {
+        last_step_succeeded = true;
+     }
+
      virtual  void  Stepper(  const G4double y[],
                               const G4double dydx[],
                                     G4double h,
@@ -112,6 +116,8 @@ class G4MagIntegratorStepper
        // Private copy constructor and assignment operator.
 
   private:
+
+     G4bool last_step_succeeded;
 
      G4EquationOfMotion *fEquation_Rhs;
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration

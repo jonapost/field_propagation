@@ -49,6 +49,8 @@ class G4MagInt_Driver
 {
    public:  // with description
 
+      inline void LastStepSucceeded();
+
      G4bool  AccurateAdvance(G4FieldTrack&  y_current,
                              G4double hstep,
                              G4double eps,            // Requested y_err/hstep
@@ -237,6 +239,8 @@ class G4MagInt_Driver
      // DEPENDENT Objects
      G4MagIntegratorStepper *pIntStepper;
 
+     //MagIntegratorStepperByTime<BaseStepper> * pIntStepper;
+
      // ---------------------------------------------------------------
      //  STATE
 
@@ -250,6 +254,11 @@ class G4MagInt_Driver
         // Could be varied during tracking - to help identify issues
 
 };
+
+inline void G4MagInt_Driver::LastStepSucceeded() {
+   pIntStepper -> SetTrue_LastStepSucceeded();
+}
+
 
 #include "G4MagIntegratorDriver.icc"
 

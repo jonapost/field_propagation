@@ -586,7 +586,7 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
       errmax_sq = std::max( errmax_sq, errspin_sq ); 
    }
 
-    if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
+    if ( errmax_sq <= 1.0 )  { break; } // Step succeeded.
 
     // Step failed; compute the size of retrial Step.
     htemp = GetSafety()*h* std::pow( errmax_sq, 0.5*GetPshrnk() );
