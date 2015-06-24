@@ -61,6 +61,8 @@
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 
+#include "MagIntegratorStepperbyTime.hh"
+
 
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
@@ -313,7 +315,8 @@ G4FieldManager* SetupField(G4int type)
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
-		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
+		/*
+	   case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
 		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
 		case 2: pStepper = new G4SimpleRunge( fEquation ); break;
 		case 3: pStepper = new G4SimpleHeum( fEquation ); break;
@@ -335,10 +338,19 @@ G4FieldManager* SetupField(G4int type)
       case 17: pStepper = new StepperRunge_t(tEquation); break;
       case 18: pStepper = new StepperExEuler_t(tEquation); break;
       */
-      case 19: pStepper = new ChawlaSharmaRKNstepper( fEquation ); break;
+
+	   /*
+	   case 19: pStepper = new ChawlaSharmaRKNstepper( fEquation ); break;
       case 20: pStepper = new ChawlaSharmaWrapper( fEquation ); break;
+      */
+
+      case 22: pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+         break;
+
       //===============================================
-		default: 
+		/*
+
+		 default:
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
           G4ExceptionDescription ErrorMsg;
           ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
@@ -349,7 +361,8 @@ G4FieldManager* SetupField(G4int type)
                       FatalErrorInArgument,       //  use JustWarning,
                       " Invalid value of stepper type" );
           break; 
-    }
+        */
+	   }
 
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
@@ -657,7 +670,7 @@ int main(int argc, char **argv)
     if( argc >= 2 ){
        type = atoi(argv[1]);
     }else{
-		type = 14;
+		type = 22;
 	}
     if( argc >= 3 ){
     	step_distance_input = atof(argv[2]);
@@ -667,7 +680,7 @@ int main(int argc, char **argv)
     if( argc >= 4 ){
         	step_no = atoi(argv[3]);
         }else{
-        	step_no = 100;
+        	step_no = 3;
         }
 
     /*

@@ -59,9 +59,13 @@ class G4MagIntegratorStepper
      virtual ~G4MagIntegratorStepper();
        // Constructor and destructor. No actions.
 
-     inline void LastStepSucceeded() {
-        last_step_succeeded = true;
+     virtual void SetTrue_last_step_succeeded();
+     virtual void Reset_last_step_succeeded();
+     inline bool get_last_step_succeeded() {
+        return last_step_succeeded;
      }
+
+
 
      virtual  void  Stepper(  const G4double y[],
                               const G4double dydx[],

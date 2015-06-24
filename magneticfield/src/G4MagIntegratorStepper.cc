@@ -30,6 +30,9 @@
 
 #include "G4MagIntegratorStepper.hh"
 
+#include <iostream>
+using namespace std;
+
 // Constructor for stepper abstract base class. 
 // 
 
@@ -49,5 +52,15 @@ G4MagIntegratorStepper::~G4MagIntegratorStepper()
 
 void G4MagIntegratorStepper::ComputeRightHandSide( const G4double y[], G4double dydx[] ) 
 {
+   //cout << "Inside G4MagIntegratorStepper::ComputeRightHandSide()" << endl;
+
   this->RightHandSide( y, dydx );
+}
+
+
+void G4MagIntegratorStepper::SetTrue_last_step_succeeded() {
+   last_step_succeeded = true;
+}
+void G4MagIntegratorStepper::Reset_last_step_succeeded() {
+   last_step_succeeded = false;
 }

@@ -256,7 +256,7 @@ class G4MagInt_Driver
 };
 
 inline void G4MagInt_Driver::LastStepSucceeded() {
-   pIntStepper -> SetTrue_LastStepSucceeded();
+   pIntStepper -> SetTrue_last_step_succeeded();
 }
 
 
