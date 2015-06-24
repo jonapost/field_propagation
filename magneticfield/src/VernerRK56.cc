@@ -14,6 +14,23 @@
  
 **************************************************************************/
 
+//  Verner - 9 - 6(5) FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+//  Sponsored by Google in Google Summer of Code 2015.
+// 
+//  First version:  9 June 2015
+//
+//  This code is made available subject to the Geant4 license, a copy of
+//  which is available at
+//  http://geant4.org/license
+//  
+//  History
+// ---------------------------------------
+//  Created                 09 June 2015    Somnath
+//  Added interpolate()     23 June 2015    Somnath
+//  Added interpolate6()    - do -          - do -
+
 
 
 #include "VernerRK56.hh"
