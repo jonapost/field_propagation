@@ -18,7 +18,7 @@ public:
          G4int numberOfVariables = 6,
          G4int numberOfStateVariables = 12);
 
-   void Stepper( const G4double y[],
+   virtual void Stepper( const G4double y[],
                  const G4double dydx[],
                  G4double h,
                  G4double yout[],

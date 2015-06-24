@@ -34,9 +34,9 @@ public:
                              G4double yOutput[],
                              G4double yError [] );
 
-   inline void SetTrue_LastStepSucceeded();
+   //inline void SetTrue_LastStepSucceeded();
 
-   inline void Reset_last_step_succeeded();
+   //inline void Reset_last_step_succeeded();
 
    inline G4double  DistChord() const;
    inline G4int IntegratorOrder() const;
@@ -80,20 +80,23 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
    //cout  << "MagIntegratorStepper_byTime: "<< G4ThreeVector( yInput[3], yInput[4], yInput[5] ).mag() << endl;
    //cout << "inside MagIntegratorStepper_byTime...:: ComputeRightHandSide()" << endl;
 
-   if ( last_step_succeeded ) {
-      dydx = cached_dydx;
-      return;
-   }
+   //if ( last_step_succeeded ) {
+   //   dydx = cached_dydx;
+   //   return;
+   //}
 
    for (int i = 0; i < 10; i ++)
       yIn[i] = yInput[i];
    for (int i = 3; i < 6; i ++)
       yIn[i] *= inv_mass;
 
+
    baseStepper->ComputeRightHandSide(yIn, dydx);
 
    for (int i = 3; i < 6; i ++)
       dydx[i] *= mass;
+
+
    // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
    //for (int i = 3; i < 6; i ++)
    //   dydx[i] *= inv_mass;
@@ -120,7 +123,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= mass;
 
-   Reset_last_step_succeeded(); // Reset last_step_succeeded to false
+   //Reset_last_step_succeeded(); // Reset last_step_succeeded to false
 }
 
 template <class BaseStepper>
@@ -148,21 +151,21 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
       yIn[i] = 0.;
    mass = m_fEq -> FMass();
    inv_mass = 1. / mass;
-   last_step_succeeded = false; // Might want to change??
+   //last_step_succeeded = false; // Might want to change??
 }
 template <class BaseStepper>
 inline MagIntegratorStepper_byTime<BaseStepper>::~MagIntegratorStepper_byTime() {
    delete baseStepper;
 }
 
-template <class BaseStepper>
-inline void MagIntegratorStepper_byTime<BaseStepper>::SetTrue_LastStepSucceeded() {
-   last_step_succeeded = true;
-   cached_dydx = last_function_evaluation; // copy ptr
-}
+//template <class BaseStepper>
+//inline void MagIntegratorStepper_byTime<BaseStepper>::SetTrue_LastStepSucceeded() {
+//   last_step_succeeded = true;
+//   cached_dydx = last_function_evaluation; // copy ptr
+//}
 
-template <class BaseStepper>
-inline void MagIntegratorStepper_byTime<BaseStepper>::Reset_last_step_succeeded() {
-}
+//template <class BaseStepper>
+//inline void MagIntegratorStepper_byTime<BaseStepper>::Reset_last_step_succeeded() {
+//}
 
 
