@@ -12,6 +12,7 @@
 #include "G4MagIntegratorStepper.hh"
 
 #include <iostream>
+#include <assert.h>
 using namespace std;
 
 
@@ -41,8 +42,8 @@ public:
 
    //inline void Reset_last_step_succeeded();
 
-   inline G4double  DistChord() const;
-   inline G4int IntegratorOrder() const;
+   inline G4double DistChord() const;
+   //inline G4int IntegratorOrder() const;
 
 
    //G4double mass, inv_mass;   // G4MagIntegratorStepper doesn't have these fields by default
@@ -133,6 +134,9 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
 
    //baseStepper -> Stepper( yIn, dydx_copy, hstep, yOutput, yError );
    BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
+
+   assert( yOutput[0] == yOutput[0] );
+
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= mass;
 
@@ -148,9 +152,13 @@ G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
    return BaseStepper::DistChord();
 }
 
+/*
 template <class BaseStepper>
 inline
 G4int MagIntegratorStepper_byTime<BaseStepper>::IntegratorOrder() const{
+
+   cout << "Inside MagIntegratorStepper_byTime<BaseStepper>::IntegratorOrder()" << endl;
+
    if ( & BaseStepper::IntegratorOrder != 0 )
       return BaseStepper::IntegratorOrder();
    else
@@ -159,6 +167,7 @@ G4int MagIntegratorStepper_byTime<BaseStepper>::IntegratorOrder() const{
    //return baseStepper->IntegratorOrder();
    //return baseStepper -> IntergratorOrder();
 }
+*/
 
 template <class BaseStepper>
 inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
@@ -174,6 +183,7 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
    mass = m_fEq -> FMass();
    inv_mass = 1. / mass;
    ///last_step_succeeded = false; // Might want to change??
+   BaseStepper::Reset_last_step_succeeded();
 
    //baseStepper = static_cast<BaseStepper*> ( static_cast<G4MagIntegratorStepper *>( this ) );
 
@@ -185,10 +195,10 @@ inline MagIntegratorStepper_byTime<BaseStepper>::~MagIntegratorStepper_byTime() 
 
 template <class BaseStepper>
 inline void MagIntegratorStepper_byTime<BaseStepper>::SetTrue_last_step_succeeded() {
-   //G4MagIntegratorStepper::SetTrue_last_step_succeded();
    //cached_dydx = &last_function_evaluation; // copy ptr
    for (int i = 0; i < 6; i ++)
          cached_dydx[i] = last_function_evaluation[i];
+   BaseStepper::SetTrue_last_step_succeeded();
 
 }
 

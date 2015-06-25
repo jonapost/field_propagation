@@ -32,6 +32,9 @@
 
 #include <iomanip>
 
+#include <iostream>
+using namespace std;
+
 #include "G4ChordFinder.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4MagneticField.hh"
@@ -101,6 +104,7 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   {
      fAllocatedStepper= false; 
   }
+  //cout << " in G4ChordFinder " << pItsStepper->GetNumberOfVariables() << endl;
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
 }
@@ -175,6 +179,8 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                                     const G4ThreeVector latestSafetyOrigin,
                                     G4double       latestSafetyRadius )
 {
+
+
   G4double stepPossible;
   G4double dyErr;
   G4FieldTrack yEnd( yCurrent);
@@ -288,6 +294,9 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
      noTrials++; 
   }
   while( ! validEndPoint );   // End of do-while  RKD 
+
+  cout << "after do, while loop " << endl;
+
 
   if( newStepEst_Uncons > 0.0  )
   {

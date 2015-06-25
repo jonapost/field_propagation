@@ -369,12 +369,20 @@ G4FieldManager* SetupField(G4int type)
 
     pFieldMgr->SetDetectorField( & myMagField );
 
+    //cout << " got before line 372. " << pStepper->IntegratorOrder() << endl;
+
+
     pChordFinder = new G4ChordFinder( & myMagField,
 				      1.0e-2 * mm,
 				      pStepper);
+
+    //cout << "got here" << endl;
+
     pChordFinder->SetVerbose(0);  // ity();
 
     pFieldMgr->SetChordFinder( pChordFinder );
+
+    //cout << "got here2" << endl;
 
     return    pFieldMgr;
 }
@@ -461,7 +469,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4ThreeVector mxHat(-1,0,0),myHat(0,-1,0),mzHat(0,0,-1);
     
     // physStep=kInfinity;
-    G4ThreeVector Position(0.,0.,0.); 
+    G4ThreeVector Position(0.,0.,0.); // changed here
     G4ThreeVector UnitMomentum(0.,0.6,0.8);  
     G4ThreeVector EndPosition, EndUnitMomentum;
 
@@ -475,14 +483,14 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	G4endl;
     }
 
-    //G4cout << G4endl; 
+    //G4cout << "got line 488" << G4endl;
 
     for( int iparticle=0; iparticle < 1; iparticle++ )
     { 
        //physStep=  2.5 * mm ;  // millimeters
        physStep=  step_distance * mm ;  // millimeters
 
-       Position = G4ThreeVector(0.,0.,0.) 
+       Position = G4ThreeVector(0.,0.,0.)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
        UnitMomentum = (G4ThreeVector(0.,0.6,0.8) 
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
@@ -529,10 +537,15 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   ); 
 		  clock_t t;
 		  t = clock(); 
+
+
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
 						     safety,
 						     located);
+	  cout << "line 548 " << endl;
+
+
 	  total += clock() - t;
 	  //       --------------------
 	  EndPosition=     pMagFieldPropagator->EndPosition();

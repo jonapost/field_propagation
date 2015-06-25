@@ -48,7 +48,6 @@ Mag_UsualEqRhs_IntegrateByTime::EvaluateRhsGivenB( const G4double y[],
    dydx[4] = cof*(y[5]*B[0] - y[3]*B[2]) ;   // Ay = a*(Vz*Bx - Vx*Bz)
    dydx[5] = cof*(y[3]*B[1] - y[4]*B[0]) ;   // Az = a*(Vx*By - Vy*Bx)
 
-
    return ;
 }
 
