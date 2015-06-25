@@ -49,7 +49,7 @@ class G4MagInt_Driver
 {
    public:  // with description
 
-      inline void LastStepSucceeded();
+      //inline void LastStepSucceeded();
 
      G4bool  AccurateAdvance(G4FieldTrack&  y_current,
                              G4double hstep,
@@ -255,9 +255,9 @@ class G4MagInt_Driver
 
 };
 
-inline void G4MagInt_Driver::LastStepSucceeded() {
-   pIntStepper -> SetTrue_last_step_succeeded();
-}
+//inline void G4MagInt_Driver::LastStepSucceeded() {
+//   pIntStepper -> SetTrue_last_step_succeeded();
+//}
 
 
 #include "G4MagIntegratorDriver.icc"

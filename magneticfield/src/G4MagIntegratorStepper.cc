@@ -58,9 +58,10 @@ void G4MagIntegratorStepper::ComputeRightHandSide( const G4double y[], G4double 
 }
 
 
-void G4MagIntegratorStepper::SetTrue_last_step_succeeded() {
+/*void G4MagIntegratorStepper::SetTrue_last_step_succeeded() {
    last_step_succeeded = true;
 }
 void G4MagIntegratorStepper::Reset_last_step_succeeded() {
    last_step_succeeded = false;
 }
+*/
