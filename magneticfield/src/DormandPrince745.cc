@@ -261,5 +261,59 @@ G4double  DormandPrince745::DistChord() const
     return distChord;
 }
 
+/*
+    Code for interpolation. Formula from :
+    (Ref.)
+    Dormand, J. R., & Prince, P. J. (1986). Runge-Kutta triples. 
+    Computers & Mathematics with Applications, 12(9), 1007–1017. 
+    doi:10.1016/0898-1221(86)90025-8
+*/
+
+
+void DormandPrince745::interpolate(  const G4double yInput[],
+                                     const G4double dydx[],
+                                     G4double yOut[],       
+                                     G4double Step,
+                                      G4double tau){
+    
+
+    
+    
+    const G4int numberOfVariables= this->GetNumberOfVariables();
+
+    G4double tau0 = tau;        //Just saving the value of tau - for changes later
+    
+    for(int i=0;i<numberOfVariables;i++)
+    {
+        yIn[i]=yInput[i];
+    }
+    
+    G4double
+    tau_2 = tau0*tau0 ,
+    tau_3 = tau0*tau_2,
+    tau_4 = tau_2*tau_2,
+    
+    //Calculating the stage coefficient polynomials bi(tau)
+    bi1 = (157015080.0*tau_4 - 13107642775.0*tau_3+ 34969693132.0*tau_2- 32272833064.0*tau
+           + 11282082432.0)/11282082432.0,
+    bi2 = 0.0 ,
+    bi3 = - 100.0*tau*(15701508.0*tau_3 - 914128567.0*tau_2 + 2074956840.0*tau
+                 - 1323431896.0)/32700410799.0,
+    bi4 = 25.0*tau*(94209048.0*tau_3- 1518414297.0*tau_2+ 2460397220.0*tau - 889289856.0)/5641041216.0 ,
+    bi5 = -2187.0*tau*(52338360.0*tau_3 - 451824525.0*tau_2 + 687873124.0*tau - 259006536.0)/199316789632.0 ,
+    bi6 =  11.0*tau*(106151040.0*tau_3- 661884105.0*tau_2 + 946554244.0*tau - 361440756.0)/2467955532.0 ,
+    bi7 = tau*(1.0 - tau)*(8293050.0*tau_2 - 82437520.0*tau + 44764047.0)/ 29380423.0 ;
+    
+    //Getting the value of yOut using the formula for y(n+tau)
+    for( int i=0; i<numberOfVariables; i++){
+        yOut[i] = yIn[i] + Step*tau*(bi1*dydx[i] + bi2*ak2[i] + bi3*ak3[i] + bi4*ak4[i]
+                                     + bi5*ak5[i] + bi6*ak6[i] + bi7*ak7[i]  ) ;
+    }
+        
+}
+
+
+
+
 
 
