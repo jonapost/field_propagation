@@ -21,7 +21,6 @@
 
 class ChawlaSharmaRKNstepper : public G4MagIntegratorStepper
 {
-	friend class ChawlaSharmaWrapper;
 	public:
 	ChawlaSharmaRKNstepper(G4Mag_EqRhs *EquationMotion,
 					G4int numberOfVariables = 6, G4int numStateVariables = 12);
@@ -44,9 +43,6 @@ class ChawlaSharmaRKNstepper : public G4MagIntegratorStepper
    
    G4double DistChord() const;
    
-   // void mEvaluateRhs( const G4double y[],
-	//			           G4double dmom[] ) const;
-	
 	private:
    
    ////////////////////////////////////////////////////////////////
@@ -57,12 +53,15 @@ class ChawlaSharmaRKNstepper : public G4MagIntegratorStepper
    
    private:
    
+   G4int nposvars, nmomvars;
+
    // STATE
    G4ThreeVector fInitialPoint, fMidPoint, fFinalPoint;
    // Data stored in order to find the chord
    
    // Dependent Objects, owned --- part of the STATE 
    G4double *yInitial, *yMiddle, *dydxMid, *yOneStep;
+   G4double *pos, *mom, *K1, *K2, *K3, *temp_eval_pt;
    // The following arrays are used only for temporary storage
    // they are allocated at the class level only for efficiency -
    // so that calls to new and delete are not made in Stepper().
@@ -76,10 +75,19 @@ ChawlaSharmaRKNstepper::ChawlaSharmaRKNstepper(G4Mag_EqRhs *EquationRhs,
      : G4MagIntegratorStepper(EquationRhs,numberOfVariables,numStateVariables)
   {
       G4int nvar = std::max(this->GetNumberOfVariables(), 8);
+      nposvars = nvar / 2;
+      nmomvars = nvar / 2;
+
       yMiddle=     new G4double[nvar]; 
       dydxMid=     new G4double[nvar];
       yInitial=    new G4double[nvar];
       yOneStep= new G4double[nvar];
+
+      K1 = new G4double[nvar]; K2 = new G4double[nvar]; K3 = new G4double[nvar];
+      pos = new G4double[nposvars];
+      mom = new G4double[nmomvars];
+      temp_eval_pt = new G4double[nvar];
+
       m_fEq = EquationRhs;
   }
 

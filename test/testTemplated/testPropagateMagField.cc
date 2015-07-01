@@ -256,7 +256,6 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4VCurvedTrajectoryFilter.hh"
 
 #include "ChawlaSharmaRKNstepper.hh"
-#include "ChawlaSharmaWrapper.hh"
 
 //=============test template mode================
 /*
@@ -336,7 +335,6 @@ G4FieldManager* SetupField(G4int type)
       case 18: pStepper = new StepperExEuler_t(tEquation); break;
       */
       case 19: pStepper = new ChawlaSharmaRKNstepper( fEquation ); break;
-      case 20: pStepper = new ChawlaSharmaWrapper( fEquation ); break;
       //===============================================
 		default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
