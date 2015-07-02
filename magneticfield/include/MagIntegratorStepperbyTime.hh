@@ -98,7 +98,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
 
    //baseStepper->ComputeRightHandSide(yIn, dydx);
 
-   BaseStepper::RightHandSide(yIn, dydx);
+   BaseStepper::ComputeRightHandSide(yIn, dydx);
    //BaseStepper::ComputeRightHandSide(yIn, dydx);
    //baseStepper -> ComputeRightHandSide(yIn, dydx);
 
@@ -137,7 +137,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
    //baseStepper -> Stepper( yIn, dydx_copy, hstep, yOutput, yError );
    BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
-   assert( yOutput[0] == yOutput[0] );
+   //assert( yOutput[0] == yOutput[0] );
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= mass;

@@ -34,7 +34,6 @@
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 #include "ChawlaSharmaRKNstepper.hh"
-#include "ChawlaSharmaWrapper.hh"
 
 #include "MagIntegratorStepperbyTime.hh"
 #include "FineRKNG34.hh"

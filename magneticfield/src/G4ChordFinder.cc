@@ -217,7 +217,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   // One step of the integration will have been performed and accepted at this point
   // So alert fIntgrDriver to alert its stepper, that the step was accepted.
 
-  fIntgrDriver -> LastStepSucceeded();
+  //fIntgrDriver -> LastStepSucceeded();
 
   return stepPossible;
 }
