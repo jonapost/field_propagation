@@ -194,6 +194,20 @@ class G4ChordFinder
       // For Statistics
       // -- G4int   fNoTrials, fNoCalls;
       G4int   fTotalNoTrials_FNC,  fNoCalls_FNC, fmaxTrials_FNC; // fnoTimesMaxTrFNC; 
+
+      // ...................................................................
+
+      G4double total_time;
+      G4double **buffer_array;
+      G4int buffer_length;
+      G4int counter;
+      void record();
+      void setup_output_buffer();
+
+      G4double *pos_mom_vals;
+
+
+
 };
 
 // Inline function implementation:

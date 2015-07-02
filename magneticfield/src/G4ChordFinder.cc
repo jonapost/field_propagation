@@ -42,7 +42,40 @@ using namespace std;
 #include "G4ClassicalRK4.hh"
 
 
+#define BUFFER_LENGTH 1
+
+
 // ..........................................................................
+
+void G4ChordFinder::record() {
+
+   if (counter >= buffer_length) {
+      for (int i = 0; i < buffer_length; i ++) {
+         for (int j = 0; j <= 6; j ++)
+            cout << buffer_array[i][j] << ",";
+         cout << endl;
+      }
+      counter = 0;
+
+   }
+
+   for (int i = 0; i < 6; i ++)
+      buffer_array[counter][i] = pos_mom_vals[i];
+   buffer_array[counter][6] = total_time;
+   counter ++;
+
+}
+
+
+void G4ChordFinder::setup_output_buffer() {
+   cout << "inside setup_output_buffer" << endl;
+   buffer_array = new G4double*[buffer_length];
+   for (int i = 0; i < buffer_length; i ++)
+      buffer_array[i] = new G4double[7];
+}
+
+
+
 
 G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
   : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
@@ -63,6 +96,13 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
 
   SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);  
     // check the values and set the other parameters
+
+  buffer_length = BUFFER_LENGTH;
+  total_time = 0.;
+  setup_output_buffer();
+
+
+  pos_mom_vals = new G4double[12];
 }
 
 
@@ -84,7 +124,12 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
 
+
+   cout << "inside G4ChordFinder constructor" << endl;
+
   G4Mag_EqRhs *pEquation = new Mag_UsualEqRhs_IntegrateByTime(theMagField); // changed from G4Mag_UsualEqRhs
+  //G4Mag_EqRhs *pEquation = new G4Mag_UsualEqRhs(theMagField); // changed from G4Mag_UsualEqRhs
+
   fEquation = pEquation;                            
   fLastStepEstimate_Unconstrained = DBL_MAX;          // Should move q, p to
                                                      //    G4FieldTrack ??
@@ -105,8 +150,16 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
      fAllocatedStepper= false; 
   }
   //cout << " in G4ChordFinder " << pItsStepper->GetNumberOfVariables() << endl;
+
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
+
+  buffer_length = BUFFER_LENGTH;
+  total_time = 0.;
+  setup_output_buffer();
+
+  pos_mom_vals = new G4double[12];
+
 }
 
 
@@ -122,6 +175,17 @@ G4ChordFinder::~G4ChordFinder()
   delete   fIntgrDriver; 
 
   if( fStatsVerbose ) { PrintStatistics(); }
+
+  for (int i = 0; i < counter; i ++) {
+     for (int j = 0; j <= 6; j ++)
+        cout << buffer_array[i][j] << "," ;
+     cout << endl;
+
+  }
+
+  for (int i = 0; i < buffer_length; i ++)
+     delete[] buffer_array[i];
+  delete[] buffer_array;
 }
 
 
@@ -192,6 +256,8 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                              );
   //            *************
 
+  cout << "after FindNextChord " << endl;
+
   G4bool good_advance;
 
   if ( dyErr < epsStep * stepPossible )
@@ -217,7 +283,11 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   // One step of the integration will have been performed and accepted at this point
   // So alert fIntgrDriver to alert its stepper, that the step was accepted.
 
-  //fIntgrDriver -> LastStepSucceeded();
+  //fIntgrDriver -> LastStepSucceeded(yCurrent, stepPossible);
+
+  yCurrent.DumpToArray(pos_mom_vals);
+  total_time += stepPossible;
+  record();
 
   return stepPossible;
 }

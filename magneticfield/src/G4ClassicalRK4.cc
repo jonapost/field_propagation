@@ -31,6 +31,23 @@
 #include "G4ClassicalRK4.hh"
 #include "G4ThreeVector.hh"
 
+
+#include <iostream>
+using namespace std;
+
+
+void G4ClassicalRK4::Stepper(const G4double yInput[],
+                  const G4double dydx[],
+                        G4double hstep,
+                        G4double yOutput[],
+                        G4double yError []      )
+    {
+       G4MagErrorStepper::Stepper(yInput, dydx, hstep, yOutput, yError );
+    }
+
+
+
+
 //////////////////////////////////////////////////////////////////
 //
 // Constructor sets the number of variables (default = 6)

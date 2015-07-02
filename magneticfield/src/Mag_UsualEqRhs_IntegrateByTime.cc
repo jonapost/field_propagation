@@ -12,7 +12,7 @@
  * Mag_UsualEqRhs_IntegrateByTime.cc
  *
  *  Created on: Jun 11, 2015
- *      Author: jason
+ *      Author: Jason Suagee
  */
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
@@ -34,9 +34,8 @@ Mag_UsualEqRhs_IntegrateByTime::EvaluateRhsGivenB( const G4double y[],
 			             const G4double B[3],
 				           G4double dydx[] ) const
 {
-   //cout << G4ThreeVector( y[3], y[4], y[5] ).mag() << endl;
-   G4double cof = FCof();
 
+   G4double cof = FCof();
    cof /= FMass();   // Correction because we are using dynamic variables
                      // position and velocity (not momentum).
 

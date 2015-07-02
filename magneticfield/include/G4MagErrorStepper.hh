@@ -53,7 +53,9 @@ class G4MagErrorStepper : public G4MagIntegratorStepper
     G4MagErrorStepper(G4EquationOfMotion *EqRhs, G4int numberOfVariables, G4int numStateVariables=12);
     virtual ~G4MagErrorStepper();
   
-    void Stepper( const G4double y[],
+
+    // Stepper made virtual to please MagIntegratorStepperByTime (Jason Suagee)
+    virtual void Stepper( const G4double y[],
                   const G4double dydx[],
                         G4double h,
                         G4double yout[],

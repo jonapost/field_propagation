@@ -41,6 +41,7 @@
 
 #include "G4MagErrorStepper.hh"
 
+
 class G4ClassicalRK4 : public G4MagErrorStepper 
 {
   public:  // with description
@@ -48,6 +49,13 @@ class G4ClassicalRK4 : public G4MagErrorStepper
     G4ClassicalRK4(G4EquationOfMotion *EquationMotion, G4int numberOfVariables = 6) ;
 
     ~G4ClassicalRK4() ;
+
+
+    virtual void Stepper(const G4double yInput[],
+                  const G4double dydx[],
+                        G4double hstep,
+                        G4double yOutput[],
+                        G4double yError []      );
 
     // A stepper that does not know about errors.
     // It is used by the MagErrorStepper stepper.

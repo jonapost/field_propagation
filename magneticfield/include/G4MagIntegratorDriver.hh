@@ -45,6 +45,7 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
+
 class G4MagInt_Driver
 {
    public:  // with description
@@ -255,9 +256,14 @@ class G4MagInt_Driver
 
 };
 
-//inline void G4MagInt_Driver::LastStepSucceeded() {
-//   pIntStepper -> SetTrue_last_step_succeeded();
-//}
+/*
+inline void G4MagInt_Driver::LastStepSucceeded(G4double stepIncrement) {
+   current_time += stepIncrement;
+   record()
+
+   //pIntStepper -> SetTrue_last_step_succeeded();
+}
+*/
 
 
 #include "G4MagIntegratorDriver.icc"

@@ -303,7 +303,7 @@ G4FieldManager* SetupField(G4int type)
 	G4FieldManager   *pFieldMgr;
 	G4ChordFinder    *pChordFinder;
 
-	// Mag_UsualEqRhs_IntegrateByTime * fEquation = new Mag_UsualEqRhs_IntegrateByTime(& myMagField);
+	G4Mag_UsualEqRhs * fEquation_usual = new G4Mag_UsualEqRhs(& myMagField);
 
 	Mag_UsualEqRhs_IntegrateByTime *fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
 	//=============test template mode================
@@ -320,11 +320,16 @@ G4FieldManager* SetupField(G4int type)
 		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
 		case 2: pStepper = new G4SimpleRunge( fEquation ); break;
 		case 3: pStepper = new G4SimpleHeum( fEquation ); break;
-		case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
+		*/
+		case 4: pStepper = new G4ClassicalRK4( fEquation_usual ); break;
+		/*
 		case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
 		case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
 		case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
-		case 8: pStepper = new G4CashKarpRKF45( fEquation );    break;
+
+		*/
+		case 8: pStepper = new G4CashKarpRKF45( fEquation_usual );    break;
+		/*
 		case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
 		case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
 		case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
@@ -343,6 +348,11 @@ G4FieldManager* SetupField(G4int type)
 	   case 19: pStepper = new ChawlaSharmaRKNstepper( fEquation ); break;
       case 20: pStepper = new ChawlaSharmaWrapper( fEquation ); break;
       */
+
+
+	   case 21: pStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+         break;
+
 
       case 22: pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
          break;
@@ -369,20 +379,14 @@ G4FieldManager* SetupField(G4int type)
 
     pFieldMgr->SetDetectorField( & myMagField );
 
-    //cout << " got before line 372. " << pStepper->IntegratorOrder() << endl;
-
-
     pChordFinder = new G4ChordFinder( & myMagField,
 				      1.0e-2 * mm,
 				      pStepper);
 
-    //cout << "got here" << endl;
 
     pChordFinder->SetVerbose(0);  // ity();
 
     pFieldMgr->SetChordFinder( pChordFinder );
-
-    //cout << "got here2" << endl;
 
     return    pFieldMgr;
 }
@@ -483,8 +487,6 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	G4endl;
     }
 
-    //G4cout << "got line 488" << G4endl;
-
     for( int iparticle=0; iparticle < 1; iparticle++ )
     { 
        //physStep=  2.5 * mm ;  // millimeters
@@ -509,6 +511,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 		      chargeState,//+1,                    // charge in e+ units
 		      momentum, 
 		      proton_mass_c2); 
+
        /*G4cout << G4endl;
        G4cout << "Test PropagateMagField: ***********************" << G4endl
             << " Starting New Particle with Position " << Position << G4endl 
@@ -525,6 +528,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  // G4cerr << "Starting Step " << istep << " in volume " 
 	       // << located->GetName() << G4endl;
 
+
           G4FieldTrack  initTrack( Position, 
 				   UnitMomentum,
 				   0.0,            // starting S curve len
@@ -538,13 +542,10 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 		  clock_t t;
 		  t = clock(); 
 
-
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
 						     safety,
 						     located);
-	  cout << "line 548 " << endl;
-
 
 	  total += clock() - t;
 	  //       --------------------
@@ -733,7 +734,7 @@ int main(int argc, char **argv)
 
     // Setup the propagator (will be overwritten by testG4Propagator ...)
     pMagFieldPropagator= SetupPropagator(type);
-    //G4cout << " Using default values for " 
+    //G4cout << " Using default values for " << endl;
 	//   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
       //     << " and "
 	   //<< " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
@@ -741,7 +742,7 @@ int main(int argc, char **argv)
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
 	// Do the tests without voxels
-    //G4cout << " Test with no voxels" << G4endl; 
+    G4cout << " Test with no voxels" << G4endl;
 	testG4PropagatorInField(myTopNode, type, step_distance_input, step_no);
 
 

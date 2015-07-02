@@ -45,7 +45,7 @@
 // Constructor
 
 G4CashKarpRKF45::G4CashKarpRKF45(G4EquationOfMotion *EqRhs, 
-				 G4int noIntegrationVariables, 
+				 G4int noIntegrationVariables,
 				 G4bool primary)
   : G4MagIntegratorStepper(EqRhs, noIntegrationVariables),
     fLastStepLength(0.), fAuxStepper(0)

@@ -91,7 +91,7 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
 
   RenewStepperAndAdjust( pStepper );
-  //cout << "inside constructor for G4MagInt_Driver" << endl;
+  cout << "inside constructor for G4MagInt_Driver" << endl;
 
   fMinimumStep= hminimum;
   fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();

@@ -2,7 +2,7 @@
  * FineRKNG34.hh
  *
  *  Created on: Jun 21, 2015
- *      Author: jason
+ *      Author: Jason Suagee
  */
 
 #ifndef MAGNETICFIELD_INCLUDE_FINERKNG34_HH_

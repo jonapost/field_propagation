@@ -121,8 +121,6 @@ class G4MagIntegratorStepper
 
   private:
 
-     G4bool last_step_succeeded;
-
      G4EquationOfMotion *fEquation_Rhs;
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack

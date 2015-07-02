@@ -72,10 +72,8 @@ G4MagErrorStepper::Stepper( const G4double yInput[],
 
    DumbStepper  (yInitial,  dydx,   halfStep, yMiddle);
 
-   //cout << "mag error stepper, before RHS call" << endl;
-
    RightHandSide(yMiddle, dydxMid);    
-   //cout << "mag error stepper, after RHS call" << endl;
+
    DumbStepper  (yMiddle, dydxMid, halfStep, yOutput); 
 
    //cout << "after dumbstepper call" << endl;

@@ -11,11 +11,6 @@
 #include "G4Mag_EqRhs.hh"
 #include "G4MagIntegratorStepper.hh"
 
-#include <iostream>
-#include <assert.h>
-using namespace std;
-
-
 //G4MagIntegratorStepper
 
 template <class BaseStepper>
@@ -96,11 +91,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
    for (int i = 3; i < 6; i ++)
       yIn[i] *= inv_mass;
 
-   //baseStepper->ComputeRightHandSide(yIn, dydx);
-
    BaseStepper::ComputeRightHandSide(yIn, dydx);
-   //BaseStepper::ComputeRightHandSide(yIn, dydx);
-   //baseStepper -> ComputeRightHandSide(yIn, dydx);
 
    // Cache:
    for (int i = 0; i < 6; i ++)
@@ -121,8 +112,6 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yOutput[],
             G4double yError [] ) {
 
-   //cout << "inside MagIntegratorStepper_byTime<BaseStepper>:: Stepper()" << endl;
-
    for (int i = 0; i < 10; i ++){
       yIn[i] = yInput[i];
       dydx_copy[i] = dydx[i];
@@ -131,13 +120,8 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       yIn[i] *= inv_mass;
       dydx_copy[i] *= inv_mass;
    }
-   //cout << "inside MagIntegratorStepper_byTime<BaseStepper>::Stepper()" << endl;
-   //baseStepper->Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
-   //baseStepper -> Stepper( yIn, dydx_copy, hstep, yOutput, yError );
-   BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
-
-   //assert( yOutput[0] == yOutput[0] );
+   ( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= mass;
