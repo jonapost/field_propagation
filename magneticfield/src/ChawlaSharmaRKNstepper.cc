@@ -13,9 +13,6 @@
 #include "ChawlaSharmaRKNstepper.hh"
 using namespace CLHEP;
 
-//#include <iomanip>
-//using namespace std;
-
 ChawlaSharmaRKNstepper::~ChawlaSharmaRKNstepper()
 {
    delete[] yMiddle;
