@@ -63,6 +63,8 @@
 
 #include "MagIntegratorStepperbyTime.hh"
 
+#include <iostream>
+using namespace std;
 
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
@@ -258,7 +260,8 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4VCurvedTrajectoryFilter.hh"
 
 #include "ChawlaSharmaRKNstepper.hh"
-#include "ChawlaSharmaWrapper.hh"
+
+#include "FineRKNG34.hh"
 
 //=============test template mode================
 /*
@@ -357,6 +360,9 @@ G4FieldManager* SetupField(G4int type)
       case 22: pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
          break;
 
+
+      case 23: pStepper = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
+         break;
       //===============================================
 		/*
 
@@ -547,6 +553,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 						     safety,
 						     located);
 
+	  pMagFieldPropagator -> GetChordFinder() -> output_buffer();
+
+	  pMagFieldPropagator -> GetChordFinder() -> Reset_Buffer();
+
+
 	  total += clock() - t;
 	  //       --------------------
 	  EndPosition=     pMagFieldPropagator->EndPosition();
@@ -564,8 +575,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  // report_endPV(Position, UnitMomentum, step_len, physStep, safety,
 	  // EndPosition, EndUnitMomentum, istep, located );
 
-	     G4cout << EndPosition.x() << "," << EndPosition.y() << ","
-	    		 << EndPosition.z() << G4endl;
+	  //   G4cout << EndPosition.x() << "," << EndPosition.y() << ","
+	  //  		 << EndPosition.z() << G4endl;
 
 	  assert(safety>=0);
 	  pNavig->SetGeometricallyLimitedStep();
@@ -742,7 +753,7 @@ int main(int argc, char **argv)
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
 	// Do the tests without voxels
-    G4cout << " Test with no voxels" << G4endl;
+   //G4cout << " Test with no voxels" << G4endl;
 	testG4PropagatorInField(myTopNode, type, step_distance_input, step_no);
 
 

@@ -49,7 +49,7 @@ public:
 
 private:
    G4double yIn[10], dydx_copy[10], cached_dydx[10], last_function_evaluation[10];
-   G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
+   //G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
 
    // G4bool last_step_succeeded;
    // last_step_succeeded now inherits from G4MagIntegratorStepper
@@ -89,7 +89,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
    for (int i = 0; i < 10; i ++)
       yIn[i] = yInput[i];
    for (int i = 3; i < 6; i ++)
-      yIn[i] *= inv_mass;
+      yIn[i] *= 1. / m_fEq -> FMass();
 
    BaseStepper::ComputeRightHandSide(yIn, dydx);
 
@@ -98,7 +98,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
       last_function_evaluation[i] = dydx[i];
 
    for (int i = 3; i < 6; i ++)
-      dydx[i] *= mass;
+      dydx[i] *= m_fEq -> FMass();
    // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
    //for (int i = 3; i < 6; i ++)
    //   dydx[i] *= inv_mass;
@@ -117,14 +117,14 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       dydx_copy[i] = dydx[i];
    }
    for (int i = 3; i < 6; i ++){
-      yIn[i] *= inv_mass;
-      dydx_copy[i] *= inv_mass;
+      yIn[i] *= 1. / m_fEq -> FMass();
+      dydx_copy[i] *= 1. / m_fEq -> FMass();
    }
 
    ( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
    for (int i = 3; i < 6; i ++)
-      yOutput[i] *= mass;
+      yOutput[i] *= m_fEq -> FMass();
 
    //BaseStepper::Reset_last_step_succeeded(); // Reset last_step_succeeded to false
 }
@@ -166,8 +166,8 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
    // baseStepper = new BaseStepper(EquationRhs);  //, numberOfVariables, numStateVariables);
    for (int i = 0; i < 10; i ++)
       yIn[i] = 0.;
-   mass = m_fEq -> FMass();
-   inv_mass = 1. / mass;
+   //mass = m_fEq -> FMass();
+   //inv_mass = 1. / mass;
    ///last_step_succeeded = false; // Might want to change??
    //BaseStepper::Reset_last_step_succeeded();
 

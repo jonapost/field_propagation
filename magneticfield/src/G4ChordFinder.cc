@@ -41,23 +41,16 @@ using namespace std;
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4ClassicalRK4.hh"
 
+#include <assert.h>
 
-#define BUFFER_LENGTH 1
+#define BUFFER_LENGTH 1000
 
 
 // ..........................................................................
 
 void G4ChordFinder::record() {
 
-   if (counter >= buffer_length) {
-      for (int i = 0; i < buffer_length; i ++) {
-         for (int j = 0; j <= 6; j ++)
-            cout << buffer_array[i][j] << ",";
-         cout << endl;
-      }
-      counter = 0;
-
-   }
+   assert( counter < buffer_length );
 
    for (int i = 0; i < 6; i ++)
       buffer_array[counter][i] = pos_mom_vals[i];
@@ -68,13 +61,22 @@ void G4ChordFinder::record() {
 
 
 void G4ChordFinder::setup_output_buffer() {
-   cout << "inside setup_output_buffer" << endl;
    buffer_array = new G4double*[buffer_length];
    for (int i = 0; i < buffer_length; i ++)
       buffer_array[i] = new G4double[7];
 }
 
+void G4ChordFinder::output_buffer() {
+   for (int i = 0; i < counter; i ++) {
+      for (int j = 0; j < 7; j ++)
+         cout << buffer_array[i][j] << ",";
+      cout << endl;
+   }
+}
 
+void G4ChordFinder::Reset_Buffer() {
+   counter = 0;
+}
 
 
 G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
@@ -123,9 +125,6 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
 {
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
-
-
-   cout << "inside G4ChordFinder constructor" << endl;
 
   G4Mag_EqRhs *pEquation = new Mag_UsualEqRhs_IntegrateByTime(theMagField); // changed from G4Mag_UsualEqRhs
   //G4Mag_EqRhs *pEquation = new G4Mag_UsualEqRhs(theMagField); // changed from G4Mag_UsualEqRhs
@@ -256,7 +255,6 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                              );
   //            *************
 
-  cout << "after FindNextChord " << endl;
 
   G4bool good_advance;
 
@@ -364,9 +362,6 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
      noTrials++; 
   }
   while( ! validEndPoint );   // End of do-while  RKD 
-
-  cout << "after do, while loop " << endl;
-
 
   if( newStepEst_Uncons > 0.0  )
   {

@@ -52,6 +52,11 @@ class G4ChordFinder
 { 
    public:  // with description
 
+      void output_buffer();
+
+      void Reset_Buffer();
+
+
       G4ChordFinder( G4MagInt_Driver* pIntegrationDriver );
 
       G4ChordFinder( G4MagneticField* itsMagField,

@@ -16,7 +16,7 @@ public:
    virtual ~FineRKNG34();
    FineRKNG34(G4EquationOfMotion *EqRhs,
          G4int numberOfVariables = 6,
-         G4int numberOfStateVariables = 12);
+         G4bool primary = true);
 
    void Stepper( const G4double y[],
                  const G4double dydx[],
@@ -42,8 +42,16 @@ private:
    G4double yInitial[8], yNext[3];
    G4double fInitial[8], fNext[3];
 
-   G4double last_step_len;
+   //G4double last_step_len;
    // G4double last_time_value; // Hack to implement FSAL
+
+   FineRKNG34 *fAuxStepper;
+
+   G4double fLastStepLength;
+   G4double *fLastInitialVector, *fLastFinalVector,
+            *fLastDyDx, *fMidVector, *fMidError;
+   // for DistChord calculations
+
 
 
 };
