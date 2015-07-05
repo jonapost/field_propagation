@@ -43,7 +43,7 @@ using namespace std;
 
 #include <assert.h>
 
-#define BUFFER_LENGTH 1000
+#define BUFFER_LENGTH 1000000
 
 
 // ..........................................................................
