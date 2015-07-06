@@ -48,27 +48,37 @@ using namespace std;
 
 // ..........................................................................
 
-void G4ChordFinder::record() {
+void G4ChordFinder::record(G4double dydx_temp[]) {
 
    assert( counter < buffer_length );
 
-   for (int i = 0; i < 6; i ++)
+   for (int i = 0; i < 3; i ++) {
       buffer_array[counter][i] = pos_mom_vals[i];
-   buffer_array[counter][6] = total_time;
+   }
+   for (int i = 3; i < 6; i ++) {
+         buffer_array[counter][i] = pos_mom_vals[i] / mass;
+      }
+   for (int i = 6; i < 9; i ++)
+      buffer_array[counter][i] = dydx_temp[i - 3];
+   buffer_array[counter][9] = total_time;
    counter ++;
 
 }
 
 
+void G4ChordFinder::SetMass() {
+   mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
+}
+
 void G4ChordFinder::setup_output_buffer() {
    buffer_array = new G4double*[buffer_length];
    for (int i = 0; i < buffer_length; i ++)
-      buffer_array[i] = new G4double[7];
+      buffer_array[i] = new G4double[10]; // y, y' and y'', and time t
 }
 
 void G4ChordFinder::output_buffer() {
    for (int i = 0; i < counter; i ++) {
-      for (int j = 0; j < 7; j ++)
+      for (int j = 0; j < 10; j ++)
          cout << buffer_array[i][j] << ",";
       cout << endl;
    }
@@ -159,6 +169,9 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
 
   pos_mom_vals = new G4double[12];
 
+  //mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
+
+
 }
 
 
@@ -244,6 +257,9 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
 {
 
 
+  G4double dydx_temp[12];
+  G4double Field[4];
+
   G4double stepPossible;
   G4double dyErr;
   G4FieldTrack yEnd( yCurrent);
@@ -284,8 +300,14 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   //fIntgrDriver -> LastStepSucceeded(yCurrent, stepPossible);
 
   yCurrent.DumpToArray(pos_mom_vals);
+
+  // Temp hack so we can record y'' values from inside ChordFinder (without having to store them in MagIntegratorDriver)
+  fIntgrDriver -> GetStepper() -> ComputeRightHandSide(pos_mom_vals, dydx_temp);
+  for ( int i = 3; i < 6; i ++)
+     dydx_temp[i] /= mass;
+
   total_time += stepPossible;
-  record();
+  record(dydx_temp);
 
   return stepPossible;
 }

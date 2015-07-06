@@ -298,7 +298,7 @@ Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //G4String   fieldName("Uniform -1.0 Tesla");
 
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 0.0 * cm); // Temporarily set to 0
+G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
 
 G4FieldManager* SetupField(G4int type)
@@ -525,6 +525,10 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 		      chargeState,//+1,                    // charge in e+ units
 		      momentum, 
 		      proton_mass_c2); 
+
+
+       // Added as temp hack (J. Suagee)
+       pMagFieldPropagator -> GetChordFinder() -> SetMass();
 
        /*
        G4cout << G4endl;

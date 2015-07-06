@@ -55,6 +55,8 @@ class G4ChordFinder
       void output_buffer();
 
       void Reset_Buffer();
+      void SetMass();
+
 
 
       G4ChordFinder( G4MagInt_Driver* pIntegrationDriver );
@@ -164,6 +166,7 @@ class G4ChordFinder
       inline G4double GetLastStepEstimateUnc(); 
       inline void     SetLastStepEstimateUnc( G4double stepEst ); 
 
+
    private:  // ............................................................
 
       G4ChordFinder(const G4ChordFinder&);
@@ -206,8 +209,10 @@ class G4ChordFinder
       G4double **buffer_array;
       G4int buffer_length;
       G4int counter;
-      void record();
+      void record(G4double dydx_temp[]);
       void setup_output_buffer();
+
+      G4double mass;
 
       G4double *pos_mom_vals;
 
