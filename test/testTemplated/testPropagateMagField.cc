@@ -33,6 +33,7 @@
 //   with and without voxels. Parameterised volumes are included.
 
 #include <assert.h>
+#include <ErrorComputer.hh>
 #include <stdio.h>
 #include <time.h>
 // #include "ApproxEqual.hh"
@@ -65,6 +66,8 @@
 
 #include <iostream>
 using namespace std;
+
+#define BUFFER_MAX_LEN 100000
 
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
@@ -306,86 +309,20 @@ G4FieldManager* SetupField(G4int type)
 	G4FieldManager   *pFieldMgr;
 	G4ChordFinder    *pChordFinder;
 
-	G4Mag_UsualEqRhs * fEquation_usual = new G4Mag_UsualEqRhs(& myMagField);
-
 	Mag_UsualEqRhs_IntegrateByTime *fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
-	//=============test template mode================
-	//Equation_t *tEquation = new Equation_t(&tMagField);
-	//===============================================
-
 	G4MagIntegratorStepper *pStepper;
 
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
-		/*
-	   case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
-		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
-		case 2: pStepper = new G4SimpleRunge( fEquation ); break;
-		case 3: pStepper = new G4SimpleHeum( fEquation ); break;
-		*/
-
-	   // Constructor of G4ChordFinder has been changed to use Mag_UsualEqRhs_IntegrateByTime
-	   // so G4ClassicalRK4 won't work unless wrapped inside an Mag_UsualEqRhs_IntegrateByTime object
-		//case 1: pStepper = new G4ClassicalRK4( fEquation_usual ); break;
-
-		/*
-		case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
-		case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
-		case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
-
-		*/
-      // Constructor of G4ChordFinder has been changed to use Mag_UsualEqRhs_IntegrateByTime
-      // so G4CashKarpRKF45 won't work unless wrapped inside an Mag_UsualEqRhs_IntegrateByTime object
-		//case 2: pStepper = new G4CashKarpRKF45( fEquation_usual );    break;
-
-		/*
-		case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
-		case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
-		case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
-		case 12: pStepper = new G4ConstRK4( fEquation ); break;
-		case 13: pStepper = new G4NystromRK4( fEquation ); break; 
-		//=============test template mode================
-		/*
-		case 14: pStepper = new Stepper_t(tEquation); break;
-		case 15: pStepper = new StepperRK4_t(tEquation); break;
-      case 16: pStepper = new StepperHeum_t(tEquation); break;
-      case 17: pStepper = new StepperRunge_t(tEquation); break;
-      case 18: pStepper = new StepperExEuler_t(tEquation); break;
-      */
-
-	   /*
-	   case 19: pStepper = new ChawlaSharmaRKNstepper( fEquation ); break;
-      case 20: pStepper = new ChawlaSharmaWrapper( fEquation ); break;
-      */
       case 0: pStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
          break;
-
 	   case 1: pStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
          break;
-
-
       case 2: pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
          break;
-
-
       case 3: pStepper = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
          break;
-      //===============================================
-		/*
-
-		 default:
-          pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
-          G4ExceptionDescription ErrorMsg;
-          ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
-                   << type << G4endl;
-          ErrorMsg << " NO replacement stepper chosen! " << G4endl;
-          G4Exception("application::SetupField",
-                      "Runtime Error",
-                      FatalErrorInArgument,       //  use JustWarning,
-                      " Invalid value of stepper type" );
-          break; 
-        */
 	   }
 
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
@@ -440,13 +377,17 @@ G4PropagatorInField*  SetupPropagator( G4int type)
 }
 
 G4PropagatorInField *pMagFieldPropagator=0; 
+G4PropagatorInField *baseToComparePropagator=0;
+
 //
 // Test Stepping
 //
-G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
+G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 			       G4int             	type,
 				   G4double			 	step_distance,
-				   G4double				step_no)
+				   G4double				step_no,
+				   G4double          **buffer_ptr,
+				   G4int             buffer_len)
 {
     void report_endPV(G4ThreeVector    Position, 
                   G4ThreeVector UnitVelocity,
@@ -463,6 +404,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                     GetTransportationManager()-> GetNavigatorForTracking();
     
     pMagFieldPropagator= SetupPropagator(type);
+    baseToComparePropagator = SetupPropagator(0);
 
     G4double particleCharge= +1.0;  // in e+ units
     G4double spin=0.0;              // ignore the spin
@@ -528,6 +470,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 
        // Added as temp hack (J. Suagee)
+       pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer(buffer_ptr, buffer_len);
        pMagFieldPropagator -> GetChordFinder() -> SetMass();
 
        /*
@@ -567,9 +510,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 						     located);
 
 
-	  pMagFieldPropagator -> GetChordFinder() -> output_buffer();
-
-	  pMagFieldPropagator -> GetChordFinder() -> Reset_Buffer();
+	  //bufferA = pMagFieldPropagator -> GetChordFinder() -> GetBuffer();
+	  //pMagFieldPropagator -> GetChordFinder() -> Reset_Buffer();
 
 
 	  total += clock() - t;
@@ -602,7 +544,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
     }    // ..............................  end for ( iparticle )
 
-    return(1);
+    return pMagFieldPropagator -> GetChordFinder() -> GetCounter();
+    //return(1);
 }
 
 
@@ -719,33 +662,26 @@ int main(int argc, char **argv)
         	step_no = 3;
         }
 
-    /*
-    if( argc >=3 ){
-      optim= atoi(argv[2]);
-      if( optim == 0 ) { optimiseVoxels = false; }
+    G4double **buffer1 = new G4double*[BUFFER_MAX_LEN];
+    G4double **buffer2 = new G4double*[BUFFER_MAX_LEN];
+    G4double **error = new G4double*[BUFFER_MAX_LEN];
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       buffer1[i] = new G4double[10];
+    }
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+           buffer2[i] = new G4double[10];
+    }
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+               error[i] = new G4double[3];
     }
 
-    if( argc >=4 ){
-      optimSaf= atoi(argv[3]);
-      if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
-    }
-	*/
+   G4double err_pos_mag2, err_pos_mag;
+   G4int counter1, counter2;
+
+   ErrorComputer *errorComputer;
 
 	int len = 1;
 	 for (int k = 0; k < len; k++){
-    //G4cout << " Testing with stepper number    " << type << G4endl; 
-    //G4cout << "             " ; 
-    //G4cout << " voxel optimisation      " ; 
-    // if (optimiseVoxels)   //G4cout << "On"; 
-    // else                  //G4cout << "Off"; 
-    //G4cout << (optimiseVoxels ? "On" : "Off")  << G4endl;
-    //G4cout << "             " ; 
-    //G4cout << " Propagator safety optim " ; 
-    // const char* OnOff= (optimisePiFwithSafety ? "on" : "off") ; 
-    // //G4cout << OnOff << G4endl;
-    //G4cout << (optimisePiFwithSafety ? "On" : "Off")  << G4endl;
-
-    // Create the geometry & field 
     myTopNode=BuildGeometry();	// Build the geometry
  
     G4Navigator *pNavig= G4TransportationManager::
@@ -755,28 +691,47 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->CloseGeometry(false);
 
     // Setup the propagator (will be overwritten by testG4Propagator ...)
-    pMagFieldPropagator= SetupPropagator(type);
-    //G4cout << " Using default values for " << endl;
-	//   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
-      //     << " and "
-	   //<< " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
-	   //<< G4endl; 
+    pMagFieldPropagator = SetupPropagator(type);
+    pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety);
 
-    pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
-	// Do the tests without voxels
-   //G4cout << " Test with no voxels" << G4endl;
-	testG4PropagatorInField(myTopNode, type, step_distance_input, step_no);
+    //baseToComparePropagator = SetupPropagator(3); // Setting up a FineRKNG34 stepper as
+                                                  //comparison base (because FineRKNG34 has interpolation)
+    //baseToComparePropagator->SetUseSafetyForOptimization(optimisePiFwithSafety);
 
 
-
-
-   // pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels);
-    //pMagFieldPropagator->SetVerboseLevel( 0 );
-
-// Repeat tests but with full voxels
-    //G4cout << " Test with full voxels" << G4endl; 
+    counter1 = testG4PropagatorInField(myTopNode, 3, step_distance_input, step_no, buffer1, BUFFER_MAX_LEN);
+    counter2 = testG4PropagatorInField(myTopNode, type, step_distance_input, step_no, buffer2, BUFFER_MAX_LEN);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
+
+    errorComputer = new ErrorComputer(buffer1, counter1, buffer2, counter2);
+    errorComputer -> ErrorArray(error);
+
+    for (int i = 0; i < counter2; i ++) {
+       err_pos_mag2 = 0.;
+       for (int j = 0; j < 3; j ++) {
+          err_pos_mag2 += error[i][j];
+       }
+       err_pos_mag = sqrt(err_pos_mag2);
+       cout << buffer2[i][9] << "," << err_pos_mag2 << endl; // (Time, magnitude of position error from interpolant)
+    }
+
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       delete buffer1[i];
+    }
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       delete buffer2[i];
+    }
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       delete error[i];
+    }
+    delete buffer1;
+    delete buffer2;
+    delete error;
+
+    delete errorComputer;
+
+
 /*
 
     G4GeometryManager::GetInstance()->CloseGeometry(true);

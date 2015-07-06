@@ -53,9 +53,13 @@ class G4ChordFinder
    public:  // with description
 
       void output_buffer();
-
+      G4double **GetBuffer();
       void Reset_Buffer();
       void SetMass();
+
+      void setup_output_buffer(G4double **buffer_ptr, G4int bufferLength);
+
+      inline G4int GetCounter() { return counter; }
 
 
 
@@ -210,7 +214,6 @@ class G4ChordFinder
       G4int buffer_length;
       G4int counter;
       void record(G4double dydx_temp[]);
-      void setup_output_buffer();
 
       G4double mass;
 

@@ -44,6 +44,7 @@ using namespace std;
 #include <assert.h>
 
 #define BUFFER_LENGTH 1000000
+#define TIME_SLOT 9
 
 
 // ..........................................................................
@@ -58,9 +59,9 @@ void G4ChordFinder::record(G4double dydx_temp[]) {
    for (int i = 3; i < 6; i ++) {
          buffer_array[counter][i] = pos_mom_vals[i] / mass;
       }
-   for (int i = 6; i < 9; i ++)
+   for (int i = 6; i < TIME_SLOT; i ++)
       buffer_array[counter][i] = dydx_temp[i - 3];
-   buffer_array[counter][9] = total_time;
+   buffer_array[counter][TIME_SLOT] = total_time;
    counter ++;
 
 }
@@ -70,10 +71,14 @@ void G4ChordFinder::SetMass() {
    mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
 }
 
-void G4ChordFinder::setup_output_buffer() {
+void G4ChordFinder::setup_output_buffer(G4double **buffer_ptr, G4int bufferLength) {
+   buffer_array = buffer_ptr;
+   buffer_length = bufferLength;
+   /*
    buffer_array = new G4double*[buffer_length];
    for (int i = 0; i < buffer_length; i ++)
       buffer_array[i] = new G4double[10]; // y, y' and y'', and time t
+   */
 }
 
 void G4ChordFinder::output_buffer() {
@@ -82,6 +87,10 @@ void G4ChordFinder::output_buffer() {
          cout << buffer_array[i][j] << ",";
       cout << endl;
    }
+}
+
+G4double ** G4ChordFinder::GetBuffer() {
+   return buffer_array;
 }
 
 void G4ChordFinder::Reset_Buffer() {
@@ -109,9 +118,9 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
   SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);  
     // check the values and set the other parameters
 
-  buffer_length = BUFFER_LENGTH;
+  //buffer_length = BUFFER_LENGTH;
   total_time = 0.;
-  setup_output_buffer();
+  //setup_output_buffer();
 
 
   pos_mom_vals = new G4double[12];
@@ -163,9 +172,9 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
 
-  buffer_length = BUFFER_LENGTH;
+  //buffer_length = BUFFER_LENGTH;
   total_time = 0.;
-  setup_output_buffer();
+  //setup_output_buffer();
 
   pos_mom_vals = new G4double[12];
 
