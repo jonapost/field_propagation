@@ -40,9 +40,9 @@ class ChawlaSharmaRKNstepper : public G4MagIntegratorStepper
 										G4double yOut[] );
 	
 	//G4int IntegratorOrder() const {return 3;}; // Richardson extrapolation promotes to 4th order
-   G4int IntegratorOrder() const {return 4;}; // Richardson extrapolation promotes to 4th order
+   virtual G4int IntegratorOrder() const {return 4;}; // Richardson extrapolation promotes to 4th order
    
-   G4double DistChord() const;
+   virtual G4double DistChord() const;
    
    // void mEvaluateRhs( const G4double y[],
 	//			           G4double dmom[] ) const;

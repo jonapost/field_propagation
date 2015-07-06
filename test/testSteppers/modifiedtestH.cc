@@ -34,7 +34,6 @@
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 #include "ChawlaSharmaRKNstepper.hh"
-#include "ChawlaSharmaWrapper.hh"
 
 using namespace std;
 using namespace CLHEP;
@@ -229,7 +228,6 @@ int main(int argc, char *args[]) {
 
    //G4SimpleHeum *simpleHeumStepper;
    G4NystromRK4 *myNystromStepper;
-   ChawlaSharmaWrapper *myCSWStepper;
 
    //Choose the stepper based on the command line argument
 
@@ -270,9 +268,6 @@ int main(int argc, char *args[]) {
             break;
          case 7:
             myNystromStepper = new G4NystromRK4(fEquation[i]);
-            break;
-         case 8:
-            myCSWStepper = new ChawlaSharmaWrapper(fEquation[i]);
             break;
          default:
             myStepper[i] = 0;
@@ -322,10 +317,6 @@ int main(int argc, char *args[]) {
             case 7:
                myNystromStepper->ComputeRightHandSide(yIn[i], dydx[i]);
                myNystromStepper->Stepper(yIn[i], dydx[i], step_len, yout[i], yerr[i]);
-               break;
-            case 8:
-               //myCSWStepper->Stepper(yIn, dydx, step_len, yout, yerr);
-               myCSWStepper->DumbStepper(yIn[i], step_len, yout[i]);
                break;
 
             default:
@@ -405,9 +396,6 @@ int main(int argc, char *args[]) {
 
    for (int i = 0; i < 2; i ++) {
       switch (stepper_choices[i]) {
-         case 8:
-            delete myCSWStepper;
-            break;
          case 7:
             delete myNystromStepper;
             break;

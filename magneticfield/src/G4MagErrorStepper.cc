@@ -31,6 +31,9 @@
 #include "G4MagErrorStepper.hh"
 #include "G4LineSection.hh"
 
+#include <iostream>
+using namespace std;
+
 G4MagErrorStepper::~G4MagErrorStepper()
 {
    delete[] yMiddle;
@@ -68,8 +71,12 @@ G4MagErrorStepper::Stepper( const G4double yInput[],
    // Do two half steps
 
    DumbStepper  (yInitial,  dydx,   halfStep, yMiddle);
+
    RightHandSide(yMiddle, dydxMid);    
+
    DumbStepper  (yMiddle, dydxMid, halfStep, yOutput); 
+
+   //cout << "after dumbstepper call" << endl;
 
    // Store midpoint, chord calculation
 

@@ -52,6 +52,13 @@ class G4ChordFinder
 { 
    public:  // with description
 
+      void output_buffer();
+
+      void Reset_Buffer();
+      void SetMass();
+
+
+
       G4ChordFinder( G4MagInt_Driver* pIntegrationDriver );
 
       G4ChordFinder( G4MagneticField* itsMagField,
@@ -159,6 +166,7 @@ class G4ChordFinder
       inline G4double GetLastStepEstimateUnc(); 
       inline void     SetLastStepEstimateUnc( G4double stepEst ); 
 
+
    private:  // ............................................................
 
       G4ChordFinder(const G4ChordFinder&);
@@ -194,6 +202,22 @@ class G4ChordFinder
       // For Statistics
       // -- G4int   fNoTrials, fNoCalls;
       G4int   fTotalNoTrials_FNC,  fNoCalls_FNC, fmaxTrials_FNC; // fnoTimesMaxTrFNC; 
+
+      // ...................................................................
+
+      G4double total_time;
+      G4double **buffer_array;
+      G4int buffer_length;
+      G4int counter;
+      void record(G4double dydx_temp[]);
+      void setup_output_buffer();
+
+      G4double mass;
+
+      G4double *pos_mom_vals;
+
+
+
 };
 
 // Inline function implementation:

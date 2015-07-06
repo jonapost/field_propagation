@@ -34,7 +34,6 @@
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 #include "ChawlaSharmaRKNstepper.hh"
-#include "ChawlaSharmaWrapper.hh"
 
 #include "MagIntegratorStepperbyTime.hh"
 #include "FineRKNG34.hh"
@@ -192,8 +191,11 @@ int main(int argc, char *args[]) {
    G4double error;
 
    for (int j = 0; j < no_of_steps; j++) {
+      //cout << " before Compute RHS" << endl;
       myStepper->ComputeRightHandSide(yIn, dydx);
+      //cout << " before Stepper " << endl;
       myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+      //cout << " after stepper call " << endl;
 
       // Position output:
       for (int k = 0; k < 3; k++) {

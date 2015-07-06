@@ -13,7 +13,7 @@
  * Mag_UsualEqRhs_IntegrateByTime.hh
  *
  *  Created on: Jun 11, 2015
- *      Author: jason
+ *      Author: Jason Suagee
  */
 
 #ifndef MAGNETICFIELD_INCLUDE_MAG_USUALEQRHS_INTEGRATEBYTIME_HH_
@@ -23,9 +23,6 @@
 
 #include "G4Mag_EqRhs.hh"
 #include "G4ChargeState.hh"
-// temp include:
-#include <iomanip>
-
 
 class Mag_UsualEqRhs_IntegrateByTime: public G4Mag_EqRhs {
 public:

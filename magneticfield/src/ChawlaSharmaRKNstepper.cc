@@ -14,6 +14,7 @@
 using namespace CLHEP;
 
 #include <iomanip>
+#include <assert.h>
 using namespace std;
 
 ChawlaSharmaRKNstepper::~ChawlaSharmaRKNstepper()
@@ -41,6 +42,8 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    
    //  Saving yInput because yInput and yOutput can be aliases for same array
 
+   //assert( yInput[0] == yInput[0]);
+
    for(i=0;i<nvar;i++) yInitial[i]=yInput[i];
 
    //for(i=3;i<nvar;i++) yInitial[i] *= iMass;
@@ -61,8 +64,12 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    //G4double m_imom = 1. / std::sqrt(yInitial[3]*yInitial[3]+yInitial[4]*yInitial[4]+yInitial[5]*yInitial[5]);
    //for(i = 3; i < 6; i++) yInitial[i] *= m_imom;
    
+
    DumbStepper  (yInitial, halfStep, yMiddle);
    
+   assert( yMiddle[0] == yMiddle[0]);
+
+
    // Might put in for one of the set of coefficients:
    // RightHandSide(yMiddle, dydxMid);
    
@@ -74,12 +81,19 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    
    DumbStepper  (yMiddle, halfStep, yOutput); 
 
+   assert( yOutput[0] == yOutput[0]);
+
+
    // Store midpoint, chord calculation
    
    fMidPoint = G4ThreeVector( yMiddle[0],  yMiddle[1],  yMiddle[2]); 
 
    // Do a full Step
    DumbStepper(yInitial, hstep, yOneStep);
+
+   assert( yOneStep[0] == yOneStep[0]);
+
+
    for(i=0;i<nvar;i++) {
       //std::cerr << "i = " << i << " ,yOutput = "  << yOutput[i] << " , yOneStep = " << yOneStep[i] << "\n";;
       //if (yOutput[i] == yOneStep[i]){ std::cerr << "  were equal \n";} else std::cerr << "\n";
@@ -92,10 +106,8 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
                                             // when it should be reported as 3+1 = 4 ?
    }
    
-   //for(i=3;i<nvar;i++) yOutput[i] *= mass;
 
-
-   // Now renomalize momentum
+   // Now renormalize momentum
    //G4double momentum_sqrt =1. / std::sqrt( yOutput[3]*yOutput[3] + yOutput[4]*yOutput[4] + yOutput[5]*yOutput[5] );
    
    //for(i = 3; i < 6; i ++){
@@ -105,7 +117,6 @@ void ChawlaSharmaRKNstepper::Stepper(  const G4double yInput[],
    fInitialPoint = G4ThreeVector( yInitial[0], yInitial[1], yInitial[2]); 
    fFinalPoint   = G4ThreeVector( yOutput[0],  yOutput[1],  yOutput[2]); 
 
-   //cout << DistChord() << endl;
 
    return ;
 }
@@ -170,8 +181,12 @@ void ChawlaSharmaRKNstepper::DumbStepper(
 	}
 	temp_eval_pt[7] = t + alpha1*Step;
 	
+
+
 	ComputeRightHandSide(temp_eval_pt, K1);
 	
+	assert( K1[3] == K1[3] );
+
 	for(i = 0; i < 3; i ++){
 		temp_eval_pt[i] = pos[i] + alpha2*Step*mom[i] + Step*Step*beta21*K1[i+3];
 	}
@@ -193,13 +208,18 @@ void ChawlaSharmaRKNstepper::DumbStepper(
    
 	ComputeRightHandSide(temp_eval_pt, K3);
    
+	//for (i = 3; i < 6; i ++) cout << K3[i] << ", " ;
+	//cout  << endl;
+
 	for(i = 0; i < 3; i ++)
 	{
 	// Accumulate increments with proper weights
 
 		yOut[i] = pos[i] + Step*mom[i] + Step*Step*
 				(a1*K1[i+3] + a2*K2[i+3] + a3*K3[i+3]);
+		//cout << yOut[i] << ", " ;
 	}
+	//cout << endl;
 	for(i = 0; i < 3; i ++){
 		yOut[i+3] = mom[i] + Step*( b1*K1[i+3] + b2*K2[i+3] + b3*K3[i+3] );
 	}
@@ -223,15 +243,21 @@ G4double ChawlaSharmaRKNstepper::DistChord() const
   //  Method below is good only for angle deviations < 2 pi, 
   //   This restriction should not a problem for the Runge cutta methods, 
   //   which generally cannot integrate accurately for large angle deviations.
+
   G4double distLine, distChord; 
 
   if (fInitialPoint != fFinalPoint) {
+
+     //cout << "fInitialPoint != fFinalPoint : " << fInitialPoint << ": " << fFinalPoint << endl;
+
      distLine= G4LineSection::Distline( fMidPoint, fInitialPoint, fFinalPoint );
      // This is a class method that gives distance of Mid 
      //  from the Chord between the Initial and Final points.
 
      distChord = distLine;
   }else{
+     //cout << "fInitialPoint == fFinalPoint : " << fInitialPoint << ": " << fFinalPoint << endl;
+
      distChord = (fMidPoint-fInitialPoint).mag();
   }
   return distChord;

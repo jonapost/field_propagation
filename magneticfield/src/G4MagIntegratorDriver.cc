@@ -41,6 +41,8 @@
 
 #include <iomanip>
 
+#include <assert.h>
+
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
@@ -89,6 +91,7 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
 
   RenewStepperAndAdjust( pStepper );
+
   fMinimumStep= hminimum;
   fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();
 #ifdef G4DEBUG_FIELD
@@ -660,6 +663,8 @@ G4bool  G4MagInt_Driver::QuickAdvance(
                                   G4double&    dchord_step,
                                   G4double&    dyerr )
 {
+
+
   G4double dyerr_pos_sq, dyerr_mom_rel_sq;  
   G4double yerr_vec[G4FieldTrack::ncompSVEC],
            yarrin[G4FieldTrack::ncompSVEC], yarrout[G4FieldTrack::ncompSVEC]; 
@@ -673,9 +678,14 @@ G4bool  G4MagInt_Driver::QuickAdvance(
   y_posvel.DumpToArray( yarrin );      //  yarrin  <== y_posvel 
   s_start = y_posvel.GetCurveLength();
 
+
+
   // Do an Integration Step
   pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
   //            *******
+
+
+  assert( yarrout[0] == yarrout[0] );
 
   // Estimate curve-chord distance
   dchord_step= pIntStepper-> DistChord();
