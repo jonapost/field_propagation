@@ -71,9 +71,20 @@ void G4ChordFinder::SetMass() {
    mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
 }
 
-void G4ChordFinder::setup_output_buffer(G4double **buffer_ptr, G4int bufferLength) {
+void G4ChordFinder::setup_output_buffer(G4double **buffer_ptr, G4int bufferLength, G4double y_initial[]) {
    buffer_array = buffer_ptr;
    buffer_length = bufferLength;
+   counter = 0;
+   buffer_array[0][9] = 0.; // temp
+
+   G4double dydx_temp[12];
+
+   fIntgrDriver -> GetStepper() -> ComputeRightHandSide(y_initial, dydx_temp);
+   for ( int i = 3; i < 6; i ++)
+      dydx_temp[i] /= mass;
+
+   record(dydx_temp);
+
    /*
    buffer_array = new G4double*[buffer_length];
    for (int i = 0; i < buffer_length; i ++)

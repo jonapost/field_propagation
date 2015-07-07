@@ -12,7 +12,7 @@
 
 class ErrorComputer {
 public:
-   ErrorComputer(G4double **bufferA, G4int lenBufferA, G4double **bufferB,
+   ErrorComputer(G4double **in_bufferA, G4int lenBufferA, G4double **in_bufferB,
                              G4int lenBufferB);
    virtual ~ErrorComputer();
 

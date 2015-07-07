@@ -42,6 +42,9 @@
 #include <iostream>
 #include "G4ThreeVector.hh"
 
+
+#include "Interpolant.hh"
+
 using namespace std;
 using namespace CLHEP;
 
@@ -82,6 +85,13 @@ int main(int argc, char *args[]) {
 
    G4double yIn[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
    G4double dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+   G4double dydx_copy[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+   G4double yIn_copy[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+   G4double last_dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+   G4double last_dydx_copy[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
    G4UniformMagField *myUniformField;
    G4QuadrupoleMagField *quadrupoleMagField;
@@ -176,6 +186,9 @@ int main(int argc, char *args[]) {
    G4double yout[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
    G4double yerr[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
+   G4double yout_copy[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
+
+   G4double y_interpolated[3];
 
    /*
    for (int k = 0; k < 3; k++) {
@@ -188,6 +201,9 @@ int main(int argc, char *args[]) {
    cout << endl;
    */
 
+
+   Interpolant *minterpolant = new Interpolant();
+
    G4double error;
 
    for (int j = 0; j < no_of_steps; j++) {
@@ -196,6 +212,29 @@ int main(int argc, char *args[]) {
       //cout << " before Stepper " << endl;
       myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
       //cout << " after stepper call " << endl;
+
+      for (int k = 0; k < 3; k ++) {
+         yIn_copy[k] = yIn[k];
+         yout_copy[k] = yout[k];
+         dydx_copy[k] = dydx[k];
+         last_dydx_copy[k] = last_dydx[k];
+      }
+
+      for (int k = 3; k < 6; k ++) {
+         yIn_copy[k] = yIn[k] / mass;
+         yout_copy[k] = yout[k] / mass;
+         dydx_copy[k] = dydx[k] / mass;
+         last_dydx_copy[k] = last_dydx[k] / mass;
+      }
+
+      minterpolant -> Initialize(yIn_copy, yout_copy, &(last_dydx_copy[3]), &(dydx_copy[3]), step_len);
+
+      for (int k = 1; k < 10; k ++) {
+         minterpolant -> InterpolatePosition(k * .1, y_interpolated);
+         for (int l = 0; l < 3; l ++)
+            cout << y_interpolated[l] << ",";
+         cout << endl;
+      }
 
       // Position output:
       for (int k = 0; k < 3; k++) {
@@ -213,8 +252,11 @@ int main(int argc, char *args[]) {
       for (int k = 0; k < 8; k++){
          yIn[k] = yout[k];
       }
-   }
+      for (int k = 0; k < 6; k ++) {
+         last_dydx[k] = dydx[k];
+      }
 
+   }
    delete myStepper;
    delete fEquation;
 

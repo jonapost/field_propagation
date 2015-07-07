@@ -348,8 +348,8 @@ G4FieldManager* SetupField(G4int type)
 
 G4PropagatorInField*  SetupPropagator( G4int type)
 {
-    // G4FieldManager* fieldMgr= 
-    SetupField( type) ;
+    // G4FieldManager* fieldMgr=
+    SetupField( type ) ;
 
     // G4ChordFinder  theChordFinder( &MagField, 0.05*mm ); // Default stepper
  
@@ -377,7 +377,6 @@ G4PropagatorInField*  SetupPropagator( G4int type)
 }
 
 G4PropagatorInField *pMagFieldPropagator=0; 
-G4PropagatorInField *baseToComparePropagator=0;
 
 //
 // Test Stepping
@@ -403,8 +402,7 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4Navigator   *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
     
-    pMagFieldPropagator= SetupPropagator(type);
-    baseToComparePropagator = SetupPropagator(0);
+    pMagFieldPropagator = SetupPropagator(type);
 
     G4double particleCharge= +1.0;  // in e+ units
     G4double spin=0.0;              // ignore the spin
@@ -443,6 +441,8 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	G4endl;
     }
 
+    G4double y_initial[10];
+
     for( int iparticle=0; iparticle < 1; iparticle++ )
     { 
        //physStep=  2.5 * mm ;  // millimeters
@@ -469,9 +469,19 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 		      proton_mass_c2); 
 
 
+
        // Added as temp hack (J. Suagee)
-       pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer(buffer_ptr, buffer_len);
+
+
+       y_initial[0] = Position.x();
+       y_initial[1] = Position.y();
+       y_initial[2] = Position.z();
+       y_initial[3] = UnitMomentum.x() * momentum;
+       y_initial[4] = UnitMomentum.y() * momentum;
+       y_initial[5] = UnitMomentum.z() * momentum;
+
        pMagFieldPropagator -> GetChordFinder() -> SetMass();
+       pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer(buffer_ptr, buffer_len, y_initial);
 
        /*
        G4cout << G4endl;
@@ -484,7 +494,7 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        */
 
        clock_t total = 0;
-	   for( int istep=0; istep < step_no; istep++ ){ // For debug changed to only 1 step
+	   for( int istep=0; istep < step_no; istep++ ){
           // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
 	  located= pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
@@ -698,9 +708,8 @@ int main(int argc, char **argv)
                                                   //comparison base (because FineRKNG34 has interpolation)
     //baseToComparePropagator->SetUseSafetyForOptimization(optimisePiFwithSafety);
 
-
     counter1 = testG4PropagatorInField(myTopNode, 3, step_distance_input, step_no, buffer1, BUFFER_MAX_LEN);
-    counter2 = testG4PropagatorInField(myTopNode, type, step_distance_input, step_no, buffer2, BUFFER_MAX_LEN);
+    counter2 = testG4PropagatorInField(myTopNode, type, .01 * step_distance_input, 99 * step_no, buffer2, BUFFER_MAX_LEN);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
@@ -710,26 +719,12 @@ int main(int argc, char **argv)
     for (int i = 0; i < counter2; i ++) {
        err_pos_mag2 = 0.;
        for (int j = 0; j < 3; j ++) {
-          err_pos_mag2 += error[i][j];
+          err_pos_mag2 += error[i][j] * error[i][j];
        }
        err_pos_mag = sqrt(err_pos_mag2);
-       cout << buffer2[i][9] << "," << err_pos_mag2 << endl; // (Time, magnitude of position error from interpolant)
+       cout << buffer2[i][9] << "," << err_pos_mag << endl; // (Time, magnitude of position error from interpolant)
     }
 
-    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
-       delete buffer1[i];
-    }
-    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
-       delete buffer2[i];
-    }
-    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
-       delete error[i];
-    }
-    delete buffer1;
-    delete buffer2;
-    delete error;
-
-    delete errorComputer;
 
 
 /*
@@ -776,6 +771,22 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->OpenGeometry();
 */
 }
+
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       delete buffer1[i];
+    }
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       delete buffer2[i];
+    }
+    for (int i = 0; i < BUFFER_MAX_LEN; i ++) {
+       delete error[i];
+    }
+    delete buffer1;
+    delete buffer2;
+    delete error;
+
+    delete errorComputer;
+
     // Cannot delete G4TransportationManager::GetInstance();
 
     return 0;

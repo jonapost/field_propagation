@@ -57,7 +57,7 @@ class G4ChordFinder
       void Reset_Buffer();
       void SetMass();
 
-      void setup_output_buffer(G4double **buffer_ptr, G4int bufferLength);
+      void setup_output_buffer(G4double **buffer_ptr, G4int bufferLength, G4double y_initial[]);
 
       inline G4int GetCounter() { return counter; }
 
