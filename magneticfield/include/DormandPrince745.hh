@@ -12,8 +12,12 @@
 //  Geant4
 //
 //  History
-// -----------------------------
-//  Created by Somnath on 25/05/15.
+// ------------------------------------------
+//  Created : 25 May 2015.             - Somnath 
+//
+//  Added interpolate() :
+//    
+//    
 
 
 #ifndef Dormand_Prince_745
@@ -36,11 +40,24 @@ public:
                         G4double h,
                         G4double yout[],
                         G4double yerr[] ) ;
+
     void interpolate( const G4double yInput[],
                      const G4double dydx[],
                      G4double yOut[],
                      G4double Step,
                      G4double tau ) ;
+
+    //For higher order Interpolant
+    void SetupInterpolate( const G4double yInput[],
+                          const G4double dydx[],
+                          const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate( const G4double yInput[],
+                     const G4double dydx[],
+                     const G4double Step,
+                     G4double yOut[],
+                     G4double tau );
 
     G4double  DistChord()   const;
     G4int IntegratorOrder() const {return 4; }

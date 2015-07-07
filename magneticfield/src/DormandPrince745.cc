@@ -315,5 +315,175 @@ void DormandPrince745::interpolate(  const G4double yInput[],
 
 
 
+void DormandPrince745::SetupInterpolate(const G4double yInput[],
+                                   const G4double dydx[],
+                                   const G4double Step ){
+    
+    //Coefficients for the additional stages :
+    G4double
+    b81 =  6245.0/62208.0 ,
+    b82 =  0.0 ,
+    b83 =  8875.0/103032.0 ,
+    b84 = -125.0/1728.0 ,
+    b85 =  801.0/13568.0 ,
+    b86 = -13519.0/368064.0 ,
+    b87 =  11105.0/368064.0 ,
+    
+    b91 =  632855.0/4478976.0 ,
+    b92 =  0.0 ,
+    b93 =  4146875.0/6491016.0 ,
+    b94 =  5490625.0/14183424.0 ,
+    b95 = -15975.0/108544.0 ,
+    b96 =  8295925.0/220286304.0 ,
+    b97 = -1779595.0/62938944.0 ,
+    b98 = -805.0/4104.0 ;
+    
+    const G4int numberOfVariables= this->GetNumberOfVariables();
+    
+    //  Saving yInput because yInput and yOut can be aliases for same array
+    for(int i=0;i<numberOfVariables;i++)
+    {
+        yIn[i]=yInput[i];
+    }
+    
+    yTemp[7]  = yIn[7];
+    
+    ak8 = new G4double[numberOfVariables];
+    ak9 = new G4double[numberOfVariables];
+    
+    //Evaluate the extra stages :
+    for(int i=0;i<numberOfVariables;i++)
+    {
+        yTemp[i] = yIn[i] + Step*(b81*dydx[i] + b82*ak2[i] + b83*ak3[i] +
+                                  b84*ak4[i] + b85*ak5[i] + b86*ak6[i] +
+                                  b87*ak7[i]);
+    }
+    RightHandSide(yTemp, ak8);              //8th Stage
+    
+    for(int i=0;i<numberOfVariables;i++)
+    {
+        yTemp[i] = yIn[i] + Step*(b91*dydx[i] + b92*ak2[i] + b93*ak3[i] +
+                                 b94*ak4[i] + b95*ak5[i] + b96*ak6[i] +
+                                 b97*ak7[i] + b98*ak8[i] );
+    }
+    RightHandSide(yTemp, ak9);          //9th Stage
+    
+    
+    
+}
+
+
+
+void DormandPrince745::Interpolate( const G4double yInput[],
+                 const G4double dydx[],
+                 const G4double Step,
+                 G4double yOut[],
+                                G4double tau ){
+    //Define the coefficients for the polynomials
+    G4double bi[10][5], b[10];
+    G4int numberOfVariables = this->GetNumberOfVariables();
+    
+    //  COEFFICIENTS OF   bi[1]
+    bi[1][0] =  1.0 ,
+    bi[1][1] = -38039.0/7040.0 ,
+    bi[1][2] =  125923.0/10560.0 ,
+    bi[1][3] = -19683.0/1760.0 ,
+    bi[1][4] =  3303.0/880.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[2]
+    bi[2][0] =  0.0 ,
+    bi[2][1] =  0.0 ,
+    bi[2][2] =  0.0 ,
+    bi[2][3] =  0.0 ,
+    bi[2][4] =  0.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[3]
+    bi[3][0] =  0.0 ,
+    bi[3][1] = -12500.0/4081.0 ,
+    bi[3][2] =  205000.0/12243.0 ,
+    bi[3][3] = -90000.0/4081.0 ,
+    bi[3][4] =  36000.0/4081.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[4]
+    bi[4][0] =  0.0 ,
+    bi[4][1] = -3125.0/704.0 ,
+    bi[4][2] =  25625.0/1056.0 ,
+    bi[4][3] = -5625.0/176.0 ,
+    bi[4][4] =  1125.0/88.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[5]
+    bi[5][0] =  0.0 ,
+    bi[5][1] =  164025.0/74624.0 ,
+    bi[5][2] = -448335.0/37312.0 ,
+    bi[5][3] =  295245.0/18656.0 ,
+    bi[5][4] = -59049.0/9328.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[6]
+    bi[6][0] =  0.0 ,
+    bi[6][1] = -25.0/28.0 ,
+    bi[6][2] =  205.0/42.0 ,
+    bi[6][3] = -45.0/7.0 ,
+    bi[6][4] =  18.0/7.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[7]
+    bi[7][0] =  0.0 ,
+    bi[7][1] = -2.0/11.0 ,
+    bi[7][2] =  73.0/55.0 ,
+    bi[7][3] = -171.0/55.0 ,
+    bi[7][4] =  108.0/55.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[8]
+    bi[8][0] =  0.0 ,
+    bi[8][1] =  189.0/22.0 ,
+    bi[8][2] = -1593.0/55.0 ,
+    bi[8][3] =  3537.0/110.0 ,
+    bi[8][4] = -648.0/55.0 ,
+    //  --------------------------------------------------------
+    //
+    //  COEFFICIENTS OF  bi[9]
+    bi[9][0] =  0.0 ,
+    bi[9][1] =  351.0/110.0 ,
+    bi[9][2] = -999.0/55.0 ,
+    bi[9][3] =  2943.0/110.0 ,
+    bi[9][4] = -648.0/55.0 ;
+    //  --------------------------------------------------------
+    
+
+    
+    for(G4int i = 0; i< numberOfVariables; i++)
+        yIn[i] = yInput[i];
+    
+    G4double tau0 = tau;
+    //    Calculating the polynomials :
+    
+    for(int i=1; i<=9; i++){    //Here i is NOT the coordinate no. , it's stage no.
+        b[i] = 0;
+        tau = 1.0;
+        for(int j=0; j<=4; j++){
+            b[i] += bi[i][j]*tau;
+            tau*=tau0;
+        }
+    }
+    
+    for(int i=0; i<numberOfVariables; i++){     //Here i IS the cooridnate no.
+        yOut[i] = yIn[i] + Step*tau0*(b[1]*dydx[i] + b[2]*ak2[i] + b[3]*ak3[i] +
+                                      b[4]*ak4[i] + b[5]*ak5[i] + b[6]*ak6[i] +
+                                      b[7]*ak7[i] + b[8]*ak8[i] + b[9]*ak9[i] );
+    }
+
+}
+
+
+
+
+
+
 
 
