@@ -1,9 +1,5 @@
 # Field Propagation for Geant4 (and soon GeantV)
 
-Started from two sources:
-* the Geant4 magneticfield category / directory
-* the refinements / improvements created by Quichen Xie (GSoC 2014), supervised by Sandro Wenzel, aided by John Apostolakis
-
 Recent Contributors:
 * John Apostolakis (CERN)
 * Somnath Banerjee (GSoC 2015 contributor)
@@ -18,6 +14,12 @@ Goals (GSoC 2015):
 * Improve the facility / design to enable the use of general Nystrom RK methods - ie ones ODEs which have involve the first derivative in the right hand side;
 * Add embedded Nystrom steppers with error estimation
 * Add Nystrom methods with interpolants.
+* Enable vectorisation and simplify implementation using vector types - with code which can be used in Geant4 and GeantV. Vectorisation of two types: for a single track (first target) and over multiple tracks (later target).
+
+Started from two sources:
+* the Geant4 magneticfield category / directory
+* the refinements / improvements created by Quichen Xie (GSoC 2014), supervised by Sandro Wenzel, aided by John Apostolakis
+
 
 ## Test:
 
