@@ -1,0 +1,23 @@
+			|  REPORT ON THE NON-FSAL steppers  |
+			-------------------------------------
+
+SYNOPSIS
+*********
+Several of the newer steppers were implemented. Some higher order steppers are really interesting due to their better accuracy and better performance. Tests were carried out and the deviation of the vector components from the exact solutions were printed and it was found that most higher order steppers outperformed the lower order ones.
+
+SCHEME
+*******
+The most remarkable test used the following scheme : 
+
+ - A single call to the function AccurateAdvance() of the G4MagInt_Driver class gives us the propagation to a step of specified length, maintaining the required accuracy (also passed in). 
+ - The no. of calls to the stepper is recorded, this serves as a way (indirectly) to tell the no. of function calls. 
+ - Plots are made Accuracy (inverse of error) vs No. of func_evals. Those with lower func_evals are (reagarded as) better in performance.
+  - Two types of fields were used for the results : Uniform Magnetic Field and Quadrupole Magnetic Field.
+
+  RESULTS :
+  **********
+  UMF
+  For the region above the accuracy 1e-06, VernerRK78 is best, followed by VernerRK67. But in the region 1e-03 to 1e-06, BogackiShampine45 is a clear winner.
+
+  QMF
+  G4CashKarpRKF45 wins for the medium error region : 1e-03 to 1e-06 after which VernerRK78 and VernerRK67 overtake to become the best and the next best performers in higher accuracy region
