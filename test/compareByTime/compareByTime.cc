@@ -56,7 +56,7 @@ int main(int argc, char *args[]) {
 
 
             // Might want to play around with the momentum values:
-            x_mom = 0.0,                   //mom - momentum
+            x_mom = 0.2,                   //mom - momentum
             y_mom = 0.6, z_mom = 0.8,
 
             x_field = 0.0 * tesla,         //Uniform Magnetic Field (x,y,z)
@@ -241,10 +241,10 @@ int main(int argc, char *args[]) {
          cout << yout[k] << ",";
       }
       // Velocity output
-      for (int k = 3; k < 6; k++) {
-         // Uncomment to print out momentums:
-         cout << yout[k] / mass << ",";
-      }
+      //for (int k = 3; k < 6; k++) {
+      //   // Uncomment to print out momentums:
+      //   cout << yout[k] / mass << ",";
+      //}
 
       cout << endl;
 

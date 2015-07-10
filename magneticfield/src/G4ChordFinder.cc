@@ -43,7 +43,7 @@ using namespace std;
 
 #include <assert.h>
 
-#define BUFFER_LENGTH 1000000
+#define BUFFER_LENGTH 10000000
 #define TIME_SLOT 9
 
 

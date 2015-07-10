@@ -61,10 +61,11 @@
 #include <iomanip>
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
-
 #include "MagIntegratorStepperbyTime.hh"
 
 #include <iostream>
+#include <vector>
+
 using namespace std;
 
 #define BUFFER_MAX_LEN 100000
@@ -263,7 +264,6 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4VCurvedTrajectoryFilter.hh"
 
 #include "ChawlaSharmaRKNstepper.hh"
-
 #include "FineRKNG34.hh"
 
 //=============test template mode================
@@ -296,13 +296,13 @@ Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 */
 
 
-//G4UniformMagField      uniformMagField( G4ThreeVector(0., 0., -1.*tesla) );
-//G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
-//G4String   fieldName("Uniform -1.0 Tesla");
+G4UniformMagField      uniformMagField( G4ThreeVector(0., 0., -1.*tesla) );
+G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
+G4String   fieldName("Uniform -1.0 Tesla");
 
-G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
-G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
+//G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
+//G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
+//G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
 
 G4FieldManager* SetupField(G4int type)
 {
@@ -386,7 +386,8 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   G4double			 	step_distance,
 				   G4double				step_no,
 				   G4double          **buffer_ptr,
-				   G4int             buffer_len)
+				   G4int             buffer_len,
+				   G4int             factor )
 {
     void report_endPV(G4ThreeVector    Position, 
                   G4ThreeVector UnitVelocity,
@@ -398,7 +399,7 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                   G4int             Step, 
                   G4VPhysicalVolume* startVolume);
    
-    G4UniformMagField MagField(10.*tesla, 0., 0.);
+    //G4UniformMagField MagField(10.*tesla, 0., 0.);
     G4Navigator   *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
     
@@ -450,7 +451,7 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        Position = G4ThreeVector(0.,0.,0.)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
-       UnitMomentum = (G4ThreeVector(0.,0.6,0.8) 
+       UnitMomentum = (G4ThreeVector(0.,0.6,0.8)
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
 
        G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2; 
@@ -466,7 +467,7 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        equationOfMotion->SetChargeMomentumMass(
 		      chargeState,//+1,                    // charge in e+ units
 		      momentum, 
-		      proton_mass_c2); 
+		      proton_mass_c2 ); // Changed here
 
 
 
@@ -479,6 +480,15 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        y_initial[3] = UnitMomentum.x() * momentum;
        y_initial[4] = UnitMomentum.y() * momentum;
        y_initial[5] = UnitMomentum.z() * momentum;
+
+
+       //G4double radius_curvature = ((proton_mass_c2 + kineticEnergy) / momentum)
+       //                        * sqrt( y_initial[3]*y_initial[3] + y_initial[4]*y_initial[4] )
+       //                        / ( particleCharge * 1. ); // In our case only y component is perpendicular to B field
+                           // We don't multiply by mass because it is included in momentum
+
+       //cout << "Radius of Curvature: " << radius_curvature << endl;
+
 
        pMagFieldPropagator -> GetChordFinder() -> SetMass();
        pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer(buffer_ptr, buffer_len, y_initial);
@@ -546,8 +556,9 @@ G4int testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 	  Position= EndPosition;
 	  UnitMomentum= EndUnitMomentum;
-	  //physStep *= 2.5;
-	  physStep *= 1.;
+	  //if ( (istep + 1) % factor == 0)
+	     //physStep *= 2;
+	  //physStep *= 1.;
      } // ...........................  end for ( istep )
      //G4cout << "=============="<<total<<"================="<<G4endl;
 	  //myMagField.ReportStatistics();
@@ -668,9 +679,9 @@ int main(int argc, char **argv)
     }
     if( argc >= 4 ){
         	step_no = atoi(argv[3]);
-        }else{
-        	step_no = 3;
-        }
+      }else{
+      step_no = 3;
+}
 
     G4double **buffer1 = new G4double*[BUFFER_MAX_LEN];
     G4double **buffer2 = new G4double*[BUFFER_MAX_LEN];
@@ -688,7 +699,17 @@ int main(int argc, char **argv)
    G4double err_pos_mag2, err_pos_mag;
    G4int counter1, counter2;
 
+   G4int factor = 10;
+
    ErrorComputer *errorComputer;
+
+   G4double momentum = 0.5 * proton_mass_c2;
+
+   G4double kineticEnergy =  momentum*momentum /
+          ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 )
+         + proton_mass_c2 );
+
+   G4double radius_curvature;
 
 	int len = 1;
 	 for (int k = 0; k < len; k++){
@@ -708,15 +729,37 @@ int main(int argc, char **argv)
                                                   //comparison base (because FineRKNG34 has interpolation)
     //baseToComparePropagator->SetUseSafetyForOptimization(optimisePiFwithSafety);
 
-    counter1 = testG4PropagatorInField(myTopNode, 3, step_distance_input, step_no, buffer1, BUFFER_MAX_LEN);
-    counter2 = testG4PropagatorInField(myTopNode, type, .01 * step_distance_input, 99 * step_no, buffer2, BUFFER_MAX_LEN);
+    counter1 = testG4PropagatorInField(myTopNode, 1, step_distance_input, step_no, buffer1, BUFFER_MAX_LEN, 1);
+    counter2 = testG4PropagatorInField(myTopNode, type, (1. / factor) * step_distance_input,
+                                       factor * step_no, buffer2, BUFFER_MAX_LEN, factor);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
     errorComputer = new ErrorComputer(buffer1, counter1, buffer2, counter2);
     errorComputer -> ErrorArray(error);
 
+    /*
     for (int i = 0; i < counter2; i ++) {
+       for (int j = 0; j < 3; j ++) {
+          cout << buffer2[i][j] << ",";
+       }
+       cout << endl;
+    }
+    */
+
+
+    for (int i = 0; i < counter2; i ++) {
+       radius_curvature = (proton_mass_c2)
+                                  * sqrt( buffer2[i][3]*buffer2[i][3] + buffer2[i][4]*buffer2[i][4] )
+                                  / ( 1. * 1. );
+       cout << radius_curvature << endl;
+       for (int j = 0; j < 3; j ++) {
+          cout << buffer2[i][j] << ",";
+       }
+       cout << endl;
+    }
+
+    /*for (int i = 0; i < counter2; i ++) {
        err_pos_mag2 = 0.;
        for (int j = 0; j < 3; j ++) {
           err_pos_mag2 += error[i][j] * error[i][j];
@@ -724,6 +767,7 @@ int main(int argc, char **argv)
        err_pos_mag = sqrt(err_pos_mag2);
        cout << buffer2[i][9] << "," << err_pos_mag << endl; // (Time, magnitude of position error from interpolant)
     }
+    */
 
 
 

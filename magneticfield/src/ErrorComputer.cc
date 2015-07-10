@@ -46,7 +46,11 @@ void ErrorComputer::PathA_Interpolant(G4int pathB_index,  G4double *pathA_interp
 
       counter ++;
       minterpolant -> DeInitialize();
-      assert( counter < len_bufferA );
+
+      if ( counter >= len_bufferA ) // We have passed the possible interpolation zone
+         return;
+
+      //assert( counter < len_bufferA );
    }
    if (t == bufferA[counter][TIME_SLOT]) {
       for (int i = 0; i < 3; i ++) {
