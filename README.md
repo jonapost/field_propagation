@@ -7,19 +7,17 @@ Recent Contributors:
 * Sandro Wenzel (CERN)
 * Quichen Xie (GSoC 2014 contributor)
 
-Goals (GSoC 2015):
-* Add new integration steppers (integrators), which implement FSAL (first same as last) Runge-Kutta methods
-* Add modern integrators with higher efficiency (DormandPrince 5/4, Bogacki Shampine 5/4, Verner)
-* Add integrators with interpolants - i.e. which are capable to interpolate values of the integrand(s) at intermediate points in an interval
-* Improve the facility / design to enable the use of general Nystrom RK methods - ie ones ODEs which have involve the first derivative in the right hand side;
-* Add embedded Nystrom steppers with error estimation
-* Add Nystrom methods with interpolants.
-* Enable vectorisation and simplify implementation using vector types - with code which can be used in Geant4 and GeantV. Vectorisation of two types: for a single track (first target) and over multiple tracks (later target).
+Summary of Goals (GSoC 2015):
+* Add integration Runge-Kutta methods (integrators), with additional capabilities including FSAL (first same as last) and interpolants (method to evalue the integrand at an intermediate point);
+* Implement modern integrators with higher efficiency (DormandPrince 5/4, Bogacki Shampine 5/4, Verner);
+* Introduce new general Nystrom RK methods - ie ones for ODEs with the first derivative in the right hand side;
+* Enable vectorisation for one or multiple tracks.
+
+An extended description of the 2015 GSoC project goals can be found at the [Wiki page](https://github.com/jonapost/field_propagation/wiki)
 
 Started from two sources:
 * the Geant4 magneticfield category / directory
 * the refinements / improvements created by Quichen Xie (GSoC 2014), supervised by Sandro Wenzel, aided by John Apostolakis
-
 
 ## Test:
 
