@@ -11,6 +11,9 @@
 #include "G4Mag_EqRhs.hh"
 #include "G4MagIntegratorStepper.hh"
 
+#include <iostream>
+using namespace std;
+
 //G4MagIntegratorStepper
 
 template <class BaseStepper>
@@ -112,6 +115,8 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yOutput[],
             G4double yError [] ) {
 
+   cout << "MagIntegratorStepper_byTime<BaseStepper>::Stepper()" << endl;
+
    for (int i = 0; i < 10; i ++){
       yIn[i] = yInput[i];
       dydx_copy[i] = dydx[i];
@@ -122,6 +127,10 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
    }
 
    ( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
+
+   for (int i = 0; i < 3; i ++)
+      cout << yOutput[i] << ",";
+   cout << yOutput[7] << "," << yOutput[7] + hstep << endl;
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= m_fEq -> FMass();

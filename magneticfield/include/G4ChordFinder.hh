@@ -46,20 +46,24 @@
 #include "G4FieldTrack.hh"
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 
+#include <vector>
+using namespace std;
+
 class G4MagneticField;  
 
 class G4ChordFinder
 { 
    public:  // with description
 
-      void output_buffer();
-      G4double **GetBuffer();
-      void Reset_Buffer();
+      //void output_buffer();
+      //G4double **GetBuffer();
+      //void Reset_Buffer();
       void SetMass();
 
-      void setup_output_buffer(G4double **buffer_ptr, G4int bufferLength, G4double y_initial[]);
+      void setup_output_buffer( G4ThreeVector &Position, G4ThreeVector &Momentum,
+            vector< vector<G4double> > &pos_mom_time_buffer);
 
-      inline G4int GetCounter() { return counter; }
+      //inline G4int GetCounter() { return counter; }
 
 
 
@@ -210,10 +214,9 @@ class G4ChordFinder
       // ...................................................................
 
       G4double total_time;
-      G4double **buffer_array;
-      G4int buffer_length;
+      vector< vector<G4double> > *buffer_ptr;
       G4int counter;
-      void record(G4double dydx_temp[]);
+      void record(G4double y_and_yPrime[], G4double dydx_temp[]);
 
       G4double mass;
 

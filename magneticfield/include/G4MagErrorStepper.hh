@@ -43,7 +43,6 @@
 
 #include "G4Types.hh"
 #include "G4MagIntegratorStepper.hh"
-#include "G4Mag_EqRhs.hh"
 #include "G4ThreeVector.hh"
 
 class G4MagErrorStepper : public G4MagIntegratorStepper

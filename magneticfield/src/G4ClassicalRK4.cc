@@ -29,14 +29,9 @@
 // -------------------------------------------------------------------
 
 #include "G4ClassicalRK4.hh"
-#include "G4ThreeVector.hh"
 
-
-#include <iostream>
-using namespace std;
-
-
-void G4ClassicalRK4::Stepper(const G4double yInput[],
+/*
+ void G4ClassicalRK4::Stepper(const G4double yInput[],
                   const G4double dydx[],
                         G4double hstep,
                         G4double yOutput[],
@@ -44,7 +39,7 @@ void G4ClassicalRK4::Stepper(const G4double yInput[],
     {
        G4MagErrorStepper::Stepper(yInput, dydx, hstep, yOutput, yError );
     }
-
+*/
 
 
 
@@ -57,7 +52,7 @@ G4ClassicalRK4(G4EquationOfMotion* EqRhs, G4int numberOfVariables)
   : G4MagErrorStepper(EqRhs, numberOfVariables)
 {
    unsigned int noVariables= std::max(numberOfVariables,8); // For Time .. 7+1
- 
+
    dydxm = new G4double[noVariables];
    dydxt = new G4double[noVariables]; 
    yt    = new G4double[noVariables]; 

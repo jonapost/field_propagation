@@ -49,21 +49,22 @@ using namespace std;
 
 // ..........................................................................
 
-void G4ChordFinder::record(G4double dydx_temp[]) {
+void G4ChordFinder::record( G4double y_and_yPrime[], G4double F[]) {
 
-   assert( counter < buffer_length );
+   vector< vector<G4double> > &buffer = *buffer_ptr;
 
+   buffer_ptr->push_back( vector<G4double> (10) );
+   G4int last_index = buffer_ptr->size() - 1;
    for (int i = 0; i < 3; i ++) {
-      buffer_array[counter][i] = pos_mom_vals[i];
+      //( buffer_ptr-> at(last_index) ).at(i) = y_and_yPrime[i];
+      buffer[last_index][i] = y_and_yPrime[i];
    }
    for (int i = 3; i < 6; i ++) {
-         buffer_array[counter][i] = pos_mom_vals[i] / mass;
+         buffer[last_index][i] = y_and_yPrime[i] / mass; // Storing as velocity, not momentum
       }
-   for (int i = 6; i < TIME_SLOT; i ++)
-      buffer_array[counter][i] = dydx_temp[i - 3];
-   buffer_array[counter][TIME_SLOT] = total_time;
-   counter ++;
-
+   for (int i = 0; i < 3; i ++)
+      buffer[last_index][i + 6] = F[i] / mass;
+   buffer[last_index][TIME_SLOT] = total_time;
 }
 
 
@@ -71,19 +72,21 @@ void G4ChordFinder::SetMass() {
    mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
 }
 
-void G4ChordFinder::setup_output_buffer(G4double **buffer_ptr, G4int bufferLength, G4double y_initial[]) {
-   buffer_array = buffer_ptr;
-   buffer_length = bufferLength;
-   counter = 0;
-   buffer_array[0][9] = 0.; // temp
+void G4ChordFinder::setup_output_buffer( G4ThreeVector &Position, G4ThreeVector &Momentum,
+                     vector< vector<G4double> > &pos_mom_time_buffer) {
+   buffer_ptr = &pos_mom_time_buffer;
 
+   G4double yStart[12];
    G4double dydx_temp[12];
 
-   fIntgrDriver -> GetStepper() -> ComputeRightHandSide(y_initial, dydx_temp);
-   for ( int i = 3; i < 6; i ++)
-      dydx_temp[i] /= mass;
 
-   record(dydx_temp);
+   yStart[0] = Position.x(); yStart[1] = Position.y(); yStart[2] = Position.z();
+   yStart[3] = Position.x(); yStart[4] = Position.y(); yStart[5] = Position.z();
+   // yStart[6] = Rhs[3]; yStart[7] = Rhs[4];  yStart[8] = Rhs[5];
+   // yStart[9] = 0.; // Time starts at 0.
+
+   fIntgrDriver -> GetStepper() -> ComputeRightHandSide( yStart, dydx_temp );
+   record( yStart, &(dydx_temp[3]) );
 
    /*
    buffer_array = new G4double*[buffer_length];
@@ -92,6 +95,8 @@ void G4ChordFinder::setup_output_buffer(G4double **buffer_ptr, G4int bufferLengt
    */
 }
 
+
+/*
 void G4ChordFinder::output_buffer() {
    for (int i = 0; i < counter; i ++) {
       for (int j = 0; j < 10; j ++)
@@ -107,7 +112,7 @@ G4double ** G4ChordFinder::GetBuffer() {
 void G4ChordFinder::Reset_Buffer() {
    counter = 0;
 }
-
+*/
 
 G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
   : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
@@ -207,17 +212,6 @@ G4ChordFinder::~G4ChordFinder()
   delete   fIntgrDriver; 
 
   if( fStatsVerbose ) { PrintStatistics(); }
-
-  for (int i = 0; i < counter; i ++) {
-     for (int j = 0; j <= 6; j ++)
-        cout << buffer_array[i][j] << "," ;
-     cout << endl;
-
-  }
-
-  for (int i = 0; i < buffer_length; i ++)
-     delete[] buffer_array[i];
-  delete[] buffer_array;
 }
 
 
@@ -314,11 +308,6 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      }
   }
 
-  // One step of the integration will have been performed and accepted at this point
-  // So alert fIntgrDriver to alert its stepper, that the step was accepted.
-
-  //fIntgrDriver -> LastStepSucceeded(yCurrent, stepPossible);
-
   yCurrent.DumpToArray(pos_mom_vals);
 
   // Temp hack so we can record y'' values from inside ChordFinder (without having to store them in MagIntegratorDriver)
@@ -327,7 +316,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      dydx_temp[i] /= mass;
 
   total_time += stepPossible;
-  record(dydx_temp);
+  record( pos_mom_vals, dydx_temp);
 
   return stepPossible;
 }

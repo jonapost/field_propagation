@@ -76,8 +76,6 @@ G4MagErrorStepper::Stepper( const G4double yInput[],
 
    DumbStepper  (yMiddle, dydxMid, halfStep, yOutput); 
 
-   //cout << "after dumbstepper call" << endl;
-
    // Store midpoint, chord calculation
 
    fMidPoint = G4ThreeVector( yMiddle[0],  yMiddle[1],  yMiddle[2]); 
