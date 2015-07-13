@@ -38,12 +38,19 @@
 // - Created. J.Apostolakis.
 // --------------------------------------------------------------------
 
+
 #ifndef G4MagInt_Driver_Def
 #define G4MagInt_Driver_Def
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
+
+#define TRACKING
+
+#ifdef TRACKING
+#include "StepTracker.hh"
+#endif
 
 
 class G4MagInt_Driver
@@ -95,7 +102,15 @@ class G4MagInt_Driver
      inline G4double GetErrcon() const;
      inline void GetDerivatives( const G4FieldTrack &y_curr,     // const, INput
                                        G4double    dydx[]   );  //       OUTput
-        // Accessors.
+
+#ifdef TRACKING
+   inline StepTracker * getTracker() { return mTracker; }
+#endif
+
+     // Accessors.
+
+
+
 
      inline void RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper);
         // Sets a new stepper pItsStepper for this driver. Then it calls
@@ -253,6 +268,13 @@ class G4MagInt_Driver
 
      G4int  fVerboseLevel;   // Verbosity level for printing (debug, ..)
         // Could be varied during tracking - to help identify issues
+
+
+#ifdef TRACKING
+     StepTracker *mTracker;
+#endif
+
+
 
 };
 

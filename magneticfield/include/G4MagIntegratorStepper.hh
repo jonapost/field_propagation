@@ -43,6 +43,17 @@
 // - 15.01.97  J. Apostolakis (J.Apostolakis@cern.ch)
 // --------------------------------------------------------------------
 
+
+
+#ifndef TRACKING
+#define TRACKING
+#endif
+
+#ifdef TRACKING
+#include "StepTracker.hh"
+#endif
+
+
 #ifndef G4MAGIntegratorSTEPPER
 #define G4MAGIntegratorSTEPPER
 
@@ -113,6 +124,15 @@ class G4MagIntegratorStepper
        // this function allows for access to them.
      inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
 
+
+
+#ifdef TRACKING
+      inline StepTracker * getTracker() { return mTracker; }
+#endif
+
+
+
+
   private:
   
      G4MagIntegratorStepper(const G4MagIntegratorStepper&);
@@ -125,6 +145,14 @@ class G4MagIntegratorStepper
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack
      // const G4int  fNumberOfVariables;
+
+
+
+#ifdef TRACKING
+      StepTracker *mTracker;
+#endif
+
+
 };
 
 #include  "G4MagIntegratorStepper.icc"

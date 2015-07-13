@@ -47,6 +47,12 @@ using namespace std;
 #define TIME_SLOT 9
 
 
+#define TRACKING
+
+#ifdef TRACKING
+#include "StepTracker.hh"
+#endif
+
 // ..........................................................................
 
 void G4ChordFinder::record( G4double y_and_yPrime[], G4double F[]) {
@@ -127,6 +133,12 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
 {
   // Simple constructor -- it does not create equation
   fIntgrDriver= pIntegrationDriver;
+
+#ifdef TRACKING
+  mTracker = fIntgrDriver -> getTracker();
+#endif
+
+
   fAllocatedStepper= false;
 
   fLastStepEstimate_Unconstrained = DBL_MAX;          // Should move q, p to
@@ -187,6 +199,11 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
 
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
+
+#ifdef TRACKING
+  mTracker = fIntgrDriver -> getTracker();
+#endif
+
 
   //buffer_length = BUFFER_LENGTH;
   total_time = 0.;
@@ -308,15 +325,23 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      }
   }
 
-  yCurrent.DumpToArray(pos_mom_vals);
+
+
+#ifdef TRACKING
+  mTracker -> StepsAccepted( startCurveLen + stepPossible );
+#endif
+
 
   // Temp hack so we can record y'' values from inside ChordFinder (without having to store them in MagIntegratorDriver)
+  /*
+  yCurrent.DumpToArray(pos_mom_vals);
   fIntgrDriver -> GetStepper() -> ComputeRightHandSide(pos_mom_vals, dydx_temp);
   for ( int i = 3; i < 6; i ++)
      dydx_temp[i] /= mass;
 
   total_time += stepPossible;
   record( pos_mom_vals, dydx_temp);
+   */
 
   return stepPossible;
 }
@@ -606,6 +631,8 @@ G4ChordFinder::ApproxCurvePointS( const G4FieldTrack&  CurveA_PointVelocity,
     {                          // G4VIntersectionLocator
       test_step=0.5*curve;
     }
+
+    cout << "Inside G4ChordFinder::ApproxCurvePointS() before call of fIntgrDriver->AccurateAdvance()" << endl;
 
     fIntgrDriver->AccurateAdvance(EndPoint,test_step, eps_step);
       

@@ -44,6 +44,9 @@ G4MagIntegratorStepper::G4MagIntegratorStepper(G4EquationOfMotion* Equation,
     fNoStateVariables(num_state_vars)
     // fNumberOfVariables( std::max(num_var,fNoStateVariables) )
 {
+#ifdef TRACKING
+   mTracker = new StepTracker();
+#endif
 }
 
 G4MagIntegratorStepper::~G4MagIntegratorStepper()

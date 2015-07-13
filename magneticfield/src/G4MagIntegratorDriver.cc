@@ -39,6 +39,7 @@
 //  7 Oct 96  V. Grichine       First version
 // --------------------------------------------------------------------
 
+
 #include <iomanip>
 
 #include <assert.h>
@@ -67,6 +68,13 @@ const G4int  G4MagInt_Driver::fMaxStepBase = 250;  // Was 5000
 #define G4FLD_STATS  1
 #endif
 
+
+#define TRACKING
+
+#ifdef TRACKING
+#include "StepTracker.hh"
+#endif
+
 // ---------------------------------------------------------
 
 //  Constructor
@@ -91,6 +99,10 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
 
   RenewStepperAndAdjust( pStepper );
+
+#ifdef TRACKING
+  mTracker = pStepper -> getTracker();
+#endif
 
   fMinimumStep= hminimum;
   fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();
@@ -564,6 +576,11 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   for (iter=0; iter<max_trials ;iter++)
   {
     tot_no_trials++;
+
+#ifdef TRACKING
+    mTracker -> ReportCurveLength( x, h );
+#endif
+
     pIntStepper-> Stepper(y,dydx,h,ytemp,yerr); 
     //            *******
     G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
@@ -681,11 +698,14 @@ G4bool  G4MagInt_Driver::QuickAdvance(
 
 
   // Do an Integration Step
+
+
+#ifdef TRACKING
+  mTracker -> ReportCurveLength( s_start, hstep );
+#endif
+
   pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
   //            *******
-
-
-  assert( yarrout[0] == yarrout[0] );
 
   // Estimate curve-chord distance
   dchord_step= pIntStepper-> DistChord();

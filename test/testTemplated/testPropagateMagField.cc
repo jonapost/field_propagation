@@ -519,7 +519,7 @@ void testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  //physStep *= 1.;
      } // ...........................  end for ( istep )
      //G4cout << "=============="<<total<<"================="<<G4endl;
-	  myMagField.ReportStatistics();
+	  //myMagField.ReportStatistics();
 
     //return pMagFieldPropagator -> GetChordFinder() -> GetCounter();
     //return(1);
@@ -586,14 +586,14 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->OpenGeometry();
 
 
-
+/*
     for (int i = 0; i < pos_mom_time_buffer.size(); i ++) {
        for (int j = 0; j < 3; j ++) {
           cout << pos_mom_time_buffer[i][j] << ",";
        }
        cout << pos_mom_time_buffer[i][9] << endl;
     }
-
+*/
     /*
     for (int i = 0; i < counter2; i ++) {
        radius_curvature = (proton_mass_c2)

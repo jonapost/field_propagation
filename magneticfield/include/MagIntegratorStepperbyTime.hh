@@ -8,6 +8,7 @@
 #ifndef MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_
 #define MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_
 
+
 #include "G4Mag_EqRhs.hh"
 #include "G4MagIntegratorStepper.hh"
 
@@ -50,6 +51,12 @@ public:
    //G4MagIntegratorStepper *baseStepper;
 
 
+#ifdef TRACKING
+   inline StepTracker * getTracker() { return &mTracker; }
+#endif
+
+
+
 private:
    G4double yIn[10], dydx_copy[10], cached_dydx[10], last_function_evaluation[10];
    //G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
@@ -58,6 +65,12 @@ private:
    // last_step_succeeded now inherits from G4MagIntegratorStepper
 
    G4Mag_EqRhs  *m_fEq;
+
+
+#ifdef TRACKING
+   StepTracker mTracker;
+#endif
+
 
 
 };
@@ -115,8 +128,6 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yOutput[],
             G4double yError [] ) {
 
-   cout << "MagIntegratorStepper_byTime<BaseStepper>::Stepper()" << endl;
-
    for (int i = 0; i < 10; i ++){
       yIn[i] = yInput[i];
       dydx_copy[i] = dydx[i];
@@ -126,11 +137,12 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       dydx_copy[i] *= 1. / m_fEq -> FMass();
    }
 
+
    ( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
-   for (int i = 0; i < 3; i ++)
-      cout << yOutput[i] << ",";
-   cout << yOutput[7] << "," << yOutput[7] + hstep << endl;
+#ifdef TRACKING
+   mTracker.RecordResultOfStepper(yIn, dydx_copy, hstep, yOutput, yError);
+#endif
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= m_fEq -> FMass();
@@ -171,6 +183,7 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
                                                                   G4int numStateVariables)
 : BaseStepper( EquationRhs, numberOfVariables )//, numStateVariables)
 {
+
    m_fEq = EquationRhs;
    // baseStepper = new BaseStepper(EquationRhs);  //, numberOfVariables, numStateVariables);
    for (int i = 0; i < 10; i ++)

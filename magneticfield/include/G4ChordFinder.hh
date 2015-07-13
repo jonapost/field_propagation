@@ -39,6 +39,8 @@
 // - 25.02.97 - John Apostolakis - Design and implementation 
 // -------------------------------------------------------------------
 
+
+
 #ifndef G4CHORDFINDER_HH
 #define G4CHORDFINDER_HH
 
@@ -48,6 +50,15 @@
 
 #include <vector>
 using namespace std;
+
+#ifndef TRACKING
+#define TRACKING
+#endif
+
+
+#ifdef TRACKING
+#include "StepTracker.hh"
+#endif
 
 class G4MagneticField;  
 
@@ -144,6 +155,13 @@ class G4ChordFinder
       inline   G4double GetMultipleRadius();        // No original value
         //  Parameters for adapting performance ... use with great care
 
+#ifdef TRACKING
+      inline StepTracker * getTracker() { return mTracker; }
+#endif
+
+
+
+
    protected:   // .........................................................
 
       inline  void    AccumulateStatistics( G4int noTrials ); 
@@ -221,6 +239,10 @@ class G4ChordFinder
       G4double mass;
 
       G4double *pos_mom_vals;
+
+#ifdef TRACKING
+      StepTracker *mTracker;
+#endif
 
 
 
