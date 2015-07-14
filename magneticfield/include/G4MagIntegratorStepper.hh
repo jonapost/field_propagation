@@ -127,9 +127,16 @@ class G4MagIntegratorStepper
 
 
 #ifdef TRACKING
-      inline StepTracker * getTracker() { return mTracker; }
+      StepTracker * getTracker();
+      void setTracker(StepTracker *tracker);
 #endif
 
+#ifdef TRACKING
+      StepTracker *mTracker; // Just remember that any stepper using Richardson extrapolation
+                             // will have a pointer to another StepTracker embedded in it.
+                             // The other StepTracker won't be used for anything though,
+                             // as long as we don't call getTracker() on the auxStepper.
+#endif
 
 
 
@@ -148,9 +155,6 @@ class G4MagIntegratorStepper
 
 
 
-#ifdef TRACKING
-      StepTracker *mTracker;
-#endif
 
 
 };

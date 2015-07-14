@@ -461,9 +461,9 @@ void testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        //cout << "Radius of Curvature: " << radius_curvature << endl;
 
-       pMagFieldPropagator -> GetChordFinder() -> SetMass();
-       pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer( Position,
-                                     Momentum, pos_mom_time_buffer);
+       //pMagFieldPropagator -> GetChordFinder() -> SetMass();
+       //pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer( Position,
+       //                              Momentum, pos_mom_time_buffer);
 
        clock_t total = 0;
 	   for( int istep=0; istep < step_no; istep++ ){

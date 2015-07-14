@@ -55,6 +55,7 @@ using namespace std;
 
 // ..........................................................................
 
+/*
 void G4ChordFinder::record( G4double y_and_yPrime[], G4double F[]) {
 
    vector< vector<G4double> > &buffer = *buffer_ptr;
@@ -94,13 +95,13 @@ void G4ChordFinder::setup_output_buffer( G4ThreeVector &Position, G4ThreeVector 
    fIntgrDriver -> GetStepper() -> ComputeRightHandSide( yStart, dydx_temp );
    record( yStart, &(dydx_temp[3]) );
 
-   /*
-   buffer_array = new G4double*[buffer_length];
-   for (int i = 0; i < buffer_length; i ++)
-      buffer_array[i] = new G4double[10]; // y, y' and y'', and time t
-   */
-}
 
+   //buffer_array = new G4double*[buffer_length];
+   //for (int i = 0; i < buffer_length; i ++)
+   //   buffer_array[i] = new G4double[10]; // y, y' and y'', and time t
+
+}
+*/
 
 /*
 void G4ChordFinder::output_buffer() {
@@ -147,11 +148,11 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
     // check the values and set the other parameters
 
   //buffer_length = BUFFER_LENGTH;
-  total_time = 0.;
+  //total_time = 0.;
   //setup_output_buffer();
 
 
-  pos_mom_vals = new G4double[12];
+  //pos_mom_vals = new G4double[12];
 }
 
 
@@ -206,10 +207,10 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
 
 
   //buffer_length = BUFFER_LENGTH;
-  total_time = 0.;
+  //total_time = 0.;
   //setup_output_buffer();
 
-  pos_mom_vals = new G4double[12];
+  //pos_mom_vals = new G4double[12];
 
   //mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
 

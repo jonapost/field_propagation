@@ -22,19 +22,19 @@ public:
    virtual ~StepTracker();
 
    void RecordResultOfStepper( G4double yIn[],
-                           G4double dydx[],
-                           G4double hstep,
-                           G4double yOutput[],
-                           G4double yError[] );
+                           G4double dydx[]);
 
    void ReportCurveLength(G4double current_curve_length, G4double htry );
 
    void StepsAccepted( G4double newCurveLength );
 
+   inline G4int getBufferLength() { return buffer_ptr -> size(); }
+
+   void outputBuffer();
 
 private:
    vector< vector<G4double> > *buffer_ptr;
-   G4double last_y[BUFFER_COLUMN_LEN];
+   //G4double last_y[BUFFER_COLUMN_LEN];
 };
 
 #endif /* MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_ */

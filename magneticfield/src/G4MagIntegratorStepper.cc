@@ -44,9 +44,6 @@ G4MagIntegratorStepper::G4MagIntegratorStepper(G4EquationOfMotion* Equation,
     fNoStateVariables(num_state_vars)
     // fNumberOfVariables( std::max(num_var,fNoStateVariables) )
 {
-#ifdef TRACKING
-   mTracker = new StepTracker();
-#endif
 }
 
 G4MagIntegratorStepper::~G4MagIntegratorStepper()
@@ -59,6 +56,12 @@ void G4MagIntegratorStepper::ComputeRightHandSide( const G4double y[], G4double 
 
   this->RightHandSide( y, dydx );
 }
+
+#ifdef TRACKING
+StepTracker * G4MagIntegratorStepper::getTracker() { return mTracker; }
+void G4MagIntegratorStepper::setTracker(StepTracker *tracker) { mTracker = tracker; }
+#endif
+
 
 
 /*void G4MagIntegratorStepper::SetTrue_last_step_succeeded() {

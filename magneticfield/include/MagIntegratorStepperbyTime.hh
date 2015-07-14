@@ -51,9 +51,7 @@ public:
    //G4MagIntegratorStepper *baseStepper;
 
 
-#ifdef TRACKING
-   inline StepTracker * getTracker() { return &mTracker; }
-#endif
+
 
 
 
@@ -66,36 +64,13 @@ private:
 
    G4Mag_EqRhs  *m_fEq;
 
-
-#ifdef TRACKING
-   StepTracker mTracker;
-#endif
-
-
-
 };
 
 #endif /* MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_ */
 
-/*
-template <class BaseStepper>
-inline
-void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide2(const G4double yInput[], G4double dydx[]) {
-   //cout  << "MagIntegratorStepper_byTime: "<< G4ThreeVector( yInput[3], yInput[4], yInput[5] ).mag() << endl;
-   baseStepper->ComputeRightHandSide(yInput, dydx);
-
-   // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
-   //for (int i = 3; i < 6; i ++)
-   //   dydx[i] *= inv_mass;
-}
-*/
-
 template <class BaseStepper>
 inline
 void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4double yInput[], G4double dydx[]) {
-   //cout  << "MagIntegratorStepper_byTime: "<< G4ThreeVector( yInput[3], yInput[4], yInput[5] ).mag() << endl;
-   //cout << "inside MagIntegratorStepper_byTime<BaseStepper>:: ComputeRightHandSide()" << endl;
-
    /*if ( BaseStepper::get_last_step_succeeded() ) {
       dydx = cached_dydx;
       return;
@@ -128,6 +103,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yOutput[],
             G4double yError [] ) {
 
+   // Have to copy because yInput and dydx are constant in the function signature.
    for (int i = 0; i < 10; i ++){
       yIn[i] = yInput[i];
       dydx_copy[i] = dydx[i];
@@ -137,17 +113,18 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       dydx_copy[i] *= 1. / m_fEq -> FMass();
    }
 
-
-   ( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
+   this -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
+   //( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
 #ifdef TRACKING
-   mTracker.RecordResultOfStepper(yIn, dydx_copy, hstep, yOutput, yError);
+   BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
 #endif
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= m_fEq -> FMass();
 
-   //BaseStepper::Reset_last_step_succeeded(); // Reset last_step_succeeded to false
+   yOutput[7] = yInput[7] + hstep;
+
 }
 
 template <class BaseStepper>
@@ -156,7 +133,9 @@ G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
    //return baseStepper->DistChord();
    //return BaseStepper::DistChord();
    //return baseStepper -> DistChord();
-   return BaseStepper::DistChord();
+   return BaseStepper::DistChord(); // If BaseStepper uses an Richardson
+                                    // extrapolation (auxStepper) then this might
+                                    // not be producing the right results.
 }
 
 /*
@@ -199,6 +178,7 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
 template <class BaseStepper>
 inline MagIntegratorStepper_byTime<BaseStepper>::~MagIntegratorStepper_byTime() {
    // delete baseStepper;
+
 }
 
 /*template <class BaseStepper>

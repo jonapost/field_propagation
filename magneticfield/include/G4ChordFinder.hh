@@ -69,10 +69,10 @@ class G4ChordFinder
       //void output_buffer();
       //G4double **GetBuffer();
       //void Reset_Buffer();
-      void SetMass();
+      //void SetMass();
 
-      void setup_output_buffer( G4ThreeVector &Position, G4ThreeVector &Momentum,
-            vector< vector<G4double> > &pos_mom_time_buffer);
+      //void setup_output_buffer( G4ThreeVector &Position, G4ThreeVector &Momentum,
+      //      vector< vector<G4double> > &pos_mom_time_buffer);
 
       //inline G4int GetCounter() { return counter; }
 
@@ -231,14 +231,14 @@ class G4ChordFinder
 
       // ...................................................................
 
-      G4double total_time;
-      vector< vector<G4double> > *buffer_ptr;
-      G4int counter;
-      void record(G4double y_and_yPrime[], G4double dydx_temp[]);
+      //G4double total_time;
+      //vector< vector<G4double> > *buffer_ptr;
+      //G4int counter;
+      //void record(G4double y_and_yPrime[], G4double dydx_temp[]);
 
-      G4double mass;
+      //G4double mass;
 
-      G4double *pos_mom_vals;
+      //G4double *pos_mom_vals;
 
 #ifdef TRACKING
       StepTracker *mTracker;
