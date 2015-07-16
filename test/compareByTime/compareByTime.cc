@@ -122,7 +122,7 @@ int main(int argc, char *args[]) {
 
    G4int stepper_no = 0, no_of_steps = 10;
    G4double step_len = 1.;
-
+   char *outfile_name;
 
    if (argc > 1)
       stepper_no = atoi(args[1]);
@@ -130,6 +130,8 @@ int main(int argc, char *args[]) {
       step_len = (float) (atof(args[2]) * mm);
    if (argc > 3)
       no_of_steps = atoi(args[3]);
+   if (argc > 4)
+      outfile_name = args[4];
 
    G4MagIntegratorStepper *myStepper;
 
@@ -272,7 +274,7 @@ int main(int argc, char *args[]) {
    myStepTracker -> RecordResultOfStepper(yout, dydx);
 
    //Output:
-   myStepTracker -> outputBuffer();
+   myStepTracker -> outputBuffer(outfile_name);
 
 
    // Cleanup

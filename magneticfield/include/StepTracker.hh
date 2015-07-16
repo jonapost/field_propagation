@@ -1,9 +1,13 @@
-/*
- * StepTracker.hh
- *
- *  Created on: Jul 12, 2015
- *      Author: jason
- */
+// Nystrom stepper implemenation by Jason Suagee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+//
+// First version: 27 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
 
 #ifndef MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_
 #define MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_
@@ -30,7 +34,7 @@ public:
 
    inline G4int getBufferLength() { return buffer_ptr -> size(); }
 
-   void outputBuffer();
+   void outputBuffer(char *outfile_name);
 
 private:
    vector< vector<G4double> > *buffer_ptr;

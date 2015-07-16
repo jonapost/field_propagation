@@ -1,13 +1,18 @@
-/*
- * StepTracker.cc
- *
- *  Created on: Jul 12, 2015
- *      Author: jason
- */
+// Nystrom stepper implemenation by Jason Suagee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+//
+// First version: 27 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
 
-#include <StepTracker.hh>
+#include "StepTracker.hh"
 
 #include <iostream>
+#include <fstream>
 
 #include <vector>
 using namespace std;
@@ -27,16 +32,25 @@ StepTracker::~StepTracker() {
 }
 
 
-void StepTracker::outputBuffer() {
+void StepTracker::outputBuffer(char *outfile_name) {
 
    vector< vector<G4double> > &buffer = *buffer_ptr;
 
+   ofstream outfile;
+   outfile.open(outfile_name, ios::binary | ios::out);
+   for (int i = 0; i < getBufferLength(); i ++) {
+      for (int j = 0; j < BUFFER_COLUMN_LEN; j ++){
+         outfile.write( reinterpret_cast<char*>( &(buffer[i][j]) ), sizeof( buffer[i][j] ) );
+      }
+   }
+   outfile.close();
+   /*
    for (int i = 0; i < getBufferLength(); i ++) {
       for (int j = 0; j < BUFFER_COLUMN_LEN; j ++)
          cout << buffer[i][j] << ",";
       cout << endl;
    }
-
+   */
 }
 
 void StepTracker::ReportCurveLength(G4double current_curve_length, G4double htry) {

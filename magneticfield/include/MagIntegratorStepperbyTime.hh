@@ -1,9 +1,13 @@
-/*
- * MagIntegratorStepperbyTime.hh
- *
- *  Created on: Jun 20, 2015
- *      Author: jason
- */
+// Nystrom stepper implemenation by Jason Suagee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+//
+// First version: 27 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
 
 #ifndef MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_
 #define MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_
@@ -169,7 +173,7 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
       yIn[i] = 0.;
    //mass = m_fEq -> FMass();
    //inv_mass = 1. / mass;
-   ///last_step_succeeded = false; // Might want to change??
+   //last_step_succeeded = false; // Might want to change??
    //BaseStepper::Reset_last_step_succeeded();
 
    //baseStepper = static_cast<BaseStepper*> ( static_cast<G4MagIntegratorStepper *>( this ) );
