@@ -23,49 +23,66 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: FSALMagIntegratorStepper.icc 66356 2012-12-18 09:02:32Z gcosmo $
 //
-// $Id: G4HelixHeum.hh 66356 2012-12-18 09:02:32Z gcosmo $
-//
-//
-// class G4HelixHeum
-//
-// Class description:
-//
-// Simple Heum stepper for magnetic field:
-//     x_1 = x_0 +
-//           h * 1/4 * dx(t0,x0)  +
-//               3/4 * dx(t0+2/3*h, x0+2/3*h*(dx(t0+h/3,x0+h/3*dx(t0,x0)))) 
-// Third order solver.
 
-// History:
-// - Created. W.Wander <wwc@mit.edu>, 03/11/98
-// -------------------------------------------------------------------
-
-#ifndef G4HELIXHEUM_HH
-#define G4HELIXHEUM_HH
-
-#include "G4MagHelicalStepper.hh"
-
-class G4HelixHeum : public G4MagHelicalStepper
+inline
+G4EquationOfMotion* FSALMagIntegratorStepper::GetEquationOfMotion()
 {
+  return  fEquation_Rhs;
+} 
 
-  public:  // with description
+inline void
+ FSALMagIntegratorStepper::SetEquationOfMotion(G4EquationOfMotion* newEquation)
+{
+  if( newEquation != 0 )
+  {
+    fEquation_Rhs= newEquation;
+  }
+} 
 
-    G4HelixHeum(G4Mag_EqRhs *EqRhs)
-      : G4MagHelicalStepper(EqRhs) {}
+inline
+G4int FSALMagIntegratorStepper::GetNumberOfVariables() const
+{
+  return fNoIntegrationVariables;
+}
 
-    ~G4HelixHeum() {}
-  
-    void DumbStepper( const G4double y[],
-                            G4ThreeVector  Bfld,
-                            G4double       h,
-                            G4double       yout[]);
 
-  public: // without description
-  
-    G4int IntegratorOrder() const { return 2; }
+inline
+G4int FSALMagIntegratorStepper::GetNumberOfStateVariables() const
+{
+  return fNoStateVariables;
+}
 
-//	G4double *getLastDydx();
-};
+inline
+void FSALMagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )   
+{
+  fEquation_Rhs-> RightHandSide(y, dydx);
+}
 
-#endif /* G4HELIXHEUM_HH */
+inline
+void FSALMagIntegratorStepper::NormaliseTangentVector( G4double vec[6] )
+{
+  G4double drds2 = vec[3]*vec[3]+vec[4]*vec[4]+vec[5]*vec[5];
+
+  if( std::fabs(drds2 - 1.0) > 1.e-14 )
+  {
+    G4double normx = 1.0 / std::sqrt(drds2);
+    for(G4int i=3;i<6;i++) { vec[i] *= normx; }
+  }
+}
+
+inline
+void FSALMagIntegratorStepper::NormalisePolarizationVector( G4double vec[12] )
+{
+  G4double drds2 = vec[9]*vec[9]+vec[10]*vec[10]+vec[11]*vec[11];
+
+  if( drds2 > 0. )
+  {
+    if( std::fabs(drds2 - 1.0) > 1.e-14 )
+    {
+      G4double normx = 1.0 / std::sqrt(drds2);
+      for(G4int i=9;i<12;i++)  { vec[i] *= normx; }
+    }
+  }
+}

@@ -23,10 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4MagIntegratorStepper.hh 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: FSALMagIntegratorStepper.hh
 //
-//
-// class G4MagIntegratorStepper
+// class FSALMagIntegratorStepper
 //
 // Class description:
 //
@@ -38,32 +37,31 @@
 //   not included in the NumberOfVariables.  
 // 
 //  So it is expected that NoStateVariables >= NumberOfVariables
-
-// History:
-// - 15.01.97  J. Apostolakis (J.Apostolakis@cern.ch)
 // --------------------------------------------------------------------
 
-#ifndef G4MAGIntegratorSTEPPER
-#define G4MAGIntegratorSTEPPER
+#ifndef FSAL_MAGIntegrator_STEPPER
+#define FSAL_MAGIntegrator_STEPPER
 
 #include "G4Types.hh"
 #include "G4EquationOfMotion.hh"
 
-class G4MagIntegratorStepper
+class FSALMagIntegratorStepper
 {
   public:  // with description
 
-     G4MagIntegratorStepper(G4EquationOfMotion *Equation, 
-                            G4int              numIntegrationVariables,
-                            G4int              numStateVariables=12);
-     virtual ~G4MagIntegratorStepper();
+     FSALMagIntegratorStepper (G4EquationOfMotion* Equation,
+                              G4int              numIntegrationVariables,
+                              G4int              numStateVariables=12);
+    
+     virtual ~FSALMagIntegratorStepper();
        // Constructor and destructor. No actions.
 
      virtual  void  Stepper(  const G4double y[],
                               const G4double dydx[],
                                     G4double h,
                                     G4double yout[],
-                                    G4double yerr[]  ) = 0 ;
+                                    G4double yerr[],
+		                            G4double lastDydx[]) = 0 ;
        // The stepper for the Runge Kutta integration.
        // The stepsize is fixed, with the Step size given by h.
        // Integrates ODE starting values y[0 to 6].
@@ -77,6 +75,10 @@ class G4MagIntegratorStepper
        // Must compute the RightHandSide as in the method below
        // Optionally can cache the input y[] and the dydx[] values computed.
     
+     virtual G4bool isFSAL() const = 0;
+//    	//Return true if the stepper uses FSAL (First Same As Last)
+    
+//    G4double *getLastDydx() {return 0;}
 
      inline void NormaliseTangentVector( G4double vec[6] );
        // Simple utility function to (re)normalise 'unit velocity' vector.
@@ -108,8 +110,8 @@ class G4MagIntegratorStepper
 
   private:
   
-     G4MagIntegratorStepper(const G4MagIntegratorStepper&);
-     G4MagIntegratorStepper& operator=(const G4MagIntegratorStepper&);
+     FSALMagIntegratorStepper(const FSALMagIntegratorStepper&);
+     FSALMagIntegratorStepper& operator=(const FSALMagIntegratorStepper&);
        // Private copy constructor and assignment operator.
 
   private:
@@ -121,6 +123,6 @@ class G4MagIntegratorStepper
 
 };
 
-#include  "G4MagIntegratorStepper.icc"
+#include  "FSALMagIntegratorStepper.icc"
 
-#endif  /* G4MAGIntegratorSTEPPER */
+#endif  /* FSALMagIntegratorStepper */

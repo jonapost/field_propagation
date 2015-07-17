@@ -93,6 +93,7 @@ class G4RKG3_Stepper : public G4MagIntegratorStepper
   public:  // without description
 
     G4int IntegratorOrder() const { return 4; }
+    G4double *getLastDydx();
 
   private:
 

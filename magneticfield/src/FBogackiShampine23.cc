@@ -8,7 +8,7 @@
 // This code is made available subject to the Geant4 license, a copy of
 // which is available at
 //   http://geant4.org/license
-//  BogackiShapine23.cc
+//  FBogackiShapine23.cc
 //  Geant4
 //
 //  History
@@ -21,29 +21,29 @@
 
 /*
 
-This contains the stepper function of the BogackiShampine23class
+This contains the stepper function of the FBogackiShampine23class
 
-The Bogacki shampine method has the following Butcher's tableau
+The FBogacki shampine method has the following Butcher's tableau
 
 0  |
 1/2|1/2
-3/4|0	3/4
-1  |2/9	1/3	4/9
+3/4|0 3/4
+1  |2/9 1/3 4/9
 -------------------
-   |2/9	1/3	4/9	0
+   |2/9 1/3 4/9 0
    |7/24 1/4 1/3 1/8
 
 */
 
-#include "BogackiShampine23.hh"
+#include "FBogackiShampine23.hh"
 #include "G4LineSection.hh"
 
 using namespace std;
 
 //Constructor
-BogackiShampine23::BogackiShampine23(G4EquationOfMotion *EqRhs,
-				 G4int noIntegrationVariables,
-				 G4bool primary)
+FBogackiShampine23::FBogackiShampine23(G4EquationOfMotion *EqRhs,
+         G4int noIntegrationVariables,
+         G4bool primary)
   : FSALMagIntegratorStepper(EqRhs, noIntegrationVariables),
     fLastStepLength(0.), fAuxStepper(0)
 {
@@ -66,13 +66,13 @@ BogackiShampine23::BogackiShampine23(G4EquationOfMotion *EqRhs,
   fMidError =  new G4double[numberOfVariables];
   if( primary )
   {
-    fAuxStepper = new BogackiShampine23(EqRhs, numberOfVariables, !primary);
+    fAuxStepper = new FBogackiShampine23(EqRhs, numberOfVariables, !primary);
   }
 }
 
 
 //Destructor
-BogackiShampine23::~BogackiShampine23()
+FBogackiShampine23::~FBogackiShampine23()
 {
   delete[] ak2;
   delete[] ak3;
@@ -93,7 +93,7 @@ BogackiShampine23::~BogackiShampine23()
 //******************************************************************************
 //
 // Given values for n = 4 variables yIn[0,...,n-1]
-// known  at x, use the 3rd order Bogacki Shampine method
+// known  at x, use the 3rd order FBogacki Shampine method
 // to advance the solution over an interval Step
 // and return the incremented variables as yOut[0,...,n-1]. Also
 // return an estimate of the local truncation error yErr[] using the
@@ -105,11 +105,11 @@ BogackiShampine23::~BogackiShampine23()
 
 
 void
-BogackiShampine23::Stepper( const G4double yInput[],
-                         	const G4double dydx[],
-                              	  G4double Step,
-                              	  G4double yOut[],
-                              	  G4double yErr[],
+FBogackiShampine23::Stepper( const G4double yInput[],
+                          const G4double dydx[],
+                                  G4double Step,
+                                  G4double yOut[],
+                                  G4double yErr[],
                                   G4double nextDydx[])
 {
     
@@ -121,7 +121,7 @@ BogackiShampine23::Stepper( const G4double yInput[],
 
 
  const G4double  dc1 = b41 - 7.0/24.0 ,  dc2 = b42 - 1.0/4.0 ,
-  				 dc3 = b43 - 1.0/3.0 , dc4 = - 0.125 ;
+           dc3 = b43 - 1.0/3.0 , dc4 = - 0.125 ;
     
     G4double *DyDx;
     
@@ -131,9 +131,9 @@ BogackiShampine23::Stepper( const G4double yInput[],
  //                  is it neccessary to integrate the time.]
  yOut[7] = yTemp[7]   = yIn[7];
 
- const G4int numberOfVariables= this->GetNumberOfVariables();	// The number of variables to be integrated over
+ const G4int numberOfVariables= this->GetNumberOfVariables(); // The number of variables to be integrated over
     
-    DyDx = new G4double[numberOfVariables];	//For saving dydx as dydx and nextDydx can be aliases for same array
+    DyDx = new G4double[numberOfVariables]; //For saving dydx as dydx and nextDydx can be aliases for same array
     
    
 
@@ -141,8 +141,8 @@ BogackiShampine23::Stepper( const G4double yInput[],
 
    for(i=0;i<numberOfVariables;i++)
    {
-     	yIn[i]=yInput[i];
-       	DyDx[i] = dydx[i];
+      yIn[i]=yInput[i];
+        DyDx[i] = dydx[i];
    }
  // RightHandSide(yIn, dydx) ;              // 1st Step --Not doing, getting passed
     
@@ -170,7 +170,8 @@ BogackiShampine23::Stepper( const G4double yInput[],
         
         yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] +
                         dc4*ak4[i] ) ;
-
+        //FSAL method : Pass the nextDydx, ak4 here
+        nextDydx[i] = ak4[i];
         
         // Store Input and Final values, for possible use in calculating chord
         fLastInitialVector[i] = yIn[i] ;
@@ -184,7 +185,7 @@ BogackiShampine23::Stepper( const G4double yInput[],
     return ;
 }
 
-G4double  BogackiShampine23::DistChord() const
+G4double  FBogackiShampine23::DistChord() const
 {
   G4double distLine, distChord;
   G4ThreeVector initialPoint, finalPoint, midPoint;

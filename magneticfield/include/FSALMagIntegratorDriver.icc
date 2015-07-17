@@ -29,56 +29,56 @@
 // --------------------------------------------------------------------
 
 inline
-G4double G4MagInt_Driver::GetHmin() const
+G4double FSALMagInt_Driver::GetHmin() const
 {
       return fMinimumStep;
 } 
 
 inline
-G4double G4MagInt_Driver::Hmin() const
+G4double FSALMagInt_Driver::Hmin() const
 {
       return fMinimumStep;
 }
 
 inline
-G4double G4MagInt_Driver::GetSafety() const
+G4double FSALMagInt_Driver::GetSafety() const
 {
       return safety;
 }
 
 inline
-G4double G4MagInt_Driver::GetPshrnk() const
+G4double FSALMagInt_Driver::GetPshrnk() const
 {
       return pshrnk;
 } 
 
 inline
-G4double G4MagInt_Driver::GetPgrow() const
+G4double FSALMagInt_Driver::GetPgrow() const
 {
       return pgrow;
 }
  
 inline
-G4double G4MagInt_Driver::GetErrcon() const
+G4double FSALMagInt_Driver::GetErrcon() const
 {
       return errcon;
 }
 
 inline
-void G4MagInt_Driver::SetHmin(G4double newval)
+void FSALMagInt_Driver::SetHmin(G4double newval)
 {
       fMinimumStep = newval;
 } 
 
 inline
-G4double G4MagInt_Driver::ComputeAndSetErrcon()
+G4double FSALMagInt_Driver::ComputeAndSetErrcon()
 {
       errcon = std::pow(max_stepping_increase/GetSafety(),1.0/GetPgrow());
       return errcon;
 } 
 
 inline
-void G4MagInt_Driver::ReSetParameters(G4double new_safety)
+void FSALMagInt_Driver::ReSetParameters(G4double new_safety)
 {
       safety = new_safety;
       pshrnk = -1.0 / pIntStepper->IntegratorOrder();
@@ -87,58 +87,58 @@ void G4MagInt_Driver::ReSetParameters(G4double new_safety)
 }
 
 inline
-void G4MagInt_Driver::SetSafety(G4double val)
+void FSALMagInt_Driver::SetSafety(G4double val)
 { 
       safety=val;
       ComputeAndSetErrcon();
 }
 
 inline
-void G4MagInt_Driver::SetPgrow(G4double  val)
+void FSALMagInt_Driver::SetPgrow(G4double  val)
 { 
       pgrow=val;
       ComputeAndSetErrcon(); 
 }
 
 inline
-void G4MagInt_Driver::SetErrcon(G4double val)
+void FSALMagInt_Driver::SetErrcon(G4double val)
 { 
       errcon=val;
 }
 
 inline
-void G4MagInt_Driver::RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper)
+void FSALMagInt_Driver::RenewStepperAndAdjust(FSALMagIntegratorStepper *pItsStepper)
 {  
       pIntStepper = pItsStepper; 
       ReSetParameters();
 }
 
 inline
-const G4MagIntegratorStepper* G4MagInt_Driver::GetStepper() const
+const FSALMagIntegratorStepper* FSALMagInt_Driver::GetStepper() const
 {
   return pIntStepper;
 }
 
 inline
-G4MagIntegratorStepper* G4MagInt_Driver::GetStepper() 
+FSALMagIntegratorStepper* FSALMagInt_Driver::GetStepper()
 {
   return pIntStepper;
 }
 
 inline
-G4int G4MagInt_Driver::GetMaxNoSteps() const
+G4int FSALMagInt_Driver::GetMaxNoSteps() const
 {
   return fMaxNoSteps;
 }
 
 inline
-void G4MagInt_Driver::SetMaxNoSteps(G4int val)
+void FSALMagInt_Driver::SetMaxNoSteps(G4int val)
 {
   fMaxNoSteps= val;
 }
 
 inline
-void G4MagInt_Driver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
+void FSALMagInt_Driver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
                                            G4double     dydx[])  // OUTput
 { 
   G4double  tmpValArr[G4FieldTrack::ncompSVEC];
@@ -147,31 +147,31 @@ void G4MagInt_Driver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
 }
 
 inline
-G4double G4MagInt_Driver::GetVerboseLevel() const
+G4double FSALMagInt_Driver::GetVerboseLevel() const
 {
       return fVerboseLevel;
 } 
 
 inline 
-void G4MagInt_Driver::SetVerboseLevel(G4int newLevel)
+void FSALMagInt_Driver::SetVerboseLevel(G4int newLevel)
 {
       fVerboseLevel= newLevel;
 }
 
 inline
-G4double G4MagInt_Driver::GetSmallestFraction() const
+G4double FSALMagInt_Driver::GetSmallestFraction() const
 {
       return fSmallestFraction; 
 }
 
 inline
-G4int G4MagInt_Driver::GetNoTotalSteps() const
+G4int FSALMagInt_Driver::GetNoTotalSteps() const
 {
     return fNoTotalSteps;
 }
 
 inline
-G4int G4MagInt_Driver::GetTotalNoStepperCalls() const
+G4int FSALMagInt_Driver::GetTotalNoStepperCalls() const
 {
     return TotalNoStepperCalls;
 }

@@ -1,8 +1,23 @@
-//  BogackiShampine45.cc
+//  Bogacki-Shampine - 8 - 5(4) FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 26 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//  FBogackiShampine45.cc
 //  Geant4
 //
-//  Created by Somnath on 25/05/15.
+//  History
+// -----------------------------
+//  Created by Somnath on 26 May 2015
 //
+//
+///////////////////////////////////////////////////////////////////////////////
+
 //This is the source file of BogackiShampine45 class containing the
 //definition of the stepper() method that evaluates one step in
 //field propagation.
@@ -10,23 +25,23 @@
 //
 //0   |
 //1/6 | 1/6
-//2/9 | 2/27	   	  4/27
+//2/9 | 2/27          4/27
 //3/7 | 183/1372  -162/343   1053/1372
 //2/3 | 68/297      -4/11      42/143 1960/3861
 //3/4 | 597/22528     81/352     63099/585728     58653/366080   4617/20480
-//1	  | 174197/959244 -30942/79937 8152137/19744439 666106/1039181 -29421/29068 482048/414219
+//1   | 174197/959244 -30942/79937 8152137/19744439 666106/1039181 -29421/29068 482048/414219
 //1   | 587/8064           0       4440339/15491840 24353/124800   387/44800     2152/5985   7267/94080
 //-------------------------------------------------------------------------------------------------------------------
 //      587/8064           0       4440339/15491840 24353/124800    387/44800     2152/5985   7267/94080       0
 //      2479/34992         0          123/416       612941/3411720  43/1440       2272/6561  79937/1113912  3293/556956
 
 
-#include "BogackiShampine45.hh"
+#include "FBogackiShampine45.hh"
 #include "G4LineSection.hh"
 
 
 //Constructor
-BogackiShampine45::BogackiShampine45(G4EquationOfMotion *EqRhs,
+FBogackiShampine45::FBogackiShampine45(G4EquationOfMotion *EqRhs,
                                      G4int noIntegrationVariables,
                                      G4bool primary)
 : FSALMagIntegratorStepper(EqRhs, noIntegrationVariables)
@@ -62,14 +77,14 @@ BogackiShampine45::BogackiShampine45(G4EquationOfMotion *EqRhs,
     fMidError =  new G4double[numberOfVariables];
     if( primary )
     {
-        fAuxStepper = new BogackiShampine45(EqRhs, numberOfVariables,
+        fAuxStepper = new FBogackiShampine45(EqRhs, numberOfVariables,
                                             !primary);
     }
 }
 
 
 //Destructor
-BogackiShampine45::~BogackiShampine45(){
+FBogackiShampine45::~FBogackiShampine45(){
     //clear all previously allocated memory for stepper and DistChord
     delete[] ak2;
     delete[] ak3;
@@ -103,11 +118,12 @@ BogackiShampine45::~BogackiShampine45(){
 // Passing in the value of yInput[],the first time dydx[] and Step length
 // Giving back yOut and yErr arrays for output and error respectively
 
-void BogackiShampine45::Stepper(  const G4double yInput[],
-                                  const G4double dydx[],
-                                        G4double Step,
-                                        G4double yOut[],
-                                        G4double yErr[] )
+void FBogackiShampine45::Stepper(const G4double yInput[],
+                                const G4double dydx[],
+                                G4double Step,
+                                G4double yOut[],
+                                G4double yErr[],
+                                G4double nextDydx[])
 {
     G4int i;
     
@@ -217,7 +233,7 @@ void BogackiShampine45::Stepper(  const G4double yInput[],
         yTemp[i] = yIn[i] + Step*(b71*DyDx[i] + b72*ak2[i] + b73*ak3[i] +
                                   b74*ak4[i] + b75*ak5[i] + b76*ak6[i]);
     }
-    RightHandSide(yTemp, ak7);				//7th Step
+    RightHandSide(yTemp, ak7);              //7th Step
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -225,7 +241,7 @@ void BogackiShampine45::Stepper(  const G4double yInput[],
                                   b84*ak4[i] + b85*ak5[i] + b86*ak6[i] +
                                   b87*ak7[i]);
     }
-    RightHandSide(yOut, ak8);				//8th Step - Final one Using FSAL
+    RightHandSide(yOut, ak8);               //8th Step - Final one Using FSAL
 
     
     for(i=0;i<numberOfVariables;i++)
@@ -234,6 +250,9 @@ void BogackiShampine45::Stepper(  const G4double yInput[],
         yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
                         dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] + dc8*ak8[i]) ;
         
+        
+        //FSAL stepper : Must pass the last DyDx for the next step, here ak8
+        nextDydx[i] = ak8[i];
         
         // Store Input and Final values, for possible use in calculating chord
         fLastInitialVector[i] = yIn[i] ;
@@ -247,14 +266,14 @@ void BogackiShampine45::Stepper(  const G4double yInput[],
     return ;
 }
 //
-//G4double* BogackiShampine45::getLastDydx(){
+//G4double* FBogackiShampine45::getLastDydx(){
 //    return ak8;
 //}
 
 //The following has not been tested
 
 //The DistChord() function fot the class - must define it here.
-G4double  BogackiShampine45::DistChord() const
+G4double  FBogackiShampine45::DistChord() const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -292,7 +311,7 @@ G4double  BogackiShampine45::DistChord() const
 
 
 
-void BogackiShampine45::interpolate( const G4double yInput[],
+void FBogackiShampine45::interpolate( const G4double yInput[],
                              const G4double dydx[],
                              G4double yOut[],
                              G4double Step,
@@ -368,7 +387,7 @@ void BogackiShampine45::interpolate( const G4double yInput[],
     //  COEFFICIENTS FOR INTERPOLANT  bi  WITH  11  STAGES
     //  --------------------------------------------------------
     
-    G4double bi[13][7], b[13];	//For bi[1][1] to bi[11][6] and b[1] to b[11]
+    G4double bi[13][7], b[13];  //For bi[1][1] to bi[11][6] and b[1] to b[11]
     
     for(int i=1; i<= 11; i++)
         bi[i][1] = 0.0 ;
@@ -551,7 +570,7 @@ void BogackiShampine45::interpolate( const G4double yInput[],
     
     G4double tau0 = tau;
     //    Calculating the polynomials :
-    for(int i=1; i<=11; i++){	//Here i is NOT the coordinate no. , it's stage no.
+    for(int i=1; i<=11; i++){   //Here i is NOT the coordinate no. , it's stage no.
         b[i] = 0.0;
         tau = tau0;
         for(int j=1; j<=6; j++){
@@ -568,6 +587,7 @@ void BogackiShampine45::interpolate( const G4double yInput[],
     }
     
 }
+
 
 
 
