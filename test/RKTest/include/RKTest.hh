@@ -17,7 +17,7 @@
 
 #include "RKTestField.hh"
 #include "RKTestTrack.hh"
-#include "RKtestDriver.hh"
+#include "RKTestDriver.hh"
 #include <stdio.h>
 using namespace std;
 
@@ -37,6 +37,7 @@ public:
     int RunTest();	//Run the test and return a value indicator
     void Reset();
     void setEquation(G4MagneticField *pField);
+    
     void testSteppersFixed(string field_code, string stepper_code, G4double step_len);
     
     void testSteppersFixedUMF(int columns[6],
@@ -45,6 +46,10 @@ public:
                               int no_of_steps = 100);
     
     void testSteppersFixedQMF(string stepper_code = "ck45", G4double step_len = 25.0*CLHEP::mm);
+
+    template<class STEPPER>
+    void testAnyG4Stepper(string field_code);
+    
     void testPerformance( string stepper_code = "ck45", string field_code = "umf");
 
     static void print3(int columns[], int ifHeader , G4double yOut[], G4double yErr[], G4double yOutX[]);

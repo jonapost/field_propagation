@@ -7,6 +7,7 @@
 //
 
 #include "RKTest.hh"
+#include "RKTestDriver.cc"
 //#include <iostream>
 #include <iomanip>
 using namespace CLHEP;
@@ -82,7 +83,7 @@ void RKTest::testSteppersFixedUMF( int columns[6],
 //    uField = SetupUMF();
 ////    fEqRhs = new G4Mag_UsualEqRhs(&uField);
 //    fEqRhs = SetMagEqRhs(uField, tTrack);
-    tDriver = SetDriver(stepper_code, fEqRhs, tTrack);
+//    tDriver = SetDriver(stepper_code, fEqRhs, tTrack);
     
     G4double
     yIn[12] = {0.,0.,0.,0.,0.,0.},
@@ -177,7 +178,7 @@ void RKTest::testPerformance(string stepper_code, string field_code){
             setEquation(&uField);
         
 
-        tDriver = SetDriver(stepper_code, fEqRhs, tTrack);
+//        tDriver = SetDriver(stepper_code, fEqRhs, tTrack);
         tDriver->AccurateAdvance(tTrack, physStep, theEps,physStep); //Suggested h = physStep
         
         
@@ -208,7 +209,50 @@ void RKTest::Reset(){
         delete fEqRhs;
 }
 
-
+template <class STEPPER>
+void RKTest::testAnyG4Stepper(string field_code){
+    STEPPER *myStepper = new STEPPER(fEqRhs);
+    G4int lalla = myStepper->GetfNoRHSCalls();
+    cout<<"lalla = "<<lalla;
+    
+    int max_no_loops = 20;
+    G4double theEps = 1.;
+    const G4double factor = 0.2;
+    G4double physStep = 100.0*mm;
+    G4int func_evals = 0;
+    //    myDriver = SetupInt_Driver(stepper_no, fTrack );
+    //testIntegrator(myDriver, fTrack, func_out[stepper_no]);
+    cout<<"# ";
+    cout<<setw(11)<<"-log10(eps)"
+    <<setw(15)<<"func_evals";
+    cout<<"\n";
+    for (int j=0; j<max_no_loops; j++) {
+        
+        //        Reset();
+        
+        tTrack = CreateTrack();
+        if(field_code == "qmf")
+            setEquation(&QField);
+        else
+            setEquation(&uField);
+        
+        
+        tDriver = SetDriver<STEPPER>(fEqRhs, tTrack);
+        tDriver->AccurateAdvance(tTrack, physStep, theEps,physStep); //Suggested h = physStep
+        
+        
+        func_evals = tDriver->GetStepper()->GetfNoRHSCalls();
+        
+        cout<<setw(12)<< -log10(theEps);
+        cout.setf (ios_base::scientific);
+        cout.precision(4);
+        cout<<setw(10)<<func_evals;
+        cout.unsetf(ios_base::scientific);
+        cout.precision(8);
+        cout<<"\n";
+        theEps *= factor;
+    }
+}
 
 using namespace std;
 int main(){
@@ -220,8 +264,13 @@ int main(){
     RKTest myTest;
     int columns[] = {1,0,0,0,0,0};
 //    myTest.testSteppersFixedUMF(columns);
-    myTest.testPerformance("vr78");
+//    myTest.testPerformance("vr78");
+
+    G4CashKarpRKF45 *theStpr(0);
+    myTest.testAnyG4Stepper<G4CashKarpRKF45>("umf");
     
     cout<<"\n Hello";
     return 0;
 }
+
+
