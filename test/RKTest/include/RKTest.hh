@@ -38,7 +38,7 @@ public:
     void Reset();
     void setEquation(G4MagneticField *pField);
     
-    void testSteppersFixed(string field_code, string stepper_code, G4double step_len);
+//    void testSteppersFixed(string field_code, string stepper_code, G4double step_len);
     
     template < class STEPPER >
     void testSteppersFixedUMF(int columns[6],
@@ -46,13 +46,14 @@ public:
                               G4double step_len = 25.0*CLHEP::mm,
                               int no_of_steps = 100);
     
-    void testSteppersFixedQMF(string stepper_code = "ck45", G4double step_len = 25.0*CLHEP::mm);
+//    void testSteppersFixedQMF(string stepper_code = "ck45", G4double step_len = 25.0*CLHEP::mm);
 
     template<class STEPPER>
     void testAnyG4Stepper(string field_code);
     
-    void testPerformance( string stepper_code = "ck45", string field_code = "umf");
-
+    template<class STEPPER, class REF_STEPPER>
+    void testStepperInterpolant(int columns[6], string field_code = "umf", G4double step_len_pi_divisor = 6.0, G4double maxAngle = 2.0*CLHEP::pi);
+    
     static void print3(int columns[], int ifHeader , G4double yOut[], G4double yErr[], G4double yOutX[]);
 //    void print3Data(G4double yOut[], yErr[], yOutX);
     
