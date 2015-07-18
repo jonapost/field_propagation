@@ -73,18 +73,19 @@ void RKTest::print3(int columns[6],
     
 }
 
+template < class STEPPER >
 void RKTest::testSteppersFixedUMF( int columns[6],
-                                   string stepper_code,
+                                   /*string stepper_code,*/
                                    G4double step_len ,
                                    int no_of_steps )
 {
     
-//    tTrack = CreateTrack();
-//    uField = SetupUMF();
-////    fEqRhs = new G4Mag_UsualEqRhs(&uField);
-//    fEqRhs = SetMagEqRhs(uField, tTrack);
-//    tDriver = SetDriver(stepper_code, fEqRhs, tTrack);
-    
+    tTrack = CreateTrack();
+    setEquation(&uField);
+    G4ExactHelixStepper *exactStepper = new G4ExactHelixStepper(fEqRhs);
+    STEPPER *myStepper = new STEPPER(fEqRhs);
+//    tDriver = SetDriver<STEPPER>(fEqRhs);//, tTrack);
+
     G4double
     yIn[12] = {0.,0.,0.,0.,0.,0.},
     yInX[12] = {0.,0.,0.,0.,0.,0.},
@@ -99,9 +100,6 @@ void RKTest::testSteppersFixedUMF( int columns[6],
     tTrack.DumpToArray(yIn);
     tTrack.DumpToArray(yInX);
 
-    G4ExactHelixStepper *exactStepper = new G4ExactHelixStepper(fEqRhs);
-    auto *myStepper = (tDriver->GetStepper());
-        
     //    -> First Print the (commented) title header
     
     print3(columns, 1, yout, yerr, youtX);
@@ -110,7 +108,6 @@ void RKTest::testSteppersFixedUMF( int columns[6],
     /*----------------NOW STEPPING-----------------*/
     
     for(int j=0; j<no_of_steps; j++){
-        
         
         cout<<setw(8)<<j + 1;           //Printing Step number
         
@@ -138,6 +135,7 @@ void RKTest::testSteppersFixedUMF( int columns[6],
 }
 
 void RKTest::setEquation(G4MagneticField *pField){
+    
     G4double momentum = tTrack.GetMomentum().mag();
     G4double
     particleCharge = 1.0,
@@ -237,7 +235,7 @@ void RKTest::testAnyG4Stepper(string field_code){
             setEquation(&uField);
         
         
-        tDriver = SetDriver<STEPPER>(fEqRhs, tTrack);
+        tDriver = SetDriver<STEPPER>(fEqRhs);//, tTrack);
         tDriver->AccurateAdvance(tTrack, physStep, theEps,physStep); //Suggested h = physStep
         
         
@@ -266,8 +264,9 @@ int main(){
 //    myTest.testSteppersFixedUMF(columns);
 //    myTest.testPerformance("vr78");
 
-    G4CashKarpRKF45 *theStpr(0);
-    myTest.testAnyG4Stepper<G4CashKarpRKF45>("umf");
+//    G4CashKarpRKF45 *theStpr(0);
+//    myTest.testAnyG4Stepper<G4CashKarpRKF45>("umf");
+    myTest.testSteppersFixedUMF<G4CashKarpRKF45>(columns);
     
     cout<<"\n Hello";
     return 0;

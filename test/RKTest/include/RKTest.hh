@@ -40,8 +40,9 @@ public:
     
     void testSteppersFixed(string field_code, string stepper_code, G4double step_len);
     
+    template < class STEPPER >
     void testSteppersFixedUMF(int columns[6],
-                              string stepper_code = "ck45",
+                              /*string stepper_code = "ck45",*/
                               G4double step_len = 25.0*CLHEP::mm,
                               int no_of_steps = 100);
     
