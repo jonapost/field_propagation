@@ -54,11 +54,6 @@ G4int FSALMagIntegratorStepper::GetNumberOfStateVariables() const
   return fNoStateVariables;
 }
 
-inline
-void FSALMagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )   
-{
-  fEquation_Rhs-> RightHandSide(y, dydx);
-}
 
 inline
 void FSALMagIntegratorStepper::NormaliseTangentVector( G4double vec[6] )

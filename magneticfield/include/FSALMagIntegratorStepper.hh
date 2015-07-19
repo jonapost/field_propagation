@@ -75,7 +75,7 @@ class FSALMagIntegratorStepper
        // Must compute the RightHandSide as in the method below
        // Optionally can cache the input y[] and the dydx[] values computed.
     
-     virtual G4bool isFSAL() const = 0;
+//     virtual G4bool isFSAL() const = 0;
 //    	//Return true if the stepper uses FSAL (First Same As Last)
     
 //    G4double *getLastDydx() {return 0;}
@@ -86,7 +86,7 @@ class FSALMagIntegratorStepper
      inline void NormalisePolarizationVector( G4double vec[12] );
        // Simple utility function to (re)normalise 'unit spin' vector.
 
-     inline void RightHandSide( const double y[], double dydx[] );   
+      void RightHandSide( const double y[], double dydx[] );
        // Utility method to supply the standard Evaluation of the
        // Right Hand side of the associated equation.
 
@@ -108,6 +108,16 @@ class FSALMagIntegratorStepper
        // this function allows for access to them.
      inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
 
+    //--- --- For DEBUG --- ---
+    inline G4int GetfNoRHSCalls(){
+        return fNoRHSCalls;
+    }
+    void increasefNORHSCalls();
+    
+    inline void ResetfNORHSCalls(){
+        fNoRHSCalls = 0;
+    }
+    //--- --- ///////// --- ---
   private:
   
      FSALMagIntegratorStepper(const FSALMagIntegratorStepper&);
@@ -119,6 +129,12 @@ class FSALMagIntegratorStepper
      G4EquationOfMotion *fEquation_Rhs;
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack
+    
+    
+    //--- --- For DEBUG --- ---
+    G4int fNoRHSCalls;
+    //--- --- ///////// --- ---
+    
      // const G4int  fNumberOfVariables;
 
 };
