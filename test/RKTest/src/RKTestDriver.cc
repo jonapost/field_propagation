@@ -12,6 +12,10 @@
 #include "BogackiShampine45.hh"
 #include "G4ExactHelixStepper.hh"
 #include "BogackiShampine23.hh"
+#include "FBogackiShampine45.hh"
+#include "FDormandPrince745.hh"
+#include "FDormandPrinceRK56.hh"
+#include "FVernerRK56.hh"
 
 #include "RKTestDriver.hh"
 
@@ -24,4 +28,12 @@ SetDriver(/*std::string my_stepper_code,*/ G4Mag_UsualEqRhs *fEquation /*G4Field
     G4MagInt_Driver *theDriver = new G4MagInt_Driver(hminimum, theStepper);
     return theDriver;
     
+}
+
+template <class STEPPER>
+FSALMagInt_Driver *SetFSALDriver(G4Mag_UsualEqRhs *fEquation){
+    G4double hminimum = 1.e-12;
+    STEPPER *theStepper = new STEPPER(fEquation);
+    FSALMagInt_Driver *theDriver = new FSALMagInt_Driver(hminimum, theStepper);
+    return theDriver;
 }

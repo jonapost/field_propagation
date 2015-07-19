@@ -29,6 +29,7 @@ private:
     G4MagneticField *MField;
     G4FieldTrack tTrack ;
     G4MagInt_Driver *tDriver ;
+    FSALMagInt_Driver *FDriver;
     G4Mag_UsualEqRhs *fEqRhs;
 public:
     //Member functions
@@ -49,7 +50,11 @@ public:
 //    void testSteppersFixedQMF(string stepper_code = "ck45", G4double step_len = 25.0*CLHEP::mm);
 
     template<class STEPPER>
-    void testAnyG4Stepper(string field_code);
+    void testG4Stepper(string field_code = "umh");
+    
+    
+    template<class STEPPER>
+    void testFSALStepper(string field_code = "umf");
     
     template<class STEPPER, class REF_STEPPER>
     void testStepperInterpolant(int columns[6], string field_code = "umf", G4double step_len_pi_divisor = 6.0, G4double maxAngle = 2.0*CLHEP::pi);

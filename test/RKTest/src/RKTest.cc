@@ -163,7 +163,7 @@ void RKTest::Reset(){
 }
 
 template <class STEPPER>
-void RKTest::testAnyG4Stepper(string field_code){
+void RKTest::testG4Stepper(string field_code){
     
 //    STEPPER *myStepper = new STEPPER(fEqRhs);
     
@@ -194,6 +194,51 @@ void RKTest::testAnyG4Stepper(string field_code){
         
         
         func_evals = tDriver->GetStepper()->GetfNoRHSCalls();
+        
+        cout<<setw(12)<< -log10(theEps);
+        cout.setf (ios_base::scientific);
+        cout.precision(4);
+        cout<<setw(10)<<func_evals;
+        cout.unsetf(ios_base::scientific);
+        cout.precision(8);
+        cout<<"\n";
+        theEps *= factor;
+    }
+}
+
+template <class STEPPER>
+void RKTest::testFSALStepper(string field_code){
+    
+    //    STEPPER *myStepper = new STEPPER(fEqRhs);
+    
+    int max_no_loops = 20;
+    G4double theEps = 1.;
+    const G4double factor = 0.2;
+    G4double physStep = 100.0*mm;
+    G4int func_evals = 0;
+    //    myDriver = SetupInt_Driver(stepper_no, fTrack );
+    //testIntegrator(myDriver, fTrack, func_out[stepper_no]);
+    cout<<"# ";
+    cout<<setw(11)<<"-log10(eps)"
+    <<setw(15)<<"func_evals";
+    cout<<"\n";
+    for (int j=0; j<max_no_loops; j++) {
+        
+        //        Reset();
+        
+        tTrack = CreateTrack();
+        if(field_code == "qmf")
+            setEquation(&QField);
+        else
+            setEquation(&uField);
+        
+        
+/*****************	Only Difference from testG4Driver ********************/
+        FDriver = SetFSALDriver<STEPPER>(fEqRhs);//, tTrack);
+        FDriver->AccurateAdvance(tTrack, physStep, theEps,physStep); //Suggested h = physStep
+/*************************************************************************/
+        
+        func_evals = FDriver->GetStepper()->GetfNoRHSCalls();
         
         cout<<setw(12)<< -log10(theEps);
         cout.setf (ios_base::scientific);
@@ -354,9 +399,9 @@ int main(){
 //    G4CashKarpRKF45 *theStpr(0);
 //    myTest.testAnyG4Stepper<G4CashKarpRKF45>("umf");
 //    myTest.testSteppersFixedUMF<G4CashKarpRKF45>(columns);
-    myTest.testStepperInterpolant<VernerRK78, G4CashKarpRKF45>(columns);
-    
-    cout<<"\n Hello";
+//    myTest.testStepperInterpolant<VernerRK78, G4CashKarpRKF45>(columns);
+    myTest.testFSALStepper<FDormandPrinceRK56>("umf");
+//    cout<<"\n Hello";
     return 0;
 }
 
