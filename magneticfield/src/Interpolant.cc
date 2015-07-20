@@ -10,6 +10,7 @@
 #include <iostream>
 using namespace std;
 
+
 Interpolant::Interpolant(const G4double y0in[],
                          const G4double y1in[],
                          const G4double F0[],
@@ -62,4 +63,11 @@ void Interpolant::InterpolatePosition(G4double xi, G4double yout[]) {
       yout[k] = y1[k] + p1[k]*xi1 + p2[k]*xi2 + p3[k]*xi3 + p4[k]*xi4 + p5[k]*xi5;
    }
 }
+
+void Interpolant::InterpolateMomentum(G4double xi, G4double yout[]) {
+   // Dummy implementation
+   yout[0] = 0.; yout[1] = 0.; yout[2] = 0.;
+}
+
+
 

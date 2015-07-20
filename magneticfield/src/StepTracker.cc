@@ -68,6 +68,9 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[]) {
    // This is because there is no pre-set way to pass the last RHS
    // evaluation to StepTracker from the BaseStepper of MagIntegratorStepper_byTime. (Yet.)
 
+
+   //Time is stored in first component.
+
    buffer_ptr -> push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
    G4int last_index = buffer_ptr -> size() - 1;
    buffer[last_index][0] = yIn[TIME_SLOT];
@@ -75,7 +78,7 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[]) {
       buffer[last_index][i + 1] = yIn[i];
    }
    for (int i = 3; i < 6; i ++) {
-      buffer[last_index][i + 3] = dydx[i];
+      buffer[last_index][i + 4] = dydx[i];
    }
    /*
    cout << "yIn: ";

@@ -282,6 +282,7 @@ int main(int argc, char *args[]) {
    delete myStepper;
    delete fEquation;
 
+   return 0;
 }
 
 
