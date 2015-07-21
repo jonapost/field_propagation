@@ -9,14 +9,12 @@ int main(){
 
     RKTest myTest;
         int columns[] = {1,0,0,0,0,0};
-//        myTest.testSteppersFixedUMF(columns);
-    //    myTest.testPerformance("vr78");
-    
+
     //    G4CashKarpRKF45 *theStpr(0);
     //    myTest.testAnyG4Stepper<G4CashKarpRKF45>("umf");
 //        myTest.testSteppersFixedUMF<G4CashKarpRKF45>(columns);
-        myTest.testStepperInterpolant<VernerRK78, G4CashKarpRKF45>(columns);
+        myTest.testStepperInterpolant<VernerRK78, 
+        					G4CashKarpRKF45>(columns);
 //    myTest.testG4Stepper<VernerRK78>("umf");
-    //    cout<<"\n Hello";
     return 0;
 }

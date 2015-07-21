@@ -1,20 +1,4 @@
 
-/*	Include all the steppers  */
-
-//#include "G4ExplicitEuler.hh"
-//#include "VernerRK67.hh"
-//#include "VernerRK56.hh"
-//#include "VernerRK78.hh"
-//#include "G4CashKarpRKF45.hh"
-////#include "G4ClassicalRK4.hh"
-//#include "G4SimpleHeum.hh"
-//#include "DormandPrince745.hh"
-//#include "BogackiShampine45.hh"
-//#include "BogackiShampine23.hh"
-//#include "FBogackiShampine45.hh"
-//#include "FDormandPrince745.hh"
-//#include "FDormandPrinceRK56.hh"
-//#include "FVernerRK56.hh"
 
 
 #include "G4ExactHelixStepper.hh"	//For exact UMF stepper

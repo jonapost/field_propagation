@@ -13,3 +13,6 @@ G4UniformMagField SetupUMF(G4double factor = 1. ,
 G4double toStepLen(G4double theta, G4double R = 0);
 
 G4double findRFrom2pt(G4double yOut2[], G4double yOut1[], G4double step_len);
+
+
+
