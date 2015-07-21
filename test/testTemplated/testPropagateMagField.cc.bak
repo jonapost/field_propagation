@@ -68,7 +68,7 @@
 
 using namespace std;
 
-#define BUFFER_MAX_LEN 100000
+//#define BUFFER_MAX_LEN 100000
 
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation

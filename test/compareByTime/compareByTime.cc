@@ -45,6 +45,8 @@
 
 #include "Interpolant.hh"
 
+#include "StepTracker.hh"
+
 using namespace std;
 using namespace CLHEP;
 

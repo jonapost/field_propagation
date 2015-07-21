@@ -20,8 +20,7 @@ class FineRKNG45: public G4MagIntegratorStepper {
 public:
    virtual ~FineRKNG45();
    FineRKNG45(G4EquationOfMotion *EqRhs,
-         G4int numberOfVariables = 6,
-         G4bool primary = true);
+         G4int numberOfVariables = 6 );
 
    virtual void Stepper( const G4double y[],
                  const G4double dydx[],
@@ -52,7 +51,7 @@ private:
    //G4double last_step_len;
    // G4double last_time_value; // Hack to implement FSAL
 
-   FineRKNG45 *fAuxStepper;
+   //FineRKNG45 *fAuxStepper;
 
    G4double fLastStepLength;
    G4double *fLastInitialVector, *fLastFinalVector,

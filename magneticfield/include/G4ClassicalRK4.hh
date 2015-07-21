@@ -74,7 +74,10 @@ class G4ClassicalRK4 : public G4MagErrorStepper
 
   public:  // without description
 
-    G4int IntegratorOrder() const { return 4; }
+    //G4int IntegratorOrder() const { return 4; }
+    G4int IntegratorOrder() const { return 5; } // A complete hack. We return 5 because Richardson Extrapolation will promote up an order.
+
+
 
   private:
 

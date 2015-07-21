@@ -53,9 +53,10 @@ G4MagErrorStepper::Stepper( const G4double yInput[],
    const G4int maxvar= GetNumberOfStateVariables();
 
    G4int i;
-   // correction for Richardson Extrapolation.
-   G4double  correction = 1. / ( (1 << IntegratorOrder()) -1 );
    
+   //G4double  correction = 1. / ( (1 << IntegratorOrder()) -1 );
+   G4double  correction = 1. / ( (1 << (IntegratorOrder() - 1)) -1 ); // correction for Richardson Extrapolation.
+
    //  Saving yInput because yInput and yOutput can be aliases for same array
 
    for(i=0;i<nvar;i++) yInitial[i]=yInput[i];
@@ -72,7 +73,7 @@ G4MagErrorStepper::Stepper( const G4double yInput[],
 
    DumbStepper  (yInitial,  dydx,   halfStep, yMiddle);
 
-   RightHandSide(yMiddle, dydxMid);    
+   RightHandSide(yMiddle, dydxMid);
 
    DumbStepper  (yMiddle, dydxMid, halfStep, yOutput); 
 

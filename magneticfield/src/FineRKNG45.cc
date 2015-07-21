@@ -15,6 +15,14 @@
 #include "G4LineSection.hh"
 
 
+//#define JTS_DEBUG
+
+#ifdef JTS_DEBUG
+#include <iostream>
+using namespace std;
+#endif
+
+
 FineRKNG45::~FineRKNG45() {
 
    for (int i = 0; i < 7; i ++) {
@@ -36,8 +44,7 @@ FineRKNG45::~FineRKNG45() {
 
 
 FineRKNG45::FineRKNG45(G4EquationOfMotion *EqRhs,
-      G4int numberOfVariables,
-      G4bool primary)
+      G4int numberOfVariables)
 : G4MagIntegratorStepper(EqRhs, numberOfVariables){
 
    position_interpolant = new Interpolant();
@@ -106,7 +113,7 @@ void FineRKNG45::Stepper( const G4double y[],
 
    // const G4int numberOfVariables= this->GetNumberOfVariables();
 
-   //position_interpolant->DeInitialize(); // DeInitialize since we are on a new interval.
+   position_interpolant->DeInitialize(); // DeInitialize since we are on a new interval.
                                          // Will have to take care of what to do when there
                                          // is a rejected step later.
 
@@ -203,6 +210,10 @@ void FineRKNG45::Stepper( const G4double y[],
 G4double  FineRKNG45::DistChord()   const {
    G4double distLine, distChord;
    // Store last initial and final points (they will be overwritten in self-Stepper call!)
+
+#ifdef JTS_DEBUG
+   cout << "DistChord" << endl;
+#endif
 
    if (! position_interpolant -> IsInitialized() ) {
       position_interpolant -> Initialize( fLastInitialVector,

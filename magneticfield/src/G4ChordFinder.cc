@@ -172,8 +172,8 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
 
-  G4Mag_EqRhs *pEquation = new Mag_UsualEqRhs_IntegrateByTime(theMagField); // changed from G4Mag_UsualEqRhs
-  //G4Mag_EqRhs *pEquation = new G4Mag_UsualEqRhs(theMagField); // changed from G4Mag_UsualEqRhs
+  //G4Mag_EqRhs *pEquation = new Mag_UsualEqRhs_IntegrateByTime(theMagField); // changed from G4Mag_UsualEqRhs
+  G4Mag_EqRhs *pEquation = new G4Mag_UsualEqRhs(theMagField); // changed from G4Mag_UsualEqRhs
 
   fEquation = pEquation;                            
   fLastStepEstimate_Unconstrained = DBL_MAX;          // Should move q, p to
@@ -194,7 +194,6 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   {
      fAllocatedStepper= false; 
   }
-  //cout << " in G4ChordFinder " << pItsStepper->GetNumberOfVariables() << endl;
 
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
