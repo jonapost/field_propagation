@@ -33,6 +33,7 @@
 //   with and without voxels. Parameterised volumes are included.
 
 #include <assert.h>
+#include <ErrorComputer.hh>
 #include <stdio.h>
 #include <time.h>
 // #include "ApproxEqual.hh"
@@ -59,6 +60,15 @@
 #include "G4ios.hh"
 #include <iomanip>
 
+#include "Mag_UsualEqRhs_IntegrateByTime.hh"
+#include "MagIntegratorStepperbyTime.hh"
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+#define BUFFER_MAX_LEN 100000
 
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
@@ -250,7 +260,17 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4NystromRK4.hh"
 #include "G4HelixMixedStepper.hh"
 #include "globals.hh"
+
+#include "G4VCurvedTrajectoryFilter.hh"
+
+#include "ChawlaSharmaRKNstepper.hh"
+#include "FineRKNG34.hh"
+#include "FineRKNG45.hh"
+
+#include "DormandPrince745.hh"
+
 //=============test template mode================
+/*
 #include "TMagFieldEquation.hh"
 #include "TCashKarpRKF45.hh"
 #include "TCachedMagneticField.hh"
@@ -259,6 +279,8 @@ G4VPhysicalVolume* BuildGeometry()
 #include "TSimpleHeum.hh"
 #include "TSimpleRunge.hh"
 #include "TExplicitEuler.hh"
+
+
 //typedef G4CachedMagneticField Field_t;
 //typedef TCachedMagneticField<G4QuadrupoleMagField> Field_t;
 typedef TCachedMagneticField<TQuadrupoleMagField> Field_t;
@@ -274,71 +296,54 @@ TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) );
 //G4QuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) ); 
 Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm); 
 //===============================================
+*/
 
-//G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
-// G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
-// G4String   fieldName("Uniform 10Tesla"); 
 
-G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
-G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
+//G4UniformMagField      uniformMagField( G4ThreeVector(0., 0., -1.*tesla) );
+//G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
+//G4String   fieldName("Uniform -1.0 Tesla");
+
+G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
+G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
+G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
 
 G4FieldManager* SetupField(G4int type)
 {
 	G4FieldManager   *pFieldMgr;
 	G4ChordFinder    *pChordFinder;
-	G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&tMagField); 
-	//=============test template mode================
-	Equation_t *tEquation = new Equation_t(&tMagField);
-	//===============================================
 
+	Mag_UsualEqRhs_IntegrateByTime *fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
 	G4MagIntegratorStepper *pStepper;
 
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
-		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
-		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
-		case 2: pStepper = new G4SimpleRunge( fEquation ); break;
-		case 3: pStepper = new G4SimpleHeum( fEquation ); break;
-		case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
-		case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
-		case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
-		case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
-		case 8: pStepper = new G4CashKarpRKF45( fEquation );    break;
-		case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
-		case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
-		case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
-		case 12: pStepper = new G4ConstRK4( fEquation ); break;
-		case 13: pStepper = new G4NystromRK4( fEquation ); break; 
-		//=============test template mode================
-		case 14: pStepper = new Stepper_t(tEquation); break;
-		case 15: pStepper = new StepperRK4_t(tEquation); break;
-      case 16: pStepper = new StepperHeum_t(tEquation); break;
-      case 17: pStepper = new StepperRunge_t(tEquation); break;
-      case 18: pStepper = new StepperExEuler_t(tEquation); break;
-      //===============================================
-		default: 
-          pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
-          G4ExceptionDescription ErrorMsg;
-          ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
-                   << type << G4endl;
-          ErrorMsg << " NO replacement stepper chosen! " << G4endl;
-          G4Exception("application::SetupField",
-                      "Runtime Error",
-                      FatalErrorInArgument,       //  use JustWarning,
-                      " Invalid value of stepper type" );
-          break; 
-    }
+	   case -2: pStepper = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
+	      break;
+	   case -1: pStepper = new MagIntegratorStepper_byTime<G4SimpleRunge>(fEquation);
+         break;
+	   case 0: pStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+         break;
+	   case 1: pStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+         break;
+      case 2: pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
+         break;
+      case 3: pStepper = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
+         break;
+      case 4: pStepper = new MagIntegratorStepper_byTime<FineRKNG45>(fEquation);
+         break;
+	   }
 
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
 
-    pFieldMgr->SetDetectorField( &tMagField );
+    pFieldMgr->SetDetectorField( & myMagField );
 
-    pChordFinder = new G4ChordFinder( &tMagField,
+    pChordFinder = new G4ChordFinder( & myMagField,
 				      1.0e-2 * mm,
 				      pStepper);
+
+
     pChordFinder->SetVerbose(0);  // ity();
 
     pFieldMgr->SetChordFinder( pChordFinder );
@@ -352,8 +357,8 @@ G4FieldManager* SetupField(G4int type)
 
 G4PropagatorInField*  SetupPropagator( G4int type)
 {
-    // G4FieldManager* fieldMgr= 
-    SetupField( type) ;
+    // G4FieldManager* fieldMgr=
+    SetupField( type ) ;
 
     // G4ChordFinder  theChordFinder( &MagField, 0.05*mm ); // Default stepper
  
@@ -381,44 +386,25 @@ G4PropagatorInField*  SetupPropagator( G4int type)
 }
 
 G4PropagatorInField *pMagFieldPropagator=0; 
+
 //
 // Test Stepping
 //
-G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
-			       G4int             type)
-{
-    void report_endPV(G4ThreeVector    Position, 
-                  G4ThreeVector UnitVelocity,
-		  G4double step_len, 
-                  G4double physStep, 
-                  G4double safety,
-		  G4ThreeVector EndPosition, 
-                  G4ThreeVector EndUnitVelocity,
-                  G4int             Step, 
-                  G4VPhysicalVolume* startVolume);
-   
-    G4UniformMagField MagField(10.*tesla, 0., 0.);
+void testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
+			       G4int             	type,
+				   G4double			 	step_distance,
+				   G4double				step_no) {
+
     G4Navigator   *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
     
-    pMagFieldPropagator= SetupPropagator(type);
+    pMagFieldPropagator = SetupPropagator(type);
 
     G4double particleCharge= +1.0;  // in e+ units
     G4double spin=0.0;              // ignore the spin
     G4double magneticMoment= 0.0;   // ignore the magnetic moment
 
-    G4ChargeState chargeState(particleCharge,             // The charge can change (dynamic)
-                              spin=0.0,
-                              magneticMoment=0.0); 
-
-    G4EquationOfMotion* equationOfMotion = 
-        ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
-        ->GetEquationOfMotion();
-    
-    equationOfMotion->SetChargeMomentumMass( chargeState, 
-			            0.5 * proton_mass_c2, // Momentum in Mev/c
-					 proton_mass_c2 );
-    // pNavig->SetWorldVolume(pTopNode);
+        // pNavig->SetWorldVolume(pTopNode);
 
     G4VPhysicalVolume *located;
     G4double step_len, physStep, safety;
@@ -426,7 +412,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4ThreeVector mxHat(-1,0,0),myHat(0,-1,0),mzHat(0,0,-1);
     
     // physStep=kInfinity;
-    G4ThreeVector Position(0.,0.,0.); 
+    G4ThreeVector Position(0.,0.,0.); // changed here
     G4ThreeVector UnitMomentum(0.,0.6,0.8);  
     G4ThreeVector EndPosition, EndUnitMomentum;
 
@@ -440,17 +426,15 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	G4endl;
     }
 
-    //G4cout << G4endl; 
+       physStep = step_distance * mm ;  // millimeters
 
-    for( int iparticle=0; iparticle < 1; iparticle++ )
-    { 
-       physStep=  2.5 * mm ;  // millimeters 
-       Position = G4ThreeVector(0.,0.,0.) 
-	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
-       UnitMomentum = (G4ThreeVector(0.,0.6,0.8) 
-		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
+       Position = G4ThreeVector(0.,0.,0.);
+       UnitMomentum = (G4ThreeVector(0.3,0.6,0.8)).unit();
 
-       G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2; 
+       G4double momentum = (0.5) * proton_mass_c2;
+
+       G4ThreeVector Momentum = UnitMomentum;
+       Momentum *= momentum;
 
        G4double kineticEnergy =  momentum*momentum /
                   ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 ) 
@@ -458,27 +442,35 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4double velocity = momentum / ( proton_mass_c2 + kineticEnergy );
        G4double labTof= 10.0*ns, properTof= 0.1*ns;
        G4ThreeVector Spin(1.0, 0.0, 0.0);
-                                                   // Momentum in Mev/c ?
+
+       G4ChargeState chargeState(particleCharge,             // The charge can change (dynamic)
+                                     spin=0.0,
+                                     magneticMoment=0.0);
+
+         G4EquationOfMotion* equationOfMotion =
+            ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
+            ->GetEquationOfMotion();
+       // Momentum in Mev/c ?
        // pMagFieldPropagator
        equationOfMotion->SetChargeMomentumMass(
-		      +1,                    // charge in e+ units
+		      chargeState,//+1,                    // charge in e+ units
 		      momentum, 
-		      proton_mass_c2); 
-       /*//G4cout << G4endl;
-       //G4cout << "Test PropagateMagField: ***********************" << G4endl
-            << " Starting New Particle with Position " << Position << G4endl 
-	    << " and UnitVelocity " << UnitMomentum << G4endl;
-       //G4cout << " Momentum in GeV/c is " << momentum / GeV
-	      << " = " << (0.5+iparticle*10.0)*proton_mass_c2 / MeV << " MeV"
-              << G4endl;*/
+		      proton_mass_c2 ); // Changed here
 
+       //G4double radius_curvature = ((proton_mass_c2 + kineticEnergy) / momentum)
+       //                        * sqrt( y_initial[3]*y_initial[3] + y_initial[4]*y_initial[4] )
+       //                        / ( particleCharge * 1. ); // In our case only y component is perpendicular to B field
+                           // We don't multiply by mass because it is included in momentum
+
+       //cout << "Radius of Curvature: " << radius_curvature << endl;
+
+       //pMagFieldPropagator -> GetChordFinder() -> SetMass();
+       //pMagFieldPropagator -> GetChordFinder() -> setup_output_buffer( Position,
+       //                              Momentum, pos_mom_time_buffer);
 
        clock_t total = 0;
-	   for( int istep=0; istep < 14; istep++ ){ 
-          // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
+	   for( int istep=0; istep < step_no; istep++ ){
 	  located= pNavig->LocateGlobalPointAndSetup(Position);
-	  // G4cerr << "Starting Step " << istep << " in volume " 
-	       // << located->GetName() << G4endl;
 
           G4FieldTrack  initTrack( Position, 
 				   UnitMomentum,
@@ -492,10 +484,17 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   ); 
 		  clock_t t;
 		  t = clock(); 
+
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
 						     safety,
 						     located);
+
+
+	  //bufferA = pMagFieldPropagator -> GetChordFinder() -> GetBuffer();
+	  //pMagFieldPropagator -> GetChordFinder() -> Reset_Buffer();
+
+
 	  total += clock() - t;
 	  //       --------------------
 	  EndPosition=     pMagFieldPropagator->EndPosition();
@@ -509,9 +508,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  G4ThreeVector MoveVec = EndPosition - Position;
 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
-	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
 	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
-	    //   EndPosition, EndUnitMomentum, istep, located );
+	  //             EndPosition, EndUnitMomentum, istep, located );
 
 	  assert(safety>=0);
 	  pNavig->SetGeometricallyLimitedStep();
@@ -519,144 +517,61 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 	  Position= EndPosition;
 	  UnitMomentum= EndUnitMomentum;
-	  physStep *= 2.; 
-       } // ...........................  end for ( istep )
-       G4cout << "=============="<<total<<"================="<<G4endl;
-	   tMagField.ReportStatistics(); 
+	  //if ( (istep + 1) % factor == 0)
+	  physStep *= 2;
+	  //physStep *= 1.;
+     } // ...........................  end for ( istep )
+     //G4cout << "=============="<<total<<"================="<<G4endl;
+	  myMagField.ReportStatistics();
 
-    }    // ..............................  end for ( iparticle )
-
-    return(1);
+    //return pMagFieldPropagator -> GetChordFinder() -> GetCounter();
+    //return(1);
 }
 
-
-void report_endPV(G4ThreeVector    Position, 
-		G4ThreeVector    InitialUnitVelocity,
-		G4double step_len, 
-		G4double physStep, 
-		G4double safety,
-		G4ThreeVector EndPosition, 
-		G4ThreeVector EndUnitVelocity,
-		G4int             Step, 
-		G4VPhysicalVolume* startVolume)
-	//   G4VPhysicalVolume* endVolume)
-{
-	const G4int verboseLevel=1;
-
-
-	if( Step == 0 && verboseLevel <= 3 )
-	{
-		G4cout.precision(6);
-		  //G4cout.setf(ios_base::fixed,ios_base::floatfield);
-		  G4cout << std::setw( 5) << "Step#" << " "
-		  << std::setw( 9) << "X(mm)" << " "
-		  << std::setw( 9) << "Y(mm)" << " "  
-		  << std::setw( 9) << "Z(mm)" << " "
-		  << std::setw( 9) << " N_x " << " "
-		  << std::setw( 9) << " N_y " << " "
-		  << std::setw( 9) << " N_z " << " "
-		  << std::setw( 9) << " Delta|N|" << " "
-		  << std::setw( 9) << " Delta(N_z) " << " "
-		  << std::setw( 9) << "KinE(MeV)" << " "
-		  << std::setw( 9) << "dE(MeV)" << " "  
-		  << std::setw( 9) << "StepLen" << " "  
-		  << std::setw( 9) << "PhsStep" << " "  
-		  << std::setw( 9) << "Safety" << " "  
-		  << std::setw(18) << "NextVolume" << " "
-		  << G4endl;
-	}
-	//
-	//
-	if( verboseLevel > 3 )
-	{
-		G4cout << "End  Position is " << EndPosition << G4endl 
-			<< " and UnitVelocity is " << EndUnitVelocity << G4endl;
-		G4cout << "Step taken was " << step_len  
-			<< " out of PhysicalStep= " <<  physStep << G4endl;
-		G4cout << "Final safety is: " << safety << G4endl;
-
-		G4cout << "Chord length = " << (EndPosition-Position).mag() << G4endl;
-		G4cout << G4endl; 
-	}
-	else // if( verboseLevel > 0 )
-	{
-		G4cout.precision(6);
-		G4cout << std::setw( 5) << Step << " "
-			<< std::setw( 9) << Position.x() << " "
-			<< std::setw( 9) << Position.y() << " "
-			<< std::setw( 9) << Position.z() << " "
-			<< std::setw( 9) << EndUnitVelocity.x() << " "
-			<< std::setw( 9) << EndUnitVelocity.y() << " "
-			<< std::setw( 9) << EndUnitVelocity.z() << " ";
-		G4cout.precision(2); 
-		G4cout
-			<< std::setw( 9) << EndUnitVelocity.mag()-InitialUnitVelocity.mag() << " "
-			<< std::setw( 9) << EndUnitVelocity.z() - InitialUnitVelocity.z() << " ";
-		//    << std::setw( 9) << KineticEnergy << " "
-		//    << std::setw( 9) << EnergyDifference << " "
-		G4cout.precision(6);
-		G4cout 
-			<< std::setw( 9) << step_len << " "
-			<< std::setw( 9) << physStep << " "
-			<< std::setw( 9) << safety << " ";
-		if( startVolume != 0) {
-			G4cout << std::setw(12) << startVolume->GetName() << " ";
-		} else {
-			G4cout << std::setw(12) << "OutOfWorld" << " ";
-		}
-#if 0
-		if( endVolume != 0) 
-			G4cout << std::setw(12) << endVolume()->GetName() << " ";
-		else 
-			G4cout << std::setw(12) << "OutOfWorld" << " ";
-#endif
-		G4cout << G4endl;
-	}
-}
 // Main program
 // -------------------------------
 int main(int argc, char **argv)
 {
 
     G4VPhysicalVolume *myTopNode;
-    G4int type, optim, optimSaf;
+    G4int type, step_distance, step_no, optim, optimSaf;
     G4bool optimiseVoxels=true;
     G4bool optimisePiFwithSafety=true;
+
+    G4double step_distance_input;
 
     //G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
     if( argc >= 2 ){
        type = atoi(argv[1]);
     }else{
-		type = 14;
+		type = 3;
 	}
-
-    if( argc >=3 ){
-      optim= atoi(argv[2]);
-      if( optim == 0 ) { optimiseVoxels = false; }
+    if( argc >= 3 ){
+    	step_distance_input = atof(argv[2]);
+    }else{
+    	step_distance_input = 1.0;
     }
+    if( argc >= 4 ){
+        	step_no = atoi(argv[3]);
+      }else{
+      step_no = 10;
+}
 
-    if( argc >=4 ){
-      optimSaf= atoi(argv[3]);
-      if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
-    }
 
-	int len = 1;
-	 for (int k = 0; k < len; k++){
-    //G4cout << " Testing with stepper number    " << type << G4endl; 
-    //G4cout << "             " ; 
-    //G4cout << " voxel optimisation      " ; 
-    // if (optimiseVoxels)   //G4cout << "On"; 
-    // else                  //G4cout << "Off"; 
-    //G4cout << (optimiseVoxels ? "On" : "Off")  << G4endl;
-    //G4cout << "             " ; 
-    //G4cout << " Propagator safety optim " ; 
-    // const char* OnOff= (optimisePiFwithSafety ? "on" : "off") ; 
-    // //G4cout << OnOff << G4endl;
-    //G4cout << (optimisePiFwithSafety ? "On" : "Off")  << G4endl;
+    vector< vector<G4double> > pos_mom_time_buffer;
 
-    // Create the geometry & field 
-    myTopNode=BuildGeometry();	// Build the geometry
+   G4double err_pos_mag2, err_pos_mag;
+
+   G4double momentum = 0.5 * proton_mass_c2;
+
+   G4double kineticEnergy =  momentum*momentum /
+          ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 )
+         + proton_mass_c2 );
+
+   G4double radius_curvature;
+
+   myTopNode=BuildGeometry();	// Build the geometry
  
     G4Navigator *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
@@ -665,66 +580,45 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->CloseGeometry(false);
 
     // Setup the propagator (will be overwritten by testG4Propagator ...)
-    pMagFieldPropagator= SetupPropagator(type);
-    //G4cout << " Using default values for " 
-	//   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
-      //     << " and "
-	   //<< " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
-	   //<< G4endl; 
+    pMagFieldPropagator = SetupPropagator(type);
+    pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety);
 
-    pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
-	// Do the tests without voxels
-    //G4cout << " Test with no voxels" << G4endl; 
-	testG4PropagatorInField(myTopNode, type);
-
-    pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
-    pMagFieldPropagator->SetVerboseLevel( 0 ); 
-
-// Repeat tests but with full voxels
-    //G4cout << " Test with full voxels" << G4endl; 
-
-    G4GeometryManager::GetInstance()->OpenGeometry();
-    G4GeometryManager::GetInstance()->CloseGeometry(true);
-
-    testG4PropagatorInField(myTopNode, type);
+    testG4PropagatorInField( myTopNode, type,
+          step_distance_input, step_no );
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
-    //G4cout << G4endl
-	//   << "----------------------------------------------------------"
-	  // << G4endl; 
 
-	
-// Repeat tests with full voxels and modified parameters
-    //G4cout << "Test with more accurate parameters " << G4endl; 
+/*
+    for (int i = 0; i < pos_mom_time_buffer.size(); i ++) {
+       for (int j = 0; j < 3; j ++) {
+          cout << pos_mom_time_buffer[i][j] << ",";
+       }
+       cout << pos_mom_time_buffer[i][9] << endl;
+    }
+*/
+    /*
+    for (int i = 0; i < counter2; i ++) {
+       radius_curvature = (proton_mass_c2)
+                                  * sqrt( buffer2[i][3]*buffer2[i][3] + buffer2[i][4]*buffer2[i][4] )
+                                  / ( 1. * 1. );
+       cout << radius_curvature << endl;
+       for (int j = 0; j < 3; j ++) {
+          cout << buffer2[i][j] << ",";
+       }
+       cout << endl;
+    }
+    */
 
-    G4double  maxEpsStep= 0.001;
-    G4double  minEpsStep= 2.5e-8;
-    //G4cout << " Setting values for Min Eps = " << minEpsStep 
-      //     << " and MaxEps = " << maxEpsStep << G4endl; 
-
-    pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
-    pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
-
-    G4GeometryManager::GetInstance()->OpenGeometry();
-    G4GeometryManager::GetInstance()->CloseGeometry(true);
-
-    testG4PropagatorInField(myTopNode, type);
-
-    G4GeometryManager::GetInstance()->OpenGeometry();
-
-    optimiseVoxels = ! optimiseVoxels;
-// Repeat tests but with the opposite optimisation choice
-    //G4cout << " Now test with optimisation " ; 
-    if (optimiseVoxels)   G4cout << "on"; 
-    else            G4cout << "off"; 
-    G4cout << G4endl;
-
-    pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
-    testG4PropagatorInField(myTopNode, type);
-
-    G4GeometryManager::GetInstance()->OpenGeometry();
-}
+    /*for (int i = 0; i < counter2; i ++) {
+       err_pos_mag2 = 0.;
+       for (int j = 0; j < 3; j ++) {
+          err_pos_mag2 += error[i][j] * error[i][j];
+       }
+       err_pos_mag = sqrt(err_pos_mag2);
+       cout << buffer2[i][9] << "," << err_pos_mag << endl; // (Time, magnitude of position error from interpolant)
+    }
+    */
     // Cannot delete G4TransportationManager::GetInstance();
 
     return 0;

@@ -47,8 +47,6 @@ using namespace std;
 #define TIME_SLOT 9
 
 
-#define TRACKING
-
 #ifdef TRACKING
 #include "StepTracker.hh"
 #endif

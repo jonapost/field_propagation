@@ -16,7 +16,22 @@
 
 
 FineRKNG45::~FineRKNG45() {
-   // TODO Auto-generated destructor stub
+
+   for (int i = 0; i < 7; i ++) {
+      delete[] f[i];
+   }
+   delete[] f;
+   for (int i = 0; i < 7; i ++) {
+      delete[] a[i];
+      delete[] aprime[i];
+   }
+   delete[] a;
+   delete[] aprime;
+   delete position_interpolant;
+
+   delete fLastInitialVector; delete fLastFinalVector; delete fLastDyDx;
+   delete fNextDyDx; delete fMidVector; delete fMidError;
+
 }
 
 
@@ -25,7 +40,7 @@ FineRKNG45::FineRKNG45(G4EquationOfMotion *EqRhs,
       G4bool primary)
 : G4MagIntegratorStepper(EqRhs, numberOfVariables){
 
-   //position_interpolant = new Interpolant();
+   position_interpolant = new Interpolant();
 
    f = new G4double*[7];
    for (int i = 0; i < 7; i ++) {
@@ -75,16 +90,9 @@ FineRKNG45::FineRKNG45(G4EquationOfMotion *EqRhs,
 
    fLastInitialVector = new G4double[numberOfVariables] ;
    fLastFinalVector = new G4double[numberOfVariables] ;
-   fLastDyDx = new G4double[numberOfVariables];
 
    fMidVector = new G4double[numberOfVariables];
    fMidError =  new G4double[numberOfVariables];
-   if( primary )
-   {
-    fAuxStepper = new FineRKNG45(EqRhs, numberOfVariables, !primary);
-   }
-
-
 
 }
 
@@ -179,7 +187,10 @@ void FineRKNG45::Stepper( const G4double y[],
    {
       fLastInitialVector[i] = y[i] ;
       fLastFinalVector[i]   = yout[i];
-      fLastDyDx[i]          = dydx[i];
+   }
+   for ( i = 0; i < 3; i ++ ) {
+      fLastDyDx[i]          = dydx[i + 3];
+      fNextDyDx[i]          = f[6][i + 3];
    }
    // NormaliseTangentVector( yOut ); // Not wanted
 
@@ -191,35 +202,32 @@ void FineRKNG45::Stepper( const G4double y[],
 
 G4double  FineRKNG45::DistChord()   const {
    G4double distLine, distChord;
-     G4ThreeVector initialPoint, finalPoint, midPoint;
+   // Store last initial and final points (they will be overwritten in self-Stepper call!)
 
-     // Store last initial and final points (they will be overwritten in self-Stepper call!)
-     initialPoint = G4ThreeVector( fLastInitialVector[0],
-                                   fLastInitialVector[1], fLastInitialVector[2]);
-     finalPoint   = G4ThreeVector( fLastFinalVector[0],
-                                   fLastFinalVector[1],  fLastFinalVector[2]);
+   if (! position_interpolant -> IsInitialized() ) {
+      position_interpolant -> Initialize( fLastInitialVector,
+                                          fLastFinalVector, fLastDyDx,
+                                          fNextDyDx, fLastStepLength );
+   }
 
-     // Do half a step using StepNoErr
-
-     fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
-              fMidVector,   fMidError );
-
-     midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
-
-     // Use stored values of Initial and Endpoint + new Midpoint to evaluate
-     //  distance of Chord
+   position_interpolant -> InterpolatePosition( 0.5, fMidVector );
 
 
-     if (initialPoint != finalPoint)
-     {
-        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
-        distChord = distLine;
-     }
-     else
-     {
-        distChord = (midPoint-initialPoint).mag();
-     }
-     return distChord;
+   // Should probably make these vectors class variables.
+   G4ThreeVector midPoint( fMidVector[0], fMidVector[1], fMidVector[2] );
+   G4ThreeVector initialPoint( fLastInitialVector[0], fLastInitialVector[1], fLastInitialVector[2] );
+   G4ThreeVector finalPoint( fLastFinalVector[0], fLastFinalVector[1], fLastFinalVector[2] );
+
+   if (initialPoint != finalPoint)
+   {
+     distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
+     distChord = distLine;
+   }
+   else
+   {
+     distChord = (midPoint-initialPoint).mag();
+   }
+   return distChord;
 
 }
 

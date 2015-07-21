@@ -60,18 +60,19 @@ int main(int argc, char *args[]) {
    // char *infile_to_compare_name;
 
    // Parameter input:
-   if (argc < 7) {
-      cout << "You must supply 7 arguments. See the source file." << endl;
+   if (argc < 5) {
+      cout << "You must supply 4 arguments. See the source file." << endl;
       return 1;
    }
-   stepper_to_interpolate_no = atoi(args[1]);
-   stepper_to_compare_no = atoi(args[2]);
+   // Isn't used:
+   //stepper_to_interpolate_no = atoi(args[1]);
+   //stepper_to_compare_no = atoi(args[2]);
 
-   no_input_pairs = atoi(args[3]);
-   partition_size = atoi(args[4]);
+   no_input_pairs = atoi(args[1]);
+   partition_size = atoi(args[2]);
 
-   infile_to_interpolate_name = args[5];
-   outfile_name = args[6];
+   infile_to_interpolate_name = args[3];
+   outfile_name = args[4];
 
    // Not implemented yet.
    // infile_to_compare_name = args[5];
@@ -88,7 +89,7 @@ int main(int argc, char *args[]) {
    }
    G4double *step = new G4double[no_input_pairs];
 
-   G4double t0, t1, step_discard;
+   G4double t0, t1; //, step_discard;
 
    ifstream infile_to_interpolate(infile_to_interpolate_name, ios::binary | ios::in);
 
@@ -101,7 +102,7 @@ int main(int argc, char *args[]) {
 
       infile_to_interpolate.read( (char*) &(t1), sizeof(G4double) );
 
-      infile_to_interpolate.read( (char*) &step_discard, sizeof(G4double) );
+      //infile_to_interpolate.read( (char*) &step_discard, sizeof(G4double) );
       infile_to_interpolate.read( (char*) y1[i], 6 * sizeof(G4double) );
       infile_to_interpolate.read( (char*) F1[i], 3 * sizeof(G4double) );
 
@@ -130,8 +131,8 @@ int main(int argc, char *args[]) {
          xi = j * step_len / step[i];
          // Time stored in first index ( [0] ).
          interpolated_values[i][j][0] = xi * step_len + accumulated_time;
-         mInterpolant -> InterpolatePosition(xi, &( interpolated_values[i][j][1]) );
-         mInterpolant -> InterpolateMomentum(xi, &( interpolated_values[i][j][7]) );
+         mInterpolant -> InterpolatePosition(xi, &( interpolated_values[i][j][1] ) );
+         mInterpolant -> InterpolateMomentum(xi, &( interpolated_values[i][j][4] ) );
       }
       accumulated_time += step[i];
    }

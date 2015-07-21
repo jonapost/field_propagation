@@ -36,7 +36,6 @@ public:
    void InterpolatePosition(G4double xi, G4double yout[]);
    void InterpolateMomentum(G4double xi, G4double yout[]);
 
-
    inline bool IsInitialized();
 
 private:

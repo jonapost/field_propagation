@@ -46,7 +46,7 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
-#define TRACKING
+//#define TRACKING
 
 #ifdef TRACKING
 #include "StepTracker.hh"

@@ -24,6 +24,7 @@ void Interpolant::Initialize( const G4double y0in[],
                               const G4double F0[],
                               const G4double F1[],
                               G4double step) {
+   // Careful: F0 and F1 are intended to be passed as 3-vectors (not as the last 3 components of a 6-vector).
 
    for (int k = 0; k < 3; k ++) {
             y1[k] = y0in[k];

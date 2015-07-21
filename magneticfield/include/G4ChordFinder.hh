@@ -51,10 +51,8 @@
 #include <vector>
 using namespace std;
 
-#ifndef TRACKING
-#define TRACKING
-#endif
 
+//#define TRACKING
 
 #ifdef TRACKING
 #include "StepTracker.hh"
