@@ -3,17 +3,18 @@ using namespace std;
 using namespace CLHEP;
 
 
-G4QuadrupoleMagField SetupQMF(G4double gradient ){
+G4QuadrupoleMagField SetupQMF(G4double factor, G4double gradient ){
     
-    G4QuadrupoleMagField myField(gradient);
+    G4QuadrupoleMagField myField(factor*gradient);
     return myField;
 }
 
-G4UniformMagField SetupUMF(G4double x_field,
+G4UniformMagField SetupUMF(G4double factor,
+                           G4double x_field,
                            G4double y_field,
                            G4double z_field){
     
-    G4UniformMagField myField(G4ThreeVector(x_field, y_field, z_field));
+    G4UniformMagField myField(G4ThreeVector(factor*x_field, factor*y_field, factor*z_field));
     return myField;
 }
 

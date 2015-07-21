@@ -9,7 +9,9 @@ include_directories(include)
 #     include(Geant4MacroLibraryTargets)
 #     GEANT4_GRANULAR_LIBRARY_TARGET(COMPONENT sources.cmake)
 # endif()
-GEANT4_EXECUTABLE(RKTest src/*.cc include/*.hh)
+GEANT4_EXECUTABLE(RKTestRun RKTestRun.cc src/*.cc include/*.hh)
+
+# GEANT4_EXECUTABLE(RKTest test.cc src/*.cc include/*.hh)
 
 # GEANT4_EXECUTABLE(RKTest RKTest.cc)
 
