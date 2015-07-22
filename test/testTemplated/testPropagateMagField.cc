@@ -260,6 +260,10 @@ G4VPhysicalVolume* BuildGeometry()
 #include "FineRKNG45.hh"
 
 
+#include "StepTracker_convertArcLengthToTime.hh"
+#include "MagIntegratorStepperByArcLength.hh"
+
+
 /*
 //=============test template mode================
 #include "TMagFieldEquation.hh"
@@ -336,11 +340,11 @@ G4FieldManager* SetupField(G4int type)
 
 	   case 3:
 	      fEquation = new G4Mag_UsualEqRhs(&myMagField);
-	      pStepper = new G4CashKarpRKF45( fEquation );
+	      pStepper = new MagIntegratorStepper_byArcLength<G4CashKarpRKF45>( fEquation );
 	      break;
 	   case 4:
          fEquation = new G4Mag_UsualEqRhs(&myMagField);
-         pStepper = new G4ClassicalRK4( fEquation );
+         pStepper = new MagIntegratorStepper_byArcLength<G4ClassicalRK4>( fEquation );
          break;
 
 	   /*
@@ -439,7 +443,8 @@ G4PropagatorInField *pMagFieldPropagator=0;
 // Test Stepping
 //
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
-			       G4int             type)
+			       G4int             type,
+			       char *stepTracker_output_filename = 0)
 {
     void report_endPV(G4ThreeVector    Position, 
                   G4ThreeVector UnitVelocity,
@@ -450,7 +455,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                   G4ThreeVector EndUnitVelocity,
                   G4int             Step, 
                   G4VPhysicalVolume* startVolume,
-                  G4int no_field_evaluations);
+                  G4int no_field_calls);
    
     G4UniformMagField MagField(10.*tesla, 0., 0.);
     G4Navigator   *pNavig= G4TransportationManager::
@@ -467,6 +472,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                               magneticMoment=0.0); 
 
 
+    // Added by J. Suagee:
     ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
             ->SetEquationOfMotion(fEquation);
 
@@ -503,6 +509,30 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
     //G4cout << G4endl; 
 
+    // Provide a StepTracker object to the stepper.
+
+    bool have_to_convert_arc_length_to_time = false;
+    if (type == 3 || type == 4)
+       have_to_convert_arc_length_to_time = true;
+
+    StepTracker *myStepTracker;
+
+    if ( have_to_convert_arc_length_to_time )
+       myStepTracker = new StepTracker_convertArcLengthToTime();
+    else
+       myStepTracker = new StepTracker();
+
+
+    ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
+          -> setTracker(myStepTracker);
+
+    ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver() )
+              -> setTracker(myStepTracker);
+
+    ( pMagFieldPropagator->GetChordFinder() )
+              -> setTracker(myStepTracker);
+
+
     for( int iparticle=0; iparticle < 1; iparticle++ )
     { 
        physStep=  2.5 * mm ;  // millimeters 
@@ -517,9 +547,17 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                   ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 ) 
 		    + proton_mass_c2 );
        G4double velocity = momentum / ( proton_mass_c2 + kineticEnergy );
+
+
+
+       // labTof is what is set in the time coordinate of the FieldTrack object:
+
        G4double labTof= 10.0*ns, properTof= 0.1*ns;
        G4ThreeVector Spin(1.0, 0.0, 0.0);
                                                    // Momentum in Mev/c ?
+
+       //G4double current_labTof = labTof; // Added to keep track of time (J. Suagee)
+
 
        G4ChargeState chargeState(particleCharge,             // The charge can change (dynamic)
                                            spin=0.0,
@@ -542,7 +580,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        clock_t total = 0;
 	   for( int istep=0; istep < 14; istep++ ){ 
           // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
-	  located= pNavig->LocateGlobalPointAndSetup(Position);
+	  located = pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
 	       // << located->GetName() << G4endl;
 
@@ -552,19 +590,23 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   kineticEnergy,
 				   proton_mass_c2,
 				   velocity,
-				   labTof, 
+				   labTof,
 				   properTof,
 				   0              // or &Spin
 				   ); 
 		  clock_t t;
 		  t = clock(); 
 
-
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
 						     safety,
-						     located);
+						     located );
+
 	  total += clock() - t;
+
+	  // myStepTracker -> start_next_at_beginning();
+
+
 	  //       --------------------
 	  EndPosition=     pMagFieldPropagator->EndPosition();
 	  EndUnitMomentum= pMagFieldPropagator->EndMomentumDir();
@@ -579,7 +621,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
 	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
-	       EndPosition, EndUnitMomentum, istep, located, myMagField.GetCountEvaluations() );
+	       EndPosition, EndUnitMomentum, istep, located, myMagField.GetCountCalls() );
 
 
 	  assert(safety>=0);
@@ -596,6 +638,13 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
     }    // ..............................  end for ( iparticle )
 
+    if (stepTracker_output_filename != 0) {
+       myStepTracker -> outputBuffer( stepTracker_output_filename );
+       cout << myStepTracker -> getBufferLength() << endl;
+    }
+
+    delete myStepTracker;
+
     return(1);
 }
 
@@ -609,7 +658,7 @@ void report_endPV(G4ThreeVector    Position,
 		G4ThreeVector EndUnitVelocity,
 		G4int             Step, 
 		G4VPhysicalVolume* startVolume,
-		G4int no_field_evaluations)
+		G4int no_field_calls)
 	//   G4VPhysicalVolume* endVolume)
 {
 	const G4int verboseLevel=1;
@@ -634,7 +683,7 @@ void report_endPV(G4ThreeVector    Position,
 		  << std::setw( 9) << "PhsStep" << " "  
 		  << std::setw( 9) << "Safety" << " "  
 		  << std::setw(18) << "NextVolume" << " "
-		  << std::setw(7) << "Field_evs" << " " // Added to output #field evaluations (J. Suagee).
+		  << std::setw(7) << "Field_calls" << " " // Added to output #field evaluations (J. Suagee).
 		  << G4endl;
 	}
 	//
@@ -682,7 +731,7 @@ void report_endPV(G4ThreeVector    Position,
 		else 
 			G4cout << std::setw(12) << "OutOfWorld" << " ";
 #endif
-		G4cout << "                             " << no_field_evaluations;
+		G4cout << "                             " << no_field_calls;
 
 		G4cout << G4endl;
 	}
@@ -749,7 +798,10 @@ int main(int argc, char **argv)
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
 	// Do the tests without voxels
     //G4cout << " Test with no voxels" << G4endl; 
-	testG4PropagatorInField(myTopNode, type);
+
+    char *stepTracker_output_filename = "stepTracker_output";
+
+	testG4PropagatorInField( myTopNode, type, stepTracker_output_filename );
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
     pMagFieldPropagator->SetVerboseLevel( 0 ); 
@@ -800,7 +852,6 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->OpenGeometry();
 }
     // Cannot delete G4TransportationManager::GetInstance();
-
     return 0;
 }
 

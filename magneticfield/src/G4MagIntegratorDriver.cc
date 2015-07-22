@@ -246,6 +246,11 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
     { 
       OneGoodStep(y,dydx,x,h,eps,hdid,hnext) ;
       //--------------------------------------
+
+#ifdef TRACKING
+       mTracker -> add_to_current_time( hdid );
+#endif
+
       lastStepSucceeded= (hdid == h);   
 #ifdef G4DEBUG_FIELD
       if (dbg>2) {
@@ -265,6 +270,12 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
       //-----------------------------------------------------
 
       yFldTrk.DumpToArray(y);    
+
+#ifdef TRACKING
+      mTracker -> add_to_current_time( h );
+#endif
+
+
 
 #ifdef G4FLD_STATS
       fNoSmallSteps++; 
@@ -577,9 +588,7 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   {
     tot_no_trials++;
 
-#ifdef TRACKING
-    mTracker -> ReportCurveLength( x, h );
-#endif
+
 
     pIntStepper-> Stepper(y,dydx,h,ytemp,yerr); 
     //            *******
@@ -606,7 +615,15 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
       errmax_sq = std::max( errmax_sq, errspin_sq ); 
    }
 
-    if ( errmax_sq <= 1.0 )  { break; } // Step succeeded.
+    if ( errmax_sq <= 1.0 )  {
+
+ /*
+#ifdef TRACKING
+       mTracker -> add_to_current_time( h );
+#endif
+*/
+       break;
+    } // Step succeeded.
 
     // Step failed; compute the size of retrial Step.
     htemp = GetSafety()*h* std::pow( errmax_sq, 0.5*GetPshrnk() );
@@ -698,11 +715,6 @@ G4bool  G4MagInt_Driver::QuickAdvance(
 
 
   // Do an Integration Step
-
-
-#ifdef TRACKING
-  mTracker -> ReportCurveLength( s_start, hstep );
-#endif
 
   pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
   //            *******

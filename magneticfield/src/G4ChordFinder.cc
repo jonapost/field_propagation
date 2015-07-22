@@ -301,6 +301,8 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   //            *************
 
 
+
+
   G4bool good_advance;
 
   if ( dyErr < epsStep * stepPossible )
@@ -309,6 +311,12 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
 
      yCurrent = yEnd;
      good_advance = true; 
+
+
+#ifdef TRACKING                  // If the result of FindNextChord() will be accepted, then we want to update the time.
+     mTracker -> add_to_current_time( stepPossible );
+#endif
+
   }
   else
   {  
@@ -320,15 +328,17 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      { 
        // In this case the driver could not do the full distance
        stepPossible= yCurrent.GetCurveLength()-startCurveLen;
+
+       // In this case AccurateAdvance makes the calls to StepTracker::add_to_current_time()
+       // since AccurateAdvance() may perform multiple steps (some of which are accepted and
+       // some of which are not).
+
+       // might want to cout stepPossible and compare it to what the StepTracker has stored
+       // to see if we're doing this right?
+
+
      }
   }
-
-
-
-#ifdef TRACKING
-  mTracker -> StepsAccepted( startCurveLen + stepPossible );
-#endif
-
 
   // Temp hack so we can record y'' values from inside ChordFinder (without having to store them in MagIntegratorDriver)
   /*

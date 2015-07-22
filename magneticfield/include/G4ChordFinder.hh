@@ -52,7 +52,7 @@
 using namespace std;
 
 
-//#define TRACKING
+#include "isTracking.hh"
 
 #ifdef TRACKING
 #include "StepTracker.hh"
@@ -155,6 +155,7 @@ class G4ChordFinder
 
 #ifdef TRACKING
       inline StepTracker * getTracker() { return mTracker; }
+      inline void setTracker( StepTracker * tracker) { mTracker = tracker; }
 #endif
 
 

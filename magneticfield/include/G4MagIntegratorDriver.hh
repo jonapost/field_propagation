@@ -46,7 +46,7 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
-//#define TRACKING
+#include "isTracking.hh"
 
 #ifdef TRACKING
 #include "StepTracker.hh"
@@ -105,6 +105,7 @@ class G4MagInt_Driver
 
 #ifdef TRACKING
    inline StepTracker * getTracker() { return mTracker; }
+   inline void setTracker( StepTracker * tracker) { mTracker = tracker; }
 #endif
 
      // Accessors.

@@ -30,14 +30,25 @@ public:
 
    void ReportCurveLength(G4double current_curve_length, G4double htry );
 
+   virtual void add_to_current_time( G4double h_to_add );
+
    void StepsAccepted( G4double newCurveLength );
 
    inline G4int getBufferLength() { return buffer_ptr -> size(); }
 
    void outputBuffer(char *outfile_name);
 
+   inline G4int get_thrown_away_steps() { return thrown_away_steps; }
+   inline G4int get_used_steps() { return getBufferLength(); } // Used in a different context than getBufferLength()
+
+   vector< vector<G4double> > * get_buffer_ptr();
+
 private:
    vector< vector<G4double> > *buffer_ptr;
+
+   G4bool last_time_val_was_accepted;
+
+   G4int thrown_away_steps;
    //G4double last_y[BUFFER_COLUMN_LEN];
 };
 

@@ -13,7 +13,7 @@ class TSimpleHeum : public  TMagErrorStepper
 
     public:  // with description
         static const double 
-            IntegratorCorrection = 1./((1<<3)-1);
+        G4double    IntegratorCorrection = 1./((1<<3)-1);
 
         TSimpleHeum(T_Equation *EqRhs, 
                     G4int numberOfVariables=6)

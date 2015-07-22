@@ -44,7 +44,7 @@
 // --------------------------------------------------------------------
 
 
-//#define TRACKING
+#include "isTracking.hh"
 
 #ifdef TRACKING
 #include "StepTracker.hh"

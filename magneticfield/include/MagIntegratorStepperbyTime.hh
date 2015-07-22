@@ -54,11 +54,6 @@ public:
    //BaseStepper *baseStepper;
    //G4MagIntegratorStepper *baseStepper;
 
-
-
-
-
-
 private:
    G4double yIn[10], dydx_copy[10], cached_dydx[10], last_function_evaluation[10];
    //G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
@@ -70,7 +65,6 @@ private:
 
 };
 
-#endif /* MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_ */
 
 template <class BaseStepper>
 inline
@@ -88,9 +82,9 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
 
    BaseStepper::ComputeRightHandSide(yIn, dydx);
 
-   // Cache:
-   for (int i = 0; i < 6; i ++)
-      last_function_evaluation[i] = dydx[i];
+   // Cache (for possible FSAL):
+   //for (int i = 0; i < 6; i ++)
+   //   last_function_evaluation[i] = dydx[i];
 
    for (int i = 3; i < 6; i ++)
       dydx[i] *= m_fEq -> FMass();
@@ -117,47 +111,36 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       dydx_copy[i] *= 1. / m_fEq -> FMass();
    }
 
-   this -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
-   //( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
+   BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
 #ifdef TRACKING
-   BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
+   // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
+
+   // nextFunctionEvaluation is done at the right endpoint of the integration step.
+   // If this works should make nextFunctionEvaluation a member variable:
+   G4double nextFunctionEvaluation[8]; // 8 for safety (only need 6).
+
+   // Want to store velocity, not momentum, so wait to multiply yOutput[3..5] by FMass()
+   // until after compute next function evaluation.
+   BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
+   BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
 #endif
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= m_fEq -> FMass();
 
-   yOutput[7] = yInput[7] + hstep;
+   //yOutput[7] = yInput[7] + hstep;
 
 }
 
 template <class BaseStepper>
 inline
 G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
-   //return baseStepper->DistChord();
-   //return BaseStepper::DistChord();
-   //return baseStepper -> DistChord();
-   return BaseStepper::DistChord(); // If BaseStepper uses an Richardson
+   return BaseStepper::DistChord(); // If BaseStepper uses Richardson
                                     // extrapolation (auxStepper) then this might
                                     // not be producing the right results.
 }
 
-/*
-template <class BaseStepper>
-inline
-G4int MagIntegratorStepper_byTime<BaseStepper>::IntegratorOrder() const{
-
-   cout << "Inside MagIntegratorStepper_byTime<BaseStepper>::IntegratorOrder()" << endl;
-
-   if ( & BaseStepper::IntegratorOrder != 0 )
-      return BaseStepper::IntegratorOrder();
-   else
-      G4Exception("MagIntegratorStepper_ByTime::IntegratorOrder", "GeomField0003",
-                  FatalException, "BaseStepper does not implement IntegratorOrder()");
-   //return baseStepper->IntegratorOrder();
-   //return baseStepper -> IntergratorOrder();
-}
-*/
 
 template <class BaseStepper>
 inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
@@ -167,16 +150,10 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
 : BaseStepper( EquationRhs, numberOfVariables )//, numStateVariables)
 {
 
-   m_fEq = EquationRhs;
+   //m_fEq = EquationRhs;
    // baseStepper = new BaseStepper(EquationRhs);  //, numberOfVariables, numStateVariables);
    for (int i = 0; i < 10; i ++)
       yIn[i] = 0.;
-   //mass = m_fEq -> FMass();
-   //inv_mass = 1. / mass;
-   //last_step_succeeded = false; // Might want to change??
-   //BaseStepper::Reset_last_step_succeeded();
-
-   //baseStepper = static_cast<BaseStepper*> ( static_cast<G4MagIntegratorStepper *>( this ) );
 
 }
 template <class BaseStepper>
@@ -185,17 +162,6 @@ inline MagIntegratorStepper_byTime<BaseStepper>::~MagIntegratorStepper_byTime() 
 
 }
 
-/*template <class BaseStepper>
-inline void MagIntegratorStepper_byTime<BaseStepper>::SetTrue_last_step_succeeded() {
-   //cached_dydx = &last_function_evaluation; // copy ptr
-   for (int i = 0; i < 6; i ++)
-         cached_dydx[i] = last_function_evaluation[i];
-   BaseStepper::SetTrue_last_step_succeeded();
 
-}
-*/
-//template <class BaseStepper>
-//inline void MagIntegratorStepper_byTime<BaseStepper>::Reset_last_step_succeeded() {
-//}
-
+#endif /* MAGNETICFIELD_INCLUDE_MAGINTEGRATORSTEPPERBYTIME_HH_ */
 

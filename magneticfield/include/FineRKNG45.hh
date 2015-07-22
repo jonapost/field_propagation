@@ -20,7 +20,7 @@ class FineRKNG45: public G4MagIntegratorStepper {
 public:
    virtual ~FineRKNG45();
    FineRKNG45(G4EquationOfMotion *EqRhs,
-         G4int numberOfVariables = 6 );
+         G4int numberOfVariables);
 
    virtual void Stepper( const G4double y[],
                  const G4double dydx[],
