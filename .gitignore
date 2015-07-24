@@ -1,0 +1,7 @@
+
+*.cmake
+*.make
+*CMakeLists.txt
+*.marks
+
+*Makefile
