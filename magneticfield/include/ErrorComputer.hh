@@ -17,11 +17,11 @@ public:
    virtual ~ErrorComputer();
 
 
-   void PathA_Interpolant(G4int pathB_index,  G4double pathA_interpolant[]);
+   G4bool PathA_Interpolant(G4int pathB_index,  G4double pathA_interpolant[]);
 
-   void ErrorFromInterpolant(G4double t, G4double err[]);
+   //void ErrorFromInterpolant(G4double t, G4double err[]);
 
-   void ErrorArray(G4double **err);
+   G4int ErrorArray(G4double **err);
 
 private:
    Interpolant *minterpolant;

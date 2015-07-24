@@ -55,7 +55,10 @@ G4MagErrorStepper::Stepper( const G4double yInput[],
    G4int i;
    
    //G4double  correction = 1. / ( (1 << IntegratorOrder()) -1 );
-   G4double  correction = 1. / ( (1 << (IntegratorOrder() - 1)) -1 ); // correction for Richardson Extrapolation.
+   G4double  correction = 1. / ( (1 << (IntegratorOrder() - 1)) -1 );
+   // correction because dumbstepper method must report 1 greater than its actual order
+   // because Richardson extrapolation promotes it up one order of accuracy.
+   // However, the correction factor must be calculated using the non-promoted order of accuracy.
 
    //  Saving yInput because yInput and yOutput can be aliases for same array
 

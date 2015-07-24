@@ -100,8 +100,8 @@ int main(int argc, char *args[]) {
    G4Mag_EqRhs *fEquation;
 
    G4int mag_field_choice = 2;
-   if (argc > 4)
-      mag_field_choice = atoi(args[4]);
+   // if (argc > 4)
+   //   mag_field_choice = atoi(args[4]);
 
    if (mag_field_choice == 1){
       myUniformField = new G4UniformMagField(
@@ -124,7 +124,7 @@ int main(int argc, char *args[]) {
 
    G4int stepper_no = 0, no_of_steps = 10;
    G4double step_len = 1.;
-   char *outfile_name;
+   char *outfile_name, *meta_outfile_name;
 
    if (argc > 1)
       stepper_no = atoi(args[1]);
@@ -134,6 +134,8 @@ int main(int argc, char *args[]) {
       no_of_steps = atoi(args[3]);
    if (argc > 4)
       outfile_name = args[4];
+   if (argc > 5)
+      meta_outfile_name= args[5];
 
    G4MagIntegratorStepper *myStepper;
 
@@ -175,7 +177,11 @@ int main(int argc, char *args[]) {
          myStepper = 0;
    }
 
-   StepTracker *myStepTracker = new StepTracker();
+   myStepper -> ComputeRightHandSide(yIn, dydx);
+   G4double beginning[11] = { 0., 0., x_pos, y_pos, z_pos, x_mom/mass, y_mom/mass, z_mom/mass, dydx[3]/mass, dydx[4]/mass, dydx[5]/mass };
+
+   StepTracker *myStepTracker = new StepTracker( beginning );
+
    myStepper -> setTracker(myStepTracker);
 
    // MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
@@ -215,73 +221,41 @@ int main(int argc, char *args[]) {
       //cout << " before Compute RHS" << endl;
       myStepper->ComputeRightHandSide(yIn, dydx);
       //cout << " before Stepper " << endl;
+
+      myStepTracker -> ArmTracker();
+
       myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
       //cout << " after stepper call " << endl;
+
+      myStepTracker -> add_to_current_time(step_len / ( myStepTracker -> last_velocity() ), step_len );
 
       //Copy yout into yIn
       for (int k = 0; k < 8; k++){
          yIn[k] = yout[k];
       }
-
-      /*
-      for (int k = 0; k < 3; k ++) {
-         yIn_copy[k] = yIn[k];
-         yout_copy[k] = yout[k];
-         dydx_copy[k] = dydx[k];
-         last_dydx_copy[k] = last_dydx[k];
-      }
-
-      for (int k = 3; k < 6; k ++) {
-         yIn_copy[k] = yIn[k] / mass;
-         yout_copy[k] = yout[k] / mass;
-         dydx_copy[k] = dydx[k] / mass;
-         last_dydx_copy[k] = last_dydx[k] / mass;
-      }
-
-      //minterpolant -> Initialize(yIn_copy, yout_copy, &(last_dydx_copy[3]), &(dydx_copy[3]), step_len);
-
-
-      for (int k = 1; k < 10; k ++) {
-         minterpolant -> InterpolatePosition(k * .1, y_interpolated);
-         for (int l = 0; l < 3; l ++)
-            cout << y_interpolated[l] << ",";
-         cout << endl;
-      }
-      */
-
-      // Position output:
-
-      /*
-      for (int k = 0; k < 3; k++) {
-         cout << yout[k] << ",";
-      }
-      */
-
-      // Velocity output
-      //for (int k = 3; k < 6; k++) {
-      //   // Uncomment to print out momentums:
-      //   cout << yout[k] / mass << ",";
-      //}
-
-      //cout << endl;
-
-
-      //for (int k = 0; k < 6; k ++) {
-      //   last_dydx[k] = dydx[k];
-      //}
-
    }
    // Record final step:
-   myStepper -> ComputeRightHandSide(yIn, dydx);
+
+
+   myStepper -> ComputeRightHandSide(yout, dydx);
+
+   for (int i = 3; i < 6; i ++)
+               yout[i] /= fEquation -> FMass();
+   for (int i = 3; i < 6; i ++)
+                  dydx[i] /= fEquation -> FMass();
+
+
    myStepTracker -> RecordResultOfStepper(yout, dydx);
 
-   //Output:
-   myStepTracker -> outputBuffer(outfile_name);
+   myStepTracker -> add_to_current_time(step_len / ( myStepTracker -> last_velocity() ), step_len );
 
+   //Output:
+   myStepTracker -> outputBuffer(outfile_name, meta_outfile_name);
 
    // Cleanup
-   delete myStepTracker;
+
    delete myStepper;
+   delete myStepTracker;
    delete fEquation;
 
    return 0;

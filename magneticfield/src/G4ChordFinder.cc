@@ -314,7 +314,8 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
 
 
 #ifdef TRACKING                  // If the result of FindNextChord() will be accepted, then we want to update the time.
-     mTracker -> add_to_current_time( stepPossible );
+
+     mTracker -> add_to_current_time( stepPossible / ( mTracker -> last_velocity() ), stepPossible );
 #endif
 
   }

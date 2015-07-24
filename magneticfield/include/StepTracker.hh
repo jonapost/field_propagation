@@ -22,21 +22,30 @@ using namespace std;
 
 class StepTracker {
 public:
-   StepTracker();
+   StepTracker(G4double beginning[BUFFER_COLUMN_LEN]);
    virtual ~StepTracker();
+
+   G4double last_velocity();
+
+   inline void set_mass(G4double mass_of_particle ) { mass = mass_of_particle; }
+   inline G4double get_mass() { return mass; }
+
+   inline void ArmTracker() { armed = true; }
+   inline void UnArmTracker() {armed = false; }
+   inline bool isArmed() {return armed; }
 
    void RecordResultOfStepper( G4double yIn[],
                            G4double dydx[]);
 
    void ReportCurveLength(G4double current_curve_length, G4double htry );
 
-   virtual void add_to_current_time( G4double h_to_add );
+   virtual void add_to_current_time( G4double time_to_add, G4double arclength_to_add );
 
    void StepsAccepted( G4double newCurveLength );
 
    inline G4int getBufferLength() { return buffer_ptr -> size(); }
 
-   void outputBuffer(char *outfile_name);
+   void outputBuffer(char *outfile_name, char *meta_outfile_name);
 
    inline G4int get_thrown_away_steps() { return thrown_away_steps; }
    inline G4int get_used_steps() { return getBufferLength(); } // Used in a different context than getBufferLength()
@@ -46,7 +55,9 @@ public:
 private:
    vector< vector<G4double> > *buffer_ptr;
 
-   G4bool last_time_val_was_accepted;
+   G4double mass;
+
+   G4bool last_time_val_was_accepted, armed;
 
    G4int thrown_away_steps;
    //G4double last_y[BUFFER_COLUMN_LEN];

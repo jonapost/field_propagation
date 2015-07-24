@@ -16,6 +16,8 @@
 #include "G4Mag_EqRhs.hh"
 #include "G4MagIntegratorStepper.hh"
 
+#include "G4ThreeVector.hh"
+
 #include <iostream>
 using namespace std;
 
@@ -111,23 +113,47 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       dydx_copy[i] *= 1. / m_fEq -> FMass();
    }
 
-   BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
+   /////// Getting velocity:
+   G4double velocity = G4ThreeVector( yIn[3], yIn[4], yIn[5] ).mag();
+   ///////
 
-#ifdef TRACKING
-   // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
+   // Convert hstep (which is in units of arclength) to hstep / velocity (which is units of time).
+   BaseStepper::Stepper( yIn, dydx_copy, hstep / velocity, yOutput, yError );
 
-   // nextFunctionEvaluation is done at the right endpoint of the integration step.
-   // If this works should make nextFunctionEvaluation a member variable:
-   G4double nextFunctionEvaluation[8]; // 8 for safety (only need 6).
 
-   // Want to store velocity, not momentum, so wait to multiply yOutput[3..5] by FMass()
-   // until after compute next function evaluation.
-   BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
-   BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
-#endif
 
    for (int i = 3; i < 6; i ++)
       yOutput[i] *= m_fEq -> FMass();
+
+#ifdef TRACKING
+   if ( BaseStepper::mTracker -> isArmed() ) {
+      // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
+
+      // nextFunctionEvaluation is done at the right endpoint of the integration step.
+      // If this works should make nextFunctionEvaluation a member variable:
+      G4double nextFunctionEvaluation[8]; // 8 for safety (only need 6).
+
+      // Want to store velocity, not momentum, so wait to multiply yOutput[3..5] by FMass()
+      // until after compute next function evaluation.
+      ComputeRightHandSide(yOutput, nextFunctionEvaluation);
+
+      for (int i = 3; i < 6; i ++)
+            yOutput[i] /= m_fEq -> FMass();
+      for (int i = 3; i < 6; i ++)
+         nextFunctionEvaluation[i] /= m_fEq -> FMass();
+
+      BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
+
+      for (int i = 3; i < 6; i ++)
+            yOutput[i] *= m_fEq -> FMass();
+
+      BaseStepper::mTracker -> UnArmTracker();
+
+
+   }
+#endif
+
+   // We are now recording position/momentum coordinates, and step units are in arclength
 
    //yOutput[7] = yInput[7] + hstep;
 
@@ -150,7 +176,7 @@ inline MagIntegratorStepper_byTime<BaseStepper>::MagIntegratorStepper_byTime(
 : BaseStepper( EquationRhs, numberOfVariables )//, numStateVariables)
 {
 
-   //m_fEq = EquationRhs;
+   m_fEq = EquationRhs;
    // baseStepper = new BaseStepper(EquationRhs);  //, numberOfVariables, numStateVariables);
    for (int i = 0; i < 10; i ++)
       yIn[i] = 0.;

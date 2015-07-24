@@ -74,16 +74,20 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
    //( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
 #ifdef TRACKING
-   // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
+   if ( BaseStepper::mTracker -> isArmed() ) {
+      // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
 
-   // nextFunctionEvaluation is done at the right endpoint of the integration step.
-   // If this works should make nextFunctionEvaluation a member variable:
-   G4double nextFunctionEvaluation[8]; // 8 for safety (only need 6).
+      // nextFunctionEvaluation is done at the right endpoint of the integration step.
+      // If this works should make nextFunctionEvaluation a member variable:
+      G4double nextFunctionEvaluation[8]; // 8 for safety (only need 6).
 
-   // Want to store velocity, not momentum, so wait to multiply yOutput[3..5] by FMass()
-   // until after compute next function evaluation.
-   BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
-   BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
+      // Want to store velocity, not momentum, so wait to multiply yOutput[3..5] by FMass()
+      // until after compute next function evaluation.
+      BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
+      BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
+
+      BaseStepper::mTracker -> UnArmTracker();
+   }
 #endif
 
 }

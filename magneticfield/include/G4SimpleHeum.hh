@@ -63,7 +63,7 @@ class G4SimpleHeum : public G4MagErrorStepper
 
   public:  // without description
   
-    G4int IntegratorOrder() const { return 3; }
+    G4int IntegratorOrder() const { return 4; } // Changed to 4 b/c of same reasoning listed in G4MagErrorStepper
 
   private:
 

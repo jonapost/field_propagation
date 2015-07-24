@@ -15,7 +15,7 @@
 #include "G4LineSection.hh"
 
 
-//#define JTS_DEBUG
+#define JTS_DEBUG
 
 #ifdef JTS_DEBUG
 #include <iostream>
@@ -24,22 +24,22 @@ using namespace std;
 
 
 FineRKNG45::~FineRKNG45() {
-
    for (int i = 0; i < 7; i ++) {
       delete[] f[i];
    }
+
    delete[] f;
    for (int i = 0; i < 7; i ++) {
       delete[] a[i];
       delete[] aprime[i];
    }
+
    delete[] a;
    delete[] aprime;
    delete position_interpolant;
 
-   delete fLastInitialVector; delete fLastFinalVector; delete fLastDyDx;
-   delete fNextDyDx; delete fMidVector; delete fMidError;
-
+   delete fLastInitialVector; delete fLastFinalVector;
+   delete fMidVector; delete fMidError;
 }
 
 
@@ -100,7 +100,6 @@ FineRKNG45::FineRKNG45(G4EquationOfMotion *EqRhs,
 
    fMidVector = new G4double[numberOfVariables];
    fMidError =  new G4double[numberOfVariables];
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

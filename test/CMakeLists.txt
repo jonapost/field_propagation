@@ -11,4 +11,6 @@ add_subdirectory(compareByTime)
 
 #add_subdirectory(comparePairByTime)
 
-add_subdirectory(interpolate)
+#add_subdirectory(interpolate)
+
+add_subdirectory(interpolation_error)

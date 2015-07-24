@@ -248,7 +248,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
       //--------------------------------------
 
 #ifdef TRACKING
-       mTracker -> add_to_current_time( hdid );
+       mTracker -> add_to_current_time( hdid / ( mTracker -> last_velocity() ), hdid );
 #endif
 
       lastStepSucceeded= (hdid == h);   
@@ -272,7 +272,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
       yFldTrk.DumpToArray(y);    
 
 #ifdef TRACKING
-      mTracker -> add_to_current_time( h );
+      mTracker -> add_to_current_time( h / ( mTracker -> last_velocity() ), h );
 #endif
 
 
@@ -588,7 +588,10 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   {
     tot_no_trials++;
 
+#ifdef TRACKING
+  mTracker -> ArmTracker();
 
+#endif
 
     pIntStepper-> Stepper(y,dydx,h,ytemp,yerr); 
     //            *******
@@ -619,7 +622,7 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
 
  /*
 #ifdef TRACKING
-       mTracker -> add_to_current_time( h );
+       mTracker -> add_to_current_time( h  );
 #endif
 */
        break;
@@ -715,6 +718,11 @@ G4bool  G4MagInt_Driver::QuickAdvance(
 
 
   // Do an Integration Step
+
+#ifdef TRACKING
+  mTracker -> ArmTracker();
+
+#endif
 
   pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
   //            *******
