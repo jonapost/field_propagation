@@ -210,10 +210,6 @@ G4double  FineRKNG45::DistChord()   const {
    G4double distLine, distChord;
    // Store last initial and final points (they will be overwritten in self-Stepper call!)
 
-#ifdef JTS_DEBUG
-   cout << "DistChord" << endl;
-#endif
-
    if (! position_interpolant -> IsInitialized() ) {
       position_interpolant -> Initialize( fLastInitialVector,
                                           fLastFinalVector, fLastDyDx,

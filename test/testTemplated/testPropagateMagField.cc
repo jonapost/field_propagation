@@ -542,7 +542,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 
        //////// Some additions:
-       G4double mass_to_pass = proton_mass_c2 + kineticEnergy;
+       G4double mass = proton_mass_c2 + kineticEnergy;
 
        //if ( have_to_convert_arc_length_to_time ) { // is true if integrating w.r.t. arc length
        //    physStep *= velocity; // Converts to time
@@ -556,9 +556,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
           -> ComputeRightHandSide(beginning, Rhs);
 
-       G4double stepTracker_1st_entry[10] = { 0., Position.x(), Position.y(), Position.z(),
-                                  UnitMomentum.x() * momentum, UnitMomentum.y() * momentum,
-                                  UnitMomentum.z() * momentum, Rhs[3], Rhs[4], Rhs[5] };
+       G4double stepTracker_1st_entry[11] = { 0., 0., Position.x(), Position.y(), Position.z(),
+                                  UnitMomentum.x() * momentum/mass,
+                                  UnitMomentum.y() * momentum/mass,
+                                  UnitMomentum.z() * momentum/mass,
+                                  Rhs[3]/mass, Rhs[4]/mass, Rhs[5]/mass };
 
        StepTracker *myStepTracker;
 
@@ -710,7 +712,7 @@ void report_endPV(G4ThreeVector    Position,
 		  << std::setw( 9) << "dE(MeV)" << " "  
 		  << std::setw( 9) << "StepLen" << " "  
 		  << std::setw( 9) << "PhsStep" << " "  
-		  << std::setw( 9) << "Safety" << " "  
+		  << std::setw( 9) << "Safety" << " "
 		  << std::setw(18) << "NextVolume" << " "
 		  << std::setw(7) << "Field_calls" << " " // Added to output #field evaluations (J. Suagee).
 		  << G4endl;
