@@ -7,21 +7,20 @@
 
 #include "ErrorComputer.hh"
 #include "Interpolant.hh"
-#include <assert.h>
-
-#include <iostream>
-using namespace std;
-
 
 #define TIME_SLOT 0
+#define ARCLENGTH_SLOT 1
 
-#define BUFFER_COLUMN_LEN 11
 #define POSITION_SLOT 2
 #define MOMENTUM_SLOT 5
 #define RHS_SLOT 8
+#define BUFFER_COLUMN_LEN 11
 
-ErrorComputer::ErrorComputer(G4double **in_bufferA, G4int lenBufferA, G4double **in_bufferB,
-                              G4int lenBufferB) {
+
+ErrorComputer::ErrorComputer(G4double **in_bufferA,
+                             G4int lenBufferA,
+                             G4double **in_bufferB,
+                             G4int lenBufferB) {
    counter = 1;
    minterpolant = new Interpolant();
 
@@ -37,25 +36,19 @@ ErrorComputer::~ErrorComputer() {
 }
 
 
-G4bool ErrorComputer::PathA_Interpolant(G4int pathB_index,  G4double *pathA_interpolant) {
+G4bool ErrorComputer::PathA_Interpolant(G4int pathB_index,
+                                        G4double *pathA_interpolant) {
 
    G4double h;
    G4double t = bufferB[pathB_index][TIME_SLOT];
    while (t > bufferA[counter][TIME_SLOT]) {
-      /*
-      for (int i = 0; i < 3; i ++) {
-         cout << bufferA[counter][i] << ",";
-      }
-      cout << bufferA[counter][TIME_SLOT] << " (Original) " << endl;
-      */
 
       counter ++;
       minterpolant -> DeInitialize();
 
-      if ( counter >= len_bufferA ) // We have passed the possible interpolation zone
+      if ( counter >= len_bufferA ) // We have passed the possible
+                                    // interpolation zone
          return false;
-
-      //assert( counter < len_bufferA );
    }
 
    if (t == bufferA[counter][TIME_SLOT]) {
@@ -71,7 +64,10 @@ G4bool ErrorComputer::PathA_Interpolant(G4int pathB_index,  G4double *pathA_inte
             F1[i] = bufferA[counter][i + RHS_SLOT];
          }
          h = bufferA[counter][TIME_SLOT] - bufferA[counter - 1][TIME_SLOT];
-         minterpolant -> Initialize( &( bufferA[counter - 1][POSITION_SLOT] ), &( bufferA[counter][POSITION_SLOT] ), F0, F1, h );
+
+         minterpolant -> Initialize( &( bufferA[counter - 1][POSITION_SLOT] ),
+                                     &( bufferA[counter][POSITION_SLOT] ),
+                                     F0, F1, h );
       }
       G4double xi = ( t - bufferA[counter - 1][TIME_SLOT] ) / h;
       minterpolant -> InterpolatePosition( xi, pathA_interpolant );
@@ -81,18 +77,21 @@ G4bool ErrorComputer::PathA_Interpolant(G4int pathB_index,  G4double *pathA_inte
 
 G4int ErrorComputer::ErrorArray(G4double **err) {
 
-   G4double pathA_interpolant[3]; // Interpolate has only been written to handle position (not velocity yet)
+   G4double pathA_interpolant[3]; // Interpolate has only been written
+                                  // to handle position (not velocity yet)
 
    for ( int pathB_index = 0; pathB_index < len_bufferB; pathB_index ++ ) {
       if ( PathA_Interpolant(pathB_index, pathA_interpolant) == false )
-         return pathB_index;
+         return pathB_index; // We were only able to interpolate up to pathB_index
+                             // number of rows in the B array.
 
       err[pathB_index][0] = bufferB[pathB_index][0]; // Record time.
       err[pathB_index][1] = bufferB[pathB_index][1]; // Record arclength.
 
-      for (int i = 0; i < 3; i ++) { // 3 because only for position yet.
+      for (int i = 0; i < 3; i ++) { // 3 because we are only computing error for position.
 
-         err[pathB_index][i + POSITION_SLOT] = bufferB[pathB_index][i + POSITION_SLOT] - pathA_interpolant[i];
+         err[pathB_index][i + POSITION_SLOT] =
+               bufferB[pathB_index][i + POSITION_SLOT] - pathA_interpolant[i];
       }
    }
    // Were able to interpolate error for all values in B array

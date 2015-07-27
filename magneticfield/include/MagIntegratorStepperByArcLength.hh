@@ -73,45 +73,39 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
 
 
 #ifdef TRACKING
-   G4double diff[3];
-   G4double last_postion_vector[3], second_to_last_postion_vector[3];
+   std::vector<G4double> *last_pos_vector, *second_to_last_pos_vector;
+   G4int buffer_length;
 
-   while ( ! BaseStepper::mTracker -> check_that_wasnt_disgarded_by_Propagator( yInput, diff ) ) {
-      cout << "Was disgarded by Propagator, " << diff[0] << ", " << diff[1] << ", " << diff[2] <<  endl;
-      assert( BaseStepper::mTracker -> getBufferLength() >= 2);
+   while ( ! BaseStepper::mTracker -> check_that_wasnt_disgarded_by_Propagator( yInput ) ) {
 
+      buffer_length = BaseStepper::mTracker -> getBufferLength();
+      // Because of current bug with BogackiShampine45 (and possibly others):
+      assert( buffer_length >= 2);
 
       BaseStepper::mTracker -> set_last_time_val_was_accepted( true );
 
+      last_pos_vector =
+                        &( BaseStepper::mTracker -> get_buffer_ptr() -> at( buffer_length - 1 ) );
+      second_to_last_pos_vector =
+                        &( BaseStepper::mTracker -> get_buffer_ptr() -> at( buffer_length - 2 ) );
 
-      second_to_last_postion_vector[0] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 2 ) )
-            . at(2);
-      second_to_last_postion_vector[1] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 2 ) )
-            . at(3);
-      second_to_last_postion_vector[2] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 2 ) )
-            . at(4);
-
-      last_postion_vector[0] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 1 ) )
-            . at(2);
-      last_postion_vector[1] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 1 ) )
-            . at(3);
-      last_postion_vector[2] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 1 ) )
-            . at(4);
-
-      if ( ( G4ThreeVector(yInput[0], yInput[1], yInput[2]) - G4ThreeVector(second_to_last_postion_vector[0],
-            second_to_last_postion_vector[1], second_to_last_postion_vector[2]) ).mag() >=
-            ( G4ThreeVector(yInput[0], yInput[1], yInput[2]) - G4ThreeVector(last_postion_vector[0],
-                        last_postion_vector[1], last_postion_vector[2]) ).mag() ) {
-
-         break;
+      if (     ( G4ThreeVector(yInput[0], yInput[1], yInput[2])
+                 - G4ThreeVector(second_to_last_pos_vector -> at(POSITION_SLOT + 0),
+                                 second_to_last_pos_vector -> at(POSITION_SLOT + 1),
+                                 second_to_last_pos_vector -> at(POSITION_SLOT + 2)) ).mag()
+            >=
+               ( G4ThreeVector(yInput[0], yInput[1], yInput[2])
+                 - G4ThreeVector(last_pos_vector -> at(POSITION_SLOT + 0),
+                                 last_pos_vector -> at(POSITION_SLOT + 1),
+                                 last_pos_vector -> at(POSITION_SLOT + 2)) ).mag()     )
+      {
+         break; // We are done searching backwards for a good match.
       }
 
       BaseStepper::mTracker -> get_buffer_ptr() -> pop_back();
       BaseStepper::mTracker -> get_no_function_calls_buffer() -> pop_back();
 
    }
-
-   //BaseStepper::mTracker -> check( yInput ); // Check to see last step' output is the same as this step's input. (Only 1st 3 coordinates)
 #endif
 
    BaseStepper::Stepper( yInput, dydx, hstep, yOutput, yError );

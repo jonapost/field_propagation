@@ -315,7 +315,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
 
 #ifdef TRACKING                  // If the result of FindNextChord() will be accepted, then we want to update the time.
 
-     mTracker -> add_to_current_time( stepPossible / ( mTracker -> last_velocity() ), stepPossible );
+     mTracker -> update_time_arclength( stepPossible / ( mTracker -> last_velocity() ), stepPossible );
 #endif
 
   }
@@ -330,7 +330,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
        // In this case the driver could not do the full distance
        stepPossible= yCurrent.GetCurveLength()-startCurveLen;
 
-       // In this case AccurateAdvance makes the calls to StepTracker::add_to_current_time()
+       // In this case AccurateAdvance makes the calls to StepTracker::update_time_arclength()
        // since AccurateAdvance() may perform multiple steps (some of which are accepted and
        // some of which are not).
 
