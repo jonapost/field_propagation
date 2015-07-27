@@ -18,6 +18,7 @@
 
 #include "G4ThreeVector.hh"
 
+#include <assert.h>
 #include <iostream>
 using namespace std;
 
@@ -88,7 +89,9 @@ void MagIntegratorStepper_byTime<BaseStepper>::ComputeRightHandSide(const G4doub
    //for (int i = 0; i < 6; i ++)
    //   last_function_evaluation[i] = dydx[i];
 
-   for (int i = 3; i < 6; i ++)
+   for (int i = 3; i < 6; i ++)        // may want to make this from i = 0, (but really
+                                       // doesn't matter since we're only using this
+                                       // for Nystrom Steppers.
       dydx[i] *= m_fEq -> FMass();
    // Always feed this template class a Mag_UsualEqRhs_IntegrateByTime as EquationRhs
    //for (int i = 3; i < 6; i ++)
@@ -102,6 +105,63 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double hstep,
             G4double yOutput[],
             G4double yError [] ) {
+
+
+#ifdef TRACKING
+
+   G4double diff[3];
+   G4double last_postion_vector[3], second_to_last_postion_vector[3];
+
+   while ( ! BaseStepper::mTracker -> check_that_wasnt_disgarded_by_Propagator( yInput, diff ) ) {
+      cout << "Was disgarded by Propagator, " << diff[0] << ", " << diff[1] << ", " << diff[2] <<  endl;
+      assert( BaseStepper::mTracker -> getBufferLength() >= 2);
+
+
+      BaseStepper::mTracker -> set_last_time_val_was_accepted( true );
+
+
+      second_to_last_postion_vector[0] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 2 ) )
+            . at(2);
+      second_to_last_postion_vector[1] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 2 ) )
+            . at(3);
+      second_to_last_postion_vector[2] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 2 ) )
+            . at(4);
+
+      last_postion_vector[0] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 1 ) )
+            . at(2);
+      last_postion_vector[1] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 1 ) )
+            . at(3);
+      last_postion_vector[2] = ( BaseStepper::mTracker -> get_buffer_ptr() -> at( BaseStepper::mTracker ->getBufferLength() - 1 ) )
+            . at(4);
+
+      if ( ( G4ThreeVector(yInput[0], yInput[1], yInput[2]) - G4ThreeVector(second_to_last_postion_vector[0],
+            second_to_last_postion_vector[1], second_to_last_postion_vector[2]) ).mag() >=
+            ( G4ThreeVector(yInput[0], yInput[1], yInput[2]) - G4ThreeVector(last_postion_vector[0],
+                        last_postion_vector[1], last_postion_vector[2]) ).mag() ) {
+
+         break;
+      }
+
+      BaseStepper::mTracker -> get_buffer_ptr() -> pop_back();
+      BaseStepper::mTracker -> get_no_function_calls_buffer() -> pop_back();
+
+   }
+
+   /*
+   while ( ! BaseStepper::mTracker -> check_that_wasnt_disgarded_by_Propagator( yInput, diff ) ) {
+      cout << "Was disgarded by Propagator, " << diff[0] << ", " << diff[1] << ", " << diff[2] <<  endl;
+
+
+      assert( BaseStepper::mTracker -> getBufferLength() >= 2);
+
+      BaseStepper::mTracker -> set_last_time_val_was_accepted( true );
+      BaseStepper::mTracker -> get_buffer_ptr() -> pop_back();
+   }
+   */
+   //BaseStepper::mTracker -> check( yInput ); // Check to see last step' output is the same as this step's input. (Only 1st 3 coordinates)
+#endif
+
+
 
    // Have to copy because yInput and dydx are constant in the function signature.
    for (int i = 0; i < 10; i ++){
@@ -142,7 +202,10 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       for (int i = 3; i < 6; i ++)
          nextFunctionEvaluation[i] /= m_fEq -> FMass();
 
-      BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
+      const G4CachedMagneticField *myField = (G4CachedMagneticField*)( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
+      G4int no_function_calls = myField -> GetCountCalls();
+
+      BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation, no_function_calls);
 
       for (int i = 3; i < 6; i ++)
             yOutput[i] *= m_fEq -> FMass();

@@ -27,6 +27,8 @@ public:
 
    G4double last_velocity();
 
+   G4bool check_that_wasnt_disgarded_by_Propagator(const G4double yIn[], G4double diff[] );
+
    inline void set_mass(G4double mass_of_particle ) { mass = mass_of_particle; }
    inline G4double get_mass() { return mass; }
 
@@ -35,7 +37,7 @@ public:
    inline bool isArmed() {return armed; }
 
    void RecordResultOfStepper( G4double yIn[],
-                           G4double dydx[]);
+                           G4double dydx[], G4int no_function_calls);
 
    void ReportCurveLength(G4double current_curve_length, G4double htry );
 
@@ -45,15 +47,20 @@ public:
 
    inline G4int getBufferLength() { return buffer_ptr -> size(); }
 
-   void outputBuffer(char *outfile_name, char *meta_outfile_name);
+   void outputBuffer(char *outfile_name, char *no_function_calls_outfile_name, char *meta_outfile_name);
 
    inline G4int get_thrown_away_steps() { return thrown_away_steps; }
    inline G4int get_used_steps() { return getBufferLength(); } // Used in a different context than getBufferLength()
 
    vector< vector<G4double> > * get_buffer_ptr();
 
+   vector<G4int> *get_no_function_calls_buffer() { return no_function_calls_buffer; }
+
+   inline void set_last_time_val_was_accepted(G4bool val) { last_time_val_was_accepted = val; }
+
 private:
    vector< vector<G4double> > *buffer_ptr;
+   vector<G4int> *no_function_calls_buffer;
 
    G4double mass;
 

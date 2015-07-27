@@ -21,6 +21,8 @@ using namespace std;
 
 #include "G4ThreeVector.hh"
 
+#include "G4CachedMagneticField.hh"
+
 #define BUFFER_COLUMN_LEN 11
 #define POSITION_SLOT 2
 #define MOMENTUM_SLOT 5
@@ -37,6 +39,10 @@ StepTracker::StepTracker(G4double beginning[BUFFER_COLUMN_LEN]) { // beginning m
    thrown_away_steps = 0;
 
    buffer_ptr -> push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
+
+   no_function_calls_buffer = new vector<G4int> ();
+   no_function_calls_buffer -> push_back( 0 );
+
    vector< vector<G4double> > &buffer = *buffer_ptr;
 
    for (int i = 0; i < BUFFER_COLUMN_LEN; i ++)
@@ -51,7 +57,9 @@ StepTracker::~StepTracker() {
 
 vector< vector<G4double> > * StepTracker::get_buffer_ptr() { return buffer_ptr;}
 
-void StepTracker::outputBuffer(char *outfile_name, char *meta_outfile_name) {
+void StepTracker::outputBuffer(char *outfile_name,
+                               char *no_function_calls_outfile_name,
+                               char *meta_outfile_name) {
    vector< vector<G4double> > &buffer = *buffer_ptr;
 
    ofstream meta_outfile(meta_outfile_name, ios::out);
@@ -64,9 +72,19 @@ void StepTracker::outputBuffer(char *outfile_name, char *meta_outfile_name) {
    for (int i = 0; i < getBufferLength(); i ++) {
       for (int j = 0; j < BUFFER_COLUMN_LEN; j ++){
          outfile.write( reinterpret_cast<char*>( &(buffer[i][j]) ), sizeof( buffer[i][j] ) );
+
+         //outfile.write( reinterpret_cast<char*>( &( no_function_calls_buffer[i] ) ), sizeof(int));
       }
    }
+
    outfile.close();
+
+   ofstream no_function_calls_outfile( no_function_calls_outfile_name, ios::out );
+   for (int i = 0; i < getBufferLength(); i ++)
+      no_function_calls_outfile << no_function_calls_buffer -> at(i) << endl;
+
+   no_function_calls_outfile.close();
+
    /*
    for (int i = 0; i < getBufferLength(); i ++) {
       for (int j = 0; j < BUFFER_COLUMN_LEN; j ++)
@@ -89,7 +107,7 @@ void StepTracker::ReportCurveLength(G4double current_curve_length, G4double htry
 //void StepTracker::start_next_at_beginning() {
 //}
 
-void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[]) {
+void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[], G4int no_function_calls) {
 
    //cout << "RecordResultOfStepper" << endl;
 
@@ -104,6 +122,9 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[]) {
    if ( last_time_val_was_accepted ) {       // Create new space for next time/position/momentum values
 
       buffer_ptr -> push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
+
+      no_function_calls_buffer -> push_back( no_function_calls );
+
       last_time_val_was_accepted = false;
    }
    else {
@@ -111,8 +132,10 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[]) {
    }
                                              // Otherwise, just write over the last position/momentum values
 
-   if ( buffer_ptr -> size() == 1 )          // Take care of beginning. (Don't overwrite the first row.)
+   if ( buffer_ptr -> size() == 1 ) {        // Take care of beginning. (Don't overwrite the first row.)
       buffer_ptr -> push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
+      no_function_calls_buffer -> push_back( no_function_calls );
+   }
 
    G4int last_index = buffer_ptr -> size() - 1;
 
@@ -127,11 +150,44 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[]) {
 
 }
 
+G4bool StepTracker::check_that_wasnt_disgarded_by_Propagator( const G4double yIn[], G4double diff[]) {
+   vector< vector<G4double> > &buffer = *buffer_ptr;
+   G4int last_index = getBufferLength() - 1;
+
+   for (int i = 0; i < 3; i ++)
+      diff[i] = yIn[i] - buffer[last_index][i + POSITION_SLOT];
+
+   for (int i = 0; i < 3; i ++) {
+      if (yIn[i] != buffer[last_index][i + POSITION_SLOT]) {
+         return false;
+      }
+   }
+   return true;
+
+
+   /*
+   char c;
+
+   for (int i = 0; i < 3; i ++) {
+      if (yIn[i] != buffer[last_index][i + POSITION_SLOT]) {
+         cout << buffer[last_index][2] << ", " << buffer[last_index][3] << ", " << buffer[last_index][4] << "       vs." << endl;
+         cout << yIn[0] << ", " << yIn[1] << ", " << yIn[2] << endl;
+         cout << "Differences are:" << endl;
+         cout << buffer[last_index][2] - yIn[0] << ", " << buffer[last_index][3] - yIn[1] << ", " << buffer[last_index][4] - yIn[2] << endl;
+         //assert(false); // Stop execution
+         cin >> c;
+         break;
+      }
+   }
+   */
+
+}
+
 G4double StepTracker::last_velocity() {
    vector< vector<G4double> > &buffer = *buffer_ptr;
    G4int last_index = getBufferLength() - 1;
    return G4ThreeVector( buffer[last_index][MOMENTUM_SLOT],
-                         buffer[last_index][MOMENTUM_SLOT  +1],
+                         buffer[last_index][MOMENTUM_SLOT + 1],
                          buffer[last_index][MOMENTUM_SLOT + 2] ).mag();
 
 }

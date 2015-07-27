@@ -293,17 +293,19 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //===============================================
 
-//G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
-// G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
-// G4String   fieldName("Uniform 10Tesla"); 
+G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
+G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
+G4String   fieldName("Uniform 10Tesla");
 
-G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
-G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
+//G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
+//G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
+//G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
 
 
-G4Mag_UsualEqRhs *fEquation;
-Mag_UsualEqRhs_IntegrateByTime *fEquation_byTime;
+//G4Mag_UsualEqRhs *fEquation;
+G4Mag_EqRhs *fEquation;
+
+//Mag_UsualEqRhs_IntegrateByTime *fEquation_byTime;
 
 G4FieldManager* SetupField(G4int type)
 {
@@ -325,19 +327,13 @@ G4FieldManager* SetupField(G4int type)
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
-
-
-	   case 0:
-	      fEquation_byTime = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
-	      pStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>( fEquation_byTime );
-	      break;
 	   case 1:
-	      fEquation_byTime = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
-	      pStepper = new MagIntegratorStepper_byTime<FineRKNG45>( fEquation_byTime );
+	      fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
+	      pStepper = new MagIntegratorStepper_byTime<FineRKNG45>( fEquation );
 	      break;
       case 2:
-         fEquation_byTime = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
-         pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation_byTime );
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
+         pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation );
          break;
 
 	   case 3:
@@ -455,6 +451,7 @@ G4PropagatorInField *pMagFieldPropagator=0;
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
 			       G4int             type,
 			       char *stepTracker_output_filename = 0,
+			       char *stepTracker_no_function_calls_output_filename = 0,
 			       char *stepTracker_meta_output_filename = 0)
 {
     void report_endPV(G4ThreeVector    Position, 
@@ -483,14 +480,17 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                               magneticMoment=0.0); 
 
 
+
+    assert( fEquation != 0 );
+
     // Added by J. Suagee: (EquationOfMotion was not getting set in a constructor somewhere)
     ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
             ->SetEquationOfMotion(fEquation);
 
 
-    G4EquationOfMotion* equationOfMotion = 
-        ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
-        ->GetEquationOfMotion();
+    //G4EquationOfMotion* equationOfMotion =
+    //    ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
+    //    ->GetEquationOfMotion();
     
 
     // pNavig->SetWorldVolume(pTopNode);
@@ -541,7 +541,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 
 
-       //////// Some additions:
+       //////// Some additions: (Not sure about this. Should this be the non-relativistic mass?)
        G4double mass = proton_mass_c2 + kineticEnergy;
 
        //if ( have_to_convert_arc_length_to_time ) { // is true if integrating w.r.t. arc length
@@ -551,10 +551,18 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4double beginning[10] = { Position.x(), Position.y(), Position.z(),
              UnitMomentum.x() * momentum, UnitMomentum.y() * momentum,
              UnitMomentum.z() * momentum, 0., 0., 0., 0. };
-       G4double Rhs[10];
+       G4double *Rhs = new G4double[10];
+
+
+       fEquation->SetChargeMomentumMass(chargeState,
+              momentum,
+              //momentum magnitude
+              mass);
+
 
        ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
           -> ComputeRightHandSide(beginning, Rhs);
+
 
        G4double stepTracker_1st_entry[11] = { 0., 0., Position.x(), Position.y(), Position.z(),
                                   UnitMomentum.x() * momentum/mass,
@@ -582,11 +590,6 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        //myStepTracker -> set_mass( mass_to_pass );  // Relativistic mass. Of course should be
                                                    // replaced with an appropriate call to get the mass.
 
-       ////////
-
-
-       // labTof is what is set in the time coordinate of the FieldTrack object:
-
        G4double labTof= 10.0*ns, properTof= 0.1*ns;
        G4ThreeVector Spin(1.0, 0.0, 0.0);
                                                    // Momentum in Mev/c ?
@@ -595,11 +598,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 
        // pMagFieldPropagator
-       equationOfMotion->SetChargeMomentumMass(
+       /*equationOfMotion->SetChargeMomentumMass(
              chargeState,                    // charge in e+ units
 		      momentum, 
 		      //mass_to_pass);
 		      proton_mass_c2);
+       */
        /*//G4cout << G4endl;
        //G4cout << "Test PropagateMagField: ***********************" << G4endl
             << " Starting New Particle with Position " << Position << G4endl 
@@ -671,9 +675,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
         // ..............................  end for ( iparticle )
 
     if (stepTracker_output_filename != 0) {
-       myStepTracker -> outputBuffer( stepTracker_output_filename, stepTracker_meta_output_filename );
+       myStepTracker -> outputBuffer( stepTracker_output_filename,
+                                      stepTracker_no_function_calls_output_filename,
+                                      stepTracker_meta_output_filename );
     }
 
+    delete Rhs;
     delete myStepTracker;
 
     return(1);
@@ -795,8 +802,8 @@ int main(int argc, char **argv)
       if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
     }
 
-	int len = 1;
-	 for (int k = 0; k < len; k++){
+//	int len = 1;
+//	 for (int k = 0; k < len; k++){
     //G4cout << " Testing with stepper number    " << type << G4endl; 
     //G4cout << "             " ; 
     //G4cout << " voxel optimisation      " ; 
@@ -831,10 +838,12 @@ int main(int argc, char **argv)
     //G4cout << " Test with no voxels" << G4endl; 
 
     char *stepTracker_output_filename = "stepTracker_output";
+    char *stepTracker_no_function_calls_output_filename = "no_function_calls";
     char *stepTracker_meta_output_filename = "meta_stepTracker_output";
 
     testG4PropagatorInField( myTopNode, type, stepTracker_output_filename,
-                                        stepTracker_meta_output_filename);
+                                              stepTracker_no_function_calls_output_filename,
+                                              stepTracker_meta_output_filename);
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
     pMagFieldPropagator->SetVerboseLevel( 0 ); 
@@ -843,6 +852,9 @@ int main(int argc, char **argv)
     //G4cout << " Test with full voxels" << G4endl; 
 
     G4GeometryManager::GetInstance()->OpenGeometry();
+
+    /*
+
     G4GeometryManager::GetInstance()->CloseGeometry(true);
 
     testG4PropagatorInField(myTopNode, type);
@@ -884,6 +896,7 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 }
+*/
     // Cannot delete G4TransportationManager::GetInstance();
     return 0;
 }

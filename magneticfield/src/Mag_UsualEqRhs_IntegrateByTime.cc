@@ -21,6 +21,7 @@
 
 #include "G4ThreeVector.hh"
 
+#include <iostream>
 using namespace std;
 
 Mag_UsualEqRhs_IntegrateByTime::Mag_UsualEqRhs_IntegrateByTime( G4MagneticField* MagField )
@@ -34,6 +35,7 @@ Mag_UsualEqRhs_IntegrateByTime::EvaluateRhsGivenB( const G4double y[],
 			             const G4double B[3],
 				           G4double dydx[] ) const
 {
+
 
    G4double cof = FCof();
    cof /= FMass();   // Correction because we are using dynamic variables
