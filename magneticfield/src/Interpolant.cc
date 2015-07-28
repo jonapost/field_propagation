@@ -35,8 +35,12 @@ void Interpolant::Initialize( const G4double y0in[],
             y2prime2[k] = F1[k]; // was F1[k + 3]
       }
       h = step;
+
+      // Assuming right now that we will always want to be able to interpolate
+      // position, but that we might not always care about interpolating
+      // velocity.
       construct_position_polynomials();
-      is_initialized = true;
+      velocity_polynomials_constructed = false;
 }
 
 void Interpolant::construct_position_polynomials() {
@@ -46,16 +50,27 @@ void Interpolant::construct_position_polynomials() {
    for (int k = 0; k < 3; k ++) {
       p1[k] = h * y1prime[k];
       p2[k] = (h2 / 2.) * y1prime2[k];
-      p3[k] = -10.*y1[k] - 6*h*y1prime[k] - 3*(h2/2.)*y1prime2[k] + (h2/2.)*y2prime2[k] - 4.*h*y2prime[k] + 10.*y2[k];
-      p4[k] = 15.*y1[k] + 8.*h*y1prime[k] + 3.*(h2/2.)*y1prime2[k] - 2.*(h2/2.)*y2prime2[k] + 7.*h*y2prime[k] - 15.*y2[k];
-      p5[k] = -6.*y1[k] - 3.*h*y1prime[k] - (h2/2.)*y1prime2[k] + (h2/2.)*y2prime2[k] - 3.*h*y2prime[k] + 6.*y2[k];
+      p3[k] = -10.*y1[k] - 6.*h*y1prime[k] - 3.*(h2/2.)*y1prime2[k] +    (h2/2.)*y2prime2[k] - 4.*h*y2prime[k] + 10.*y2[k];
+      p4[k] =  15.*y1[k] + 8.*h*y1prime[k] + 3.*(h2/2.)*y1prime2[k] - 2.*(h2/2.)*y2prime2[k] + 7.*h*y2prime[k] - 15.*y2[k];
+      p5[k] =  -6.*y1[k] - 3.*h*y1prime[k] -    (h2/2.)*y1prime2[k] +    (h2/2.)*y2prime2[k] - 3.*h*y2prime[k] +  6.*y2[k];
    }
+   position_polynomials_constructed = true;
 }
 
+void Interpolant::construct_velocity_polynomials() {
+
+   G4double h2 = h*h;
+
+   for (int k = 0; k < 3; k ++) {
+      q1[k] = 2.*h2*y1prime2[k];
+      q2[k] = -30.*(1/h)*y1[k] - 18.*y1prime[k] -  9.*(h2/2.)*y1prime2[k] + 3.*(h2/2.)*y2prime2[k] - 12.*y2prime[k] + 30.*(1/h)*y2[k];
+      q3[k] =  60.*(1/h)*y1[k] + 32.*y1prime[k] + 12.*(h2/2.)*y1prime2[k] - 8.*(h2/2.)*y2prime2[k] + 28.*y2prime[k] - 60.*(1/h)*y2[k];
+      q4[k] = -30.*(1/h)*y1[k] - 15.*y1prime[k] -  5.*(h2/2.)*y1prime2[k] + 5.*(h2/2.)*y2prime2[k] - 15.*y2prime[k] + 30.*(1/h)*y2[k];
+   }
+   velocity_polynomials_constructed = true;
+}
 
 void Interpolant::InterpolatePosition(G4double xi, G4double yout[]) {
-
-
 
    G4double xi1 = xi, xi2 = xi*xi;
    G4double xi3 = xi*xi2, xi4 = xi2*xi2;
@@ -65,10 +80,17 @@ void Interpolant::InterpolatePosition(G4double xi, G4double yout[]) {
    }
 }
 
-void Interpolant::InterpolateMomentum(G4double xi, G4double yout[]) {
-   // Dummy implementation
-   yout[0] = 0.; yout[1] = 0.; yout[2] = 0.;
-}
+void Interpolant::InterpolateVelocity(G4double xi, G4double yout[]) {
 
+   if (velocity_polynomials_constructed != true) {
+      construct_velocity_polynomials();
+   }
+
+   G4double xi1 = xi, xi2 = xi*xi;
+   G4double xi3 = xi*xi2, xi4 = xi2*xi2;
+   for (int k = 0; k < 3; k ++) {
+      yout[k] = y1prime[k] + q1[k]*xi1 + q2[k]*xi2 + q3[k]*xi3 + q4[k]*xi4;
+   }
+}
 
 

@@ -165,10 +165,18 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
       // the BaseStepper::ComputeRightHandSide() method.
       BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
 
+      // Now we have to undo the effect of Mag_UsualEqRhs_IntegrateByTime
+      // which will scale nextFunctionEvaluation back to momentum coordinates,
+      // so we have to scale back to velocity coordinates before we store it:
+      for (int i = 3; i < 6; i ++)
+         nextFunctionEvaluation[i] /= m_fEq -> FMass();
+
+      // Getting number of function calls used so far:
       const G4CachedMagneticField *myField = (G4CachedMagneticField*)
                         ( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
       G4int no_function_calls = myField -> GetCountCalls();
 
+      // Storing all this with StepTracker:
       BaseStepper::mTracker -> RecordResultOfStepper(yOutput,
                                   nextFunctionEvaluation, no_function_calls);
 

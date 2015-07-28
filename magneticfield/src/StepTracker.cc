@@ -62,13 +62,14 @@ void StepTracker::outputBuffer(char *outfile_name,
 
    outfile.close();
 
-   ofstream no_function_calls_outfile( no_function_calls_outfile_name, ios::out );
-   for (int i = 0; i < getBufferLength(); i ++)
-      no_function_calls_outfile << no_function_calls_buffer[i] << endl;
+   if (no_function_calls_outfile_name != 0) {
+      ofstream no_function_calls_outfile( no_function_calls_outfile_name, ios::out );
+      for (int i = 0; i < getBufferLength(); i ++)
+         no_function_calls_outfile << no_function_calls_buffer[i] << endl;
 
-   no_function_calls_outfile.close();
+      no_function_calls_outfile.close();
+   }
 }
-
 
 void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[], G4int no_function_calls) {
    // Time is stored in first component.
@@ -77,8 +78,8 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[], G4int 
    if ( last_time_val_was_accepted ) {
 
       buffer.push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
-
-      no_function_calls_buffer.push_back( no_function_calls );
+      if (no_function_calls != -1)
+         no_function_calls_buffer.push_back( no_function_calls );
 
       last_time_val_was_accepted = false;
    }
@@ -90,7 +91,8 @@ void StepTracker::RecordResultOfStepper( G4double yIn[], G4double dydx[], G4int 
    // Take care of beginning. (Don't overwrite the first row.):
    if ( buffer.size() == 1 ) {
       buffer.push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
-      no_function_calls_buffer.push_back( no_function_calls );
+      if (no_function_calls != -1)
+         no_function_calls_buffer.push_back( no_function_calls );
    }
 
    G4int last_index = buffer.size() - 1;

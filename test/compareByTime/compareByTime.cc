@@ -227,7 +227,7 @@ int main(int argc, char *args[]) {
       myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
       //cout << " after stepper call " << endl;
 
-      myStepTracker -> add_to_current_time(step_len / ( myStepTracker -> last_velocity() ), step_len );
+      myStepTracker -> update_time_arclength(step_len / ( myStepTracker -> last_velocity() ), step_len );
 
       //Copy yout into yIn
       for (int k = 0; k < 8; k++){
@@ -247,7 +247,7 @@ int main(int argc, char *args[]) {
 
    myStepTracker -> RecordResultOfStepper(yout, dydx);
 
-   myStepTracker -> add_to_current_time(step_len / ( myStepTracker -> last_velocity() ), step_len );
+   myStepTracker -> update_time_arclength(step_len / ( myStepTracker -> last_velocity() ), step_len );
 
    //Output:
    myStepTracker -> outputBuffer(outfile_name, meta_outfile_name);

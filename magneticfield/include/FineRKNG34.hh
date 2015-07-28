@@ -11,6 +11,12 @@
 #include "G4MagIntegratorStepper.hh"
 #include "Interpolant.hh"
 
+#define NUMBER_INTERPOLATION_VARIABLES 6
+#define NO_STATE_VARIABLES 12
+#define NO_POSITION_VARIABLES 3
+
+
+
 class FineRKNG34: public G4MagIntegratorStepper {
 public:
    virtual ~FineRKNG34();
@@ -27,7 +33,7 @@ public:
    G4double  DistChord()   const;
    G4int IntegratorOrder() const {return 4; }
 
-   void InterpolatePosition(G4double xi, G4double yout[]);
+   //void InterpolatePosition(G4double xi, G4double yout[]);
 
 private:
 
@@ -39,20 +45,14 @@ private:
 
    Interpolant *position_interpolant;
 
-   G4double yInitial[8], yNext[3];
-   G4double fInitial[8], fNext[3];
-
-   //G4double last_step_len;
-   // G4double last_time_value; // Hack to implement FSAL
-
-   FineRKNG34 *fAuxStepper;
+   G4double yInitial[NO_STATE_VARIABLES], yNext[NO_STATE_VARIABLES];
+   G4double yPrimeInitial[NO_STATE_VARIABLES], yPrimeNext[NO_STATE_VARIABLES];
+   G4double fInitial[NO_POSITION_VARIABLES], fNext[NO_POSITION_VARIABLES];
 
    G4double fLastStepLength;
-   G4double *fLastInitialVector, *fLastFinalVector,
-            *fLastDyDx, *fMidVector, *fMidError;
+
    // for DistChord calculations
-
-
+   G4double *fMidVector;
 
 };
 

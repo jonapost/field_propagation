@@ -23,8 +23,7 @@
 using namespace std;
 using namespace CLHEP;
 
-
-
+#define NUMBER_INTERPOLATION_VARIABLES 6
 #define BUFFER_COLUMN_LEN 11
 
 
@@ -77,8 +76,9 @@ int main(int argc, char *args[]) {
 
    G4double **err = new G4double* [len_bufferB];
    for (int i = 0; i < len_bufferB; i ++) {
-      err[i] = new G4double[5]; // Right now, just record error for position
-                                // (time goes in the first component).
+      err[i] = new G4double[2 + NUMBER_INTERPOLATION_VARIABLES];
+      // Right now, just record error for position
+      // (time goes in the first component).
    }
 
    G4int no_interpolated_values = mErrorComputer -> ErrorArray(err);
@@ -90,7 +90,8 @@ int main(int argc, char *args[]) {
 
    ofstream output(output_filename, ios::binary | ios::out);
    for (int i = 0; i < no_interpolated_values; i ++) {
-      output.write( reinterpret_cast<char*>(err[i]), 5 * sizeof(G4double) );
+      output.write( reinterpret_cast<char*>(err[i]),
+                    (2 + NUMBER_INTERPOLATION_VARIABLES) * sizeof(G4double) );
    }
    output.close();
 

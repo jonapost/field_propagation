@@ -19,6 +19,9 @@
 #include <assert.h>
 using namespace std;
 
+#define NO_STATE_VARIABLES 12
+
+
 // G4MagIntegratorStepper_byArcLength, (a wrapper class so that CashKarp, ClassicalRK4 and others
 // can interface with StepTracker when Stepper() is called, and to store total time).
 
@@ -43,11 +46,10 @@ public:
    inline G4double DistChord() const;
 
 private:
-   //G4double yIn[10], dydx_copy[10], cached_dydx[10], last_function_evaluation[10];
-   //G4double mass, inv_mass; // G4MagIntegratorStepper doesn't have these fields by default
+
+   G4double nextFunctionEvaluation[NO_STATE_VARIABLES]; // 8 for safety (only need 6).
 
    G4Mag_EqRhs  *m_fEq;
-
 };
 
 
@@ -56,10 +58,6 @@ inline
 void MagIntegratorStepper_byArcLength<BaseStepper>::ComputeRightHandSide(const G4double yInput[], G4double dydx[]) {
 
    BaseStepper::ComputeRightHandSide(yInput, dydx);
-
-   // Cache:
-   // for (int i = 0; i < 6; i ++)
-   //   last_function_evaluation[i] = dydx[i];
 
 }
 
@@ -117,15 +115,13 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
 
       // nextFunctionEvaluation is done at the right endpoint of the integration step.
       // If this works should make nextFunctionEvaluation a member variable:
-      G4double nextFunctionEvaluation[8]; // 8 for safety (only need 6).
 
-      // Want to store velocity, not momentum, so wait to multiply yOutput[3..5] by FMass()
-      // until after compute next function evaluation.
       BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
 
-
+      // Want to store velocity, not momentum.
       for (int i = 3; i < 6; i ++)
                   yOutput[i] /= m_fEq -> FMass();
+      // Divide by mass to get acceleration:
       for (int i = 3; i < 6; i ++)
          nextFunctionEvaluation[i] /= m_fEq -> FMass();
 
@@ -135,11 +131,9 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
 
       BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation, no_function_calls); // Store as velocity (instead of mom.)
 
+      // Change back to momentum coordinates for next round of stepper:
       for (int i = 3; i < 6; i ++)
             yOutput[i] *= m_fEq -> FMass();
-
-
-      //BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation);
 
       BaseStepper::mTracker -> UnArmTracker();
    }

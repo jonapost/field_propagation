@@ -255,6 +255,7 @@ G4VPhysicalVolume* BuildGeometry()
 
 
 #include "BogackiShampine45.hh"
+#include "DormandPrince745.hh"
 
 #include "MagIntegratorStepperbyTime.hh"
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
@@ -349,6 +350,11 @@ G4FieldManager* SetupField(G4int type)
          pStepper = new MagIntegratorStepper_byArcLength<G4SimpleHeum>( fEquation );
          break;
 	   case 6:
+         fEquation = new G4Mag_UsualEqRhs(&myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<DormandPrince745>( fEquation );
+         break;
+
+	   case 7:
          fEquation = new G4Mag_UsualEqRhs(&myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
@@ -676,8 +682,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
     if (stepTracker_output_filename != 0) {
        myStepTracker -> outputBuffer( stepTracker_output_filename,
-                                      stepTracker_no_function_calls_output_filename,
-                                      stepTracker_meta_output_filename );
+                                      stepTracker_meta_output_filename,
+                                      stepTracker_no_function_calls_output_filename);
     }
 
     delete Rhs;

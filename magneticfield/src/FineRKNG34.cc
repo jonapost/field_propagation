@@ -13,6 +13,10 @@
 using namespace std;
 
 
+#define NUMBER_INTERPOLATION_VARIABLES 6
+#define NO_STATE_VARIABLES 12
+#define NO_POSITION_VARIABLES 3
+
 FineRKNG34::~FineRKNG34() {
    for (int i = 0; i < 5; i ++) {
       delete[] f[i];
@@ -25,6 +29,7 @@ FineRKNG34::~FineRKNG34() {
    delete[] a;
    delete[] aprime;
    delete position_interpolant;
+   delete fMidVector;
 }
 
 FineRKNG34::FineRKNG34(G4EquationOfMotion *EqRhs,
@@ -75,16 +80,20 @@ FineRKNG34::FineRKNG34(G4EquationOfMotion *EqRhs,
    bprime_error[0] = 2. / 125.; bprime_error[1] = 0. / 1.; bprime_error[2] = -27. / 625.; bprime_error[3] = 32. / 625.; bprime_error[4] = -3. / 125.;
 
 
+
+   fMidVector = new G4double[numberOfVariables];
+   /*
    fLastInitialVector = new G4double[numberOfVariables] ;
    fLastFinalVector = new G4double[numberOfVariables] ;
    fLastDyDx = new G4double[numberOfVariables];
 
    fMidVector = new G4double[numberOfVariables];
    fMidError =  new G4double[numberOfVariables];
-   if( primary )
-   {
-    fAuxStepper = new FineRKNG34(EqRhs, numberOfVariables, !primary);
-   }
+   */
+   //if( primary )
+   //{
+   // fAuxStepper = new FineRKNG34(EqRhs, numberOfVariables, !primary);
+   //}
 
 
 
@@ -103,12 +112,12 @@ void FineRKNG34::Stepper( const G4double y[],
                                          // Will have to take care of what to do when there
                                          // is a rejected step later.
 
-   G4double ytemp[10]; // temp value of numberOfVariables
+   G4double ytemp[NO_STATE_VARIABLES]; // temp value of numberOfVariables
 
    G4int i, j, k;
 
-   for (k = 0; k < 3; k ++) {
-      f[0][k + 3] = fInitial[k + 3] = dydx[k + 3];
+   for (k = 3; k < 6; k ++) {
+      f[0][k] = fInitial[k] = dydx[k];
    }
 
    for (i = 1; i < 5; i++) {
@@ -170,19 +179,14 @@ void FineRKNG34::Stepper( const G4double y[],
    for (k = 0; k < 6; k ++) {
       yInitial[k] = y[k];
       yNext[k] = yout[k];
-   }
-   for (k = 0; k < 3; k ++) {
-      fNext[k] = f[4][k];
+      //yPrimeInitial[k];
+      //yPrimeNext[k];
    }
 
-   //last_step_len = h;
-   for( i = 0; i < 6; i ++ )
-   {
-      fLastInitialVector[i] = y[i] ;
-      fLastFinalVector[i]   = yout[i];
-      fLastDyDx[i]          = dydx[i];
+   for (k = 0; k < 3; k ++) {
+      fInitial[k] = dydx[k + 3];
+      fNext[k] = f[4][k + 3];
    }
-   // NormaliseTangentVector( yOut ); // Not wanted
 
    fLastStepLength = h;
 
@@ -191,45 +195,71 @@ void FineRKNG34::Stepper( const G4double y[],
 
 }
 
-void FineRKNG34::InterpolatePosition(G4double xi, G4double yout[]) {
-   if (! position_interpolant->IsInitialized() ) {
-      position_interpolant->Initialize(yInitial, yNext, fInitial, fNext, fLastStepLength);
-   }
-   position_interpolant->InterpolatePosition(xi, yout);
-}
-
-
 G4double  FineRKNG34::DistChord()   const {
    G4double distLine, distChord;
-     G4ThreeVector initialPoint, finalPoint, midPoint;
+   // Store last initial and final points (they will be overwritten in self-Stepper call!)
 
-     // Store last initial and final points (they will be overwritten in self-Stepper call!)
-     initialPoint = G4ThreeVector( fLastInitialVector[0],
-                                   fLastInitialVector[1], fLastInitialVector[2]);
-     finalPoint   = G4ThreeVector( fLastFinalVector[0],
-                                   fLastFinalVector[1],  fLastFinalVector[2]);
+   if (! position_interpolant -> IsInitialized_Position() ) {
+      position_interpolant -> Initialize( yInitial,
+                                          yNext, fInitial,
+                                          fNext, fLastStepLength );
+   }
 
-     // Do half a step using StepNoErr
-
-     fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
-              fMidVector,   fMidError );
-
-     midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
-
-     // Use stored values of Initial and Endpoint + new Midpoint to evaluate
-     //  distance of Chord
+   position_interpolant -> InterpolatePosition( 0.5, fMidVector );
 
 
-     if (initialPoint != finalPoint)
-     {
-        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
-        distChord = distLine;
-     }
-     else
-     {
-        distChord = (midPoint-initialPoint).mag();
-     }
-     return distChord;
+   // Should probably make these vectors class variables.
+   G4ThreeVector midPoint( fMidVector[0], fMidVector[1], fMidVector[2] );
+   G4ThreeVector initialPoint( yInitial[0], yInitial[1], yInitial[2] );
+   G4ThreeVector finalPoint( yNext[0], yNext[1], yNext[2] );
 
+   if (initialPoint != finalPoint)
+   {
+     distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
+     distChord = distLine;
+   }
+   else
+   {
+     distChord = (midPoint-initialPoint).mag();
+   }
+   return distChord;
 }
 
+
+
+
+
+/*
+   G4double distLine, distChord;
+   G4ThreeVector initialPoint, finalPoint, midPoint;
+
+   // Store last initial and final points (they will be overwritten in self-Stepper call!)
+   initialPoint = G4ThreeVector( fLastInitialVector[0],
+                                fLastInitialVector[1], fLastInitialVector[2]);
+   finalPoint   = G4ThreeVector( fLastFinalVector[0],
+                                fLastFinalVector[1],  fLastFinalVector[2]);
+
+   // Do half a step using StepNoErr
+
+   fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
+           fMidVector,   fMidError );
+
+   midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
+
+   // Use stored values of Initial and Endpoint + new Midpoint to evaluate
+   //  distance of Chord
+
+
+   if (initialPoint != finalPoint)
+   {
+     distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
+     distChord = distLine;
+   }
+   else
+   {
+     distChord = (midPoint-initialPoint).mag();
+   }
+   return distChord;
+
+}
+*/

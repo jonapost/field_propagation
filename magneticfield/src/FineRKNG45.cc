@@ -179,15 +179,6 @@ void FineRKNG45::Stepper( const G4double y[],
       }
       yerr[k] *= h;
    }
-
-   for (k = 0; k < 6; k ++) {
-      yInitial[k] = y[k];
-      yNext[k] = yout[k];
-   }
-   for (k = 0; k < 3; k ++) {
-      fNext[k] = f[4][k];
-   }
-
    //last_step_len = h;
    for( i = 0; i < 6; i ++ )
    {
@@ -210,7 +201,7 @@ G4double  FineRKNG45::DistChord()   const {
    G4double distLine, distChord;
    // Store last initial and final points (they will be overwritten in self-Stepper call!)
 
-   if (! position_interpolant -> IsInitialized() ) {
+   if (! position_interpolant -> IsInitialized_Position() ) {
       position_interpolant -> Initialize( fLastInitialVector,
                                           fLastFinalVector, fLastDyDx,
                                           fNextDyDx, fLastStepLength );

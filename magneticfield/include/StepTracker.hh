@@ -29,7 +29,7 @@ public:
    G4bool check_that_wasnt_disgarded_by_Propagator(const G4double yIn[] );
 
    void RecordResultOfStepper( G4double yIn[],
-                               G4double dydx[], G4int no_function_calls);
+                               G4double dydx[], G4int no_function_calls = -1);
 
    void update_time_arclength( G4double time_to_add, G4double arclength_to_add );
 
@@ -39,8 +39,9 @@ public:
                              // ChordFinder or MagIntDriver do any record keeping.
 
    void outputBuffer(char *outfile_name,
-                     char *no_function_calls_outfile_name,
-                     char *meta_outfile_name);
+                     char *meta_outfile_name,
+                     // recording function call history is optional:
+                     char *no_function_calls_outfile_name = 0);
 
    // Inline Functions:
 
