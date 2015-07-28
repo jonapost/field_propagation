@@ -44,8 +44,8 @@ StepTracker::~StepTracker() {
 }
 
 void StepTracker::outputBuffer(char *outfile_name,
-                               char *no_function_calls_outfile_name,
-                               char *meta_outfile_name) {
+                               char *meta_outfile_name,
+                               char *no_function_calls_outfile_name) {
 
    ofstream meta_outfile(meta_outfile_name, ios::out);
    meta_outfile << getBufferLength();

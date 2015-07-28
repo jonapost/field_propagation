@@ -294,14 +294,16 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //===============================================
 
+
 G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
 G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
 G4String   fieldName("Uniform 10Tesla");
 
-//G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
-//G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
-//G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
-
+/*
+G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
+G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
+G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
+*/
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
