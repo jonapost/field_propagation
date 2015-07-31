@@ -259,9 +259,11 @@ G4VPhysicalVolume* BuildGeometry()
 
 #include "MagIntegratorStepperbyTime.hh"
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
+#include "MagEqRhsbyTimestoreB.hh"
+
 #include "FineRKNG34.hh"
 #include "FineRKNG45.hh"
-
+#include "MuruaRKN6459.hh"
 
 //#include "StepTracker_convertArcLengthToTime.hh"
 #include "MagIntegratorStepperByArcLength.hh"
@@ -339,24 +341,28 @@ G4FieldManager* SetupField(G4int type)
          pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation );
          break;
 
-	   case 3:
+      case 3: // MuruaRKN6459
+         fEquation = new MagEqRhs_byTime_storeB(&myMagField);
+         pStepper = new MagIntegratorStepper_byTime<MuruaRKN6459>( fEquation );
+         break;
+	   case 4:
 	      fEquation = new G4Mag_UsualEqRhs(&myMagField);
 	      pStepper = new MagIntegratorStepper_byArcLength<G4CashKarpRKF45>( fEquation );
 	      break;
-	   case 4:
+	   case 5:
          fEquation = new G4Mag_UsualEqRhs(&myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<G4ClassicalRK4>( fEquation );
          break;
-	   case 5:
+	   case 6:
          fEquation = new G4Mag_UsualEqRhs(&myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<G4SimpleHeum>( fEquation );
          break;
-	   case 6:
+	   case 7:
          fEquation = new G4Mag_UsualEqRhs(&myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<DormandPrince745>( fEquation );
          break;
 
-	   case 7:
+	   case 8:
          fEquation = new G4Mag_UsualEqRhs(&myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
@@ -674,7 +680,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 	  Position= EndPosition;
 	  UnitMomentum= EndUnitMomentum;
-	  physStep *= 2.25;
+	  physStep *= 2.;
        } // ...........................  end for ( istep )
        G4cout << "=============="<<total<<"================="<<G4endl;
        myMagField.ReportStatistics();

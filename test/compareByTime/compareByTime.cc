@@ -33,11 +33,17 @@
 #include "G4NystromRK4.hh"
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
+#include "MagEqRhsbyTimestoreB.hh"
+
+
 #include "ChawlaSharmaRKNstepper.hh"
 
 #include "MagIntegratorStepperbyTime.hh"
+#include "MagIntegratorStepperByArcLength.hh"
+
 #include "FineRKNG34.hh"
 #include "FineRKNG45.hh"
+#include "MuruaRKN6459.hh"
 
 #include <iostream>
 #include "G4ThreeVector.hh"
@@ -95,25 +101,26 @@ int main(int argc, char *args[]) {
 
    G4double last_dydx_copy[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
-   G4UniformMagField *myUniformField;
-   G4QuadrupoleMagField *quadrupoleMagField;
+   //G4UniformMagField *myUniformField;
+   //G4QuadrupoleMagField *quadrupoleMagField;
+   G4MagneticField *myMagField;
    G4Mag_EqRhs *fEquation;
 
-   G4int mag_field_choice = 2;
+   G4int mag_field_choice = 1;
    // if (argc > 4)
    //   mag_field_choice = atoi(args[4]);
 
    if (mag_field_choice == 1){
-      myUniformField = new G4UniformMagField(
+      myMagField = new G4UniformMagField(
                         G4ThreeVector(x_field, y_field, z_field));
-      fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
+      //fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
    }
    else {
-      quadrupoleMagField = new G4QuadrupoleMagField(
+      myMagField = new G4QuadrupoleMagField(
                         10. * tesla / (50. * cm));
       // myQuadField = new G4CachedMagneticField(quadrupoleMagField,
       //      1.0 * cm);
-      fEquation = new Mag_UsualEqRhs_IntegrateByTime(quadrupoleMagField);
+      //fEquation = new Mag_UsualEqRhs_IntegrateByTime(quadrupoleMagField);
    }
    G4ChargeState chargeState(particleCharge, // The charge can change (dynamic)
                spin = 0.0, magneticMoment = 0.0);
@@ -122,7 +129,7 @@ int main(int argc, char *args[]) {
          //momentum magnitude
          mass);
 
-   G4int stepper_no = 0, no_of_steps = 10;
+   G4int stepper_no = 1, no_of_steps = 10;
    G4double step_len = 1.;
    char *outfile_name, *meta_outfile_name;
 
@@ -137,52 +144,52 @@ int main(int argc, char *args[]) {
    if (argc > 5)
       meta_outfile_name= args[5];
 
-   G4MagIntegratorStepper *myStepper;
+   G4MagIntegratorStepper *pStepper;
 
-   switch (stepper_no) {
-      // case 0:
-      // myStepper = new G4ExactHelixStepper(fEquation);
-      // break;
+      //G4cout << " Setting up field of type: " << fieldName << G4endl;
+   switch ( stepper_no )
+   {
+      case 0: // MuruaRKN6459
+         fEquation = new MagEqRhs_byTime_storeB(myMagField);
+         pStepper = new MagIntegratorStepper_byTime<MuruaRKN6459>( fEquation );
+         break;
       case 1:
-         myStepper = new MagIntegratorStepper_byTime<G4CashKarpRKF45>(fEquation);
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField);
+         pStepper = new MagIntegratorStepper_byTime<FineRKNG45>( fEquation );
          break;
       case 2:
-         myStepper = new MagIntegratorStepper_byTime<BogackiShampine23>(fEquation);
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField);
+         pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation );
          break;
+
       case 3:
-         myStepper = new MagIntegratorStepper_byTime<DormandPrince745>(fEquation);
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<G4CashKarpRKF45>( fEquation );
          break;
       case 4:
-         myStepper = new MagIntegratorStepper_byTime<BogackiShampine45>(fEquation);
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<G4ClassicalRK4>( fEquation );
          break;
       case 5:
-         myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<G4SimpleHeum>( fEquation );
          break;
       case 6:
-         myStepper = new MagIntegratorStepper_byTime<G4SimpleHeum>(fEquation);
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<DormandPrince745>( fEquation );
          break;
-      case 7:
-         myStepper = new MagIntegratorStepper_byTime<G4NystromRK4>(fEquation);
-         break;
-      case 8:
-         myStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>(fEquation);
-         break;
-      case 9:
-         myStepper = new MagIntegratorStepper_byTime<FineRKNG34>(fEquation);
-         break;
-      case 10:
-         myStepper = new MagIntegratorStepper_byTime<FineRKNG45>(fEquation);
-         break;
-      default:
-         myStepper = 0;
-   }
 
-   myStepper -> ComputeRightHandSide(yIn, dydx);
+      case 7:
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
+         break;
+   }
+   pStepper -> ComputeRightHandSide(yIn, dydx);
    G4double beginning[11] = { 0., 0., x_pos, y_pos, z_pos, x_mom/mass, y_mom/mass, z_mom/mass, dydx[3]/mass, dydx[4]/mass, dydx[5]/mass };
 
    StepTracker *myStepTracker = new StepTracker( beginning );
 
-   myStepper -> setTracker(myStepTracker);
+   pStepper -> setTracker(myStepTracker);
 
    // MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
 
@@ -219,12 +226,12 @@ int main(int argc, char *args[]) {
 
    for (int j = 0; j < no_of_steps; j++) {
       //cout << " before Compute RHS" << endl;
-      myStepper->ComputeRightHandSide(yIn, dydx);
+      pStepper->ComputeRightHandSide(yIn, dydx);
       //cout << " before Stepper " << endl;
 
       myStepTracker -> ArmTracker();
 
-      myStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+      pStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
       //cout << " after stepper call " << endl;
 
       myStepTracker -> update_time_arclength(step_len / ( myStepTracker -> last_velocity() ), step_len );
@@ -237,7 +244,7 @@ int main(int argc, char *args[]) {
    // Record final step:
 
 
-   myStepper -> ComputeRightHandSide(yout, dydx);
+   pStepper -> ComputeRightHandSide(yout, dydx);
 
    for (int i = 3; i < 6; i ++)
                yout[i] /= fEquation -> FMass();
@@ -254,7 +261,7 @@ int main(int argc, char *args[]) {
 
    // Cleanup
 
-   delete myStepper;
+   delete pStepper;
    delete myStepTracker;
    delete fEquation;
 
