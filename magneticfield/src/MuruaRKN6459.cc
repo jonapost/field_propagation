@@ -16,7 +16,7 @@
 
 MuruaRKN6459::MuruaRKN6459(G4EquationOfMotion *EqRhs,
       G4int numberOfVariables): G4MagIntegratorStepper(EqRhs, numberOfVariables) {
-   MagEqRhs_byTime_storeB *myField_as_storeBfield = dynamic_cast<MagEqRhs_byTime_storeB*>(GetEquationOfMotion());
+   myField_as_storeBfield = dynamic_cast<MagEqRhs_byTime_storeB*>(GetEquationOfMotion());
 }
 
 MuruaRKN6459::~MuruaRKN6459() {

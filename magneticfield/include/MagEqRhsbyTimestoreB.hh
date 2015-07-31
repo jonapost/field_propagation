@@ -37,7 +37,7 @@ public:
 
    inline G4double * get_last_B_eval() { return lastB_eval; }
 
-private:
+//private:
    G4double *lastB_eval;
 
 };

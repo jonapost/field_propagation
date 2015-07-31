@@ -122,12 +122,7 @@ int main(int argc, char *args[]) {
       //      1.0 * cm);
       //fEquation = new Mag_UsualEqRhs_IntegrateByTime(quadrupoleMagField);
    }
-   G4ChargeState chargeState(particleCharge, // The charge can change (dynamic)
-               spin = 0.0, magneticMoment = 0.0);
-   fEquation->SetChargeMomentumMass(chargeState,
-         G4ThreeVector(x_mom, y_mom, z_mom).mag(),
-         //momentum magnitude
-         mass);
+
 
    G4int stepper_no = 1, no_of_steps = 10;
    G4double step_len = 1.;
@@ -184,6 +179,17 @@ int main(int argc, char *args[]) {
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
    }
+
+
+   G4ChargeState chargeState(particleCharge, // The charge can change (dynamic)
+                             spin = 0.0, magneticMoment = 0.0);
+   fEquation->SetChargeMomentumMass(chargeState,
+                                    G4ThreeVector(x_mom, y_mom, z_mom).mag(),
+                                    //momentum magnitude
+                                    mass);
+
+
+
    pStepper -> ComputeRightHandSide(yIn, dydx);
    G4double beginning[11] = { 0., 0., x_pos, y_pos, z_pos, x_mom/mass, y_mom/mass, z_mom/mass, dydx[3]/mass, dydx[4]/mass, dydx[5]/mass };
 

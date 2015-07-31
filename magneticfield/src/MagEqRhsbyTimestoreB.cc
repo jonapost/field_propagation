@@ -28,7 +28,7 @@ MagEqRhs_byTime_storeB::MagEqRhs_byTime_storeB( G4MagneticField* MagField )
 }
 
 MagEqRhs_byTime_storeB::~MagEqRhs_byTime_storeB() {
-   delete lastB_eval;
+   delete[] lastB_eval;
 }
 
 void
