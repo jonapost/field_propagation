@@ -20,37 +20,6 @@ MuruaRKN6459::MuruaRKN6459(G4EquationOfMotion *EqRhs,
 
 
 
-   /*
-
-   MuruaRKN6459::a21 = 1./10.,
-   MuruaRKN6459::a31 = 1./20., MuruaRKN6459::a32 = 1./20.,
-   MuruaRKN6459::a41 = -3./20., MuruaRKN6459::a42 = -27./20., MuruaRKN6459::a43 = 9./5.,
-   MuruaRKN6459::a51 = 596./495., MuruaRKN6459::a52 = -4./11., MuruaRKN6459::a53 = -427./264., MuruaRKN6459::a54 = 5849./3960.,
-   MuruaRKN6459::a61 = -30183643./75879540., MuruaRKN6459::a62 = -2893317./88748., MuruaRKN6459::a63 = 50178653./1264659., MuruaRKN6459::a64 = -40900531./18969885., MuruaRKN6459::a65 = 5./19.,
-   MuruaRKN6459::a71 = -396583./95400., MuruaRKN6459::a72 = -169371./5000., MuruaRKN6459::a73 = 21382771./530000., MuruaRKN6459::a74 = -1735451./954000., MuruaRKN6459::a75 = 1./6., MuruaRKN6459::a76 = 1./53.,
-   MuruaRKN6459::a81 = -7118348801./1589316300., MuruaRKN6459::a82 = -169371./5000., MuruaRKN6459::a83 = 4295617784819./105954420000., MuruaRKN6459::a84 = -160583069351./127145304000., MuruaRKN6459::a85 = -1292153./2665520., MuruaRKN6459::a86 = 3399687081./565090240., MuruaRKN6459::a87 = -17500./3029.,
-   MuruaRKN6459::a91 = 2243113./2686068., MuruaRKN6459::a92 = 245./24., MuruaRKN6459::a93 = -19392535./1745568., MuruaRKN6459::a94 = 165115./361152., MuruaRKN6459::a95 = 193763./351120., MuruaRKN6459::a96 = 34289./24640., MuruaRKN6459::a97 = -461732./327845., MuruaRKN6459::a98 = 24232./327845.;
-
-   MuruaRKN6459::alpha21 = 1./200.,
-   MuruaRKN6459::alpha31 = 1./200., MuruaRKN6459::alpha32 = 0./1.,
-   MuruaRKN6459::alpha41 = -1./2200., MuruaRKN6459::alpha42 = 0./1., MuruaRKN6459::alpha43 = 1./22.,
-   MuruaRKN6459::alpha51 = 637./6600., MuruaRKN6459::alpha52 = 0./1., MuruaRKN6459::alpha53 = -7./110., MuruaRKN6459::alpha54 = 7./33.,
-   MuruaRKN6459::alpha61 = 637./6600., MuruaRKN6459::alpha62 = 0./1., MuruaRKN6459::alpha63 = -7./110., MuruaRKN6459::alpha64 = 7./33., MuruaRKN6459::alpha65 = 0./1.,
-   MuruaRKN6459::alpha71 = 225437./1968750., MuruaRKN6459::alpha72 = 0./1., MuruaRKN6459::alpha73 = -30073./281250., MuruaRKN6459::alpha74 = 65569./281250., MuruaRKN6459::alpha75 = -5534276509./402334453125., MuruaRKN6459::alpha76 = 11940527048./2816341171875.,
-   MuruaRKN6459::alpha81 = 225437./1968750., MuruaRKN6459::alpha82 = 0./1., MuruaRKN6459::alpha83 = -30073./281250., MuruaRKN6459::alpha84 = 65569./281250., MuruaRKN6459::alpha85 = -5534276509./402334453125., MuruaRKN6459::alpha86 = 11940527048./2816341171875., MuruaRKN6459::alpha87 = 0./1.,
-   MuruaRKN6459::alpha91 = 151./2142., MuruaRKN6459::alpha92 = 0./1., MuruaRKN6459::alpha93 = 5./116., MuruaRKN6459::alpha94 = 385./1368., MuruaRKN6459::alpha95 = 6./55., MuruaRKN6459::alpha96 = 2017./9240., MuruaRKN6459::alpha97 = -8./35., MuruaRKN6459::alpha98 = 6058./983535.;
-
-   MuruaRKN6459::b1 = 151./2142., MuruaRKN6459::b2 = 0./1., MuruaRKN6459::b3 = 25./522., MuruaRKN6459::b4 = 275./684., MuruaRKN6459::b5 = 4./11., MuruaRKN6459::b6 = 2017./2772., MuruaRKN6459::b7 = -5./7., MuruaRKN6459::b8 = 15145./786828., MuruaRKN6459::b9 = 1./12.;
-   MuruaRKN6459::bhat1 = 1349./157500., MuruaRKN6459::bhat2 = 0./1., MuruaRKN6459::bhat3 = 7873./45000., MuruaRKN6459::bhat4 = 27457./90000., MuruaRKN6459::bhat5 = 130803094867./3218675., MuruaRKN6459::bhat6 = 1266768679133./62500., MuruaRKN6459::bhat7 = 0./3004097250000., MuruaRKN6459::bhat8 = -2./1., MuruaRKN6459::bhat9 = 11./5., MuruaRKN6459::bhat10 = 1./150.;
-   MuruaRKN6459::beta1 = 151./2142., MuruaRKN6459::beta2 = 0./1., MuruaRKN6459::beta3 = 5./116., MuruaRKN6459::beta4 = 385./1368., MuruaRKN6459::beta5 = 6./55., MuruaRKN6459::beta6 = 2017./9240., MuruaRKN6459::beta7 = -8./35., MuruaRKN6459::beta8 = 6058./983535., MuruaRKN6459::beta9 = 0./1.;
-   MuruaRKN6459::beta_hat1 = 1349./157500., MuruaRKN6459::beta_hat2 = 0./1., MuruaRKN6459::beta_hat3 = 7873./50000., MuruaRKN6459::beta_hat4 = 192199./900000., MuruaRKN6459::beta_hat5 = 130803094867./1072891875000., MuruaRKN6459::beta_hat6 = 1266768679133./10013657500000., MuruaRKN6459::beta_hat7 = 0./1., MuruaRKN6459::beta_hat8 = -16./125., MuruaRKN6459::beta_hat9 = 0./1., MuruaRKN6459::beta_hat10 = 0./1.;
-
-   MuruaRKN6459::c2 = 1./10., MuruaRKN6459::c3 = 1./10., MuruaRKN6459::c4 = 3./10., MuruaRKN6459::c5 = 7./10., MuruaRKN6459::c6 = 7./10., MuruaRKN6459::c7 = 17./25., MuruaRKN6459::c8 = 17./25., MuruaRKN6459::c9 = 1./1.;
-
-   */
-
-
-
    c2 = 1./10., c3 = 1./10., c4 = 3./10., c5 = 7./10., c6 = 7./10., c7 = 17./25., c8 = 17./25., c9 = 1./1.;
 
    a21 = 1./10.,
