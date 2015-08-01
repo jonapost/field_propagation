@@ -32,6 +32,9 @@
 
 #include "G4NystromRK4.hh"
 
+
+#include "G4CachedMagneticField.hh"
+
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 #include "MagEqRhsbyTimestoreB.hh"
 
@@ -94,16 +97,10 @@ int main(int argc, char *args[]) {
    G4double yIn[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
    G4double dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
-   G4double dydx_copy[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-
-   G4double yIn_copy[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
-   G4double last_dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-
-   G4double last_dydx_copy[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
-
    //G4UniformMagField *myUniformField;
    //G4QuadrupoleMagField *quadrupoleMagField;
-   G4MagneticField *myMagField;
+   G4MagneticField *my_non_cached_MagField;
+   G4CachedMagneticField *myMagField;
    G4Mag_EqRhs *fEquation;
 
    G4int mag_field_choice = 1;
@@ -111,13 +108,16 @@ int main(int argc, char *args[]) {
    //   mag_field_choice = atoi(args[4]);
 
    if (mag_field_choice == 1){
-      myMagField = new G4UniformMagField(
+      my_non_cached_MagField = new G4UniformMagField(
                         G4ThreeVector(x_field, y_field, z_field));
+      myMagField = new G4CachedMagneticField( my_non_cached_MagField, 1.0 * cm);
+
       //fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
    }
    else {
-      myMagField = new G4QuadrupoleMagField(
+      my_non_cached_MagField = new G4QuadrupoleMagField(
                         10. * tesla / (50. * cm));
+      myMagField = new G4CachedMagneticField( my_non_cached_MagField, 1.0 * cm);
       // myQuadField = new G4CachedMagneticField(quadrupoleMagField,
       //      1.0 * cm);
       //fEquation = new Mag_UsualEqRhs_IntegrateByTime(quadrupoleMagField);
@@ -228,7 +228,7 @@ int main(int argc, char *args[]) {
 
    //Interpolant *minterpolant = new Interpolant();
 
-   G4double error;
+   //G4double error;
 
    for (int j = 0; j < no_of_steps; j++) {
       //cout << " before Compute RHS" << endl;
@@ -249,7 +249,7 @@ int main(int argc, char *args[]) {
    }
    // Record final step:
 
-
+   /* Don't need this anymore:
    pStepper -> ComputeRightHandSide(yout, dydx);
 
    for (int i = 3; i < 6; i ++)
@@ -261,6 +261,7 @@ int main(int argc, char *args[]) {
    myStepTracker -> RecordResultOfStepper(yout, dydx);
 
    myStepTracker -> update_time_arclength(step_len / ( myStepTracker -> last_velocity() ), step_len );
+   */
 
    //Output:
    myStepTracker -> outputBuffer(outfile_name, meta_outfile_name);
