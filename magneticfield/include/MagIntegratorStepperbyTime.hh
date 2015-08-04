@@ -22,6 +22,8 @@
 
 using namespace std;
 
+#include "isTracking.hh"
+
 #define NO_STATE_VARIABLES 12
 
 // Not all of these are needed (they are used in StepTracker.cc).
@@ -96,7 +98,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yError [] ) {
 
 
-#ifdef TRACKING
+#ifdef BACK_TRACKING
 
    std::vector<G4double> *last_pos_vector, *second_to_last_pos_vector;
    G4int buffer_length;

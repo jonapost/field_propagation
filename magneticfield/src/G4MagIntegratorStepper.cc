@@ -52,8 +52,6 @@ G4MagIntegratorStepper::~G4MagIntegratorStepper()
 
 void G4MagIntegratorStepper::ComputeRightHandSide( const G4double y[], G4double dydx[] ) 
 {
-   //cout << "Inside G4MagIntegratorStepper::ComputeRightHandSide()" << endl;
-
   this->RightHandSide( y, dydx );
 }
 

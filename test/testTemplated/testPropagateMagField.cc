@@ -59,6 +59,9 @@
 #include "G4ios.hh"
 #include <iomanip>
 
+// Are we using StepTracker?
+#include "isTracking.hh"
+
 
 //#define JTS_DEBUG
 
@@ -264,6 +267,8 @@ G4VPhysicalVolume* BuildGeometry()
 #include "FineRKNG34.hh"
 #include "FineRKNG45.hh"
 #include "MuruaRKN6459.hh"
+#include "MuruaRKN5459.hh"
+
 
 //#include "StepTracker_convertArcLengthToTime.hh"
 #include "MagIntegratorStepperByArcLength.hh"
@@ -332,6 +337,11 @@ G4FieldManager* SetupField(G4int type)
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
+	   case 0:
+         fEquation = new MagEqRhs_byTime_storeB(&myMagField);
+         pStepper = new MagIntegratorStepper_byTime<MuruaRKN5459>( fEquation );
+         break;
+
 	   case 1:
 	      fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
 	      pStepper = new MagIntegratorStepper_byTime<FineRKNG45>( fEquation );
@@ -463,10 +473,14 @@ G4PropagatorInField *pMagFieldPropagator=0;
 // Test Stepping
 //
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
-			       G4int             type,
-			       char *stepTracker_output_filename = 0,
+			       G4int             type
+
+#ifdef TRACKING
+			       ,char *stepTracker_output_filename = 0,
 			       char *stepTracker_no_function_calls_output_filename = 0,
-			       char *stepTracker_meta_output_filename = 0)
+			       char *stepTracker_meta_output_filename = 0
+#endif
+)
 {
     void report_endPV(G4ThreeVector    Position, 
                   G4ThreeVector UnitVelocity,
@@ -500,6 +514,10 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     // Added by J. Suagee: (EquationOfMotion was not getting set in a constructor somewhere)
     ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
             ->SetEquationOfMotion(fEquation);
+
+    if (type == 0)
+       dynamic_cast< MagIntegratorStepper_byTime<MuruaRKN5459>* >( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
+             -> set_MagEqRhs_storedBfield(fEquation);
 
 
     //G4EquationOfMotion* equationOfMotion =
@@ -562,10 +580,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        //    physStep *= velocity; // Converts to time
        //}
 
-       G4double beginning[10] = { Position.x(), Position.y(), Position.z(),
-             UnitMomentum.x() * momentum, UnitMomentum.y() * momentum,
-             UnitMomentum.z() * momentum, 0., 0., 0., 0. };
-       G4double *Rhs = new G4double[10];
+
 
 
        fEquation->SetChargeMomentumMass(chargeState,
@@ -573,7 +588,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
               //momentum magnitude
               mass);
 
+#ifdef TRACKING
 
+       G4double beginning[10] = { Position.x(), Position.y(), Position.z(),
+                    UnitMomentum.x() * momentum, UnitMomentum.y() * momentum,
+                    UnitMomentum.z() * momentum, 0., 0., 0., 0. };
+       G4double *Rhs = new G4double[10];
        ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
           -> ComputeRightHandSide(beginning, Rhs);
 
@@ -603,6 +623,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        myStepTracker -> set_mass( proton_mass_c2 );
        //myStepTracker -> set_mass( mass_to_pass );  // Relativistic mass. Of course should be
                                                    // replaced with an appropriate call to get the mass.
+#endif
+
 
        G4double labTof= 10.0*ns, properTof= 0.1*ns;
        G4ThreeVector Spin(1.0, 0.0, 0.0);
@@ -688,6 +710,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
         // ..............................  end for ( iparticle )
 
+#ifdef TRACKING
     if (stepTracker_output_filename != 0) {
        myStepTracker -> outputBuffer( stepTracker_output_filename,
                                       stepTracker_meta_output_filename,
@@ -695,8 +718,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     }
 
     delete Rhs;
-    delete myStepTracker;
 
+    delete myStepTracker;
+#endif
     return(1);
 }
 
@@ -851,13 +875,22 @@ int main(int argc, char **argv)
 	// Do the tests without voxels
     //G4cout << " Test with no voxels" << G4endl; 
 
+#ifdef TRACKING
+
     char *stepTracker_output_filename = "stepTracker_output";
     char *stepTracker_no_function_calls_output_filename = "no_function_calls";
     char *stepTracker_meta_output_filename = "meta_stepTracker_output";
 
-    testG4PropagatorInField( myTopNode, type, stepTracker_output_filename,
-                                              stepTracker_no_function_calls_output_filename,
-                                              stepTracker_meta_output_filename);
+#endif
+
+    testG4PropagatorInField( myTopNode, type
+
+#ifdef TRACKING
+                                              , stepTracker_output_filename
+                                              , stepTracker_no_function_calls_output_filename
+                                              , stepTracker_meta_output_filename
+#endif
+    );
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
     pMagFieldPropagator->SetVerboseLevel( 0 ); 

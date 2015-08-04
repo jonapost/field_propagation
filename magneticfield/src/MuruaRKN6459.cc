@@ -112,12 +112,83 @@ void MuruaRKN6459::Stepper(  const G4double y[],
       ytemp[k + 3] = v0[k]+h*(a21*Vdot1[k+3]);
    }
    RightHandSide(ytemp, Vdot2);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c3*v0[k] + h*h*(alpha31*Vdot1[k+3]+alpha32*Vdot2[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a31*Vdot1[k+3] + a32*Vdot2[k+3]);
+   }
+   RightHandSide(ytemp, Vdot3);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c4*v0[k] + h*h*(alpha41*Vdot1[k+3]+alpha42*Vdot2[k+3]+alpha43*Vdot3[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a41*Vdot1[k+3] + a42*Vdot2[k+3] + a43*Vdot3[k+3]);
+   }
+   RightHandSide(ytemp, Vdot4);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c5*v0[k] + h*h*(alpha51*Vdot1[k+3]+alpha52*Vdot2[k+3]+alpha53*Vdot3[k+3]+alpha54*Vdot4[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a51*Vdot1[k+3] + a52*Vdot2[k+3] + a53*Vdot3[k+3] + a54*Vdot4[k+3]);
+   }
+   RightHandSide(ytemp, Vdot5);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c6*v0[k] + h*h*(alpha61*Vdot1[k+3]+alpha62*Vdot2[k+3]+alpha63*Vdot3[k+3]+alpha64*Vdot4[k+3]+alpha65*Vdot5[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a61*Vdot1[k+3] + a62*Vdot2[k+3] + a63*Vdot3[k+3] + a64*Vdot4[k+3] + a65*Vdot5[k+3]);
+   }
+   RightHandSide(ytemp, Vdot6);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c7*v0[k] + h*h*(alpha71*Vdot1[k+3]+alpha72*Vdot2[k+3]+alpha73*Vdot3[k+3]+alpha74*Vdot4[k+3]+alpha75*Vdot5[k+3]+alpha76*Vdot6[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a71*Vdot1[k+3] + a72*Vdot2[k+3] + a73*Vdot3[k+3] + a74*Vdot4[k+3] + a75*Vdot5[k+3] + a76*Vdot6[k+3]);
+   }
+   RightHandSide(ytemp, Vdot7);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c8*v0[k] + h*h*(alpha81*Vdot1[k+3]+alpha82*Vdot2[k+3]+alpha83*Vdot3[k+3]+alpha84*Vdot4[k+3]+alpha85*Vdot5[k+3]+alpha86*Vdot6[k+3]+alpha87*Vdot7[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a81*Vdot1[k+3] + a82*Vdot2[k+3] + a83*Vdot3[k+3] + a84*Vdot4[k+3] + a85*Vdot5[k+3] + a86*Vdot6[k+3] + a87*Vdot7[k+3]);
+   }
+   RightHandSide(ytemp, Vdot8);
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c9*v0[k] + h*h*(alpha91*Vdot1[k+3]+alpha92*Vdot2[k+3]+alpha93*Vdot3[k+3]+alpha94*Vdot4[k+3]+alpha95*Vdot5[k+3]+alpha96*Vdot6[k+3]+alpha97*Vdot7[k+3]+alpha98*Vdot8[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a91*Vdot1[k+3] + a92*Vdot2[k+3] + a93*Vdot3[k+3] + a94*Vdot4[k+3] + a95*Vdot5[k+3] + a96*Vdot6[k+3] + a97*Vdot7[k+3] + a98*Vdot8[k+3]);
+   }
+   RightHandSide(ytemp, Vdot9);
+
+
+   G4double temp_var;
+   for (k = 3; k < 6; k ++) {
+      temp_var = beta1*Vdot1[k] + beta2*Vdot2[k] + beta3*Vdot3[k] + beta4*Vdot4[k] + beta5*Vdot5[k] + beta6*Vdot6[k] + beta7*Vdot7[k] + beta8*Vdot8[k] + beta9*Vdot9[k];
+      yout[k - 3] = q0[k - 3] + h*v0[k - 3] + h*h*temp_var;
+   }
+   for (k = 3; k < 6; k ++) {
+      temp_var = b1*Vdot1[k] + b2*Vdot2[k] + b3*Vdot3[k] + b4*Vdot4[k] + b5*Vdot5[k] + b6*Vdot6[k] + b7*Vdot7[k] + b8*Vdot8[k] + b9*Vdot9[k];
+      yout[k] = v0[k - 3] + h*temp_var;
+   }
+
+
+
+   /*
+   for (k = 0; k < 3; k ++) {
+      ytemp[k] = q0[k] + h*c2*v0[k] + h*h*(alpha21*Vdot1[k+3]);
+   }
+   for (k = 0; k < 3; k ++) {
+      ytemp[k + 3] = v0[k]+h*(a21*Vdot1[k+3]);
+   }
+   RightHandSide(ytemp, Vdot2);
    // Duplicate!: using last Q_i value
    for (k = 0; k < 3; k ++) {
       ytemp[k + 3] = v0[k]+h*(a31*Vdot1[k+3] + a32*Vdot2[k+3]);
    }
    // Use last B field Evaluation
-   B = myField_as_storeBfield -> get_last_B_eval();
+
    ComputeRhsWithStoredB(ytemp, Vdot3);
    for (k = 0; k < 3; k ++) {
       ytemp[k] = q0[k] + h*c4*v0[k] + h*h*(alpha41*Vdot1[k+3]+alpha42*Vdot2[k+3]+alpha43*Vdot3[k+3]);
@@ -138,7 +209,7 @@ void MuruaRKN6459::Stepper(  const G4double y[],
       ytemp[k + 3] = v0[k]+h*(a61*Vdot1[k+3] + a62*Vdot2[k+3] + a63*Vdot3[k+3] + a64*Vdot4[k+3] + a65*Vdot5[k+3]);
    }
    // Use last B field Evaluation
-   B = myField_as_storeBfield -> get_last_B_eval();
+
    ComputeRhsWithStoredB(ytemp, Vdot6);
    for (k = 0; k < 3; k ++) {
       ytemp[k] = q0[k] + h*c7*v0[k] + h*h*(alpha71*Vdot1[k+3]+alpha72*Vdot2[k+3]+alpha73*Vdot3[k+3]+alpha74*Vdot4[k+3]+alpha75*Vdot5[k+3]+alpha76*Vdot6[k+3]);
@@ -152,7 +223,7 @@ void MuruaRKN6459::Stepper(  const G4double y[],
       ytemp[k + 3] = v0[k]+h*(a81*Vdot1[k+3] + a82*Vdot2[k+3] + a83*Vdot3[k+3] + a84*Vdot4[k+3] + a85*Vdot5[k+3] + a86*Vdot6[k+3] + a87*Vdot7[k+3]);
    }
    // Use last B field Evaluation
-   B = myField_as_storeBfield -> get_last_B_eval();
+
    ComputeRhsWithStoredB(ytemp, Vdot8);
    for (k = 0; k < 3; k ++) {
       ytemp[k] = q0[k] + h*c9*v0[k] + h*h*(alpha91*Vdot1[k+3]+alpha92*Vdot2[k+3]+alpha93*Vdot3[k+3]+alpha94*Vdot4[k+3]+alpha95*Vdot5[k+3]+alpha96*Vdot6[k+3]+alpha97*Vdot7[k+3]+alpha98*Vdot8[k+3]);
@@ -171,6 +242,6 @@ void MuruaRKN6459::Stepper(  const G4double y[],
       temp_var = b1*Vdot1[k] + b2*Vdot2[k] + b3*Vdot3[k] + b4*Vdot4[k] + b5*Vdot5[k] + b6*Vdot6[k] + b7*Vdot7[k] + b8*Vdot8[k] + b9*Vdot9[k];
       yout[k] = v0[k - 3] + h*temp_var;
    }
-
+   */
 
 }

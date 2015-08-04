@@ -9,6 +9,7 @@
 // which is available at
 //   http://geant4.org/license
 
+
 #include "G4UniformMagField.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ios.hh"
@@ -47,14 +48,18 @@
 #include "FineRKNG34.hh"
 #include "FineRKNG45.hh"
 #include "MuruaRKN6459.hh"
-
+#include "MuruaRKN5459.hh"
 #include <iostream>
 #include "G4ThreeVector.hh"
 
 
 #include "Interpolant.hh"
 
+#include "isTracking.hh"
+
+#ifdef TRACKING
 #include "StepTracker.hh"
+#endif
 
 using namespace std;
 using namespace CLHEP;
@@ -144,8 +149,31 @@ int main(int argc, char *args[]) {
       //G4cout << " Setting up field of type: " << fieldName << G4endl;
    switch ( stepper_no )
    {
-      case 0: // MuruaRKN6459
+      case -3: // MuruaRKN6459
+         //fEquation = new MagEqRhs_byTime_storeB(myMagField);
+
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<MuruaRKN6459>( fEquation );
+         break;
+      case -2:
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<FineRKNG45>( fEquation );
+         break;
+      //case -1:
+      //   fEquation = new G4Mag_UsualEqRhs(myMagField);
+      //   pStepper = new MagIntegratorStepper_byArcLength<FineRKNG34>( fEquation );
+      //   break;
+      case -1:
+         //fEquation = new MagEqRhs_byTime_storeB(myMagField);
+
          fEquation = new MagEqRhs_byTime_storeB(myMagField);
+         pStepper = new MagIntegratorStepper_byTime<MuruaRKN5459>( fEquation );
+         break;
+
+      case 0: // MuruaRKN6459
+         //fEquation = new MagEqRhs_byTime_storeB(myMagField);
+
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField);
          pStepper = new MagIntegratorStepper_byTime<MuruaRKN6459>( fEquation );
          break;
       case 1:
@@ -156,25 +184,28 @@ int main(int argc, char *args[]) {
          fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField);
          pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation );
          break;
-
       case 3:
-         fEquation = new G4Mag_UsualEqRhs(myMagField);
-         pStepper = new MagIntegratorStepper_byArcLength<G4CashKarpRKF45>( fEquation );
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField);
+         pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>( fEquation );
          break;
       case 4:
          fEquation = new G4Mag_UsualEqRhs(myMagField);
-         pStepper = new MagIntegratorStepper_byArcLength<G4ClassicalRK4>( fEquation );
+         pStepper = new MagIntegratorStepper_byArcLength<G4CashKarpRKF45>( fEquation );
          break;
       case 5:
          fEquation = new G4Mag_UsualEqRhs(myMagField);
-         pStepper = new MagIntegratorStepper_byArcLength<G4SimpleHeum>( fEquation );
+         pStepper = new MagIntegratorStepper_byArcLength<G4ClassicalRK4>( fEquation );
          break;
       case 6:
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<G4SimpleHeum>( fEquation );
+         break;
+      case 7:
          fEquation = new G4Mag_UsualEqRhs(myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<DormandPrince745>( fEquation );
          break;
 
-      case 7:
+      case 8:
          fEquation = new G4Mag_UsualEqRhs(myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
@@ -189,6 +220,7 @@ int main(int argc, char *args[]) {
                                     mass);
 
 
+#ifdef TRACKING
 
    pStepper -> ComputeRightHandSide(yIn, dydx);
    G4double beginning[11] = { 0., 0., x_pos, y_pos, z_pos, x_mom/mass, y_mom/mass, z_mom/mass, dydx[3]/mass, dydx[4]/mass, dydx[5]/mass };
@@ -196,6 +228,7 @@ int main(int argc, char *args[]) {
    StepTracker *myStepTracker = new StepTracker( beginning );
 
    pStepper -> setTracker(myStepTracker);
+#endif
 
    // MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
 
@@ -231,21 +264,28 @@ int main(int argc, char *args[]) {
    //G4double error;
 
    for (int j = 0; j < no_of_steps; j++) {
-      //cout << " before Compute RHS" << endl;
-      pStepper->ComputeRightHandSide(yIn, dydx);
-      //cout << " before Stepper " << endl;
 
+      pStepper->ComputeRightHandSide(yIn, dydx);
+
+#ifdef TRACKING
       myStepTracker -> ArmTracker();
+#endif
 
       pStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
-      //cout << " after stepper call " << endl;
 
+#ifdef TRACKING
       myStepTracker -> update_time_arclength(step_len / ( myStepTracker -> last_velocity() ), step_len );
-
+#endif
       //Copy yout into yIn
       for (int k = 0; k < 8; k++){
          yIn[k] = yout[k];
       }
+
+      // Output yerr:
+      for (int k = 0; k < 6; k ++)
+         cout << yerr[k] << ", ";
+      cout << endl;
+
    }
    // Record final step:
 
@@ -264,12 +304,17 @@ int main(int argc, char *args[]) {
    */
 
    //Output:
-   myStepTracker -> outputBuffer(outfile_name, meta_outfile_name);
 
+#ifdef TRACKING
+   myStepTracker -> outputBuffer(outfile_name, meta_outfile_name);
+#endif
    // Cleanup
 
    delete pStepper;
+
+#ifdef TRACKING
    delete myStepTracker;
+#endif
    delete fEquation;
 
    return 0;

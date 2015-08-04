@@ -69,7 +69,7 @@ const G4int  G4MagInt_Driver::fMaxStepBase = 250;  // Was 5000
 #endif
 
 
-
+#include "isTracking.hh"
 
 #ifdef TRACKING
 #include "StepTracker.hh"
