@@ -48,7 +48,9 @@ using namespace std;
 
 
 #ifdef TRACKING
-#include "StepTracker.hh"
+   #ifndef MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_
+      #include "StepTracker.hh"
+   #endif
 #endif
 
 // ..........................................................................
@@ -285,6 +287,9 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                                     G4double       latestSafetyRadius )
 {
 
+#ifdef TRACKING
+   mTracker -> set_within_AdvanceChordLimited( true );
+#endif
 
   G4double dydx_temp[12];
   G4double Field[4];
@@ -293,6 +298,12 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   G4double dyErr;
   G4FieldTrack yEnd( yCurrent);
   G4double  startCurveLen= yCurrent.GetCurveLength();
+
+#ifdef TRACKING
+   mTracker -> record_if_post_intersection_point( yCurrent, startCurveLen );
+#endif
+
+
   G4double nextStep;
   //            *************
   stepPossible= FindNextChord(yCurrent, stepMax, yEnd, dyErr, epsStep,
@@ -351,6 +362,13 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   total_time += stepPossible;
   record( pos_mom_vals, dydx_temp);
    */
+
+
+#ifdef Tracking
+   mTracker -> set_last_curve_length( startCurveLen + stepPossible )
+   mTracker -> set_within_AdvanceChordLimited( false );
+#endif
+
 
   return stepPossible;
 }

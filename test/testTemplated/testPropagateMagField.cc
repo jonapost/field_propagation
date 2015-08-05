@@ -301,16 +301,16 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //===============================================
 
-
+/*
 G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
 G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
 G4String   fieldName("Uniform 10Tesla");
+*/
 
-/*
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
-*/
+
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
@@ -337,7 +337,7 @@ G4FieldManager* SetupField(G4int type)
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
-	   case 0:
+	   case 0: // will currently fail because DistChord() uses the wrong interpolant!
          fEquation = new MagEqRhs_byTime_storeB(&myMagField);
          pStepper = new MagIntegratorStepper_byTime<MuruaRKN5459>( fEquation );
          break;
@@ -351,7 +351,7 @@ G4FieldManager* SetupField(G4int type)
          pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation );
          break;
 
-      case 3: // MuruaRKN6459
+      case 3: // MuruaRKN6459 will fail (wrong coefficients)!
          fEquation = new MagEqRhs_byTime_storeB(&myMagField);
          pStepper = new MagIntegratorStepper_byTime<MuruaRKN6459>( fEquation );
          break;
@@ -478,7 +478,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 #ifdef TRACKING
 			       ,char *stepTracker_output_filename = 0,
 			       char *stepTracker_no_function_calls_output_filename = 0,
-			       char *stepTracker_meta_output_filename = 0
+			       char *stepTracker_meta_output_filename = 0,
+			       char * intersection_indices_filename = 0
 #endif
 )
 {
@@ -534,7 +535,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     
     // physStep=kInfinity;
     G4ThreeVector Position(0.,0.,0.); 
-    G4ThreeVector UnitMomentum(0.,0.6,0.8);  
+    G4ThreeVector UnitMomentum(0.,0.6,0.8);
     G4ThreeVector EndPosition, EndUnitMomentum;
 
 //
@@ -619,8 +620,44 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                -> setTracker(myStepTracker);
 
 
+       myStepTracker -> set_stepper_pointer( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() );
 
        myStepTracker -> set_mass( proton_mass_c2 );
+
+       switch( type ) {
+          case 0:
+             myStepTracker -> set_integrating_by_velocity(true);
+             break;
+
+          case 1:
+             myStepTracker -> set_integrating_by_velocity(true);
+             break;
+          case 2:
+             myStepTracker -> set_integrating_by_velocity(true);
+             break;
+
+          case 3: // MuruaRKN6459
+             myStepTracker -> set_integrating_by_velocity(true);
+             break;
+          case 4:
+             myStepTracker -> set_integrating_by_velocity(false);
+             break;
+          case 5:
+             myStepTracker -> set_integrating_by_velocity(false);
+             break;
+          case 6:
+             myStepTracker -> set_integrating_by_velocity(false);
+             break;
+          case 7:
+             myStepTracker -> set_integrating_by_velocity(false);
+             break;
+
+          case 8:
+             myStepTracker -> set_integrating_by_velocity(false);
+             break;
+       }
+
+
        //myStepTracker -> set_mass( mass_to_pass );  // Relativistic mass. Of course should be
                                                    // replaced with an appropriate call to get the mass.
 #endif
@@ -648,6 +685,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	      << " = " << (0.5+iparticle*10.0)*proton_mass_c2 / MeV << " MeV"
               << G4endl;*/
 
+#ifdef TRACKING
+       G4double last_curve_length = 0;
+#endif
 
        clock_t total = 0;
 	   for( int istep=0; istep < 14; istep++ ){ 
@@ -668,6 +708,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 				   ); 
 		  clock_t t;
 		  t = clock(); 
+
+
+#ifdef TRACKING
+		  initTrack.SetCurveLength(last_curve_length);
+#endif
+
 
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
 						     physStep, 
@@ -700,6 +746,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  pNavig->SetGeometricallyLimitedStep();
 	  // pMagFieldPropagator->SetGeometricallyLimitedStep();
 
+#ifdef TRACKING
+	  last_curve_length = initTrack.GetCurveLength();
+	  //cout << " Curve Length: " << initTrack.GetCurveLength() << endl;
+#endif
+
 	  Position= EndPosition;
 	  UnitMomentum= EndUnitMomentum;
 	  physStep *= 2.;
@@ -714,7 +765,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     if (stepTracker_output_filename != 0) {
        myStepTracker -> outputBuffer( stepTracker_output_filename,
                                       stepTracker_meta_output_filename,
-                                      stepTracker_no_function_calls_output_filename);
+                                      stepTracker_no_function_calls_output_filename,
+                                      intersection_indices_filename);
     }
 
     delete Rhs;
@@ -880,7 +932,7 @@ int main(int argc, char **argv)
     char *stepTracker_output_filename = "stepTracker_output";
     char *stepTracker_no_function_calls_output_filename = "no_function_calls";
     char *stepTracker_meta_output_filename = "meta_stepTracker_output";
-
+    char *intersection_indices_filename = "intersection_indices";
 #endif
 
     testG4PropagatorInField( myTopNode, type
@@ -889,11 +941,12 @@ int main(int argc, char **argv)
                                               , stepTracker_output_filename
                                               , stepTracker_no_function_calls_output_filename
                                               , stepTracker_meta_output_filename
+                                              , intersection_indices_filename
 #endif
     );
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
-    pMagFieldPropagator->SetVerboseLevel( 0 ); 
+    //pMagFieldPropagator->SetVerboseLevel( 0 );
 
 // Repeat tests but with full voxels
     //G4cout << " Test with full voxels" << G4endl; 
@@ -912,7 +965,7 @@ int main(int argc, char **argv)
 	//   << "----------------------------------------------------------"
 	  // << G4endl; 
 
-	
+	*/
 // Repeat tests with full voxels and modified parameters
     //G4cout << "Test with more accurate parameters " << G4endl; 
 
@@ -931,9 +984,10 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
+
     optimiseVoxels = ! optimiseVoxels;
 // Repeat tests but with the opposite optimisation choice
-    //G4cout << " Now test with optimisation " ; 
+    G4cout << " Now test with optimisation " ;
     if (optimiseVoxels)   G4cout << "on"; 
     else            G4cout << "off"; 
     G4cout << G4endl;
@@ -942,8 +996,8 @@ int main(int argc, char **argv)
     testG4PropagatorInField(myTopNode, type);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
-}
-*/
+
+
     // Cannot delete G4TransportationManager::GetInstance();
     return 0;
 }

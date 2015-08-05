@@ -97,6 +97,10 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yOutput[],
             G4double yError [] ) {
 
+#ifdef TRACKING
+   if ( ! BaseStepper::mTracker -> get_within_AdvanceChordLimited() )
+      cout << "In Stepper, but not in AdvanceChordLimited()" << endl;
+#endif
 
 #ifdef BACK_TRACKING
 
@@ -157,32 +161,36 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
 
 
 #ifdef TRACKING
-   if ( BaseStepper::mTracker -> isArmed() ) { // If armed then store step result.
+   if ( BaseStepper::mTracker -> get_within_AdvanceChordLimited() ) {
+      // Within AdvancedChordLimited, so we want to record.
 
-      // We need the next RHS function evaluation (for the right endpoint of
-      // step interval). We need this because it currently is not stored by
-      // the stepper (FSAL?)
+      if ( BaseStepper::mTracker -> isArmed() ) { // If armed then store step result.
 
-      // Also, because we are currently in velocity coordinates, we just call
-      // the BaseStepper::ComputeRightHandSide() method.
-      BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
+         // We need the next RHS function evaluation (for the right endpoint of
+         // step interval). We need this because it currently is not stored by
+         // the stepper (FSAL?)
 
-      // Now we have to undo the effect of Mag_UsualEqRhs_IntegrateByTime
-      // which will scale nextFunctionEvaluation back to momentum coordinates,
-      // so we have to scale back to velocity coordinates before we store it:
-      for (int i = 3; i < 6; i ++)
-         nextFunctionEvaluation[i] /= m_fEq -> FMass();
+         // Also, because we are currently in velocity coordinates, we just call
+         // the BaseStepper::ComputeRightHandSide() method.
+         BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
 
-      // Getting number of function calls used so far:
-      const G4CachedMagneticField *myField = (G4CachedMagneticField*)
-                        ( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
-      G4int no_function_calls = myField -> GetCountCalls();
+         // Now we have to undo the effect of Mag_UsualEqRhs_IntegrateByTime
+         // which will scale nextFunctionEvaluation back to momentum coordinates,
+         // so we have to scale back to velocity coordinates before we store it:
+         for (int i = 3; i < 6; i ++)
+            nextFunctionEvaluation[i] /= m_fEq -> FMass();
 
-      // Storing all this with StepTracker:
-      BaseStepper::mTracker -> RecordResultOfStepper(yOutput,
-                                  nextFunctionEvaluation, no_function_calls);
+         // Getting number of function calls used so far:
+         const G4CachedMagneticField *myField = (G4CachedMagneticField*)
+                           ( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
+         G4int no_function_calls = myField -> GetCountCalls();
 
-      BaseStepper::mTracker -> UnArmTracker();
+         // Storing all this with StepTracker:
+         BaseStepper::mTracker -> RecordResultOfStepper(yOutput,
+                                     nextFunctionEvaluation, no_function_calls);
+
+         BaseStepper::mTracker -> UnArmTracker();
+      }
    }
 #endif
 

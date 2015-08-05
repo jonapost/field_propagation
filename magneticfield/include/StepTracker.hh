@@ -13,6 +13,15 @@
 #define MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_
 
 #include "G4Types.hh"
+#include "G4FieldTrack.hh"
+
+#ifndef G4MAGIntegratorSTEPPER
+#include "G4MagIntegratorStepper.hh"
+#else
+
+class G4MagIntegratorStepper;
+
+#endif
 
 #include <vector>
 using namespace std;
@@ -28,6 +37,22 @@ public:
 
    G4bool check_that_wasnt_disgarded_by_Propagator(const G4double yIn[] );
 
+
+   // Functions to handle book keeping of intersection points (thrown by the G4PropagatorInField class).
+   inline void set_within_AdvanceChordLimited(G4bool status) { within_AdvanceChordLimited = status; }
+   inline G4bool get_within_AdvanceChordLimited() { return within_AdvanceChordLimited; }
+
+   void record_if_post_intersection_point(G4FieldTrack& possible_post_intersection_point,
+                                          G4double passed_curve_length);
+
+   inline void set_last_curve_length(G4double curve_length) { last_curve_length = curve_length; }
+   inline void set_stepper_pointer( G4MagIntegratorStepper * stepper ) { myStepper = stepper; }
+
+   inline void set_integrating_by_velocity(G4bool mbool) { integrating_by_velocity = mbool; }
+
+   // End of intersection pt. book keeping Functions.
+
+
    void RecordResultOfStepper( G4double yIn[],
                                G4double dydx[], G4int no_function_calls = -1);
 
@@ -41,7 +66,8 @@ public:
    void outputBuffer(char *outfile_name,
                      char *meta_outfile_name,
                      // recording function call history is optional:
-                     char *no_function_calls_outfile_name = 0);
+                     char *no_function_calls_outfile_name = 0,
+                     char *indices_intersection_pts_filename = 0);
 
    // Inline Functions:
 
@@ -69,8 +95,19 @@ public:
 
 private:
 
+   // These two bools don't need to be initialized (The first call
+   //of the stepper is always from within AdvanceChordLimited() )
+
+   G4bool integrating_by_velocity; // True if we are using MagIntegratorStepper_byTime
+                                   // False if we are using MagIntegratorStepper_byArcLength
+   G4bool within_AdvanceChordLimited;
+   G4double last_curve_length;
+
+   G4MagIntegratorStepper *myStepper;
+
    vector< vector<G4double> > buffer;
    vector<G4int> no_function_calls_buffer;
+   vector<G4int> indices_of_intersection_points;
 
    G4double mass;
    G4bool last_time_val_was_accepted, armed;

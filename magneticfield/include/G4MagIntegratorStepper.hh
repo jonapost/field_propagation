@@ -43,16 +43,18 @@
 // - 15.01.97  J. Apostolakis (J.Apostolakis@cern.ch)
 // --------------------------------------------------------------------
 
+#ifndef G4MAGIntegratorSTEPPER
+#define G4MAGIntegratorSTEPPER
 
 #include "isTracking.hh"
 
 #ifdef TRACKING
-#include "StepTracker.hh"
+   #ifndef MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_
+      #include "StepTracker.hh"
+   #else
+      class StepTracker;
+   #endif
 #endif
-
-
-#ifndef G4MAGIntegratorSTEPPER
-#define G4MAGIntegratorSTEPPER
 
 #include "G4Types.hh"
 #include "G4EquationOfMotion.hh"
