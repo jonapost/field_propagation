@@ -4,7 +4,7 @@
 
 
 //#include "RKTestDriver.cc"
-#include "FSALMagIntegratorDriver.hh"
+//#include "FSALMagIntegratorDriver.hh"
 #include "G4MagIntegratorDriver.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4MagIntegratorStepper.hh"

@@ -14,11 +14,11 @@ using namespace CLHEP;
 using namespace std;
 
 RKTest::RKTest() :
-uField(G4UniformMagField(SetupUMF())),
-QField(G4QuadrupoleMagField(SetupQMF())),
+//uField(G4UniformMagField(SetupUMF())),
+//QField(G4QuadrupoleMagField(SetupQMF())),
 tTrack(G4FieldTrack(CreateTrack())){
 //    fEqRhs = new G4Mag_UsualEqRhs(&uField);
-    setEquation(&uField);
+//    setEquation(&uField);
 }
 
 RKTest::~RKTest(){
@@ -92,8 +92,8 @@ void RKTest::setEquation(G4MagneticField *pField){
 
 
 void RKTest::Reset(){
-    uField = SetupUMF();
-    QField = SetupQMF();
+//    uField = SetupUMF();
+//    QField = SetupQMF();
 
     if(MField)
         delete MField;

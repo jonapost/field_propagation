@@ -28,8 +28,8 @@ using namespace CLHEP;
 class RKTest{
 private:
     //Members - all needed for the program Run
-    G4UniformMagField uField ;
-    G4QuadrupoleMagField QField ;
+//    G4UniformMagField uField ;
+//    G4QuadrupoleMagField QField ;
     G4MagneticField *MField;
     G4FieldTrack tTrack ;
     G4MagInt_Driver *tDriver ;
@@ -69,12 +69,14 @@ public:
     template < class STEPPER >
     void testSteppersFixedUMF(int columns[6],
                               /*string stepper_code = "ck45",*/
+                              G4double factor = 1.,
                               G4double step_len = 25.0*CLHEP::mm,
                               int no_of_steps = 100)
     {
         
         tTrack = CreateTrack();
-        setEquation(&uField);
+        MField = new G4UniformMagField(SetupUMF(factor));
+        setEquation(MField);
         G4ExactHelixStepper *exactStepper = new G4ExactHelixStepper(fEqRhs);
         STEPPER *myStepper = new STEPPER(fEqRhs);
         //    tDriver = SetDriver<STEPPER>(fEqRhs);//, tTrack);
@@ -150,18 +152,21 @@ public:
             
             tTrack = CreateTrack();
             if(field_code == "qmf"){
-                QField = SetupQMF(factor);
-                setEquation(&QField);
+//                QField = SetupQMF(factor);
+                MField = new G4QuadrupoleMagField(SetupQMF(factor));
+//                setEquation(&QField);
+                setEquation(MField);
+                
             }
             else{
-                uField = SetupUMF(factor);
-                setEquation(&uField);
+//                uField = SetupUMF(factor);
+                MField = new G4UniformMagField(SetupUMF(factor));
+//                setEquation(&uField);
+                setEquation(MField);
             }
-            
-            
+
             tDriver = SetDriver<STEPPER>(fEqRhs);//, tTrack);
             tDriver->AccurateAdvance(tTrack, physStep, theEps,physStep); //Suggested h = physStep
-            
             
             func_evals = tDriver->GetStepper()->GetfNoRHSCalls();
             
@@ -199,12 +204,17 @@ public:
             
             tTrack = CreateTrack();
             if(field_code == "qmf"){
-                QField = SetupQMF(factor);
-                setEquation(&QField);
+                //                QField = SetupQMF(factor);
+                MField = new G4QuadrupoleMagField(SetupQMF(factor));
+                //                setEquation(&QField);
+                setEquation(MField);
+                
             }
             else{
-                uField = SetupUMF(factor);
-                setEquation(&uField);
+                //                uField = SetupUMF(factor);
+                MField = new G4UniformMagField(SetupUMF(factor));
+                //                setEquation(&uField);
+                setEquation(MField);
             }
             
             /*****************	Only Difference from testG4Driver ********************/
@@ -226,17 +236,29 @@ public:
     }
 
     template<class STEPPER, class REF_STEPPER>
-    void testStepperInterpolant(int columns[6], std::string field_code = "umf", G4double factor = 1., G4double step_len_pi_divisor = 6.0, G4double maxAngle = 2.0*CLHEP::pi)
+    void testStepperInterpolant(int columns[6],
+                                G4double step_len_pi_divisor = 6.0,
+                                G4double maxAngle = 2.0*CLHEP::pi,
+                                G4double factor = 1.,
+                                std::string field_code = "umf")
     {
+        bool ifPrintany = false;
+        
         tTrack = CreateTrack();
         if(field_code == "qmf"){
-            QField = SetupQMF(factor);
-            setEquation(&QField);
+            //                QField = SetupQMF(factor);
+            MField = new G4QuadrupoleMagField(SetupQMF(factor));
+            //                setEquation(&QField);
+            setEquation(MField);
+            
         }
         else{
-            uField = SetupUMF(factor);
-            setEquation(&uField);
+            //                uField = SetupUMF(factor);
+            MField = new G4UniformMagField(SetupUMF(factor));
+            //                setEquation(&uField);
+            setEquation(MField);
         }
+    
         
         REF_STEPPER *exactStepper = new REF_STEPPER(fEqRhs);
         STEPPER *myStepper = new STEPPER(fEqRhs);
@@ -273,22 +295,27 @@ public:
         
         //Printing the headers
         for(int i=0; i<6; i++){
-            if(columns[i])
+            if(columns[i]){
+                ifPrintany = true;
                 cout<<"# "
                 <<setw(10)<<"yOut["<<i<<"]"
                 <<setw(14)<<"yOutX["<<i<<"]"
-                <<setw(16)<<"yOut - yOutX["<<i<<"]"
-                <<"\n";
+                <<setw(16)<<"yOut - yOutX["<<i<<"]";
+            }
         }
         
         myStepper->RightHandSide(yIn, dydx);
         exactStepper->RightHandSide(yInX, dydxRef);
-        print3(columns, 0, yout, yerr, yout);
+
+        if(ifPrintany)
+            print3(columns, 0, yout, yerr, yout);
         
         
         G4double Err[6] = {0., 0., 0., 0., 0., 0.},
-        maxErr[6] =  {0., 0., 0., 0., 0., 0. };
+        maxErr[6] =  {0., 0., 0., 0., 0., 0. },
+        avgErr[6] = {0., 0., 0., 0., 0., 0. };
         G4double tau = 0.5, tau_step = 0.01*6.0/step_len_pi_divisor;//0.01/Div
+        int no_of_steps = 0;
         
         for(angle = theta; angle<maxAngle; angle += theta){
             
@@ -296,14 +323,21 @@ public:
             
             myStepper->Stepper(yIn,dydx,step_len,yout,yerr);//, nextDydx);
             exactStepper->Stepper(yInX,dydxRef,step_len,youtX,yerrX);
-            myStepper->SetupInterpolate(yIn, dydx, step_len);
+//            myStepper->SetupInterpolate_high(yIn, dydx, step_len);
+            myStepper->SetupInterpolate(yIn, dydx, step_len);	//--Original
             //        Use a few interpolations in between the mesh points for dense output
             for(tau = tau_step; tau < 1.0; tau+=tau_step){
-                myStepper->Interpolate(yIn,
-                                       dydx,
-                                       step_len,
-                                       youtD,
-                                       tau );           //Interpolating to tau
+                no_of_steps++;
+//                myStepper->Interpolate_high(yIn,
+//                                       dydx,
+//                                       step_len,
+//                                       youtD,
+//                                       tau );           //Interpolating to tau
+                myStepper->Interpolate(yIn, //--Original
+                                            dydx,
+                                            step_len,
+                                            youtD,
+                                            tau );           //Interpolating to tau
                 
                 exactStepper->Stepper(yInX,dydxRef,tau*step_len,youtDX,yerrX);
                 
@@ -319,15 +353,18 @@ public:
                     Err[i] = (youtD[i] - youtDX[i])/youtDX[i];
                     Err[i] = abs(Err[i]);
                     if(Err[i] > maxErr[i]) maxErr[i] = Err[i] ;
+                    avgErr[i] += Err[i];
                     
                 }
-                
-                print3(columns, 0, youtD, youtDX, youtDX);//(youtD, youtDX, columns, angle*tau);
+                if(ifPrintany)
+                	print3(columns, 0, youtD, youtDX, youtDX);//(youtD, youtDX, columns, angle*tau);
             }
-            
-            cout<<"\n#  --------------- \n";
-            print3(columns, 0, yout, youtX, youtX);
-            cout<<"\n#  --------------- \n";
+            if(ifPrintany){
+                cout<<"\n#  --------------- \n";
+                print3(columns, 0, yout, youtX, youtX);
+                cout<<"\n#  --------------- \n";
+            }
+
             
             for(int i=0; i<6; i++){
                 yIn[i] = yout[i];
@@ -351,6 +388,9 @@ public:
         cout<<"\n# The Max. error in each coordinate : \n#\t";
         for(int i=0;i <6; i++)
             cout<<maxErr[i]<<"  ";
+        cout<<"\n The Average error in each coordinate : \n#\t";
+        for(int i=0;i <6; i++)
+            cout<<avgErr[i]/no_of_steps<<"  ";
         cout<<"\n\n#\t\t\t\t\t\t------------- End of output ----------------- \n\n";
         
     }
