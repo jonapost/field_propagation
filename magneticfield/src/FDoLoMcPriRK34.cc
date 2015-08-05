@@ -8,7 +8,7 @@
 // This code is made available subject to the Geant4 license, a copy of
 // which is available at
 //   http://geant4.org/license
-//  FDoLoMcPri34.cc
+//  FDoLoMcPriRK34.cc
 //  Geant4
 //
 //  History
@@ -21,28 +21,28 @@
 
 //
 //
-//    This is the source file of FDoLoMcPri34 class containing the
-//    definition of the stageper() method that evaluates one stage in
+//    This is the source file of FDoLoMcPriRK34 class containing the
+//    definition of the Stepper() method that evaluates one Step in
 //    field propagation.
 //    The Butcher table of the Dormand-Lockyer-McGorrigan-Prince-6-3-4 method is as follows :
 //
 
 
 
-#include "FDoLoMcPri34.hh"
+#include "FDoLoMcPriRK34.hh"
 #include "G4LineSection.hh"
 // #include <cmath>
 
 
 //Constructor
-FDoLoMcPri34::FDoLoMcPri34(G4EquationOfMotion *EqRhs,
+FDoLoMcPriRK34::FDoLoMcPriRK34(G4EquationOfMotion *EqRhs,
                                   G4int noIntegrationVariables,
                                   G4bool primary)
 : FSALMagIntegratorStepper(EqRhs, noIntegrationVariables){
    
    const G4int numberOfVariables = noIntegrationVariables;
    
-   //New Chunk of memory being created for use by the stageper
+   //New Chunk of memory being created for use by the Stepper
    
    //aki - for storing intermediate RHS
    ak2 = new G4double[numberOfVariables];
@@ -54,25 +54,26 @@ FDoLoMcPri34::FDoLoMcPri34(G4EquationOfMotion *EqRhs,
    yTemp = new G4double[numberOfVariables] ;
    yIn = new G4double[numberOfVariables] ;
    
-   pseudoDydx_for_DistChord = new G4double[numberOfVariables];
-   
+   pseudoDydx_for_DistChord  = new G4double[numberOfVariables];
    fLastInitialVector = new G4double[numberOfVariables] ;
    fLastFinalVector = new G4double[numberOfVariables] ;
    fLastDyDx = new G4double[numberOfVariables];
    
    fMidVector = new G4double[numberOfVariables];
    fMidError =  new G4double[numberOfVariables];
+
+
    if( primary )
    {
-       fAuxStepper = new FDoLoMcPri34(EqRhs, numberOfVariables,
+       fAuxStepper = new FDoLoMcPriRK34(EqRhs, numberOfVariables,
                                           !primary);
    }
 }
 
 
 //Destructor
-FDoLoMcPri34::~FDoLoMcPri34(){
-   //clear all previously allocated memory for stageper and DistChord
+FDoLoMcPriRK34::~FDoLoMcPriRK34(){
+   //clear all previously allocated memory for Stepper and DistChord
    delete[] ak2;
    delete[] ak3;
    delete[] ak4;
@@ -89,20 +90,21 @@ FDoLoMcPri34::~FDoLoMcPri34(){
    delete[] fMidError;
    
    delete fAuxStepper;
+    
+    delete[] pseudoDydx_for_DistChord;
    
-   delete[] pseudoDydx_for_DistChord;
    
 }
 
 
-//stageper :
+//Stepper :
 
-// Passing in the value of yInput[],the first time dydx[] and stage length
+// Passing in the value of yInput[],the first time dydx[] and Step length
 // Giving back yOut and yErr arrays for output and error respectively
 
-void FDoLoMcPri34::Stepper(const G4double yInput[],
+void FDoLoMcPriRK34::Stepper(const G4double yInput[],
                               const G4double dydx[],
-                              G4double stage,
+                              G4double Step,
                               G4double yOut[],
                               G4double yErr[],
                               G4double nextDydx[]
@@ -112,9 +114,7 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
    
    //The various constants defined on the basis of butcher tableu
    const G4double  //G4double - only once
-  
-   b21 = 0.0 ,
-   
+
    b21 = 7.0/27.0 , 
    
 
@@ -134,7 +134,7 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
    b62 =  0.0 , 
    b63 =  216.0/385.0 ,
    b64 =  54.0/85.0 ,
-   b65 =  -7.0/22.0 ;
+   b65 =  -7.0/22.0 ,
    
 
    
@@ -156,7 +156,7 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
    
    // The number of variables to be integrated over
    yOut[7] = yTemp[7]  = yIn[7];
-   //  Saving yInput because yInput and yOut can be aliases for same array
+   //  Saving yInput because yInput and yOut can be aliases for same array, same for dydx
    
    for(i=0;i<numberOfVariables;i++)
    {
@@ -171,32 +171,32 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
    
    for(i=0;i<numberOfVariables;i++)
    {
-       yTemp[i] = yIn[i] + b21*stage*DyDx[i] ;
+       yTemp[i] = yIn[i] + b21*Step*DyDx[i] ;
    }
    RightHandSide(yTemp, ak2) ;              // 2nd stage
    
    for(i=0;i<numberOfVariables;i++)
    {
-       yTemp[i] = yIn[i] + stage*(b31*DyDx[i] + b32*ak2[i]) ;
+       yTemp[i] = yIn[i] + Step*(b31*DyDx[i] + b32*ak2[i]) ;
    }
    RightHandSide(yTemp, ak3) ;              // 3rd stage
    
    for(i=0;i<numberOfVariables;i++)
    {
-       yTemp[i] = yIn[i] + stage*(b41*DyDx[i] + b42*ak2[i] + b43*ak3[i]) ;
+       yTemp[i] = yIn[i] + Step*(b41*DyDx[i] + b42*ak2[i] + b43*ak3[i]) ;
    }
    RightHandSide(yTemp, ak4) ;              // 4th stage
    
    for(i=0;i<numberOfVariables;i++)
    {
-       yTemp[i] = yIn[i] + stage*(b51*DyDx[i] + b52*ak2[i] + b53*ak3[i] +
+       yTemp[i] = yIn[i] + Step*(b51*DyDx[i] + b52*ak2[i] + b53*ak3[i] +
                                  b54*ak4[i]) ;
    }
    RightHandSide(yTemp, ak5) ;              // 5th stage
    
    for(i=0;i<numberOfVariables;i++)
    {
-       yOut[i] = yIn[i] + stage*(b61*DyDx[i] + b62*ak2[i] + b63*ak3[i] +
+       yOut[i] = yIn[i] + Step*(b61*DyDx[i] + b62*ak2[i] + b63*ak3[i] +
                                  b64*ak4[i] + b65*ak5[i]) ;
    }
    RightHandSide(yOut, ak6) ;              // 6th and Final stage
@@ -206,8 +206,8 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
    for(i=0;i<numberOfVariables;i++)
    {
        
-       yErr[i] = stage*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
-                       dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] ) ;
+       yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
+                       dc5*ak5[i] + dc6*ak6[i]) ;
        
 
        // Store Input and Final values, for possible use in calculating chord
@@ -219,7 +219,7 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
        
    }
    
-   fLaststageLength = stage;
+   fLastStepLength = Step;
    
    return ;
 }
@@ -228,20 +228,20 @@ void FDoLoMcPri34::Stepper(const G4double yInput[],
 //The following has not been tested
 
 //The DistChord() function fot the class - must define it here.
-G4double  FDoLoMcPri34::DistChord() const
+G4double  FDoLoMcPriRK34::DistChord() const
 {
    G4double distLine, distChord;
    G4ThreeVector initialPoint, finalPoint, midPoint;
    
-   // Store last initial and final points (they will be overwritten in self-stageper call!)
+   // Store last initial and final points (they will be overwritten in self-Stepper call!)
    initialPoint = G4ThreeVector( fLastInitialVector[0],
                                 fLastInitialVector[1], fLastInitialVector[2]);
    finalPoint   = G4ThreeVector( fLastFinalVector[0],
                                 fLastFinalVector[1],  fLastFinalVector[2]);
    
-   // Do half a stage using stageNoErr
+   // Do half a Step using StepNoErr
    
-   fAuxstageper->stageper( fLastInitialVector, fLastDyDx, 0.5 * fLaststageLength,
+   fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
                         fMidVector,   fMidError, pseudoDydx_for_DistChord );
    
    midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
@@ -263,10 +263,10 @@ G4double  FDoLoMcPri34::DistChord() const
 }
 
 
-void FDoLoMcPri34::interpolate(  const G4double yInput[],
+void FDoLoMcPriRK34::interpolate(  const G4double yInput[],
                                     const G4double dydx[],
                                     G4double yOut[],
-                                    G4double stage,
+                                    G4double Step,
                                     G4double tau){
    G4double
    bf1, bf2, bf3, bf4, bf5, bf6;    
@@ -281,18 +281,17 @@ void FDoLoMcPri34::interpolate(  const G4double yInput[],
    
    G4double
    tau_2 = tau*tau ,
-   tau_3 = tau*tau_2,
-   tau_4 = tau_2*tau_2;
+    tau_3 = tau*tau_2;
    
    bf1 = -(162.0*tau_3 - 504.0*tau_2 + 551.0*tau - 238.0)/238.0 ,
    bf2 =  0.0 ,
    bf3 =  27.0*tau*(27.0*tau_2 - 70.0*tau + 51.0 )/385.0 ,
    bf4 = -27*tau*(27.0*tau_2 - 50.0*tau + 21.0)/85.0 ,
-   bf5 =  7.0*tau*(2232.0*tau_2 - 4166.0*tau + 1785.0 )/3278.0 
+   bf5 =  7.0*tau*(2232.0*tau_2 - 4166.0*tau + 1785.0 )/3278.0 ,
    bf6 = tau*(tau - 1)*(387.0*tau - 238.0)/149.0 ;
    
    for( int i=0; i<numberOfVariables; i++){
-       yOut[i] = yIn[i] + stage*tau*(bf1*dydx[i] + bf2*ak2[i] + bf3*ak3[i] + 
+       yOut[i] = yIn[i] + Step*tau*(bf1*dydx[i] + bf2*ak2[i] + bf3*ak3[i] + 
                         bf4*ak4[i] + bf5*ak5[i] + bf6*ak6[i] ) ;
    }
    
