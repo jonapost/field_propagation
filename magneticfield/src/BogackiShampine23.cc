@@ -21,7 +21,7 @@
 
 /*
 
-This contains the stepper function of the BogackiShampine23class
+This contains the stepper function of the BogackiShampine23 class
 
 The Bogacki shampine method has the following Butcher's tableau
 
@@ -44,7 +44,7 @@ using namespace std;
 BogackiShampine23::BogackiShampine23(G4EquationOfMotion *EqRhs,
 				 G4int noIntegrationVariables,
 				 G4bool primary)
-  : FSALMagIntegratorStepper(EqRhs, noIntegrationVariables),
+  : G4MagIntegratorStepper(EqRhs, noIntegrationVariables),
     fLastStepLength(0.), fAuxStepper(0)
 {
   const G4int numberOfVariables = noIntegrationVariables;
@@ -106,11 +106,10 @@ BogackiShampine23::~BogackiShampine23()
 
 void
 BogackiShampine23::Stepper( const G4double yInput[],
-                         	const G4double dydx[],
+                         	const G4double DyDx[],
                               	  G4double Step,
                               	  G4double yOut[],
-                              	  G4double yErr[],
-                                  G4double nextDydx[])
+                              	  G4double yErr[])
 {
     
  G4int i;
@@ -123,7 +122,6 @@ BogackiShampine23::Stepper( const G4double yInput[],
  const G4double  dc1 = b41 - 7.0/24.0 ,  dc2 = b42 - 1.0/4.0 ,
   				 dc3 = b43 - 1.0/3.0 , dc4 = - 0.125 ;
     
-    G4double *DyDx;
     
 
  // Initialise time to t0, needed when it is not updated by the integration.
@@ -132,17 +130,12 @@ BogackiShampine23::Stepper( const G4double yInput[],
  yOut[7] = yTemp[7]   = yIn[7];
 
  const G4int numberOfVariables= this->GetNumberOfVariables();	// The number of variables to be integrated over
-    
-    DyDx = new G4double[numberOfVariables];	//For saving dydx as dydx and nextDydx can be aliases for same array
-    
-   
 
    //  Saving yInput because yInput and yOut can be aliases for same array
 
    for(i=0;i<numberOfVariables;i++)
    {
      	yIn[i]=yInput[i];
-       	DyDx[i] = dydx[i];
    }
  // RightHandSide(yIn, dydx) ;              // 1st Step --Not doing, getting passed
     
@@ -198,7 +191,7 @@ G4double  BogackiShampine23::DistChord() const
   // Do half a step using StepNoErr
 
   fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
-           fMidVector,   fMidError, pseudoDydx_for_DistChord );
+           fMidVector,   fMidError );
 
   midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
 
@@ -217,3 +210,5 @@ G4double  BogackiShampine23::DistChord() const
   }
   return distChord;
 }
+
+//------Verified-------

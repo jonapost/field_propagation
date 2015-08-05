@@ -16,7 +16,7 @@
 //  Created by Somnath on 9 June 2015
 //
 //
-///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 
 
 /**************************************************************************
@@ -45,7 +45,7 @@
 FVernerRK56::FVernerRK56(G4EquationOfMotion *EqRhs,
                        G4int noIntegrationVariables,
                        G4bool primary)
-: G4MagIntegratorStepper(EqRhs, noIntegrationVariables){
+: FSALMagIntegratorStepper(EqRhs, noIntegrationVariables){
     
     const G4int numberOfVariables = noIntegrationVariables;
     
@@ -172,7 +172,7 @@ void FVernerRK56::Stepper( const G4double yInput[],
     b98 =  172.3641334014150730294022582711902413315 ,
     
     
-    // //Redundancy here :
+    // Same as b9i :-
     // c1 =  .3438957868357036009278820124728322386520e-1 ,
     // c2 =  0. ,
     // c3 =  0. ,
@@ -184,16 +184,16 @@ void FVernerRK56::Stepper( const G4double yInput[],
     // c9 =  0. ,
     
     
-    //Redundancy here :
-    dc1 =  .3438957868357036009278820124728322386520e-1  - .4909967648382489730906854927971225836479e-1 ,
+    dc1 =  b91  - .4909967648382489730906854927971225836479e-1 ,
     dc2 =  0. ,
     dc3 =  0. ,
-    dc4 =  .2582624555633503404659558098586120858767 - .2251112229516524153401395320539875329485 ,
-    dc5 =  .4209371189673537150642551514069801967032 - .4694682253029562039431948525047387412553 ,
-    dc6 =  4.405396469669310170148836816197095664891 - .8065792249988867707634161808995217981443 ,
-    dc7 = -176.4831190242986576151740942499002125029 ,
-    dc8 =  172.3641334014150730294022582711902413315 + .6071194891777959797672951465256217122488 ,
+    dc4 =  b94 - .2251112229516524153401395320539875329485 ,
+    dc5 =  b95 - .4694682253029562039431948525047387412553 ,
+    dc6 =  b96 - .8065792249988867707634161808995217981443 ,
+    dc7 = b97 ,
+    dc8 =  b98 + .6071194891777959797672951465256217122488 ,
     dc9 =  - .5686113944047569241147603178766138153594e-1 ;
+
     //end of declaration
     
     
@@ -312,7 +312,7 @@ G4double  FVernerRK56::DistChord() const
     // Do half a step using StepNoErr
     
     fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
-                         fMidVector,   fMidError );
+                         fMidVector,   fMidError, pseudoDydx_for_DistChord );
     
     midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
     
@@ -468,7 +468,7 @@ void FVernerRK56::interpolate( const G4double yInput[],
     ak10 = new G4double[numberOfVariables];
     
     // The number of variables to be integrated over
-//    yOut[7] = yTemp[7]  = yIn[7];
+    yOut[7] = yTemp[7]  = yIn[7];
     
 
     

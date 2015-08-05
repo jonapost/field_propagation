@@ -1,21 +1,9 @@
-//  Verner - 10 - 7(6) implementation by Somnath Banerjee
-//  Supervision / code review: John Apostolakis
-//
-//  Sponsored by Google in Google Summer of Code 2015.
-// 
-//  First version:  9 June 2015
-//
-//  This code is made available subject to the Geant4 license, a copy of
-//  which is available at
-//  http://geant4.org/license
-//  
-//  History
-// -----------------------------
-//  Created by Somnath on 9 June 2015.
-//
-//
-/////////////////////////////////////////////////////////////////////////////
-
+/*
+ * VernerRK67.hh
+ *
+ *  Created on: 8-Jun-2015
+ *      Author: hackabot
+ */
 
 #ifndef VERNER_RK67_H
 #define VERNER_RK67_H
@@ -41,9 +29,46 @@ class VernerRK67 : public G4MagIntegratorStepper{
                         G4double yout[],
                         G4double yerr[] ) ;
 
+    
+    void SetupInterpolate_low( const G4double yInput[],
+                          const G4double dydx[],
+                          const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate_low( const G4double yInput[],
+                     const G4double dydx[],
+                     const G4double Step,
+                     G4double yOut[],
+                     G4double tau );
+
+    inline void SetupInterpolate( const G4double yInput[],
+                              const G4double dydx[],
+                          const G4double Step ){
+        SetupInterpolate_low( yInput, dydx, Step);
+    }
+    
+    //For calculating the output at the tau fraction of Step
+    inline void Interpolate( const G4double yInput[],
+                         const G4double dydx[],
+                         const G4double Step,
+                         G4double yOut[],
+                            G4double tau ){
+        Interpolate_low( yInput, dydx, Step, yOut, tau);
+    }
+
+    void SetupInterpolate_high( const G4double yInput[],
+                              const G4double dydx[],
+                              const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate_high( const G4double yInput[],
+                         const G4double dydx[],
+                         const G4double Step,
+                         G4double yOut[],
+                         G4double tau );
+    
     G4double  DistChord()   const;
     G4int IntegratorOrder() const { return 6; }
-     G4bool isFSAL() const{ return true; }
 
 	VernerRK67(const VernerRK67&);
    VernerRK67& operator=(const VernerRK67&);
@@ -52,6 +77,8 @@ class VernerRK67 : public G4MagIntegratorStepper{
  private:
 
 	   G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *ak9, *ak10,       // for storing intermediate 'k' values in stepper
+    
+    *ak11, *ak12, *ak13, *ak14, *ak15, *ak16, // for use in the interpolants
      *yTemp, *yIn;
     
     G4double fLastStepLength;

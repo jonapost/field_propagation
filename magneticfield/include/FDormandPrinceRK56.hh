@@ -81,6 +81,8 @@ private:
     G4double fLastStepLength;
     G4double *fLastInitialVector, *fLastFinalVector,
     *fLastDyDx, *fMidVector, *fMidError;
+    
+    G4double *pseudoDydx_for_DistChord;
     // for DistChord calculations
     
     FDormandPrinceRK56* fAuxStepper;

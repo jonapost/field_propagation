@@ -1,4 +1,23 @@
-//#include "DormandPrinceRK78.hh"
+
+//  Dormnad-Prince 8(7)13M non-FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+//
+// First version: 28 June 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//
+//  DormandPrinceRK78.cc
+//  Geant4
+//
+//  History
+// -----------------------------
+//  Created by Somnath on 28 June 2015
+
+
 #include "DormandPrinceRK78.hh"
 #include "G4LineSection.hh"
 
@@ -73,6 +92,13 @@ DormandPrinceRK78::~DormandPrinceRK78(){
 }
 
 
+//	The following scheme and the set of coefficients have been obtained from
+//Table2. RK8(7)13M (Rational approximations
+//---Ref---
+//	P. J. Prince and J. R. Dormand, “High order embedded Runge-Kutta formulae,”
+//	Journal of Computational and Applied Mathematics,
+//	vol. 7, no. 1, pp. 67–75, Dec. 1980.
+//------------------------------
 //Stepper :
 
 // Passing in the value of yInput[],the first time dydx[] and Step length
@@ -242,46 +268,46 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
     
     
     // RightHandSide(yIn, dydx) ;
-    // 1st Step - Not doing, getting passed
+    // 1st Stage - Not doing, getting passed
     
     for(i=0;i<numberOfVariables;i++)
     {
         yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
     }
-    RightHandSide(yTemp, ak2) ;              // 2nd Step
+    RightHandSide(yTemp, ak2) ;              // 2nd Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
         yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
     }
-    RightHandSide(yTemp, ak3) ;              // 3rd Step
+    RightHandSide(yTemp, ak3) ;              // 3rd Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
         yTemp[i] = yIn[i] + Step*(b41*dydx[i] + b42*ak2[i] + b43*ak3[i]) ;
     }
-    RightHandSide(yTemp, ak4) ;              // 4th Step
+    RightHandSide(yTemp, ak4) ;              // 4th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
         yTemp[i] = yIn[i] + Step*(b51*dydx[i] + b52*ak2[i] + b53*ak3[i] +
                                   b54*ak4[i]) ;
     }
-    RightHandSide(yTemp, ak5) ;              // 5th Step
+    RightHandSide(yTemp, ak5) ;              // 5th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
         yTemp[i] = yIn[i] + Step*(b61*dydx[i] + b62*ak2[i] + b63*ak3[i] +
                                   b64*ak4[i] + b65*ak5[i]) ;
     }
-    RightHandSide(yTemp, ak6) ;              // 6th Step
+    RightHandSide(yTemp, ak6) ;              // 6th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
         yTemp[i] = yIn[i] + Step*(b71*dydx[i] + b72*ak2[i] + b73*ak3[i] +
                                   b74*ak4[i] + b75*ak5[i] + b76*ak6[i]);
     }
-    RightHandSide(yTemp, ak7);				//7th Step
+    RightHandSide(yTemp, ak7);				//7th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -289,7 +315,7 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                   b84*ak4[i] + b85*ak5[i] + b86*ak6[i] +
                                   b87*ak7[i]);
     }
-    RightHandSide(yTemp, ak8);				//8th Step
+    RightHandSide(yTemp, ak8);				//8th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -297,7 +323,7 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                   b94*ak4[i] + b95*ak5[i] + b96*ak6[i] +
                                   b97*ak7[i] + b98*ak8[i] );
     }
-    RightHandSide(yTemp, ak9);          //9th Step
+    RightHandSide(yTemp, ak9);          //9th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -305,7 +331,7 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                   b104*ak4[i] + b105*ak5[i] + b106*ak6[i] +
                                   b107*ak7[i] + b108*ak8[i] + b109*ak9[i]);
     }
-    RightHandSide(yTemp, ak10);          //10th Step
+    RightHandSide(yTemp, ak10);          //10th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -314,7 +340,7 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                   b117*ak7[i] + b118*ak8[i] + b119*ak9[i] +
                                   b1110*ak10[i]);
     }
-    RightHandSide(yTemp, ak11);			//11th Step
+    RightHandSide(yTemp, ak11);			//11th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -323,7 +349,7 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                   b127*ak7[i] + b128*ak8[i] + b129*ak9[i] +
                                   b1210*ak10[i] + b1211*ak11[i]);
     }
-    RightHandSide(yTemp, ak12);			//12th Step
+    RightHandSide(yTemp, ak12);			//12th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -332,7 +358,7 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                   b137*ak7[i] + b138*ak8[i] + b139*ak9[i] +
                                   b1310*ak10[i] + b1311*ak11[i] + b1312*ak12[i]);
     }
-    RightHandSide(yTemp, ak13);			//13th Step
+    RightHandSide(yTemp, ak13);			//13th and final Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -360,7 +386,6 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
 }
 
 
-//The following has not been tested
 
 //The DistChord() function fot the class - must define it here.
 G4double  DormandPrinceRK78::DistChord() const
@@ -400,5 +425,5 @@ G4double  DormandPrinceRK78::DistChord() const
 
 
 
-
+//------Verified------- - hackabot
 

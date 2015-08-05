@@ -1,21 +1,10 @@
-//  Tsitouras- 7 - 5(4) FSAL implementation by Somnath Banerjee
-//  Supervision / code review: John Apostolakis
 //
-//  Sponsored by Google in Google Summer of Code 2015.
-// 
-//  First version:  11 June 2015
+//  TsitourasRK45.hh
+//  Geant4
 //
-//  This code is made available subject to the Geant4 license, a copy of
-//  which is available at
-//  http://geant4.org/license
-//  
-//  History
-// -----------------------------
-//  Created by Somnath on 11 June 2015.
+//  Created by hackabot on 11/06/15.
 //
 //
-///////////////////////////////////////////////////////////////////////////
-
 
 #ifndef Tsitouras_RK45
 #define Tsitouras_RK45
@@ -35,9 +24,29 @@ public:
                         G4double h,
                         G4double yout[],
                         G4double yerr[] ) ;
+    
+    void SetupInterpolate( const G4double yInput[],
+                              const G4double dydx[],
+                              const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate( const G4double yInput[],
+                         const G4double dydx[],
+                         const G4double Step,
+                         G4double yOut[],
+                         G4double tau );
+    
+    
+    void interpolate( const G4double yInput[],
+                      const G4double dydx[],
+                            G4double yOut[],
+                            G4double Step,
+                            G4double tau);
 
     G4double  DistChord()   const;
     G4int IntegratorOrder() const {return 4; }
+    
+//    G4double *getLastDydx();
     
 private :
     

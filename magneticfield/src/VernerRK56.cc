@@ -1,5 +1,26 @@
+//  Verner's RK 6(5) non-FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 9 June 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//  VernerRK56.cc
+//  Geant4
+//
+//  History
+// -----------------------------
+//  Created by Somnath on 9 June 2015
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
 /**************************************************************************
-                        |   Acknowledgement  |
+ 						|	Acknowledgement	 |
  
      The following code uses the work of J.H.Verner, obtained from
      http://people.math.sfu.ca/~jverner/
@@ -12,24 +33,7 @@
      source and includes the URL for this site within the produced 
      item.
  
-**************************************************************************/
-
-//  Verner - 9 - 6(5) FSAL implementation by Somnath Banerjee
-//  Supervision / code review: John Apostolakis
-//
-//  Sponsored by Google in Google Summer of Code 2015.
-// 
-//  First version:  9 June 2015
-//
-//  This code is made available subject to the Geant4 license, a copy of
-//  which is available at
-//  http://geant4.org/license
-//  
-//  History
-// ---------------------------------------
-//  Created                 09 June 2015    Somnath
-//  Added interpolate()     23 June 2015    Somnath
-//  Added interpolate6()    - do -          - do -
+***************************************************************************/
 
 
 
@@ -56,6 +60,8 @@ VernerRK56::VernerRK56(G4EquationOfMotion *EqRhs,
     ak7 = new G4double[numberOfVariables];
     ak8 = new G4double[numberOfVariables];
     ak9 = new G4double[numberOfVariables];
+
+
 
     yTemp = new G4double[numberOfVariables];
     yIn = new G4double[numberOfVariables] ;
@@ -85,6 +91,7 @@ VernerRK56::~VernerRK56(){
     delete[] ak7;
     delete[] ak8;
     delete[] ak9;
+    
     delete[] yTemp;
     delete[] yIn;
     
@@ -161,29 +168,49 @@ void VernerRK56::Stepper(const G4double yInput[],
     b98 =  172.3641334014150730294022582711902413315 ,
     
     
-    //Redundancy here :
-    c1 =  .3438957868357036009278820124728322386520e-1 ,
+//    //Redundancy here :
+//    c1 =  .3438957868357036009278820124728322386520e-1 ,
+//    c2 =  0. ,
+//    c3 =  0. ,
+//    c4 =  .2582624555633503404659558098586120858767 ,
+//    c5 =  .4209371189673537150642551514069801967032 ,
+//    c6 =  4.405396469669310170148836816197095664891 ,
+//    c7 = -176.4831190242986576151740942499002125029 ,
+//    c8 =  172.3641334014150730294022582711902413315 ,
+//    c9 =  0. ,
+    
+
+    c1 =  .4909967648382489730906854927971225836479e-1 ,
     c2 =  0. ,
     c3 =  0. ,
-    c4 =  .2582624555633503404659558098586120858767 ,
-    c5 =  .4209371189673537150642551514069801967032 ,
-    c6 =  4.405396469669310170148836816197095664891 ,
-    c7 = -176.4831190242986576151740942499002125029 ,
-    c8 =  172.3641334014150730294022582711902413315 ,
-    c9 =  0. ,
+    c4 =  .2251112229516524153401395320539875329485 ,
+    c5 =  .4694682253029562039431948525047387412553 ,
+    c6 =  .8065792249988867707634161808995217981443 ,
+    c7 =  0. ,
+    c8 = -.6071194891777959797672951465256217122488 ,
+    c9 =  .5686113944047569241147603178766138153594e-1 ,
     
     
-    //Redundancy here :
-    dc1 =  .3438957868357036009278820124728322386520e-1  - .4909967648382489730906854927971225836479e-1 ,
-    dc2 =  0. ,
-    dc3 =  0. ,
-    dc4 =  .2582624555633503404659558098586120858767 - .2251112229516524153401395320539875329485 ,
-    dc5 =  .4209371189673537150642551514069801967032 - .4694682253029562039431948525047387412553 ,
-    dc6 =  4.405396469669310170148836816197095664891 - .8065792249988867707634161808995217981443 ,
-    dc7 = -176.4831190242986576151740942499002125029 ,
-    dc8 =  172.3641334014150730294022582711902413315 + .6071194891777959797672951465256217122488 ,
-    dc9 =  - .5686113944047569241147603178766138153594e-1 ;
-    //end of declaration
+    dc1 = c1 - b91,
+    dc2 = c2 - b92 ,
+    dc3 = c3 - b93 ,
+    dc4 = c4 - b94 ,
+    dc5 = c5 - b95 ,
+    dc6 = c6 - b96 ,
+    dc7 = c7 - b97 ,
+    dc8 = c8 - b98 ,
+    dc9 = c9 ;
+//    //Redundancy here :
+//    dc1 =  .3438957868357036009278820124728322386520e-1  - .4909967648382489730906854927971225836479e-1 ,
+//    dc2 =  0. ,
+//    dc3 =  0. ,
+//    dc4 =  .2582624555633503404659558098586120858767 - .2251112229516524153401395320539875329485 ,
+//    dc5 =  .4209371189673537150642551514069801967032 - .4694682253029562039431948525047387412553 ,
+//    dc6 =  4.405396469669310170148836816197095664891 - .8065792249988867707634161808995217981443 ,
+//    dc7 = -176.4831190242986576151740942499002125029 ,
+//    dc8 =  172.3641334014150730294022582711902413315 + .6071194891777959797672951465256217122488 ,
+//    dc9 =  - .5686113944047569241147603178766138153594e-1 ;
+//    //end of declaration
     
     
     const G4int numberOfVariables= this->GetNumberOfVariables();
@@ -239,7 +266,7 @@ void VernerRK56::Stepper(const G4double yInput[],
         yTemp[i] = yIn[i] + Step*(b71*dydx[i] + b72*ak2[i] + b73*ak3[i] +
                                   b74*ak4[i] + b75*ak5[i] + b76*ak6[i]);
     }
-    RightHandSide(yTemp, ak7);              //7th Stage
+    RightHandSide(yTemp, ak7);				//7th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -247,25 +274,20 @@ void VernerRK56::Stepper(const G4double yInput[],
                                   b84*ak4[i] + b85*ak5[i] + b86*ak6[i] +
                                   b87*ak7[i]);
     }
-    RightHandSide(yTemp, ak8);              //8th Stage
+    RightHandSide(yTemp, ak8);				//8th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yTemp[i] = yIn[i] + Step*(b91*dydx[i] + b92*ak2[i] + b93*ak3[i] +
+        yOut[i] = yIn[i] + Step*(b91*dydx[i] + b92*ak2[i] + b93*ak3[i] +
                                   b94*ak4[i] + b95*ak5[i] + b96*ak6[i] +
                                   b97*ak7[i] + b98*ak8[i] );
     }
-    RightHandSide(yTemp, ak9);          //9th Stage
+    RightHandSide(yOut, ak9);          //9th Stage
     
 //  -------  FSAL NOT IMPLEMENTED  ----------  //
     
     for(i=0;i<numberOfVariables;i++)
     {
-        // Accumulate increments with proper weights
-        
-        yOut[i] = yIn[i] + Step*(c1*dydx[i] + c2*ak2[i] + c3*ak3[i] +
-                                 c4*ak4[i] + c5*ak5[i] + c6*ak6[i] +
-                                 c7*ak7[i] + c8*ak8[i] +c9*ak9[i] ) ;
         
         // Estimate error as difference between 5th and
         // 6th order methods
@@ -322,18 +344,9 @@ G4double  VernerRK56::DistChord() const
 
 
 
-
-
-
-void VernerRK56::interpolate( const G4double yInput[],
-                             const G4double dydx[],
-                             G4double yOut[],
-                             G4double Step,
-                             G4double tau
-                             ){
-    
-    
-    G4double *ak10;
+void VernerRK56::SetupInterpolate_low( const G4double yInput[],
+                          const G4double dydx[],
+                          const G4double Step ){
     
     G4double
     a101 =  35289331988986254405692535758830683.0/2135620454874580332949729350544993288.0 ,
@@ -346,7 +359,37 @@ void VernerRK56::interpolate( const G4double yInput[],
     a108 = -15228408956329265381787438679500067.0/272520859345009876882656783678732.0 ,
     a109 =  28587810357600962662801.0/1151340224617184234295192.0 ;
     
+    const G4int numberOfVariables= this->GetNumberOfVariables();
     
+    //  Saving yInput because yInput and yOut can be aliases for same array
+    for(int i=0;i<numberOfVariables;i++)
+    {
+        yIn[i]=yInput[i];
+    }
+    
+    ak10 = new G4double[numberOfVariables];
+    
+    // The number of variables to be integrated over
+    //    yOut[7] = yTemp[7]  = yIn[7];
+    
+    
+    
+    //    calculating extra stage functions
+    for(int i=0; i<6; i++){
+        yTemp[i] = yIn[i] + Step*(a101*dydx[i] + a102*ak2[i] + a103*ak3[i] +
+                                  a104*ak4[i] + a105*ak5[i] + a106*ak6[i] +
+                                  a107*ak7[i] + a108*ak8[i] + a109*ak9[i] );
+    }
+    
+    RightHandSide(yTemp, ak10);
+}
+
+
+void VernerRK56::Interpolate_low( const G4double yInput[],
+                     const G4double dydx[],
+                     const G4double Step,
+                     G4double yOut[],
+                     G4double tau ){
     //
     //  --------------------------------------------------------
     //  COEFFICIENTS FOR INTERPOLANT  bi5  WITH  10  STAGES
@@ -453,25 +496,10 @@ void VernerRK56::interpolate( const G4double yInput[],
         yIn[i]=yInput[i];
     }
     
-    ak10 = new G4double[numberOfVariables];
-    
-    // The number of variables to be integrated over
-    yOut[7] = yTemp[7]  = yIn[7];
-    
-
-    
-    //    calculating extra stage functions
-    for(int i=0; i<6; i++){
-        yTemp[i] = yIn[i] + Step*(a101*dydx[i] + a102*ak2[i] + a103*ak3[i] +
-                                  a104*ak4[i] + a105*ak5[i] + a106*ak6[i] +
-                                  a107*ak7[i] + a108*ak8[i] + a109*ak9[i] );
-    }
-    
-    RightHandSide(yTemp, ak10);
     
     G4double tau0 = tau;
     //    Calculating the polynomials :
-    for(int i=1; i<=10; i++){   //Here i is NOT the coordinate no. , it's stage no.
+    for(int i=1; i<=10; i++){	//Here i is NOT the coordinate no. , it's stage no.
         b[i] = 0;
         tau = tau0;
         for(int j=1; j<=6; j++){
@@ -480,7 +508,7 @@ void VernerRK56::interpolate( const G4double yInput[],
         }
     }
     
-    for(int i=0; i<6; i++){
+    for(int i=0; i<6; i++){	//Here i is coordinate no.
         yOut[i] = yIn[i] + Step*(b[1]*dydx[i] + b[2]*ak2[i] + b[3]*ak3[i] +
                                  b[4]*ak4[i] + b[5]*ak5[i] + b[6]*ak6[i] +
                                  b[7]*ak7[i] + b[8]*ak8[i] + b[9]*ak9[i] +
@@ -490,15 +518,13 @@ void VernerRK56::interpolate( const G4double yInput[],
 }
 
 
-void VernerRK56::interpolate6( const G4double yInput[],
-                             const G4double dydx[],
-                             G4double yOut[],
-                             G4double Step,
-                             G4double tau
-                             ){
+void VernerRK56::SetupInterpolate_high( const G4double yInput[],
+                                  const G4double dydx[],
+                                  const G4double Step ){
+
     
     
-    G4double *ak10, *ak11, *ak12;
+//    G4double *ak10, *ak11, *ak12;
     
 //  ********************************************************
 //
@@ -506,57 +532,103 @@ void VernerRK56::interpolate6( const G4double yInput[],
 //  ********************************************************
 
     G4double
-    a101 =  35289331988986254405692535758830683.0/2135620454874580332949729350544993288.0 ,
-    a102 = 0.0 ,
-    a103 = 0.0 ,
-    a104 =  313937014583068512255490687992212890625.0/1028247080705354654473994781524199691557.0 ,
-    a105 =  1309307687253621245836726130885318359375.0/6321490412177191231557635904400612215708.0 ,
-    a106 = -35295844079877524186147726060781875.0/27279088881521314684841470427640876.0 ,
-    a107 =  794353492803973228770716697389421875.0/13906777037439977359946774228636361.0 ,
-    a108 = -15228408956329265381787438679500067.0/272520859345009876882656783678732.0 ,
-    a109 =  28587810357600962662801.0/1151340224617184234295192.0 ,
+    b101 =  35289331988986254405692535758830683.0/2135620454874580332949729350544993288.0 ,
+    b102 = 0.0 ,
+    b103 = 0.0 ,
+    b104 =  313937014583068512255490687992212890625.0/1028247080705354654473994781524199691557.0 ,
+    b105 =  1309307687253621245836726130885318359375.0/6321490412177191231557635904400612215708.0 ,
+    b106 = -35295844079877524186147726060781875.0/27279088881521314684841470427640876.0 ,
+    b107 =  794353492803973228770716697389421875.0/13906777037439977359946774228636361.0 ,
+    b108 = -15228408956329265381787438679500067.0/272520859345009876882656783678732.0 ,
+    b109 =  28587810357600962662801.0/1151340224617184234295192.0 ,
     
-
+    
     //  ********************************************************
-
+    
     //  Coupling coefficients for   c11 =  207/250
     //  --------------------------------------------------------
     
-    a111 =  2486392061981208591025761263164027224438868971.0/65173964076983042387381877152862343994140625000.0 ,
-    a112 =  0.0 ,
-    a113 =  0.0 ,
-    a114 =  2330654500023704838558579323179918419669.0/9313832252765893609365894760182968220625.0 ,
-    a115 =  5283259505481013273874688940942473187741.0/16258977397575080328080339260289640472500.0 ,
-    a116 =  9989685106081485386057729811605187743723.0/5481427003263510055949691042076757812500.0 ,
-    a117 = -65815640423883764662985178413751186161.0/971969007022721623945108012714453125.0 ,
-    a118 =  183066350554023250298437927498791289370414247.0/2772225538584491748887703284492309570312500.0 ,
-    a119 = -426178927623072052719640507155669.0/11712038417736656029207275390625000.0 ,
-    a1110 =  3248339841.0/30517578125.0 ,
+    b111 =  2486392061981208591025761263164027224438868971.0/65173964076983042387381877152862343994140625000.0 ,
+    b112 =  0.0 ,
+    b113 =  0.0 ,
+    b114 =  2330654500023704838558579323179918419669.0/9313832252765893609365894760182968220625.0 ,
+    b115 =  5283259505481013273874688940942473187741.0/16258977397575080328080339260289640472500.0 ,
+    b116 =  9989685106081485386057729811605187743723.0/5481427003263510055949691042076757812500.0 ,
+    b117 = -65815640423883764662985178413751186161.0/971969007022721623945108012714453125.0 ,
+    b118 =  183066350554023250298437927498791289370414247.0/2772225538584491748887703284492309570312500.0 ,
+    b119 = -426178927623072052719640507155669.0/11712038417736656029207275390625000.0 ,
+    b1110 =  3248339841.0/30517578125.0 ,
     
     //  ********************************************************
     //
     //  Coupling coefficients for   c12 =  7.0/25.0 ,
     //  --------------------------------------------------------
     
-    a121 =  4676747786898097735038451956075910033997933945857.0/41838231186922043164464169766109251031526972656250.0 ,
-    a122 =  0.0 ,
-    a123 =  0.0 ,
-    a124 =  1320032412954312695441306548681592444623240.0/51248457773784347881352490499724836575577977.0 ,
-    a125 =  2087002134582726310861746540254017903014374710.0/551367099344274428347227263044005314054687829.0 ,
-    a126 =  3432932836484348829479408524345545011748570706.0/37176735450871998946806722732624135633015625.0 ,
-    a127 = -2316434358511265475362584844804601519943610264.0/606481922490173339581866127622363581143375.0 ,
-    a128 =  82514605285282414051716141603447021470923168793.0/22107104196177512751528507591142367597656250.0 ,
-    a129 = -7560161019374651900153317984708038834.0/7028170531590816328729091157353515625.0 ,
-    a1210 = -21655450552377696842870155771710589332.0/6701278878958685336695179940732421875.0 ,
-    a1211 = -3194830887993202085244614477336220.0/678662636676110315314332975245759.0 ;
+    b121 =  4676747786898097735038451956075910033997933945857.0/41838231186922043164464169766109251031526972656250.0 ,
+    b122 =  0.0 ,
+    b123 =  0.0 ,
+    b124 =  1320032412954312695441306548681592444623240.0/51248457773784347881352490499724836575577977.0 ,
+    b125 =  2087002134582726310861746540254017903014374710.0/551367099344274428347227263044005314054687829.0 ,
+    b126 =  3432932836484348829479408524345545011748570706.0/37176735450871998946806722732624135633015625.0 ,
+    b127 = -2316434358511265475362584844804601519943610264.0/606481922490173339581866127622363581143375.0 ,
+    b128 =  82514605285282414051716141603447021470923168793.0/22107104196177512751528507591142367597656250.0 ,
+    b129 = -7560161019374651900153317984708038834.0/7028170531590816328729091157353515625.0 ,
+    b1210 = -21655450552377696842870155771710589332.0/6701278878958685336695179940732421875.0 ,
+    b1211 = -3194830887993202085244614477336220.0/678662636676110315314332975245759.0 ;
+    
+    
+    const G4int numberOfVariables= this->GetNumberOfVariables();
+    
+    //  Saving yInput because yInput and yOut can be aliases for same array
+    for(int i=0;i<numberOfVariables;i++)
+    {
+        yIn[i]=yInput[i];
+    }
+    
+    yTemp[7]  = yIn[7];
+    
+    
+    ak10 = new G4double[numberOfVariables];
+    ak11 = new G4double[numberOfVariables];
+    ak12 = new G4double[numberOfVariables];
+    
+    //    calculating extra stage functions
+    
+    //Evaluate the stages :
+    for(int i=0; i<6; i++){
+        yTemp[i] = yIn[i] + Step*(b101*dydx[i] + b102*ak2[i] + b103*ak3[i] +
+                                  b104*ak4[i] + b105*ak5[i] + b106*ak6[i] +
+                                  b107*ak7[i] + b108*ak8[i] + b109*ak9[i] );
+    }
+    
+    RightHandSide(yTemp, ak10);		//10th stage - additional
+    
+    for(int i=0; i<6; i++){
+        yTemp[i] = yIn[i] + Step*(b111*dydx[i] + b112*ak2[i] + b113*ak3[i] +
+                                  b114*ak4[i] + b115*ak5[i] + b116*ak6[i] +
+                                  b117*ak7[i] + b118*ak8[i] + b119*ak9[i] +
+                                  b1110*ak10[i]);
+    }
+    
+    RightHandSide(yTemp, ak11);		//11th stage - additional
+    
+    for(int i=0; i<6; i++){
+        yTemp[i] = yIn[i] + Step*(b121*dydx[i] + b122*ak2[i] + b123*ak3[i] +
+                                  b124*ak4[i] + b125*ak5[i] + b126*ak6[i] +
+                                  b127*ak7[i] + b128*ak8[i] + b129*ak9[i] +
+                                  b1210*ak10[i] + b1211*ak11[i]);
+    }
+    RightHandSide(yTemp, ak12);		//12th and last stage - additional
+}
 
-
-    
-    
-    
-    //  --------------------------------------------------------
+    void VernerRK56::Interpolate_high( const G4double yInput[],
+                                 const G4double dydx[],
+                                 const G4double Step,
+                                 G4double yOut[],
+                                 G4double tau ){
+    //  ---------------------------------------------------------
     //  COEFFICIENTS FOR INTERPOLANT   bi6   WITH   12  STAGES
-    //  --------------------------------------------------------
+    //  ---------------------------------------------------------
     //
     
     G4double bi6[13][7], b[13];
@@ -678,9 +750,9 @@ void VernerRK56::interpolate6( const G4double yInput[],
         yIn[i]=yInput[i];
     }
     
-    ak10 = new G4double[numberOfVariables];
-    ak11 = new G4double[numberOfVariables];
-    ak12 = new G4double[numberOfVariables];
+//    ak10 = new G4double[numberOfVariables];
+//    ak11 = new G4double[numberOfVariables];
+//    ak12 = new G4double[numberOfVariables];
     
     // The number of variables to be integrated over
     yOut[7] = yTemp[7]  = yIn[7];
@@ -688,34 +760,10 @@ void VernerRK56::interpolate6( const G4double yInput[],
     
     
     //    calculating extra stage functions
-    for(int i=0; i<6; i++){
-        yTemp[i] = yIn[i] + Step*(a101*dydx[i] + a102*ak2[i] + a103*ak3[i] +
-                                  a104*ak4[i] + a105*ak5[i] + a106*ak6[i] +
-                                  a107*ak7[i] + a108*ak8[i] + a109*ak9[i] );
-    }
-    
-    RightHandSide(yTemp, ak10);
-    
-    for(int i=0; i<6; i++){
-        yTemp[i] = yIn[i] + Step*(a111*dydx[i] + a112*ak2[i] + a113*ak3[i] +
-                                  a114*ak4[i] + a115*ak5[i] + a116*ak6[i] +
-                                  a117*ak7[i] + a118*ak8[i] + a119*ak9[i] +
-                                  a1110*ak10[i]);
-    }
-    
-    RightHandSide(yTemp, ak11);
-    
-    for(int i=0; i<6; i++){
-        yTemp[i] = yIn[i] + Step*(a121*dydx[i] + a122*ak2[i] + a123*ak3[i] +
-                                  a124*ak4[i] + a125*ak5[i] + a126*ak6[i] +
-                                  a127*ak7[i] + a128*ak8[i] + a129*ak9[i] +
-                                  a1210*ak10[i] + a1211*ak11[i]);
-    }
-    RightHandSide(yTemp, ak12);
     
     G4double tau0 = tau;
     //    Calculating the polynomials :
-    for(int i=1; i<=12; i++){   //Here i is NOT the coordinate no. , it's stage no.
+    for(int i=1; i<=12; i++){	//Here i is NOT the coordinate no. , it's stage no.
         b[i] = 0;
         tau = tau0;
         for(int j=1; j<=6; j++){

@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.cc 66872 2013-01-15 01:25:57Z japost $
+// $Id: G4MagIntegratorDriver.cc 81175 2014-05-22 07:39:10Z gcosmo $
 //
 // 
 //
@@ -50,17 +50,21 @@
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
 //
-const G4double G4MagInt_Driver::max_stepping_increase = 5.0;
-const G4double G4MagInt_Driver::max_stepping_decrease = 0.1;
+const G4double G4MagInt_Driver::max_stepping_increase = 5.0; //Changed from 5.0 by [hackabot]
+const G4double G4MagInt_Driver::max_stepping_decrease = 0.1;  //Changed from 0.1 by [hackabot]
 
 //  The (default) maximum number of steps is Base
 //  divided by the order of Stepper
 //
-const G4int  G4MagInt_Driver::fMaxStepBase = 250;  // Was 5000
+const G4int  G4MagInt_Driver::fMaxStepBase = 100000;  // Was 5000, was 250
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
 #endif
+
+//#ifndef G4DEBUG_FIELD
+//#define G4DEBUG_FIELD 1
+//#endif
 
 // ---------------------------------------------------------
 
@@ -80,7 +84,8 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
     fDyerr_max(0.0), fDyerr_mx2(0.0), 
     fDyerrPos_smTot(0.0), fDyerrPos_lgTot(0.0), fDyerrVel_lgTot(0.0), 
     fSumH_sm(0.0), fSumH_lg(0.0),
-    fVerboseLevel(0)
+    fVerboseLevel(0),
+	TotalNoStepperCalls(0)
 {  
   // In order to accomodate "Laboratory Time", which is [7], fMinNoVars=8
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
@@ -139,7 +144,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
   G4double x, hnext, hdid, h;
 
 #ifdef G4DEBUG_FIELD
-  static G4int dbg=1;
+  static G4int dbg=10;
   static G4int nStpPr=50;   // For debug printing of long integrations
   G4double ySubStepStart[G4FieldTrack::ncompSVEC];
   G4FieldTrack  yFldTrkStart(y_current);
@@ -205,6 +210,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
   G4bool lastStep= false;
   nstp=1;
 
+    
   do
   {
     G4ThreeVector StartPos( y[0], y[1], y[2] );
@@ -216,10 +222,10 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
     yFldTrkStart.SetCurveLength(x);
 #endif
 
-    // Old method - inline call to Equation of Motion
-    //   pIntStepper->RightHandSide( y, dydx );
-    // New method allows to cache field, or state (eg momentum magnitude)
-    pIntStepper->ComputeRightHandSide( y, dydx );
+      
+      pIntStepper->ComputeRightHandSide( y, dydx );
+
+      
     fNoTotalSteps++;
 
     // Perform the Integration
@@ -549,17 +555,23 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
 
   G4int iter;
 
-  static G4ThreadLocal G4int tot_no_trials=0; 
-  const G4int max_trials=100; 
-
+  static G4ThreadLocal G4int tot_no_trials=0;
+//-----------------------------------------------------------
+    //Made a change :
+    //max_trials = 100
+  const G4int max_trials=100000;
+    //[hackabot]
+//------------------------------------------------------------
   G4ThreeVector Spin(y[9],y[10],y[11]);
-  G4bool     hasSpin= (Spin.mag2() > 0.0); 
+  G4double   spin_mag2 =Spin.mag2() ;
+  G4bool     hasSpin= (spin_mag2 > 0.0); 
 
   for (iter=0; iter<max_trials ;iter++)
   {
     tot_no_trials++;
     pIntStepper-> Stepper(y,dydx,h,ytemp,yerr); 
     //            *******
+      TotalNoStepperCalls++;
     G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
     G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
 
@@ -569,8 +581,15 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
     errpos_sq *= inv_eps_pos_sq; // Scale relative to required tolerance
 
     // Accuracy for momentum
-    errvel_sq =  (sqr(yerr[3]) + sqr(yerr[4]) + sqr(yerr[5]) )
-               / (sqr(y[3]) + sqr(y[4]) + sqr(y[5]) );
+    G4double magvel_sq=  sqr(y[3]) + sqr(y[4]) + sqr(y[5]) ;
+    G4double sumerr_sq =  sqr(yerr[3]) + sqr(yerr[4]) + sqr(yerr[5]) ; 
+    if( magvel_sq > 0.0 ) { 
+       errvel_sq = sumerr_sq / magvel_sq; 
+    }else{
+       G4cerr << "** G4MagIntegrationDriver: found case of zero momentum." 
+              << " iteration=  " << iter << " h= " << h << G4endl; 
+       errvel_sq = sumerr_sq; 
+    }
     errvel_sq *= inv_eps_vel_sq;
     errmax_sq = std::max( errpos_sq, errvel_sq ); // Square of maximum error
 
@@ -578,10 +597,10 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
     { 
       // Accuracy for spin
       errspin_sq =  ( sqr(yerr[9]) + sqr(yerr[10]) + sqr(yerr[11]) )
-                 /  ( sqr(y[9]) + sqr(y[10]) + sqr(y[11]) );
+                    /  spin_mag2; // ( sqr(y[9]) + sqr(y[10]) + sqr(y[11]) );
       errspin_sq *= inv_eps_vel_sq;
       errmax_sq = std::max( errmax_sq, errspin_sq ); 
-   }
+    }
 
     if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
 
@@ -1043,3 +1062,15 @@ void G4MagInt_Driver::SetSmallestFraction(G4double newFraction)
            << "  Value must be between 1.e-8 and 1.e-16" << G4endl;
   }
 }
+
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+// New functions introduced for more debugging purposes :
+
+
+

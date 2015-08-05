@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4Mag_SpinEqRhs.cc 79128 2014-02-18 15:44:42Z gcosmo $
+// $Id: G4Mag_SpinEqRhs.cc 78728 2014-01-20 12:57:20Z gcosmo $
 //
 // This is the standard right-hand side for equation of motion.
 // This version of the right-hand side includes the three components

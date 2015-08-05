@@ -20,7 +20,7 @@
 
 
 #ifndef FFDormand_Prince_745
-#define FDormand_Prince_745
+#define FFDormand_Prince_745
 
 #include "FSALMagIntegratorStepper.hh"
 
@@ -45,15 +45,16 @@ public:
                      G4double tau ) ;
     //For higher order Interpolant
     void SetupInterpolate( const G4double yInput[],
-                          const G4double dydx[],
-                          const G4double Step );
+                           const G4double dydx[],
+                           const G4double Step );
     
     //For calculating the output at the tau fraction of Step
     void Interpolate( const G4double yInput[],
-                     const G4double dydx[],
-                     const G4double Step,
-                     G4double yOut[],
-                     G4double tau );
+                      const G4double dydx[],
+                      const G4double Step,
+                      G4double yOut[],
+                      G4double tau );
+    
 
     G4double  DistChord()   const;
     G4int IntegratorOrder() const {return 4; }

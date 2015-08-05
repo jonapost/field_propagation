@@ -42,19 +42,45 @@ public:
                  G4double yout[],
                  G4double yerr[] ) ;
     
-    void interpolate( const G4double yInput[],
-                     const G4double dydx[],
-                     G4double yOut[],
-                     G4double Step,
-                     G4double tau
-                     ) ;
+
     
-    void interpolate6( const G4double yInput[],
-                      const G4double dydx[],
-                      G4double yOut[],
-                      G4double Step,
-                      G4double tau
-                      ) ;
+    //For Preparing the Interpolant and calculating the extra stages
+    void SetupInterpolate_low( const G4double yInput[],
+                              const G4double dydx[],
+                              const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate_low( const G4double yInput[],
+                         const G4double dydx[],
+                         const G4double Step,
+                         G4double yOut[],
+                         G4double tau );
+    
+    inline void SetupInterpolate( const G4double yInput[],
+                                 const G4double dydx[],
+                                 const G4double Step ){
+        SetupInterpolate_low( yInput, dydx, Step);
+    }
+    
+    //For calculating the output at the tau fraction of Step
+    inline void Interpolate( const G4double yInput[],
+                            const G4double dydx[],
+                            const G4double Step,
+                            G4double yOut[],
+                            G4double tau ){
+        Interpolate_low( yInput, dydx, Step, yOut, tau);
+    }
+    
+    void SetupInterpolate_high( const G4double yInput[],
+                               const G4double dydx[],
+                               const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate_high( const G4double yInput[],
+                          const G4double dydx[],
+                          const G4double Step,
+                          G4double yOut[],
+                          G4double tau );
     
     G4double  DistChord()   const;
     G4int IntegratorOrder() const { return 5; }

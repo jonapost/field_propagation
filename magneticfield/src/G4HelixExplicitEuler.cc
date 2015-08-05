@@ -41,7 +41,7 @@
 
 
 void G4HelixExplicitEuler::Stepper(  const G4double  yInput[7],
-                               const G4double*,
+                                    const G4double*,
                                      G4double Step,
                                      G4double yOut[7],
                                      G4double yErr[])

@@ -30,16 +30,44 @@ public:
                  G4double yerr[] ) ;
     
     //For Preparing the Interpolant and calculating the extra stages
-    void SetupInterpolate( const G4double yInput[],
+    void SetupInterpolate_low( const G4double yInput[],
                            const G4double dydx[],
                            const G4double Step );
     
     //For calculating the output at the tau fraction of Step
-    void Interpolate( const G4double yInput[],
+    void Interpolate_low( const G4double yInput[],
                       const G4double dydx[],
                       const G4double Step,
  	                        G4double yOut[],
                      		G4double tau );
+    
+    inline void SetupInterpolate( const G4double yInput[],
+                                 const G4double dydx[],
+                                 const G4double Step ){
+        SetupInterpolate_low( yInput, dydx, Step);
+    }
+    
+    //For calculating the output at the tau fraction of Step
+    inline void Interpolate( const G4double yInput[],
+                            const G4double dydx[],
+                            const G4double Step,
+                            G4double yOut[],
+                            G4double tau ){
+        Interpolate_low( yInput, dydx, Step, yOut, tau);
+    }
+    
+    void SetupInterpolate_high( const G4double yInput[],
+                              const G4double dydx[],
+                              const G4double Step );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate_high( const G4double yInput[],
+                         const G4double dydx[],
+                         const G4double Step,
+                         G4double yOut[],
+                         G4double tau );
+    
+    
     
     G4double  DistChord()   const;
     G4int IntegratorOrder() const { return 7; }
@@ -53,6 +81,7 @@ private:
     
 	   G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *ak9, *ak10, *ak11, *ak12, *ak13,        // for storing intermediate 'k' values in stepper
     	*ak14, *ak15, *ak16, *ak17, 	//For storing additional stages of interpolants
+    	*ak18, *ak19, *ak20, *ak21,	// For storing additional stages in the higher order interpolant
     *yTemp, *yIn;
     
     G4double fLastStepLength;

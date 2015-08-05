@@ -24,39 +24,47 @@
 // ********************************************************************
 //
 //
-// $Id: G4ErrorMag_UsualEqRhs.hh 66356 2012-12-18 09:02:32Z gcosmo $
-//
+// $Id: G4MagIntegratorStepper.cc 66356 2012-12-18 09:02:32Z gcosmo $
 //
 // --------------------------------------------------------------------
-//      GEANT 4 class header file 
-// --------------------------------------------------------------------
-//
-// Class description:
-//
-// Serves to reverse the magnetic field when propagation is backwards
-// for error propagation.
 
-// History:
-// - Created. P. Arce, September 2004
-// --------------------------------------------------------------------
+#include "G4MagIntegratorStepper.hh"
 
-#ifndef G4ErrorMag_UsualEqRhs_hh
-#define G4ErrorMag_UsualEqRhs_hh
+// Constructor for stepper abstract base class. 
+// 
 
-#include "G4Mag_UsualEqRhs.hh"
-#include "G4MagneticField.hh"
-
-class G4ErrorMag_UsualEqRhs : public G4Mag_UsualEqRhs
+G4MagIntegratorStepper::G4MagIntegratorStepper(G4EquationOfMotion* Equation,
+					       G4int       num_integration_vars,
+					       G4int       num_state_vars)
+  : fEquation_Rhs(Equation),
+    fNoIntegrationVariables(num_integration_vars),
+    fNoStateVariables(num_state_vars),
+	fNoRHSCalls(0)
+    // fNumberOfVariables( std::max(num_var,fNoStateVariables) )
 {
-   public:  // with description
+}
 
-     G4ErrorMag_UsualEqRhs( G4MagneticField* MagField );
-    ~G4ErrorMag_UsualEqRhs();
+G4MagIntegratorStepper::~G4MagIntegratorStepper()
+{
+}
 
-     void EvaluateRhsGivenB( const G4double y[],
-                             const G4double B[3],
-                            G4double dydx[] ) const;
-       // Reverses dedx if propagation is backwards
-};
+void G4MagIntegratorStepper::ComputeRightHandSide( const G4double y[], G4double dydx[] ) 
+{
+  this->RightHandSide( y, dydx );
+//    fEquation_Rhs->RightHandSide(y, dydx);
+//    increasefNORHSCalls();
+}
 
-#endif /* G4MAG_USUAL_EQRHS */
+void G4MagIntegratorStepper::increasefNORHSCalls(){
+//    std::cout<<"Yeah, I was called!";
+    fNoRHSCalls++;
+}
+
+
+void G4MagIntegratorStepper::RightHandSide( const double y[], double dydx[] )
+{
+    fEquation_Rhs-> RightHandSide(y, dydx);
+    increasefNORHSCalls();
+    
+}
+

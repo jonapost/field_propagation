@@ -1,4 +1,4 @@
-//  FDormand-Prince RK 6(5) FSAL implementation by Somnath Banerjee
+//  FFDormand-Prince RK 6(5) FSAL implementation by Somnath Banerjee
 //  Supervision / code review: John Apostolakis
 //
 // Sponsored by Google in Google Summer of Code 2015.
@@ -8,7 +8,7 @@
 // This code is made available subject to the Geant4 license, a copy of
 // which is available at
 //   http://geant4.org/license
-//  DormandPrince745.cc
+//  FDormandPrince745.cc
 //  Geant4
 //
 //  History
@@ -20,14 +20,14 @@
 
 
 
-#include "DormandPrinceRK56.hh"
+#include "FDormandPrinceRK56.hh"
 #include "G4LineSection.hh"
 
 //Constructor
-DormandPrinceRK56::DormandPrinceRK56(G4EquationOfMotion *EqRhs,
+FDormandPrinceRK56::FDormandPrinceRK56(G4EquationOfMotion *EqRhs,
                        G4int noIntegrationVariables,
                        G4bool primary)
-: G4MagIntegratorStepper(EqRhs, noIntegrationVariables){
+: FSALMagIntegratorStepper(EqRhs, noIntegrationVariables){
     
     const G4int numberOfVariables = noIntegrationVariables;
     
@@ -53,16 +53,17 @@ DormandPrinceRK56::DormandPrinceRK56(G4EquationOfMotion *EqRhs,
     fMidVector = new G4double[numberOfVariables];
     fMidError =  new G4double[numberOfVariables];
 
+    pseudoDydx_for_DistChord = new G4double[numberOfVariables];
     if( primary )
     {
-        fAuxStepper = new DormandPrinceRK56(EqRhs, numberOfVariables,
+        fAuxStepper = new FDormandPrinceRK56(EqRhs, numberOfVariables,
                                      !primary);
     }
 }
 
 
 //Destructor
-DormandPrinceRK56::~DormandPrinceRK56(){
+FDormandPrinceRK56::~FDormandPrinceRK56(){
     //clear all previously allocated memory for stepper and DistChord
     delete[] ak2;
     delete[] ak3;
@@ -92,24 +93,18 @@ DormandPrinceRK56::~DormandPrinceRK56(){
 // Passing in the value of yInput[],the first time dydx[] and Step length
 // Giving back yOut and yErr arrays for output and error respectively
 
-void DormandPrinceRK56::Stepper(const G4double yInput[],
-                         const G4double dydx[],
-                         G4double Step,
-                         G4double yOut[],
-                         G4double yErr[])
+void FDormandPrinceRK56::Stepper( const G4double yInput[],
+                                  const G4double dydx[],
+                                        G4double Step,
+                                        G4double yOut[],
+                                        G4double yErr[], 
+                                        G4double nextDydx[])
 {
     G4int i;
     
     //The various constants defined on the basis of butcher tableu
     const G4double  //G4double - only once
     
-    // Old Coefficients from
-    // Table 1. RK6(5)8M
-//---Ref---
-//[P. J. Prince and J. R. Dormand, “High order embedded Runge-Kutta formulae,”
-//    Journal of Computational and Applied Mathematics, vol. 7, no. 1, pp. 67–75,
-//    Dec. 1980.
-//----------------
 
 //    b21 =  1.0/10.0 ,
 //    
@@ -173,15 +168,6 @@ void DormandPrinceRK56::Stepper(const G4double yInput[],
 //    dc7 =  c7 - 3.0/50.0 ,
 //    dc8 =  c8 - 0.0 ,
 //    dc9 = 0.0;
-    
-    
-// New Coefficients obtained from
-    // Table 3 RK6(5)9FM with corrected coefficients
-//---Ref---
-//    T. S. Baker, J. R. Dormand, J. P. Gilmore, and P. J. Prince,
-//    “Continuous approximation with embedded Runge-Kutta methods,”
-//    Applied Numerical Mathematics, vol. 22, no. 1, pp. 51–62, 1996.
-//------------------------------------
     
     b21 =  1.0/9.0 ,
     
@@ -295,7 +281,7 @@ void DormandPrinceRK56::Stepper(const G4double yInput[],
         yTemp[i] = yIn[i] + Step*(b71*dydx[i] + b72*ak2[i] + b73*ak3[i] +
                                   b74*ak4[i] + b75*ak5[i] + b76*ak6[i]);
     }
-    RightHandSide(yTemp, ak7);				//7th Stage
+    RightHandSide(yTemp, ak7);        //7th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -303,7 +289,7 @@ void DormandPrinceRK56::Stepper(const G4double yInput[],
                                   b84*ak4[i] + b85*ak5[i] + b86*ak6[i] +
                                   b87*ak7[i]);
     }
-    RightHandSide(yTemp, ak8);				//8th Stage
+    RightHandSide(yTemp, ak8);        //8th Stage
     
     for(i=0;i<numberOfVariables;i++)
     {
@@ -323,6 +309,7 @@ void DormandPrinceRK56::Stepper(const G4double yInput[],
         yErr[i] = Step*( dc1*dydx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
                          dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] + dc8*ak8[i]  +
                          dc9*ak9[i] ) ;
+        nextDydx[i] = ak9[i];
         
     }
     
@@ -335,7 +322,7 @@ void DormandPrinceRK56::Stepper(const G4double yInput[],
 //The following has not been tested
 
 //The DistChord() function fot the class - must define it here.
-G4double  DormandPrinceRK56::DistChord() const
+G4double  FDormandPrinceRK56::DistChord() const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -349,7 +336,7 @@ G4double  DormandPrinceRK56::DistChord() const
     // Do half a step using StepNoErr
     
     fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
-                         fMidVector,   fMidError );
+                         fMidVector,   fMidError, pseudoDydx_for_DistChord);
     
     midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
     
@@ -370,52 +357,7 @@ G4double  DormandPrinceRK56::DistChord() const
 }
 
 
-// The following interpolation scheme has been obtained from
-// Table 5. The RK6(5)9FM process and associated dense formula
-//---Ref---
-//	J. R. Dormand, M. A. Lockyer, N. E. McGorrigan, and P. J. Prince,
-//	“Global error estimation with runge-kutta triples,”
-//	Computers & Mathematics with Applications, vol. 18, no. 9, pp. 835–846, 1989.
-//-----------------------------
-
-// Fifth order interpolant with one extra function evaluation per step
-
-void DormandPrinceRK56::SetupInterpolate_low( const G4double yInput[],
-                                                      const G4double dydx[],
-                                             const G4double Step ){
-     const G4int numberOfVariables= this->GetNumberOfVariables();
-    
-    G4double
-    b_101 = 33797.0/460800.0 ,
-    b_102 = 0. ,
-    b_103 = 0. ,
-    b_104 = 27757.0/70785.0 ,
-    b_105 = 7923501.0/26329600.0 ,
-    b_106 = -927.0/3760.0 ,
-    b_107 = -3314760575.0/23165835264.0 ,
-    b_108 = 2479.0/23040.0 ,
-    b_109 = 1.0/64.0 ;
-
-    ak10_low = new G4double[numberOfVariables];
-    
-    for(int i=0;i<numberOfVariables;i++)
-    {
-        yIn[i]=yInput[i];
-    }
-    
-    
-    for(int i=0;i<numberOfVariables;i++)
-    {
-        yTemp[i] = yIn[i] + Step*(b_101*dydx[i] + b_102*ak2[i] + b_103*ak3[i] +
-                                  b_104*ak4[i] + b_105*ak5[i] + b_106*ak6[i] +
-                                  b_107*ak7[i] + b_108*ak8[i] + b_109*ak9[i]);
-    }
-    RightHandSide(yTemp, ak10_low);          //10th Stage
-
-}
-
-
-void DormandPrinceRK56::Interpolate_low( const G4double yInput[],
+void FDormandPrinceRK56::interpolate( const G4double yInput[],
                                     const G4double dydx[],
                                     const G4double Step,
                                     G4double yOut[],
@@ -425,9 +367,10 @@ void DormandPrinceRK56::Interpolate_low( const G4double yInput[],
         G4double
         bf1, bf4, bf5, bf6, bf7, bf8, bf9, bf10;
         
-        G4double tau0 = tau;
         const G4int numberOfVariables= this->GetNumberOfVariables();
-
+        
+        G4double tau0 = tau;
+        
         for(int i=0;i<numberOfVariables;i++)
         {
             yIn[i]=yInput[i];
@@ -438,12 +381,11 @@ void DormandPrinceRK56::Interpolate_low( const G4double yInput[],
         tau_3 = tau0*tau_2,
         tau_4 = tau_2*tau_2;
         
-        //bf2 = bf3 = 0
         bf1 = (66480.0*tau_4 - 206243.0*tau_3 + 237786.0*tau_2 - 124793.0*tau + 28800.0)/28800.0 ,
         bf4 = -16.0*tau*(45312.0*tau_3 - 125933.0*tau_2 + 119706.0*tau -40973.0)/70785.0 ,
         bf5 = -2187.0*tau*(19440.0*tau_3 - 45743.0*tau_2 + 34786.0*tau - 9293.0)/1645600.0 ,
         bf6 = tau*(12864.0*tau_3 - 30653.0*tau_2 + 23786.0*tau - 6533.0)/705.0 ,
-        bf7 = -5764801.0*tau*(16464.0*tau_3 - 32797.0*tau_2 + 17574.0*tau - 1927.0)/7239323520.0 ,
+        bf7 = -5764801.0*tau*(16464.0*tau_3 - 32797.0*tau_2 + 17574.0*tau - 1927.0)/1645600.0 ,
         bf8 =  37.0*tau*(336.0*tau_3 - 661.0*tau_2 + 342.0*tau -31.0)/1440.0 ,
         bf9 = tau*(tau-1.0)*(16.0*tau_2 - 15.0*tau +3.0)/4.0 ,
         bf10 = 8.0*tau*(tau - 1.0)*(tau - 1.0)*(2.0*tau - 1.0) ;
@@ -451,7 +393,7 @@ void DormandPrinceRK56::Interpolate_low( const G4double yInput[],
         for( int i=0; i<numberOfVariables; i++){
             yOut[i] = yIn[i] + Step*tau*( bf1*dydx[i] +  bf4*ak4[i] + bf5*ak5[i] +
                                          bf6*ak6[i] + bf7*ak7[i] + bf8*ak8[i] +
-                                         bf9*ak9[i] +  bf10*ak10_low[i] ) ;
+                                         bf9*ak9[i] +  bf10*ak10[i] ) ;
         }
         
         
@@ -460,21 +402,7 @@ void DormandPrinceRK56::Interpolate_low( const G4double yInput[],
     
 }
 
-//The following scheme and set of coefficients have been obtained from
-//Table 2. Sixth order dense formula based on linear optimisation for RK6(5)9FM
-//with extra stages C1O= 1/2, C11 =1/6, c12= 5/12
-
-//---Ref---
-//	T. S. Baker, J. R. Dormand, J. P. Gilmore, and P. J. Prince,
-//  “Continuous approximation with embedded Runge-Kutta methods,”
-//  Applied Numerical Mathematics, vol. 22, no. 1, pp. 51–62, 1996.
-//--------------------
-
-
-//	--- Sixth order interpolant with 3 additional stages per step ---
-
-//Function for calculating the additional stages :
-void DormandPrinceRK56::SetupInterpolate_high( const G4double yInput[],
+void FDormandPrinceRK56::SetupInterpolate( const G4double yInput[],
                                           const G4double dydx[],
                                           const G4double Step ){
     
@@ -526,14 +454,10 @@ void DormandPrinceRK56::SetupInterpolate_high( const G4double yInput[],
     yTemp[7]  = yIn[7];
     
     
-	// New memory for Additional stages
-
-    if(ak10 == NULL)
-        ak10 = new G4double[numberOfVariables];
-    if(ak11 == NULL)
-        ak11 = new G4double[numberOfVariables];
-    if(ak12 == NULL)
-        ak12 = new G4double[numberOfVariables];
+    //TODo
+    ak10 = new G4double[numberOfVariables];
+    ak11 = new G4double[numberOfVariables];
+    ak12 = new G4double[numberOfVariables];
     
     //Evaluate the extra stages :
     
@@ -552,7 +476,7 @@ void DormandPrinceRK56::SetupInterpolate_high( const G4double yInput[],
                                   b117*ak7[i] + b118*ak8[i] + b119*ak9[i] +
                                   b1110*ak10[i]);
     }
-    RightHandSide(yTemp, ak11);			//11th Stage
+    RightHandSide(yTemp, ak11);     //11th Stage
     
     for(int i=0;i<numberOfVariables;i++)
     {
@@ -561,14 +485,14 @@ void DormandPrinceRK56::SetupInterpolate_high( const G4double yInput[],
                                   b127*ak7[i] + b128*ak8[i] + b129*ak9[i] +
                                   b1210*ak10[i] + b1211*ak11[i]);
     }
-    RightHandSide(yTemp, ak12);			//12th Stage
+    RightHandSide(yTemp, ak12);     //12th Stage
 
 }
 
 
 
-//Function to interpolate to tau(passed in) fraction of the step
-void DormandPrinceRK56::Interpolate_high( const G4double yInput[],
+
+void FDormandPrinceRK56::Interpolate( const G4double yInput[],
                                      const G4double dydx[],
                                      const G4double Step,
                                            G4double yOut[],
@@ -579,7 +503,7 @@ void DormandPrinceRK56::Interpolate_high( const G4double yInput[],
     G4double bi[13][6], b[13];
     G4int numberOfVariables = this->GetNumberOfVariables();
 
-	
+  
     //  COEFFICIENTS OF   bi[ 1]
     bi[1][0] =  1.0 ,
     bi[1][1] = -18487.0/2880.0 ,
@@ -693,9 +617,9 @@ void DormandPrinceRK56::Interpolate_high( const G4double yInput[],
         yIn[i] = yInput[i];
     
     G4double tau0 = tau;
-    //    Calculating the polynomials (coefficents for the respective stages) :
+    //    Calculating the polynomials :
     
-    for(int i=1; i<=12; i++){	//Here i is NOT the coordinate no. , it's stage no.
+    for(int i=1; i<=12; i++){ //Here i is NOT the coordinate no. , it's stage no.
         b[i] = 0;
         tau = 1.0;
         for(int j=0; j<=5; j++){
@@ -704,15 +628,10 @@ void DormandPrinceRK56::Interpolate_high( const G4double yInput[],
         }
     }
     
-//    Calculating the interpolation at the fraction tau of the step using the polynomial
-//		coefficients and the respective stages
-    
-    for(int i=0; i<numberOfVariables; i++){		//Here i IS the cooridnate no.
+    for(int i=0; i<numberOfVariables; i++){   //Here i IS the cooridnate no.
         yOut[i] = yIn[i] + Step*tau0*(b[1]*dydx[i] + b[2]*ak2[i] + b[3]*ak3[i] +
                                  b[4]*ak4[i] + b[5]*ak5[i] + b[6]*ak6[i] +
                                  b[7]*ak7[i] + b[8]*ak8[i] + b[9]*ak9[i] +
                                  b[10]*ak10[i] + b[11]*ak11[i] + b[12]*ak12[i]);
     }
 }
-
-//-----Verified--------- - hackabot

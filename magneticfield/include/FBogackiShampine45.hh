@@ -39,11 +39,10 @@ public:
                  		G4double nextDydx[]) ;
     
     void interpolate( const G4double yInput[],
-                     const G4double dydx[],
-                             G4double yOut[],
-                             G4double Step,
-                             G4double tau
-                     ) ;
+                      const G4double dydx[],
+                            G4double yOut[],
+                            G4double Step,
+                            G4double tau ) ;
     
     
     G4double  DistChord()   const;

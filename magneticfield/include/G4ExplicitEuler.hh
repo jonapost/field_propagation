@@ -61,6 +61,7 @@ class G4ExplicitEuler : public G4MagErrorStepper
   public:  // without description
 
     G4int IntegratorOrder() const { return 1; }
+    G4bool isFSAL() const{ return false; }
 
 };
 

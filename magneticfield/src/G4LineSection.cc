@@ -24,12 +24,11 @@
 // ********************************************************************
 //
 //
-// $Id: G4LineSection.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4LineSection.cc 85845 2014-11-05 15:43:58Z gcosmo $
 //
 // --------------------------------------------------------------------
 
 #include "G4LineSection.hh" 
-
 
 G4double G4LineSection::Dist( G4ThreeVector OtherPnt ) const
 {
@@ -78,4 +77,3 @@ G4double G4LineSection::Dist( G4ThreeVector OtherPnt ) const
 
   return std::sqrt(dist_sq) ;  
 }
-
