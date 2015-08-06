@@ -63,8 +63,6 @@
 #include "isTracking.hh"
 
 
-//#define JTS_DEBUG
-
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
 {
@@ -301,16 +299,16 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //===============================================
 
-/*
+
 G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
 G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
 G4String   fieldName("Uniform 10Tesla");
-*/
 
+/*
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
-
+*/
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
@@ -517,7 +515,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
             ->SetEquationOfMotion(fEquation);
 
     if (type == 0)
-       dynamic_cast< MagIntegratorStepper_byTime<MuruaRKN5459>* >( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
+       dynamic_cast< MagIntegratorStepper_byTime<MuruaRKN5459>* >
+                     ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
              -> set_MagEqRhs_storedBfield(fEquation);
 
 
@@ -559,10 +558,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        physStep=  2.5 * mm ;  // millimeters 
 
 
+       //cout << " distance " << 7.5 * m << endl;
 
-       Position = G4ThreeVector(0.,0.,0.) 
+       //Position = G4ThreeVector(0.,0.,0.)
+       Position = G4ThreeVector(0.*m, 0.*m, 4.*m)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
-       UnitMomentum = (G4ThreeVector(0.0,0.6,0.8)
+       UnitMomentum = (G4ThreeVector(0.0,0.2,0.8)
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
 
        G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2; 

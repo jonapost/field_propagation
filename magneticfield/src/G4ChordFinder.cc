@@ -352,17 +352,6 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      }
   }
 
-  // Temp hack so we can record y'' values from inside ChordFinder (without having to store them in MagIntegratorDriver)
-  /*
-  yCurrent.DumpToArray(pos_mom_vals);
-  fIntgrDriver -> GetStepper() -> ComputeRightHandSide(pos_mom_vals, dydx_temp);
-  for ( int i = 3; i < 6; i ++)
-     dydx_temp[i] /= mass;
-
-  total_time += stepPossible;
-  record( pos_mom_vals, dydx_temp);
-   */
-
 
 #ifdef Tracking
    mTracker -> set_last_curve_length( startCurveLen + stepPossible )

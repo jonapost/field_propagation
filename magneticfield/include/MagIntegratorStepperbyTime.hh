@@ -58,10 +58,14 @@ public:
    inline G4double DistChord() const;
 
 private:
+   // Needed because Stepper() takes yInput[] and dydx[] as const input
+   // but we have to do some scaling modifications in Stepper():
    G4double yIn[NO_STATE_VARIABLES],
-            dydx_copy[NO_STATE_VARIABLES],
-            cached_dydx[NO_STATE_VARIABLES],
-            last_function_evaluation[NO_STATE_VARIABLES];
+            dydx_copy[NO_STATE_VARIABLES];
+
+   // Possible future use:
+   //G4double cached_dydx[NO_STATE_VARIABLES],
+   //         last_function_evaluation[NO_STATE_VARIABLES];
 
    G4double nextFunctionEvaluation[NO_STATE_VARIABLES];
 
@@ -98,8 +102,10 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yError [] ) {
 
 #ifdef TRACKING
-   if ( ! BaseStepper::mTracker -> get_within_AdvanceChordLimited() )
-      cout << "In Stepper, but not in AdvanceChordLimited()" << endl;
+   #ifdef DEBUG_TRACKING
+      if ( ! BaseStepper::mTracker -> get_within_AdvanceChordLimited() )
+         cout << "In Stepper, but not in AdvanceChordLimited()" << endl;
+   #endif
 #endif
 
 #ifdef BACK_TRACKING
@@ -186,8 +192,9 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
          G4int no_function_calls = myField -> GetCountCalls();
 
          // Storing all this with StepTracker:
-         BaseStepper::mTracker -> RecordResultOfStepper(yOutput,
-                                     nextFunctionEvaluation, no_function_calls);
+         BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy,
+                                                        yOutput, nextFunctionEvaluation,
+                                                        no_function_calls);
 
          BaseStepper::mTracker -> UnArmTracker();
       }

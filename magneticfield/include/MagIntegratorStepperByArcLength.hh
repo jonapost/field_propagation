@@ -46,6 +46,10 @@ public:
    inline G4double DistChord() const;
 
 private:
+   // Used simply for parsing for storage to StepTracker (because Stepper()
+   // takes yInput[] and dydx[] as const input.
+   G4double yIn[NO_STATE_VARIABLES],
+            dydx_copy[NO_STATE_VARIABLES];
 
    G4double nextFunctionEvaluation[NO_STATE_VARIABLES]; // 8 for safety (only need 6).
 
@@ -70,7 +74,7 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
             G4double yError [] ) {
 
 
-#ifdef TRACKING
+#ifdef BACK_TRACKING
 
    if ( BaseStepper::mTracker -> get_within_AdvanceChordLimited() ) {
    // Within AdvancedChordLimited, so we want to record.
@@ -114,32 +118,45 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
    //( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 
 #ifdef TRACKING
-   if ( BaseStepper::mTracker -> isArmed() ) {
-      // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
+   if ( BaseStepper::mTracker -> get_within_AdvanceChordLimited() ) {
+      // Within AdvancedChordLimited, so we want to record.
+      if ( BaseStepper::mTracker -> isArmed() ) {
+         // BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy);
 
-      // nextFunctionEvaluation is done at the right endpoint of the integration step.
-      // If this works should make nextFunctionEvaluation a member variable:
+         // nextFunctionEvaluation is done at the right endpoint of the integration step.
+         // If this works should make nextFunctionEvaluation a member variable:
 
-      BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
+         BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
 
-      // Want to store velocity, not momentum.
-      for (int i = 3; i < 6; i ++)
-                  yOutput[i] /= m_fEq -> FMass();
-      // Divide by mass to get acceleration:
-      for (int i = 3; i < 6; i ++)
-         nextFunctionEvaluation[i] /= m_fEq -> FMass();
+         // Want to store velocity, not momentum.
+         for (int i = 3; i < 6; i ++)
+                     yOutput[i] /= m_fEq -> FMass();
+         // Divide by mass to get acceleration:
+         for (int i = 3; i < 6; i ++)
+            nextFunctionEvaluation[i] /= m_fEq -> FMass();
 
+         // Since we are also storing the values at the beginning of the step,
+         // and because we have to convert to velocity coordinates to store in StepTracker:
+         for (int i = 0; i < 10; i ++){
+            yIn[i] = yInput[i];
+            dydx_copy[i] = dydx[i];
+         }
+         for (int i = 3; i < 6; i ++){
+            yIn[i] *= 1. / m_fEq -> FMass();
+            dydx_copy[i] *= 1. / m_fEq -> FMass();
+         }
 
-      const G4CachedMagneticField *myField = (G4CachedMagneticField*)( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
-      G4int no_function_calls = myField -> GetCountCalls();
+         const G4CachedMagneticField *myField = (G4CachedMagneticField*)( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
+         G4int no_function_calls = myField -> GetCountCalls();
 
-      BaseStepper::mTracker -> RecordResultOfStepper(yOutput, nextFunctionEvaluation, no_function_calls); // Store as velocity (instead of mom.)
+         BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy, yOutput, nextFunctionEvaluation, no_function_calls); // Store as velocity (instead of mom.)
 
-      // Change back to momentum coordinates for next round of stepper:
-      for (int i = 3; i < 6; i ++)
-            yOutput[i] *= m_fEq -> FMass();
+         // Change back to momentum coordinates for next round of stepper:
+         for (int i = 3; i < 6; i ++)
+               yOutput[i] *= m_fEq -> FMass();
 
-      BaseStepper::mTracker -> UnArmTracker();
+         BaseStepper::mTracker -> UnArmTracker();
+      }
    }
 #endif
 

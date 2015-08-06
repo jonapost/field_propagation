@@ -23,6 +23,8 @@ class G4MagIntegratorStepper;
 
 #endif
 
+#include "isTracking.hh"
+
 #include <vector>
 using namespace std;
 
@@ -53,8 +55,9 @@ public:
    // End of intersection pt. book keeping Functions.
 
 
-   void RecordResultOfStepper( G4double yIn[],
-                               G4double dydx[], G4int no_function_calls = -1);
+   void RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
+                               G4double yIn1[], G4double dydx1[],
+                               G4int no_function_calls = -1);
 
    void update_time_arclength( G4double time_to_add, G4double arclength_to_add );
 
@@ -102,6 +105,9 @@ private:
                                    // False if we are using MagIntegratorStepper_byArcLength
    G4bool within_AdvanceChordLimited;
    G4double last_curve_length;
+
+   G4double time_left_over_from_intersection_pt_overshoot,
+            arclength_left_over_from_intersection_pt_overshoot;
 
    G4MagIntegratorStepper *myStepper;
 

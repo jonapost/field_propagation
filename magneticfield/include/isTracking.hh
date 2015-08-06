@@ -4,3 +4,4 @@
 
 #define TRACKING
 //#define BACK_TRACKING
+#define DEBUG_TRACKING
