@@ -691,15 +691,15 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 #endif
 
        clock_t total = 0;
-	   for( int istep=0; istep < 14; istep++ ){ 
-          // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
+   for( int istep=0; istep < 14; istep++ ){
+       // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
 	  located = pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
 	       // << located->GetName() << G4endl;
 
           G4FieldTrack  initTrack( Position, 
 				   UnitMomentum,
-				   0.0,            // starting S curve len
+				   last_curve_length, //0.0,            // starting S curve len
 				   kineticEnergy,
 				   proton_mass_c2,
 				   velocity,
@@ -748,7 +748,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  // pMagFieldPropagator->SetGeometricallyLimitedStep();
 
 #ifdef TRACKING
-	  last_curve_length = initTrack.GetCurveLength();
+	  last_curve_length += step_len; //initTrack.GetCurveLength();
+	  //cout << " Last Curve Length: " << last_curve_length << endl;
 	  //cout << " Curve Length: " << initTrack.GetCurveLength() << endl;
 #endif
 
@@ -930,10 +931,10 @@ int main(int argc, char **argv)
 
 #ifdef TRACKING
 
-    char *stepTracker_output_filename = "stepTracker_output";
-    char *stepTracker_no_function_calls_output_filename = "no_function_calls";
-    char *stepTracker_meta_output_filename = "meta_stepTracker_output";
-    char *intersection_indices_filename = "intersection_indices";
+    char *stepTracker_output_filename = "stepTracker_output1";
+    char *stepTracker_no_function_calls_output_filename = "no_function_calls1";
+    char *stepTracker_meta_output_filename = "meta_stepTracker_output1";
+    char *intersection_indices_filename = "intersection_indices1";
 #endif
 
     testG4PropagatorInField( myTopNode, type
@@ -954,11 +955,28 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
-    /*
+
 
     G4GeometryManager::GetInstance()->CloseGeometry(true);
 
-    testG4PropagatorInField(myTopNode, type);
+#ifdef TRACKING
+
+    stepTracker_output_filename = "stepTracker_output2";
+    stepTracker_no_function_calls_output_filename = "no_function_calls2";
+    stepTracker_meta_output_filename = "meta_stepTracker_output2";
+    intersection_indices_filename = "intersection_indices2";
+#endif
+
+
+    testG4PropagatorInField( myTopNode, type
+
+#ifdef TRACKING
+                            , stepTracker_output_filename
+                            , stepTracker_no_function_calls_output_filename
+                            , stepTracker_meta_output_filename
+                            , intersection_indices_filename
+#endif
+    );
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
@@ -966,7 +984,7 @@ int main(int argc, char **argv)
 	//   << "----------------------------------------------------------"
 	  // << G4endl; 
 
-	*/
+
 // Repeat tests with full voxels and modified parameters
     //G4cout << "Test with more accurate parameters " << G4endl; 
 
@@ -981,7 +999,28 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4GeometryManager::GetInstance()->CloseGeometry(true);
 
-    testG4PropagatorInField(myTopNode, type);
+    //testG4PropagatorInField(myTopNode, type);
+
+#ifdef TRACKING
+
+    stepTracker_output_filename = "stepTracker_output3";
+    stepTracker_no_function_calls_output_filename = "no_function_calls3";
+    stepTracker_meta_output_filename = "meta_stepTracker_output3";
+    intersection_indices_filename = "intersection_indices3";
+#endif
+
+
+    testG4PropagatorInField( myTopNode, type
+
+
+
+#ifdef TRACKING
+                          , stepTracker_output_filename
+                          , stepTracker_no_function_calls_output_filename
+                          , stepTracker_meta_output_filename
+                          , intersection_indices_filename
+#endif
+  );
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
@@ -994,7 +1033,30 @@ int main(int argc, char **argv)
     G4cout << G4endl;
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
-    testG4PropagatorInField(myTopNode, type);
+
+
+#ifdef TRACKING
+
+    stepTracker_output_filename = "stepTracker_output4";
+    stepTracker_no_function_calls_output_filename = "no_function_calls4";
+    stepTracker_meta_output_filename = "meta_stepTracker_output4";
+    intersection_indices_filename = "intersection_indices4";
+#endif
+
+
+
+    testG4PropagatorInField( myTopNode, type
+
+#ifdef TRACKING
+                                              , stepTracker_output_filename
+                                              , stepTracker_no_function_calls_output_filename
+                                              , stepTracker_meta_output_filename
+                                              , intersection_indices_filename
+#endif
+    );
+
+
+    //testG4PropagatorInField(myTopNode, type);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 

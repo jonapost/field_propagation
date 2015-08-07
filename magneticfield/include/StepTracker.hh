@@ -28,7 +28,7 @@ class G4MagIntegratorStepper;
 #include <vector>
 using namespace std;
 
-#define BUFFER_COLUMN_LEN 10
+#define BUFFER_COLUMN_LEN 22
 
 
 class StepTracker {
@@ -57,6 +57,7 @@ public:
 
    void RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
                                G4double yIn1[], G4double dydx1[],
+                               G4double arclength_to_add,
                                G4int no_function_calls = -1);
 
    void update_time_arclength( G4double time_to_add, G4double arclength_to_add );
@@ -104,7 +105,7 @@ private:
    G4bool integrating_by_velocity; // True if we are using MagIntegratorStepper_byTime
                                    // False if we are using MagIntegratorStepper_byArcLength
    G4bool within_AdvanceChordLimited;
-   G4double last_curve_length;
+   G4double last_curve_length, last_time_length;
 
    G4double time_left_over_from_intersection_pt_overshoot,
             arclength_left_over_from_intersection_pt_overshoot;

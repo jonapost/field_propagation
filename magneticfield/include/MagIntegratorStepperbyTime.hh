@@ -194,6 +194,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
          // Storing all this with StepTracker:
          BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy,
                                                         yOutput, nextFunctionEvaluation,
+                                                        hstep, // Supposed to be in arclength units.
                                                         no_function_calls);
 
          BaseStepper::mTracker -> UnArmTracker();

@@ -17,6 +17,7 @@
 #include <fstream>
 #include <vector>
 using namespace std;
+#include <assert.h>
 
 #include "G4ThreeVector.hh"
 
@@ -37,20 +38,19 @@ StepTracker::StepTracker(G4double beginning[BUFFER_COLUMN_LEN]) {
    // beginning must be of the form
    // {time, arclength, position[1..3], momentum[1..3], RHS[1..3]}
 
-   last_time_val_was_accepted = false;
+   last_time_val_was_accepted = true; // There was no last time val at time of creation.
    armed = false;
 
    thrown_away_steps = 0;
-
+   /*
    buffer.push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
    no_function_calls_buffer.push_back( 0 );
 
    for (int i = 0; i < BUFFER_COLUMN_LEN; i ++)
       buffer[0][i] = beginning[i];
+   */
 
-   last_curve_length = 0.;
-   time_left_over_from_intersection_pt_overshoot =
-                  arclength_left_over_from_intersection_pt_overshoot = 0.;
+   last_curve_length = last_time_length = 0.;
 
 }
 
@@ -60,6 +60,8 @@ StepTracker::~StepTracker() {
 
 void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post_intersection_point,
                                                      G4double passed_curve_length ) {
+
+   assert( last_time_val_was_accepted );
 
    if ( passed_curve_length < last_curve_length ) {
       // passed_curve_length is the curve_length of the prev
@@ -72,10 +74,11 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
       // points uses function evaluations (or at least function calls) (Is this true??)
 
 
-#ifdef DEGUB_TRACKING
-      cout << "StepTracker::record_if_post_intersection_point().  Possible Intersection pt" << endl;
-#endif
+//#ifdef DEGUB_TRACKING
+      //cout << "StepTracker::record_if_post_intersection_point().  Possible Intersection pt" << endl;
+//#endif
 
+      /*
       G4double y[G4FieldTrack::ncompSVEC];
       G4double dydx[G4FieldTrack::ncompSVEC];
 
@@ -102,18 +105,21 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
       }
 
       G4int no_function_calls = myField -> GetCountCalls();
-
+      */
 
       // have to loop and throw away points until we have found pre-intersection point:
       while ( buffer.back().at(ENDPOINT_BASE_INDEX + 1) > passed_curve_length ) {
+         assert(buffer.size() > 0);
          buffer.pop_back(); // Get rid of overshoot point (overshot the intersection point).
          no_function_calls_buffer.pop_back(); // Similar as line above.
       }
 
+      /*
       arclength_left_over_from_intersection_pt_overshoot =
             passed_curve_length - buffer.back().at(ENDPOINT_BASE_INDEX + 1);
       time_left_over_from_intersection_pt_overshoot =
             arclength_left_over_from_intersection_pt_overshoot / last_velocity() ;
+      */
 
       // Commented out b/c haven't done a step yet, (but soon will). Hold off on recording step for now:
       //RecordResultOfStepper( y, dydx, no_function_calls );
@@ -129,8 +135,29 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
                                                             ) ;
       */
 
-      indices_of_intersection_points.push_back( getBufferLength() );
 
+
+      last_time_length = buffer.back().at(ENDPOINT_BASE_INDEX + 0)                                 // Take the last pre-intesection time value
+                           + ( passed_curve_length - buffer.back().at(ENDPOINT_BASE_INDEX + 1) )   // then add the remaining time (scaled arc length)
+                              / last_velocity() ;
+
+
+      last_curve_length = passed_curve_length;
+
+      if ( indices_of_intersection_points.size() > 0 ){
+         if (indices_of_intersection_points.back() != getBufferLength() ) {
+            cout << passed_curve_length << ", " << passed_curve_length - buffer.back().at(ENDPOINT_BASE_INDEX + 1) << endl;
+            indices_of_intersection_points.push_back( getBufferLength() );
+         }
+      }
+      else {
+         cout << passed_curve_length << ", " << passed_curve_length - buffer.back().at(ENDPOINT_BASE_INDEX + 1) << endl;
+         indices_of_intersection_points.push_back( getBufferLength() );
+      }
+
+   }
+   else {
+      //cout << "passed_curve_length: " << passed_curve_length << ",  last_curve_length: " << last_curve_length << endl;
    }
    // Either way we don't want to erase the last row of buffer data.
    last_time_val_was_accepted = true;
@@ -166,7 +193,7 @@ void StepTracker::outputBuffer(char *outfile_name,
 
    if (indices_intersection_pts_filename != 0) {
       ofstream indices_intersection_pts_outfile( indices_intersection_pts_filename, ios::out );
-      for (int i = 0; i < indices_of_intersection_points.size(); i ++)
+      for (uint i = 0; i < indices_of_intersection_points.size(); i ++)
          indices_intersection_pts_outfile << indices_of_intersection_points[i] << endl;
 
       indices_intersection_pts_outfile.close();
@@ -176,6 +203,7 @@ void StepTracker::outputBuffer(char *outfile_name,
 
 void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
                                          G4double yIn1[], G4double dydx1[],
+                                         G4double step,
                                          G4int no_function_calls) {
    // Time is stored in first component.
 
@@ -196,17 +224,12 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
 
       last_index = buffer.size() - 1;
 
-      if (last_index > 0) {
-         // Copy last endpoint time/arclength values into new Initial point
-         // time/arclength slots:
-         buffer[last_index][0] = buffer[last_index - 1][ENDPOINT_BASE_INDEX + 0]
-                                 + time_left_over_from_intersection_pt_overshoot;
-         buffer[last_index][1] = buffer[last_index - 1][ENDPOINT_BASE_INDEX + 1]
-                                 + arclength_left_over_from_intersection_pt_overshoot;
-         // Reset these:
-         time_left_over_from_intersection_pt_overshoot =
-               arclength_left_over_from_intersection_pt_overshoot = 0.;
-      }
+
+      // Copy last endpoint time/arclength values into new Initial point
+      // time/arclength slots:
+
+      buffer[last_index][0] = last_time_length;
+      buffer[last_index][1] = last_curve_length;
 
       if (no_function_calls != -1)
          no_function_calls_buffer.push_back( no_function_calls );
@@ -219,6 +242,7 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
    }
 
    // Take care of beginning. (Don't overwrite the first row.):
+   /*
    if ( buffer.size() == 1 ) {
       buffer.push_back( vector<G4double> (BUFFER_COLUMN_LEN) );
       last_index = buffer.size() - 1;
@@ -228,13 +252,11 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
                               + time_left_over_from_intersection_pt_overshoot;
       buffer[last_index][1] = buffer[last_index - 1][ENDPOINT_BASE_INDEX + 1]
                               + arclength_left_over_from_intersection_pt_overshoot;
-      // Reset these:
-      time_left_over_from_intersection_pt_overshoot =
-                     arclength_left_over_from_intersection_pt_overshoot = 0.;
 
       if (no_function_calls != -1)
          no_function_calls_buffer.push_back( no_function_calls );
    }
+   */
 
    last_index = buffer.size() - 1;
 
@@ -252,6 +274,9 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
    for (int i = 0; i < 3; i ++) {
       buffer[last_index][ENDPOINT_BASE_INDEX + RHS_SLOT + i] = dydx1[i + 3];
    }
+
+   buffer[last_index][ENDPOINT_BASE_INDEX + 0] = last_time_length = last_time_length + step / last_velocity();
+   buffer[last_index][ENDPOINT_BASE_INDEX + 1] = last_curve_length = last_curve_length + step;
 }
 
 G4bool StepTracker::check_that_wasnt_disgarded_by_Propagator(
@@ -269,6 +294,7 @@ G4bool StepTracker::check_that_wasnt_disgarded_by_Propagator(
 
 G4double StepTracker::last_velocity() { // Might want to change this to use the endpoints velocity values?
    G4int last_index = getBufferLength() - 1;
+
    return G4ThreeVector( buffer[last_index][MOMENTUM_SLOT],
                          buffer[last_index][MOMENTUM_SLOT + 1],
                          buffer[last_index][MOMENTUM_SLOT + 2] ).mag();
@@ -285,15 +311,18 @@ void StepTracker::update_time_arclength( G4double time_to_add, G4double arclengt
    // through by velocity).
 
    if ( ! within_AdvanceChordLimited ) {
-      cout << "Not within AdvancedChordLimited" << endl;
+      //cout << "Not within AdvancedChordLimited" << endl;
       return;
    }
 
    last_time_val_was_accepted = true;
+
+   /*
    G4int last_index = buffer.size() - 1;
 
-   buffer[last_index][ENDPOINT_BASE_INDEX + 0] = buffer[last_index][0] + time_to_add;
-   buffer[last_index][ENDPOINT_BASE_INDEX + 1] = buffer[last_index][1] + arclength_to_add;
+   buffer[last_index][ENDPOINT_BASE_INDEX + 0] = last_time_length = buffer[last_index][0] + time_to_add;
+   buffer[last_index][ENDPOINT_BASE_INDEX + 1] = last_curve_length = buffer[last_index][1] + arclength_to_add;
+   */
 }
 
 

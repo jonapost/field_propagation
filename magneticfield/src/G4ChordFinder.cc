@@ -311,9 +311,6 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                              );
   //            *************
 
-
-
-
   G4bool good_advance;
 
   if ( dyErr < epsStep * stepPossible )
@@ -353,8 +350,9 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   }
 
 
-#ifdef Tracking
-   mTracker -> set_last_curve_length( startCurveLen + stepPossible )
+#ifdef TRACKING
+   //mTracker -> set_last_curve_length( startCurveLen + stepPossible );
+   //mTracker -> set_last_curve_length( stepPossible );
    mTracker -> set_within_AdvanceChordLimited( false );
 #endif
 

@@ -149,7 +149,7 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
          const G4CachedMagneticField *myField = (G4CachedMagneticField*)( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
          G4int no_function_calls = myField -> GetCountCalls();
 
-         BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy, yOutput, nextFunctionEvaluation, no_function_calls); // Store as velocity (instead of mom.)
+         BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy, yOutput, nextFunctionEvaluation, hstep, no_function_calls); // Store as velocity (instead of mom.)
 
          // Change back to momentum coordinates for next round of stepper:
          for (int i = 3; i < 6; i ++)
