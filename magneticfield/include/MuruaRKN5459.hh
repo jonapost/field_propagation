@@ -39,7 +39,7 @@ public:
          G4double Rhs[] );
 
    G4double  DistChord()   const;
-   G4int IntegratorOrder() const {return 5; }
+   G4int IntegratorOrder() const {return 4; }
 
    void set_MagEqRhs_storedBfield( G4EquationOfMotion *EqRhs );
 

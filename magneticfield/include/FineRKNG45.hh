@@ -29,7 +29,7 @@ public:
                  G4double yerr[] ) ;
 
    G4double  DistChord()   const;
-   G4int IntegratorOrder() const {return 5; }
+   G4int IntegratorOrder() const {return 4; }
 
    void InterpolatePosition(G4double xi, G4double yout[]);
 

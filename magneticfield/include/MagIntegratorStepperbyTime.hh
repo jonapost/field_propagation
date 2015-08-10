@@ -104,7 +104,7 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yError [] ) {
 
    // Have to copy because yInput and dydx are constant in the function signature...
-   for (int i = 0; i < 10; i ++){
+   for (int i = 0; i < 6; i ++){
       yIn[i] = yInput[i];
       dydx_copy[i] = dydx[i];
    }
@@ -160,25 +160,31 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
 #endif
 
    // Have to convert back to momentum coordinates.
-   for (int i = 3; i < 6; i ++)
+   for (int i = 3; i < 6; i ++) {
       yOutput[i] *= m_fEq -> FMass();
-
+      yError[i] *= m_fEq -> FMass();      // Temp check to see if we have to scale last 3 coordinates of the error also.
+   }
 }
 
 template <class BaseStepper>
 inline
 G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
 
-
+#ifdef TRACKING
    G4int no_function_calls_before_aux_stepper =
            (( G4CachedMagneticField* )( BaseStepper::mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
                                                   -> GetCountCalls();
 
+#endif
+
    G4double dist_chord = BaseStepper::DistChord();
+
+#ifdef TRACKING
 
    BaseStepper::mTracker -> no_function_calls_used_by_DistChord +=
           (( G4CachedMagneticField* )( BaseStepper::mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
              -> GetCountCalls() - no_function_calls_before_aux_stepper;
+#endif
 
    return dist_chord;
 }

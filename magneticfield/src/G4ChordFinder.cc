@@ -55,71 +55,6 @@ using namespace std;
 
 // ..........................................................................
 
-/*
-void G4ChordFinder::record( G4double y_and_yPrime[], G4double F[]) {
-
-   vector< vector<G4double> > &buffer = *buffer_ptr;
-
-   buffer_ptr->push_back( vector<G4double> (10) );
-   G4int last_index = buffer_ptr->size() - 1;
-   for (int i = 0; i < 3; i ++) {
-      //( buffer_ptr-> at(last_index) ).at(i) = y_and_yPrime[i];
-      buffer[last_index][i] = y_and_yPrime[i];
-   }
-   for (int i = 3; i < 6; i ++) {
-         buffer[last_index][i] = y_and_yPrime[i] / mass; // Storing as velocity, not momentum
-      }
-   for (int i = 0; i < 3; i ++)
-      buffer[last_index][i + 6] = F[i] / mass;
-   buffer[last_index][TIME_SLOT] = total_time;
-}
-
-
-void G4ChordFinder::SetMass() {
-   mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
-}
-
-void G4ChordFinder::setup_output_buffer( G4ThreeVector &Position, G4ThreeVector &Momentum,
-                     vector< vector<G4double> > &pos_mom_time_buffer) {
-   buffer_ptr = &pos_mom_time_buffer;
-
-   G4double yStart[12];
-   G4double dydx_temp[12];
-
-
-   yStart[0] = Position.x(); yStart[1] = Position.y(); yStart[2] = Position.z();
-   yStart[3] = Position.x(); yStart[4] = Position.y(); yStart[5] = Position.z();
-   // yStart[6] = Rhs[3]; yStart[7] = Rhs[4];  yStart[8] = Rhs[5];
-   // yStart[9] = 0.; // Time starts at 0.
-
-   fIntgrDriver -> GetStepper() -> ComputeRightHandSide( yStart, dydx_temp );
-   record( yStart, &(dydx_temp[3]) );
-
-
-   //buffer_array = new G4double*[buffer_length];
-   //for (int i = 0; i < buffer_length; i ++)
-   //   buffer_array[i] = new G4double[10]; // y, y' and y'', and time t
-
-}
-*/
-
-/*
-void G4ChordFinder::output_buffer() {
-   for (int i = 0; i < counter; i ++) {
-      for (int j = 0; j < 10; j ++)
-         cout << buffer_array[i][j] << ",";
-      cout << endl;
-   }
-}
-
-G4double ** G4ChordFinder::GetBuffer() {
-   return buffer_array;
-}
-
-void G4ChordFinder::Reset_Buffer() {
-   counter = 0;
-}
-*/
 
 G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
   : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
@@ -136,7 +71,7 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
   fIntgrDriver= pIntegrationDriver;
 
 #ifdef TRACKING
-  mTracker = fIntgrDriver -> getTracker();
+  mTracker = fIntgrDriver -> getTracker(); // This will only catch the StepTracker if one was given to pIntegrationDriver
 #endif
 
 
@@ -203,16 +138,6 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
 #ifdef TRACKING
   mTracker = fIntgrDriver -> getTracker();
 #endif
-
-
-  //buffer_length = BUFFER_LENGTH;
-  //total_time = 0.;
-  //setup_output_buffer();
-
-  //pos_mom_vals = new G4double[12];
-
-  //mass = dynamic_cast<G4Mag_EqRhs*>( fIntgrDriver -> GetStepper() -> GetEquationOfMotion() ) -> G4Mag_EqRhs::FMass() ;
-
 
 }
 

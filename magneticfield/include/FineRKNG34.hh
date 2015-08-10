@@ -31,7 +31,8 @@ public:
                  G4double yerr[] ) ;
 
    G4double  DistChord()   const;
-   G4int IntegratorOrder() const {return 4; }
+   G4int IntegratorOrder() const {return 3; }   // Was 4, but changed it to order of lower stepper
+                                                // as per p. 168 of Hairer, Norset & Wanner (section on automatic step-size control).
 
    //void InterpolatePosition(G4double xi, G4double yout[]);
 

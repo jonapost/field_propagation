@@ -267,6 +267,8 @@ G4VPhysicalVolume* BuildGeometry()
 #include "MuruaRKN6459.hh"
 #include "MuruaRKN5459.hh"
 
+#include "ChawlaSharmaRKNstepper.hh"
+
 
 //#include "StepTracker_convertArcLengthToTime.hh"
 #include "MagIntegratorStepperByArcLength.hh"
@@ -335,6 +337,11 @@ G4FieldManager* SetupField(G4int type)
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
 	switch ( type ) 
 	{
+	   case -1: // will currently fail because DistChord() uses the wrong interpolant!
+         fEquation = new MagEqRhs_byTime_storeB(&myMagField);
+         pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>( fEquation );
+         break;
+
 	   case 0: // will currently fail because DistChord() uses the wrong interpolant!
          fEquation = new MagEqRhs_byTime_storeB(&myMagField);
          pStepper = new MagIntegratorStepper_byTime<MuruaRKN5459>( fEquation );
@@ -632,46 +639,6 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        myStepTracker -> set_mass( proton_mass_c2 );
 
-       /*
-       switch( type ) {
-          case 0:
-             myStepTracker -> set_integrating_by_velocity(true);
-             break;
-
-          case 1:
-             myStepTracker -> set_integrating_by_velocity(true);
-             break;
-          case 2:
-             myStepTracker -> set_integrating_by_velocity(true);
-             break;
-
-          case 3: // MuruaRKN6459
-             myStepTracker -> set_integrating_by_velocity(true);
-             break;
-          case 4:
-             myStepTracker -> set_integrating_by_velocity(false);
-             break;
-          case 5:
-             myStepTracker -> set_integrating_by_velocity(false);
-             break;
-          case 6:
-             myStepTracker -> set_integrating_by_velocity(false);
-             break;
-          case 7:
-             myStepTracker -> set_integrating_by_velocity(false);
-             break;
-
-          case 8:
-             myStepTracker -> set_integrating_by_velocity(false);
-             break;
-
-          case 9:
-             myStepTracker -> set_integrating_by_velocity(false);
-             break;
-       }
-       */
-       //myStepTracker -> set_mass( mass_to_pass );  // Relativistic mass. Of course should be
-                                                   // replaced with an appropriate call to get the mass.
 #endif
 
 
@@ -679,27 +646,10 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4ThreeVector Spin(1.0, 0.0, 0.0);
                                                    // Momentum in Mev/c ?
 
-       //G4double current_labTof = labTof; // Added to keep track of time (J. Suagee)
 
-
-       // pMagFieldPropagator
-       /*equationOfMotion->SetChargeMomentumMass(
-             chargeState,                    // charge in e+ units
-		      momentum, 
-		      //mass_to_pass);
-		      proton_mass_c2);
-       */
-       /*//G4cout << G4endl;
-       //G4cout << "Test PropagateMagField: ***********************" << G4endl
-            << " Starting New Particle with Position " << Position << G4endl 
-	    << " and UnitVelocity " << UnitMomentum << G4endl;
-       //G4cout << " Momentum in GeV/c is " << momentum / GeV
-	      << " = " << (0.5+iparticle*10.0)*proton_mass_c2 / MeV << " MeV"
-              << G4endl;*/
-
-#ifdef TRACKING
+//#ifdef TRACKING
        G4double last_curve_length = 0;
-#endif
+//#endif
 
        clock_t total = 0;
    for( int istep=0; istep < 50; istep++ ){
@@ -710,7 +660,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
           G4FieldTrack  initTrack( Position, 
 				   UnitMomentum,
+//#ifdef TRACKING
 				   last_curve_length, //0.0,            // starting S curve len
+//#else
+//				   0.,
+//#endif
 				   kineticEnergy,
 				   proton_mass_c2,
 				   velocity,
@@ -722,9 +676,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 		  t = clock(); 
 
 
-#ifdef TRACKING
+//#ifdef TRACKING
 		  initTrack.SetCurveLength(last_curve_length);
-#endif
+//#endif
 
 
 	  step_len=pMagFieldPropagator->ComputeStep( initTrack, 
@@ -758,11 +712,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  pNavig->SetGeometricallyLimitedStep();
 	  // pMagFieldPropagator->SetGeometricallyLimitedStep();
 
-#ifdef TRACKING
+//#ifdef TRACKING
 	  last_curve_length += step_len; //initTrack.GetCurveLength();
 	  //cout << " Last Curve Length: " << last_curve_length << endl;
 	  //cout << " Curve Length: " << initTrack.GetCurveLength() << endl;
-#endif
+//#endif
 
 	  Position= EndPosition;
 	  UnitMomentum= EndUnitMomentum;

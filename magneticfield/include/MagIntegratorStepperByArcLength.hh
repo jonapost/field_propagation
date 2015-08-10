@@ -96,7 +96,7 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
 
          // Since we are also storing the values at the beginning of the step,
          // and because we have to convert to velocity coordinates to store in StepTracker:
-         for (int i = 0; i < 10; i ++){
+         for (int i = 0; i < 6; i ++){
             yIn[i] = yInput[i];
             dydx_copy[i] = dydx[i];
          }
@@ -105,10 +105,13 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
             dydx_copy[i] *= 1. / m_fEq -> FMass();
          }
 
-         const G4CachedMagneticField *myField = (G4CachedMagneticField*)( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
+         const G4CachedMagneticField *myField = (G4CachedMagneticField*)
+                                       ( BaseStepper::GetEquationOfMotion() -> GetFieldObj() );
          G4int no_function_calls = myField -> GetCountCalls();
 
-         BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy, yOutput, nextFunctionEvaluation, hstep, no_function_calls); // Store as velocity (instead of mom.)
+         BaseStepper::mTracker -> RecordResultOfStepper(yIn, dydx_copy,
+                                                        yOutput, nextFunctionEvaluation,
+                                                        hstep, no_function_calls); // Store as velocity (instead of mom.)
 
          // Change back to momentum coordinates for next round of stepper:
          for (int i = 3; i < 6; i ++)
