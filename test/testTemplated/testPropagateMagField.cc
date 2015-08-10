@@ -299,16 +299,16 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //===============================================
 
-
+/*
 G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
 G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
 G4String   fieldName("Uniform 10Tesla");
+*/
 
-/*
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
-*/
+
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
@@ -477,7 +477,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 			       ,char *stepTracker_output_filename = 0,
 			       char *stepTracker_no_function_calls_output_filename = 0,
 			       char *stepTracker_meta_output_filename = 0,
-			       char * intersection_indices_filename = 0
+			       char *intersection_indices_filename = 0,
+			       char *differences_of_intersection_points_filename = 0
+
 #endif
 )
 {
@@ -555,15 +557,15 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4int iparticle = 0;
     //for( int iparticle=0; iparticle < 1; iparticle++ )
     //{
-       physStep=  2.5 * mm ;  // millimeters 
+       physStep=  30. * mm ;  // millimeters
 
 
        //cout << " distance " << 7.5 * m << endl;
 
        //Position = G4ThreeVector(0.,0.,0.)
-       Position = G4ThreeVector(0.*m, 0.*m, 4.*m)
+       Position = G4ThreeVector(0.*m, 0.*m, 0.*m)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
-       UnitMomentum = (G4ThreeVector(0.0,0.2,0.8)
+       UnitMomentum = (G4ThreeVector(0.5,0.5,0.5)
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
 
        G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2; 
@@ -657,8 +659,6 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
              myStepTracker -> set_integrating_by_velocity(false);
              break;
        }
-
-
        //myStepTracker -> set_mass( mass_to_pass );  // Relativistic mass. Of course should be
                                                    // replaced with an appropriate call to get the mass.
 #endif
@@ -691,7 +691,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 #endif
 
        clock_t total = 0;
-   for( int istep=0; istep < 14; istep++ ){
+   for( int istep=0; istep < 50; istep++ ){
        // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
 	  located = pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
@@ -739,8 +739,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
 	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
-	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
-	       EndPosition, EndUnitMomentum, istep, located, myMagField.GetCountCalls() );
+	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
+	  //     EndPosition, EndUnitMomentum, istep, located, myMagField.GetCountCalls() );
 
 
 	  assert(safety>=0);
@@ -755,7 +755,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
 	  Position= EndPosition;
 	  UnitMomentum= EndUnitMomentum;
-	  physStep *= 2.;
+	  physStep *= 1.;
        } // ...........................  end for ( istep )
        G4cout << "=============="<<total<<"================="<<G4endl;
        myMagField.ReportStatistics();
@@ -768,7 +768,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        myStepTracker -> outputBuffer( stepTracker_output_filename,
                                       stepTracker_meta_output_filename,
                                       stepTracker_no_function_calls_output_filename,
-                                      intersection_indices_filename);
+                                      intersection_indices_filename,
+                                      differences_of_intersection_points_filename);
     }
 
     delete Rhs;
@@ -935,6 +936,7 @@ int main(int argc, char **argv)
     char *stepTracker_no_function_calls_output_filename = "no_function_calls1";
     char *stepTracker_meta_output_filename = "meta_stepTracker_output1";
     char *intersection_indices_filename = "intersection_indices1";
+    char *differences_of_intersection_points_filename = "overshoot_segments1";
 #endif
 
     testG4PropagatorInField( myTopNode, type
@@ -944,6 +946,7 @@ int main(int argc, char **argv)
                                               , stepTracker_no_function_calls_output_filename
                                               , stepTracker_meta_output_filename
                                               , intersection_indices_filename
+                                              , differences_of_intersection_points_filename
 #endif
     );
 
@@ -965,6 +968,8 @@ int main(int argc, char **argv)
     stepTracker_no_function_calls_output_filename = "no_function_calls2";
     stepTracker_meta_output_filename = "meta_stepTracker_output2";
     intersection_indices_filename = "intersection_indices2";
+    differences_of_intersection_points_filename = "overshoot_segments2";
+
 #endif
 
 
@@ -975,6 +980,7 @@ int main(int argc, char **argv)
                             , stepTracker_no_function_calls_output_filename
                             , stepTracker_meta_output_filename
                             , intersection_indices_filename
+                            , differences_of_intersection_points_filename
 #endif
     );
 
@@ -1007,6 +1013,8 @@ int main(int argc, char **argv)
     stepTracker_no_function_calls_output_filename = "no_function_calls3";
     stepTracker_meta_output_filename = "meta_stepTracker_output3";
     intersection_indices_filename = "intersection_indices3";
+    differences_of_intersection_points_filename = "overshoot_segments3";
+
 #endif
 
 
@@ -1019,6 +1027,7 @@ int main(int argc, char **argv)
                           , stepTracker_no_function_calls_output_filename
                           , stepTracker_meta_output_filename
                           , intersection_indices_filename
+                          , differences_of_intersection_points_filename
 #endif
   );
 
@@ -1041,6 +1050,8 @@ int main(int argc, char **argv)
     stepTracker_no_function_calls_output_filename = "no_function_calls4";
     stepTracker_meta_output_filename = "meta_stepTracker_output4";
     intersection_indices_filename = "intersection_indices4";
+    differences_of_intersection_points_filename = "overshoot_segments4";
+
 #endif
 
 
@@ -1052,6 +1063,7 @@ int main(int argc, char **argv)
                                               , stepTracker_no_function_calls_output_filename
                                               , stepTracker_meta_output_filename
                                               , intersection_indices_filename
+                                              , differences_of_intersection_points_filename
 #endif
     );
 
@@ -1062,6 +1074,7 @@ int main(int argc, char **argv)
 
 
     // Cannot delete G4TransportationManager::GetInstance();
+
     return 0;
 }
 

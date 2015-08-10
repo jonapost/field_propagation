@@ -334,17 +334,13 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      good_advance = fIntgrDriver->AccurateAdvance(yCurrent, stepPossible,
                                                   epsStep, nextStep);
      if ( ! good_advance )
-     { 
+     {
        // In this case the driver could not do the full distance
        stepPossible= yCurrent.GetCurveLength()-startCurveLen;
 
        // In this case AccurateAdvance makes the calls to StepTracker::update_time_arclength()
        // since AccurateAdvance() may perform multiple steps (some of which are accepted and
        // some of which are not).
-
-       // might want to cout stepPossible and compare it to what the StepTracker has stored
-       // to see if we're doing this right?
-
 
      }
   }

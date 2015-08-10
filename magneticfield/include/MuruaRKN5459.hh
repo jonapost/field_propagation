@@ -24,7 +24,8 @@
 class MuruaRKN5459: public G4MagIntegratorStepper {
 public:
    MuruaRKN5459(G4EquationOfMotion *EqRhs,
-         G4int numberOfVariables);
+         G4int numberOfVariables,
+         G4bool primary = true);
    virtual ~MuruaRKN5459();
 
    virtual void Stepper(  const G4double y[],
@@ -111,7 +112,8 @@ private:
    G4double yInitial[8], yNext[3];
    G4double fInitial[8], fNext[3];
 
-   G4double fLastDyDx[3], fNextDyDx[3];
+   //G4double fLastDyDx[3], fNextDyDx[3];
+   G4double fLastDyDx[6], fNextDyDx[6];      // Temporary (just changed to 6 to work with aux stepper).
 
    //G4double last_step_len;
    // G4double last_time_value; // Hack to implement FSAL
@@ -124,6 +126,8 @@ private:
    // for DistChord calculations
 
 
+
+   MuruaRKN5459 *fAuxStepper;
 
 
 

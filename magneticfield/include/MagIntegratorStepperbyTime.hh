@@ -17,6 +17,8 @@
 #include "G4MagIntegratorStepper.hh"
 #include "G4ThreeVector.hh"
 
+#include "G4CachedMagneticField.hh"
+
 #include <assert.h>
 #include <vector>
 
@@ -101,51 +103,6 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
             G4double yOutput[],
             G4double yError [] ) {
 
-#ifdef TRACKING
-   #ifdef DEBUG_TRACKING
-      if ( ! BaseStepper::mTracker -> get_within_AdvanceChordLimited() )
-         cout << "In Stepper, but not in AdvanceChordLimited()" << endl;
-   #endif
-#endif
-
-#ifdef BACK_TRACKING
-
-   std::vector<G4double> *last_pos_vector, *second_to_last_pos_vector;
-   G4int buffer_length;
-
-   while ( ! BaseStepper::mTracker ->
-         check_that_wasnt_disgarded_by_Propagator( yInput ) ) {
-
-      buffer_length = BaseStepper::mTracker -> getBufferLength();
-      // Because of current bug with BogackiShampine45 (and possibly others):
-      assert( buffer_length >= 2);
-
-      BaseStepper::mTracker -> set_last_time_val_was_accepted( true );
-
-      last_pos_vector =
-            &( BaseStepper::mTracker -> get_buffer_ptr() -> at( buffer_length - 1 ) );
-      second_to_last_pos_vector =
-            &( BaseStepper::mTracker -> get_buffer_ptr() -> at( buffer_length - 2 ) );
-
-      if (     ( G4ThreeVector(yInput[0], yInput[1], yInput[2])
-                 - G4ThreeVector(second_to_last_pos_vector -> at(POSITION_SLOT + 0),
-                                 second_to_last_pos_vector -> at(POSITION_SLOT + 1),
-                                 second_to_last_pos_vector -> at(POSITION_SLOT + 2)) ).mag()
-            >=
-               ( G4ThreeVector(yInput[0], yInput[1], yInput[2])
-                 - G4ThreeVector(last_pos_vector -> at(POSITION_SLOT + 0),
-                                 last_pos_vector -> at(POSITION_SLOT + 1),
-                                 last_pos_vector -> at(POSITION_SLOT + 2)) ).mag()     )
-      {
-         break; // We are done searching backwards for a good match.
-      }
-
-      BaseStepper::mTracker -> get_buffer_ptr() -> pop_back();
-      BaseStepper::mTracker -> get_no_function_calls_buffer() -> pop_back();
-
-   }
-#endif
-
    // Have to copy because yInput and dydx are constant in the function signature...
    for (int i = 0; i < 10; i ++){
       yIn[i] = yInput[i];
@@ -212,7 +169,18 @@ template <class BaseStepper>
 inline
 G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
 
-   return BaseStepper::DistChord();
+
+   G4int no_function_calls_before_aux_stepper =
+           (( G4CachedMagneticField* )( BaseStepper::mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
+                                                  -> GetCountCalls();
+
+   G4double dist_chord = BaseStepper::DistChord();
+
+   BaseStepper::mTracker -> no_function_calls_used_by_DistChord +=
+          (( G4CachedMagneticField* )( BaseStepper::mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
+             -> GetCountCalls() - no_function_calls_before_aux_stepper;
+
+   return dist_chord;
 }
 
 template <class BaseStepper>

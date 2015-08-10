@@ -13,6 +13,8 @@
 #include "G4Mag_EqRhs.hh"
 #include "MagEqRhsbyTimestoreB.hh"
 
+#include "G4CachedMagneticField.hh"
+
 // Needed for DistChord()
 #include "G4ThreeVector.hh"
 #include "G4LineSection.hh"
@@ -20,8 +22,14 @@
 
 
 MuruaRKN5459::MuruaRKN5459(G4EquationOfMotion *EqRhs,
-      G4int numberOfVariables): G4MagIntegratorStepper(EqRhs, numberOfVariables) {
-   myField_as_storeBfield = dynamic_cast<MagEqRhs_byTime_storeB*>(GetEquationOfMotion());
+                           G4int numberOfVariables,
+                           G4bool primary)
+   : G4MagIntegratorStepper(EqRhs, numberOfVariables),
+     fLastStepLength(0.), fAuxStepper(0) {
+
+
+
+   myField_as_storeBfield = dynamic_cast<MagEqRhs_byTime_storeB*>(GetEquationOfMotion()); // So we don't have to keep recasting it over and over again.
 
    position_interpolant = new Interpolant();
 
@@ -36,17 +44,23 @@ MuruaRKN5459::MuruaRKN5459(G4EquationOfMotion *EqRhs,
    a81 = -1762013041./13188190032., a82 = -22636373880./4795132451., a83 = 30527401913./6048941340., a84 = 11564353310./19632283007., a85 = -50677425731./36595197965., a86 = 12408./8167., a87 = 10722067./5782709432.,
    a91 = 8034174097./12261534992., a92 = 72032427203./6782716235., a93 = -90566218637./8185393121., a94 = 18770105843./41171085325., a95 = 28010344030./6199889941., a96 = -21917292279./4540377286., a97 = -236637914115./8183370127., a98 = 71217630373./2409299224.;
 
+
+
    alpha21 = 594441./29598818.,
    alpha31 = 594441./29598818., alpha32 = 0./1.,
    alpha41 = -311625081./28869248936., alpha42 = 128./8219., alpha43 = 1015645524./10554116159.,
    alpha51 = 1852480471./26299626569., alpha52 = -247./14069., alpha53 = 648800762./5897141541., alpha54 = 519849979./8963946221.,
-   alpha61 = 1852480471./26299626569., alpha62 = -247648800762./14069., alpha63 = 519849979./5897141541., alpha64 = 0./8963946221., alpha65 = 229929851./1.,
-   alpha71 = 113395809./7158517178., alpha72 = 4865737279./8665398238., alpha73 = 340133672./19748497543., alpha74 = 738./10137556453., alpha75 = 509108839./11587., alpha76 = 229929851./15737542787.,
-   alpha81 = 113395809./7158517178., alpha82 = 4865737279./8665398238., alpha83 = 340133672./19748497543., alpha84 = 738./10137556453., alpha85 = 509108839./11587., alpha86 = 0./15737542787., alpha87 = 164505448./1.;
+   alpha61 = 1852480471./26299626569., alpha62 = -247./14069., alpha63 = 648800762./5897141541., alpha64 = 519849979./8963946221., alpha65 = 0./1.,
+   alpha71 = 229929851./7158517178., alpha72 = 113395809./8665398238., alpha73 = 4865737279./19748497543., alpha74 = 340133672./10137556453., alpha75 = 738./11587., alpha76 = 509108839./15737542787.,
+   alpha81 = 229929851./7158517178., alpha82 = 113395809./8665398238., alpha83 = 4865737279./19748497543., alpha84 = 340133672./10137556453., alpha85 = 738./11587., alpha86 = 509108839./15737542787., alpha87 = 0./1.,
+   alpha91 = 164505448./2653157365., alpha92 = 0./1., alpha93 = 9357192./40412735., alpha94 = 736403089./7677655029., alpha95 = 960089./17896194., alpha96 = 482653907./11393392643., alpha97 = -47281957./150822000., alpha98 = 6715245221./20471724521.;
+
 
    b1 = 164505448./2653157365., b2 = 0./1., b3 = 3042./10505., b4 = 1586146904./9104113535., b5 = 4394./27465., b6 = 2081836558./16479128289., b7 = -50461./13230., b8 = 13928550541./3490062596., b9 = 91464477./8242174145.;
 
    //beta1 = 164505448./2653157365., beta2 = 0./1., beta3 = 3042./10505., beta4 = 1586146904./9104113535., beta5 = 4394./27465., beta6 = 2081836558./16479128289., beta7 = -50461./13230., beta8 = 13928550541./3490062596., beta9 = 91464477./8242174145.;
+
+   beta1 = 164505448./2653157365., beta2 = 0./1., beta3 = 9357192./40412735., beta4 = 736403089./7677655029., beta5 = 960089./17896194., beta6 = 482653907./11393392643., beta7 = -47281957./150822000., beta8 = 6715245221./20471724521., beta9 = 0./1.;
 
    berr1 = b1 - 53757362./127184461., berr2 = b2 - 0./1., berr3 = b3 - -138687950./204047369., berr4 = b4 - 161961633./188152853., berr5 = b5 - 36242723./103243418., berr6 = b6 - 1./2., berr7 = b7 - 1147554103./9981952., berr8 = b8 - -2395015001./20532034., berr9 = b9 - 1./1., berr10 = - 23./100.;
 
@@ -62,6 +76,12 @@ MuruaRKN5459::MuruaRKN5459(G4EquationOfMotion *EqRhs,
 
    fMidVector = new G4double[numberOfVariables];
    fMidError =  new G4double[numberOfVariables];
+
+
+   if( primary )
+  {
+    fAuxStepper = new MuruaRKN5459(EqRhs, numberOfVariables, !primary);
+  }
 
 
 }
@@ -105,6 +125,52 @@ void MuruaRKN5459::ComputeRhsWithStoredB( const G4double y[],
 
 
 G4double  MuruaRKN5459::DistChord()   const {
+
+
+   //G4int no_function_calls_before_aux_stepper =
+   //      (( G4CachedMagneticField* )( mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
+   //                                            -> GetCountCalls();
+
+   // Implementation borrowed from G4CashKarpRK45:
+
+   G4double distLine, distChord;
+     G4ThreeVector initialPoint, finalPoint, midPoint;
+
+     // Store last initial and final points (they will be overwritten in self-Stepper call!)
+     initialPoint = G4ThreeVector( fLastInitialVector[0],
+                                   fLastInitialVector[1], fLastInitialVector[2]);
+     finalPoint   = G4ThreeVector( fLastFinalVector[0],
+                                   fLastFinalVector[1],  fLastFinalVector[2]);
+
+     // Do half a step using StepNoErr
+
+     fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength,
+              fMidVector,   fMidError );
+
+     midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
+
+     // Use stored values of Initial and Endpoint + new Midpoint to evaluate
+     //  distance of Chord
+
+
+     if (initialPoint != finalPoint)
+     {
+        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
+        distChord = distLine;
+     }
+     else
+     {
+        distChord = (midPoint-initialPoint).mag();
+     }
+
+
+     //mTracker -> no_function_calls_used_by_DistChord +=
+     //      (( G4CachedMagneticField* )( mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
+     //      -> GetCountCalls() - no_function_calls_before_aux_stepper;
+
+     return distChord;
+
+   /* Ideal implementation, using interpolant. But we don't have the interpolant working yet.
    G4double distLine, distChord;
    // Store last initial and final points (they will be overwritten in self-Stepper call!)
 
@@ -132,6 +198,8 @@ G4double  MuruaRKN5459::DistChord()   const {
      distChord = (midPoint-initialPoint).mag();
    }
    return distChord;
+
+   */
 
 }
 
@@ -240,8 +308,8 @@ void MuruaRKN5459::Stepper(  const G4double y[],
       fLastFinalVector[i]   = yout[i];
    }
    for (int i = 0; i < 3; i ++ ) {
-      fLastDyDx[i]          = dydx[i + 3];
-      fNextDyDx[i]          = Vdot10[i + 3];
+      fLastDyDx[i + 3]  = dydx[i + 3];        // Switch back to i from "i + 3" when going back to using interpolation.
+      fNextDyDx[i + 3]  = Vdot10[i + 3];      // Same comment as above.
    }
    // NormaliseTangentVector( yOut ); // Not wanted
 

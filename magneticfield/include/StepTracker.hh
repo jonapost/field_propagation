@@ -37,9 +37,6 @@ public:
 
    virtual ~StepTracker();
 
-   G4bool check_that_wasnt_disgarded_by_Propagator(const G4double yIn[] );
-
-
    // Functions to handle book keeping of intersection points (thrown by the G4PropagatorInField class).
    inline void set_within_AdvanceChordLimited(G4bool status) { within_AdvanceChordLimited = status; }
    inline G4bool get_within_AdvanceChordLimited() { return within_AdvanceChordLimited; }
@@ -48,9 +45,7 @@ public:
                                           G4double passed_curve_length);
 
    inline void set_last_curve_length(G4double curve_length) { last_curve_length = curve_length; }
-   inline void set_stepper_pointer( G4MagIntegratorStepper * stepper ) { myStepper = stepper; }
 
-   inline void set_integrating_by_velocity(G4bool mbool) { integrating_by_velocity = mbool; }
 
    // End of intersection pt. book keeping Functions.
 
@@ -71,7 +66,9 @@ public:
                      char *meta_outfile_name,
                      // recording function call history is optional:
                      char *no_function_calls_outfile_name = 0,
-                     char *indices_intersection_pts_filename = 0);
+                     char *indices_intersection_pts_filename = 0,
+                     //char *differences_of_intersection_points_filename = 0
+                     char * overshoot_outfilename = 0);
 
    // Inline Functions:
 
@@ -92,10 +89,21 @@ public:
    inline G4int getBufferLength() { return buffer.size(); }
    inline vector<G4int> *get_no_function_calls_buffer() { return &no_function_calls_buffer; }
 
+   inline G4int get_no_function_calls() { return no_function_calls_buffer.back(); }
+
    inline G4int get_thrown_away_steps() { return thrown_away_steps; }
    inline G4int get_used_steps() { return getBufferLength(); } // Used in a different context than getBufferLength()
 
    inline void set_last_time_val_was_accepted(G4bool val) { last_time_val_was_accepted = val; }
+
+   inline G4MagIntegratorStepper *getStepper() { return myStepper; }
+
+   inline void set_stepper_pointer( G4MagIntegratorStepper * stepper ) { myStepper = stepper; }
+
+   inline void set_integrating_by_velocity(G4bool mbool) { integrating_by_velocity = mbool; }
+
+   G4int no_function_calls_used_by_DistChord;
+
 
 private:
 
@@ -107,18 +115,24 @@ private:
    G4bool within_AdvanceChordLimited;
    G4double last_curve_length, last_time_length;
 
-   G4double time_left_over_from_intersection_pt_overshoot,
-            arclength_left_over_from_intersection_pt_overshoot;
+   //G4double time_left_over_from_intersection_pt_overshoot,
+   //         arclength_left_over_from_intersection_pt_overshoot;
 
    G4MagIntegratorStepper *myStepper;
 
    vector< vector<G4double> > buffer;
    vector<G4int> no_function_calls_buffer;
    vector<G4int> indices_of_intersection_points;
+   vector< vector<G4double> > overshoot_buffer;
+   //vector<G4double> differences_of_intersection_points;
 
    G4double mass;
    G4bool last_time_val_was_accepted, armed;
    G4int thrown_away_steps;
+
+   G4double first_velocity; // For when we need a velocity, but there are no items in the buffer.
+
+
 };
 
 #endif /* MAGNETICFIELD_INCLUDE_STEPTRACKER_HH_ */
