@@ -51,6 +51,7 @@ StepTracker::StepTracker(G4double beginning[BUFFER_COLUMN_LEN]) {
 
    last_curve_length = last_time_length = 0.;
 
+   within_AdvanceChordLimited = false;
 }
 
 StepTracker::~StepTracker() {
@@ -173,7 +174,7 @@ void StepTracker::outputBuffer(char *outfile_name,
       indices_intersection_pts_outfile.close();
    }
 
-   if ( overshoot_outfilename ) {
+   if ( overshoot_outfilename != 0 ) {
 
       ofstream overshoot_outfile;
       overshoot_outfile.open(overshoot_outfilename, ios::binary | ios::out);
@@ -271,9 +272,9 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
 G4double StepTracker::last_velocity() { // Might want to change this to use the endpoints velocity values?
    G4int last_index = getBufferLength() - 1;
 
-   //if ( last_index == -1 )
-   //   return first_velocity;
-   //else
+   if ( last_index == -1 )
+      return first_velocity;
+   else
       return G4ThreeVector(   buffer[last_index][MOMENTUM_SLOT],
                               buffer[last_index][MOMENTUM_SLOT + 1],
                               buffer[last_index][MOMENTUM_SLOT + 2] ).mag();

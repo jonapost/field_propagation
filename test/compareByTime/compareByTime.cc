@@ -49,6 +49,10 @@
 #include "FineRKNG45.hh"
 #include "MuruaRKN6459.hh"
 #include "MuruaRKN5459.hh"
+
+//#include "VernerRK78.hh"
+
+
 #include <iostream>
 #include "G4ThreeVector.hh"
 
@@ -149,6 +153,7 @@ int main(int argc, char *args[]) {
       //G4cout << " Setting up field of type: " << fieldName << G4endl;
    switch ( stepper_no )
    {
+      /*
       case -3: // MuruaRKN6459
          //fEquation = new MagEqRhs_byTime_storeB(myMagField);
 
@@ -159,6 +164,7 @@ int main(int argc, char *args[]) {
          fEquation = new G4Mag_UsualEqRhs(myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<FineRKNG45>( fEquation );
          break;
+      */
       //case -1:
       //   fEquation = new G4Mag_UsualEqRhs(myMagField);
       //   pStepper = new MagIntegratorStepper_byArcLength<FineRKNG34>( fEquation );
@@ -209,6 +215,12 @@ int main(int argc, char *args[]) {
          fEquation = new G4Mag_UsualEqRhs(myMagField);
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
+
+      /*case 9:
+         fEquation = new G4Mag_UsualEqRhs(myMagField);
+         pStepper = new MagIntegratorStepper_byArcLength<VernerRK78>( fEquation );
+         break;
+      */
    }
 
 
@@ -228,6 +240,52 @@ int main(int argc, char *args[]) {
    StepTracker *myStepTracker = new StepTracker( beginning );
 
    pStepper -> setTracker(myStepTracker);
+
+
+   /*
+   switch( stepper_no ) {
+
+      case -1:
+         myStepTracker -> set_integrating_by_velocity(true);
+         break;
+
+
+      case 0:
+         myStepTracker -> set_integrating_by_velocity(true);
+         break;
+
+      case 1:
+         myStepTracker -> set_integrating_by_velocity(true);
+         break;
+      case 2:
+         myStepTracker -> set_integrating_by_velocity(true);
+         break;
+
+      case 3: // MuruaRKN6459
+         myStepTracker -> set_integrating_by_velocity(true);
+         break;
+      case 4:
+         myStepTracker -> set_integrating_by_velocity(false);
+         break;
+      case 5:
+         myStepTracker -> set_integrating_by_velocity(false);
+         break;
+      case 6:
+         myStepTracker -> set_integrating_by_velocity(false);
+         break;
+      case 7:
+         myStepTracker -> set_integrating_by_velocity(false);
+         break;
+
+      case 8:
+         myStepTracker -> set_integrating_by_velocity(false);
+         break;
+
+      case 9:
+         myStepTracker -> set_integrating_by_velocity(false);
+         break;
+   }
+   */
 #endif
 
    // MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
@@ -283,7 +341,7 @@ int main(int argc, char *args[]) {
 
       // Output yerr:
       for (int k = 0; k < 6; k ++)
-         cout << yerr[k] << ", ";
+         cout << yout[k] << ", ";
       cout << endl;
 
    }

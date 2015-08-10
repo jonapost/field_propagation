@@ -73,47 +73,6 @@ void MagIntegratorStepper_byArcLength<BaseStepper>::Stepper(const G4double yInpu
             G4double yOutput[],
             G4double yError [] ) {
 
-
-#ifdef BACK_TRACKING
-
-   if ( BaseStepper::mTracker -> get_within_AdvanceChordLimited() ) {
-   // Within AdvancedChordLimited, so we want to record.
-
-      std::vector<G4double> *last_pos_vector, *second_to_last_pos_vector;
-      G4int buffer_length;
-
-      while ( ! BaseStepper::mTracker -> check_that_wasnt_disgarded_by_Propagator( yInput ) ) {
-
-         buffer_length = BaseStepper::mTracker -> getBufferLength();
-         // Because of current bug with BogackiShampine45 (and possibly others):
-         assert( buffer_length >= 2);
-
-         BaseStepper::mTracker -> set_last_time_val_was_accepted( true );
-
-         last_pos_vector =
-                           &( BaseStepper::mTracker -> get_buffer_ptr() -> at( buffer_length - 1 ) );
-         second_to_last_pos_vector =
-                           &( BaseStepper::mTracker -> get_buffer_ptr() -> at( buffer_length - 2 ) );
-
-         if (     ( G4ThreeVector(yInput[0], yInput[1], yInput[2])
-                    - G4ThreeVector(second_to_last_pos_vector -> at(POSITION_SLOT + 0),
-                                    second_to_last_pos_vector -> at(POSITION_SLOT + 1),
-                                    second_to_last_pos_vector -> at(POSITION_SLOT + 2)) ).mag()
-               >=
-                  ( G4ThreeVector(yInput[0], yInput[1], yInput[2])
-                    - G4ThreeVector(last_pos_vector -> at(POSITION_SLOT + 0),
-                                    last_pos_vector -> at(POSITION_SLOT + 1),
-                                    last_pos_vector -> at(POSITION_SLOT + 2)) ).mag()     )
-         {
-            break; // We are done searching backwards for a good match.
-         }
-
-         BaseStepper::mTracker -> get_buffer_ptr() -> pop_back();
-         BaseStepper::mTracker -> get_no_function_calls_buffer() -> pop_back();
-      }
-   }
-#endif
-
    BaseStepper::Stepper( yInput, dydx, hstep, yOutput, yError );
    //( dynamic_cast<BaseStepper*>( this )) -> BaseStepper::Stepper( yIn, dydx_copy, hstep, yOutput, yError );
 

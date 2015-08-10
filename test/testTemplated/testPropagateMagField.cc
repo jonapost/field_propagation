@@ -375,6 +375,11 @@ G4FieldManager* SetupField(G4int type)
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
 
+	   /*case 9:
+	      fEquation = new G4Mag_UsualEqRhs(&myMagField);
+	      pStepper = new MagIntegratorStepper_byArcLength<    >( fEquation );
+	      break;
+      */
 	   /*
 		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
 		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
@@ -627,6 +632,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        myStepTracker -> set_mass( proton_mass_c2 );
 
+       /*
        switch( type ) {
           case 0:
              myStepTracker -> set_integrating_by_velocity(true);
@@ -658,7 +664,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
           case 8:
              myStepTracker -> set_integrating_by_velocity(false);
              break;
+
+          case 9:
+             myStepTracker -> set_integrating_by_velocity(false);
+             break;
        }
+       */
        //myStepTracker -> set_mass( mass_to_pass );  // Relativistic mass. Of course should be
                                                    // replaced with an appropriate call to get the mass.
 #endif

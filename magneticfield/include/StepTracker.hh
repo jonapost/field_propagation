@@ -100,7 +100,7 @@ public:
 
    inline void set_stepper_pointer( G4MagIntegratorStepper * stepper ) { myStepper = stepper; }
 
-   inline void set_integrating_by_velocity(G4bool mbool) { integrating_by_velocity = mbool; }
+   //inline void set_integrating_by_velocity(G4bool mbool) { integrating_by_velocity = mbool; }
 
    G4int no_function_calls_used_by_DistChord;
 
