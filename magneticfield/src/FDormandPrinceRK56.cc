@@ -311,6 +311,10 @@ void FDormandPrinceRK56::Stepper( const G4double yInput[],
                          dc9*ak9[i] ) ;
         nextDydx[i] = ak9[i];
         
+        // Store Input and Final values, for possible use in calculating chord
+        fLastInitialVector[i] = yIn[i] ;
+        fLastFinalVector[i]   = yOut[i];
+        fLastDyDx[i]          = dydx[i];
     }
     
     fLastStepLength = Step;

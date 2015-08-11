@@ -66,9 +66,7 @@ BogackiShampine45::BogackiShampine45(G4EquationOfMotion *EqRhs,
 
     yTemp = new G4double[numberOfVariables];
     yIn = new G4double[numberOfVariables] ;
-    
-    pseudoDydx_for_DistChord = new G4double[numberOfVariables];
-    
+        
     fLastInitialVector = new G4double[numberOfVariables] ;
     fLastFinalVector = new G4double[numberOfVariables] ;
     fLastDyDx = new G4double[numberOfVariables];
@@ -93,11 +91,7 @@ BogackiShampine45::~BogackiShampine45(){
     delete[] ak6;
     delete[] ak7;
     delete[] ak8;
-    
-    delete[] ak9;
-    delete[] ak10;
-    delete[] ak11;
-    
+
     delete[] yTemp;
     delete[] yIn;
     
@@ -109,7 +103,6 @@ BogackiShampine45::~BogackiShampine45(){
     
     delete fAuxStepper;
     
-    delete[] pseudoDydx_for_DistChord;
 }
 
 
@@ -119,7 +112,7 @@ BogackiShampine45::~BogackiShampine45(){
 // Giving back yOut and yErr arrays for output and error respectively
 
 void BogackiShampine45::Stepper(  const G4double yInput[],
-                                  const G4double dydx[],
+                                  const G4double DyDx[],
                                         G4double Step,
                                         G4double yOut[],
                                         G4double yErr[] )
@@ -178,7 +171,6 @@ void BogackiShampine45::Stepper(  const G4double yInput[],
     
     const G4int numberOfVariables= this->GetNumberOfVariables();
     
-    G4double *DyDx = new G4double[numberOfVariables];
     
     // The number of variables to be integrated over
     yOut[7] = yTemp[7]  = yIn[7];
@@ -187,7 +179,6 @@ void BogackiShampine45::Stepper(  const G4double yInput[],
     for(i=0;i<numberOfVariables;i++)
     {
         yIn[i]=yInput[i];
-        DyDx[i] = dydx[i];
     }
     
     

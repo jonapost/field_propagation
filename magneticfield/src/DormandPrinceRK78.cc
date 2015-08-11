@@ -369,13 +369,17 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
                                  c7*ak7[i] + c8*ak8[i] +c9*ak9[i] + c10*ak10[i]
                                  + c11*ak11[i] + c12*ak12[i]  + c13*ak13[i]) ;
         
-        // Estimate error as difference between 4th and
-        // 5th order methods
+        // Estimate error as difference between 7th and
+        // 8th order methods
         
         yErr[i] = Step*(dc1*dydx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
                         dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] + dc8*ak8[i] +
                         dc9*ak9[i] + dc10*ak10[i] + dc11*ak11[i] + dc12*ak12[i]
                         + dc13*ak13[i] ) ;
+        // Store Input and Final values, for possible use in calculating chord
+        fLastInitialVector[i] = yIn[i] ;
+        fLastFinalVector[i]   = yOut[i];
+        fLastDyDx[i]          = dydx[i];
         
         
     }

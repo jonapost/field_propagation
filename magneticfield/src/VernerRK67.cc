@@ -298,6 +298,10 @@ void VernerRK67::Stepper(const G4double yInput[],
         yErr[i] = Step*(dc1*dydx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
                         dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] + dc8*ak8[i] + 
                         dc9*ak9[i] + dc10*ak10[i]) ;
+        // Store Input and Final values, for possible use in calculating chord
+        fLastInitialVector[i] = yIn[i] ;
+        fLastFinalVector[i]   = yOut[i];
+        fLastDyDx[i]          = dydx[i];
         
         
     }

@@ -352,7 +352,10 @@ void VernerRK78::Stepper(const G4double yInput[],
                         dc9*ak9[i] + dc10*ak10[i] + dc11*ak11[i] + dc12*ak12[i]
                         + dc13*ak13[i] ) ;
         
-        
+        // Store Input and Final values, for possible use in calculating chord
+        fLastInitialVector[i] = yIn[i] ;
+        fLastFinalVector[i]   = yOut[i];
+        fLastDyDx[i]          = dydx[i];
     }
     
     fLastStepLength = Step;

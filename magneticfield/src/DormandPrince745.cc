@@ -68,8 +68,7 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
     yTemp = new G4double[numberOfVariables] ;
     yIn = new G4double[numberOfVariables] ;
     
-    pseudoDydx_for_DistChord = new G4double[numberOfVariables];
-    
+
     fLastInitialVector = new G4double[numberOfVariables] ;
     fLastFinalVector = new G4double[numberOfVariables] ;
     fLastDyDx = new G4double[numberOfVariables];
@@ -105,7 +104,6 @@ DormandPrince745::~DormandPrince745(){
     
     delete fAuxStepper;
     
-    delete[] pseudoDydx_for_DistChord;
     
 }
 
