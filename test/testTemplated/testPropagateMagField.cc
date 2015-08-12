@@ -338,7 +338,7 @@ G4FieldManager* SetupField(G4int type)
 	switch ( type ) 
 	{
 	   case -1: // will currently fail because DistChord() uses the wrong interpolant!
-         fEquation = new MagEqRhs_byTime_storeB(&myMagField);
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
          pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>( fEquation );
          break;
 

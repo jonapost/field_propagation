@@ -50,7 +50,7 @@
 //Constructor
 DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
                                    G4int noIntegrationVariables,
-                                   G4bool primary)
+                                   G4bool primary_status)
 : G4MagIntegratorStepper(EqRhs, noIntegrationVariables){
     
     const G4int numberOfVariables = noIntegrationVariables;
@@ -76,11 +76,23 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
     
     fMidVector = new G4double[numberOfVariables];
     fMidError =  new G4double[numberOfVariables];
-    if( primary )
+    if( primary_status )
     {
         fAuxStepper = new DormandPrince745(EqRhs, numberOfVariables,
-                                           !primary);
+                                           !primary_status);
     }
+    primary = primary_status;
+}
+
+
+void DormandPrince745::SetEquationOfMotion(G4EquationOfMotion* newEquation) {
+
+   if( newEquation != 0 ){
+
+      G4MagIntegratorStepper::SetEquationOfMotion( newEquation );
+      if (primary)
+         fAuxStepper -> G4MagIntegratorStepper::SetEquationOfMotion( newEquation );
+   }
 }
 
 

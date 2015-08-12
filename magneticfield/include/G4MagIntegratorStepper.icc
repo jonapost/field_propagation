@@ -32,6 +32,8 @@ G4EquationOfMotion* G4MagIntegratorStepper::GetEquationOfMotion()
   return  fEquation_Rhs;
 } 
 
+
+/* Commented out because made function virtual. (See G4MagIntegrator.hh and .cc)
 inline void
  G4MagIntegratorStepper::SetEquationOfMotion(G4EquationOfMotion* newEquation)
 {
@@ -40,6 +42,8 @@ inline void
     fEquation_Rhs= newEquation;
   }
 } 
+*/
+
 
 inline
 G4int G4MagIntegratorStepper::GetNumberOfVariables() const

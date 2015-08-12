@@ -46,7 +46,7 @@
 
 G4CashKarpRKF45::G4CashKarpRKF45(G4EquationOfMotion *EqRhs, 
 				 G4int noIntegrationVariables,
-				 G4bool primary)
+				 G4bool primary_status)
   : G4MagIntegratorStepper(EqRhs, noIntegrationVariables),
     fLastStepLength(0.), fAuxStepper(0)
 {
@@ -67,11 +67,26 @@ G4CashKarpRKF45::G4CashKarpRKF45(G4EquationOfMotion *EqRhs,
 
   fMidVector = new G4double[numberOfVariables];
   fMidError =  new G4double[numberOfVariables];
-  if( primary )
+  if( primary_status )
   { 
-    fAuxStepper = new G4CashKarpRKF45(EqRhs, numberOfVariables, !primary);
+    fAuxStepper = new G4CashKarpRKF45(EqRhs, numberOfVariables, !primary_status);
   }
+
+  primary = primary_status;
 }
+
+
+
+void G4CashKarpRKF45::SetEquationOfMotion(G4EquationOfMotion* newEquation) {
+
+   if( newEquation != 0 ){
+
+      G4MagIntegratorStepper::SetEquationOfMotion( newEquation );
+      if (primary)
+         fAuxStepper -> G4MagIntegratorStepper::SetEquationOfMotion( newEquation );
+   }
+}
+
 
 /////////////////////////////////////////////////////////////////////
 //

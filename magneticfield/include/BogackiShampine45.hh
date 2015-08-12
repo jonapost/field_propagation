@@ -28,8 +28,12 @@ public:
     G4double  DistChord()   const;
     G4int IntegratorOrder() const {return 4; }
     
+    void SetEquationOfMotion( G4EquationOfMotion *newEquation );
+
     private :
     
+    G4bool primary;
+
     BogackiShampine45(const BogackiShampine45&);
     BogackiShampine45& operator=(const BogackiShampine45&);
     

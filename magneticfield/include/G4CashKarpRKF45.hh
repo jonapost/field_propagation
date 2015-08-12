@@ -68,6 +68,9 @@ class G4CashKarpRKF45 : public G4MagIntegratorStepper
     G4double  DistChord()   const; 
     G4int IntegratorOrder() const { return 4; }
 
+    void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+
+
   private:
 
     void StepWithEst( const G4double yIn[],
@@ -85,6 +88,8 @@ class G4CashKarpRKF45 : public G4MagIntegratorStepper
       // Private copy constructor and assignment operator.
 
   private:
+
+    G4bool primary;
 
     G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *yTemp, *yIn;
       // scratch space

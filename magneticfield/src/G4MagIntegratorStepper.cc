@@ -60,6 +60,18 @@ StepTracker * G4MagIntegratorStepper::getTracker() { return mTracker; }
 void G4MagIntegratorStepper::setTracker(StepTracker *tracker) { mTracker = tracker; }
 #endif
 
+// Made non-inline and virtual because steppers with aux steppers need to be able to
+// set the equation of motion for their aux steppers, and might as well do that in the
+// call to this function (J.Suagee).
+void
+ G4MagIntegratorStepper::SetEquationOfMotion(G4EquationOfMotion* newEquation)
+{
+  if( newEquation != 0 )
+  {
+    fEquation_Rhs= newEquation;
+  }
+}
+
 
 
 /*void G4MagIntegratorStepper::SetTrue_last_step_succeeded() {

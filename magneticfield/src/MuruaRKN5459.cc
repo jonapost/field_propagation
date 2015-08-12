@@ -23,11 +23,11 @@
 
 MuruaRKN5459::MuruaRKN5459(G4EquationOfMotion *EqRhs,
                            G4int numberOfVariables,
-                           G4bool primary)
+                           G4bool primary_status)
    : G4MagIntegratorStepper(EqRhs, numberOfVariables),
      fLastStepLength(0.), fAuxStepper(0) {
 
-
+   primary = primary_status;
 
    myField_as_storeBfield = dynamic_cast<MagEqRhs_byTime_storeB*>(GetEquationOfMotion()); // So we don't have to keep recasting it over and over again.
 
@@ -78,16 +78,29 @@ MuruaRKN5459::MuruaRKN5459(G4EquationOfMotion *EqRhs,
    fMidError =  new G4double[numberOfVariables];
 
 
-   if( primary )
+   if( primary_status )
   {
-    fAuxStepper = new MuruaRKN5459(EqRhs, numberOfVariables, !primary);
+    fAuxStepper = new MuruaRKN5459(EqRhs, numberOfVariables, !primary_status);
   }
-
-
 }
+
+
+void MuruaRKN5459::SetEquationOfMotion(G4EquationOfMotion* newEquation) {
+
+   if( newEquation != 0 ){
+
+      G4MagIntegratorStepper::SetEquationOfMotion( newEquation );
+      if (primary)
+         fAuxStepper -> G4MagIntegratorStepper::SetEquationOfMotion( newEquation );
+   }
+}
+
+
 
 void MuruaRKN5459::set_MagEqRhs_storedBfield( G4EquationOfMotion *EqRhs ) {
    myField_as_storeBfield = dynamic_cast<MagEqRhs_byTime_storeB*>(GetEquationOfMotion());
+   if ( primary )
+      fAuxStepper -> set_MagEqRhs_storedBfield( EqRhs );
 }
 
 

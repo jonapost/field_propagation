@@ -43,7 +43,11 @@ public:
 
    void set_MagEqRhs_storedBfield( G4EquationOfMotion *EqRhs );
 
+   void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+
 private:
+
+   G4bool primary;
 
    G4double
    a21,

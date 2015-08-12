@@ -79,8 +79,14 @@ public:
     G4double  DistChord()   const;
     G4int IntegratorOrder() const {return 4; }
     
+
+    void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+
+
 private :
     
+    G4bool primary;
+
     DormandPrince745(const DormandPrince745&);
     DormandPrince745& operator=(const DormandPrince745&);
     

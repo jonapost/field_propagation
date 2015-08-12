@@ -121,9 +121,14 @@ class G4MagIntegratorStepper
      inline G4EquationOfMotion *GetEquationOfMotion(); 
        // As some steppers (eg RKG3) require other methods of Eq_Rhs
        // this function allows for access to them.
-     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
 
+     //inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
 
+     // Made non-inline and virtual because steppers with aux steppers need to be able to
+     // set the equation of motion for their aux steppers, and might as well do that in the
+     // call to this function (J.Suagee).
+
+     virtual void SetEquationOfMotion(G4EquationOfMotion* newEquation);
 
 #ifdef TRACKING
       StepTracker * getTracker();

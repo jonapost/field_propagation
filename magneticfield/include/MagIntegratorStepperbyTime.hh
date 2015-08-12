@@ -172,7 +172,7 @@ G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
 
 #ifdef TRACKING
    G4int no_function_calls_before_aux_stepper =
-           (( G4CachedMagneticField* )( BaseStepper::mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
+           (( G4CachedMagneticField* )( m_fEq -> GetFieldObj() ))
                                                   -> GetCountCalls();
 
 #endif
@@ -182,7 +182,7 @@ G4double MagIntegratorStepper_byTime<BaseStepper>::DistChord() const{
 #ifdef TRACKING
 
    BaseStepper::mTracker -> no_function_calls_used_by_DistChord +=
-          (( G4CachedMagneticField* )( BaseStepper::mTracker -> getStepper() -> GetEquationOfMotion() -> GetFieldObj() ))
+          (( G4CachedMagneticField* )( m_fEq -> GetFieldObj() ))
              -> GetCountCalls() - no_function_calls_before_aux_stepper;
 #endif
 
