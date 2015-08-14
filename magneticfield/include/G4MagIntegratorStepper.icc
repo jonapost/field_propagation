@@ -27,7 +27,7 @@
 //
 
 inline
-G4EquationOfMotion* G4MagIntegratorStepper::GetEquationOfMotion()
+G4EquationOfMotion* G4MagIntegratorStepper::GetEquationOfMotion() const
 {
   return  fEquation_Rhs;
 } 
@@ -54,11 +54,6 @@ G4int G4MagIntegratorStepper::GetNumberOfStateVariables() const
   return fNoStateVariables;
 }
 
-inline
-void G4MagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )   
-{
-  fEquation_Rhs-> RightHandSide(y, dydx);
-}
 
 inline
 void G4MagIntegratorStepper::NormaliseTangentVector( G4double vec[6] )
