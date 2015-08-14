@@ -93,6 +93,11 @@ DormandPrince745::~DormandPrince745(){
     delete[] ak6;
     delete[] ak7;
     
+    if(ak8)
+        delete[] ak8;
+    if(ak9)
+        delete[] ak9;
+    
     delete[] yTemp;
     delete[] yIn;
     
@@ -254,13 +259,18 @@ void DormandPrince745::Stepper(const G4double yInput[],
     
     fLastStepLength = Step;
     
+//    if(fAuxStepper)
+//        delete fAuxStepper;
+//    
+//    *fAuxStepper = *this;
+    
     return ;
 }
 
 
 
-//The DistChord() function fot the class - must define it here.
-G4double  DormandPrince745::DistChord() const
+//The original DistChord() function fot the class - must define it here.
+G4double  DormandPrince745::DistChord2() const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -293,7 +303,46 @@ G4double  DormandPrince745::DistChord() const
     return distChord;
 }
 
+//The newly made DistChord function using interpolation
+G4double DormandPrince745::DistChord() const {
+    G4double distLine, distChord;
+    G4ThreeVector initialPoint, finalPoint, midPoint;
+    
+    // Store last initial and final points (they will be overwritten in self-Stepper call!)
+    initialPoint = G4ThreeVector( fLastInitialVector[0],
+                                 fLastInitialVector[1], fLastInitialVector[2]);
+    finalPoint   = G4ThreeVector( fLastFinalVector[0],
+                                 fLastFinalVector[1],  fLastFinalVector[2]);
+    
+    //Getting copying the values of stages from the original stepper
+    // into the Aux Stepper
+    *fAuxStepper = *this;
 
+    //Preparing for the interpolation
+    fAuxStepper->SetupInterpolate(fLastInitialVector, fLastDyDx, fLastStepLength);
+    //Interpolating to half step
+    fAuxStepper->Interpolate(fLastInitialVector, fLastDyDx, fLastStepLength, fMidVector, 0.5);
+    
+//    fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength, fMidVector,   fMidError) ;
+    
+    midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
+    
+    // Use stored values of Initial and Endpoint + new Midpoint to evaluate
+    //  distance of Chord
+    
+    
+    if (initialPoint != finalPoint)
+    {
+        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
+        distChord = distLine;
+    }
+    else
+    {
+        distChord = (midPoint-initialPoint).mag();
+    }
+    return distChord;
+
+}
 
 // The lower (4th) order interpolant given by Dormand and prince
 //	"An RK 5(4) triple"
@@ -525,3 +574,48 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
 }
 
 //---------Verified-------------- - hackabot
+
+
+
+//DormandPrince745::DormandPrince745(DormandPrince745& DP_Obj){
+//    
+//}
+
+
+DormandPrince745& DormandPrince745::operator=(const DormandPrince745& DP)
+{
+//    this->DormandPrince745(DP.GetEquationOfMotion(),DP.GetNumberOfVariables(), false);
+
+    int noVars = DP.GetNumberOfVariables();
+    for(int i =0; i< noVars; i++){
+        
+        this->ak2[i] = DP.ak2[i];
+        this->ak3[i] = DP.ak3[i];
+        this->ak4[i] = DP.ak4[i];
+        this->ak5[i] = DP.ak5[i];
+        this->ak6[i] = DP.ak6[i];
+        this->ak7[i] = DP.ak7[i];
+
+        if(DP.ak8)
+        {
+            if(!this->ak8)
+                this->ak8 = new G4double[noVars];
+            this->ak8[i] = DP.ak8[i];
+        }
+        if(DP.ak9)
+        {
+            if(!this->ak9)
+                this->ak9 = new G4double[noVars];
+            this->ak9[i] = DP.ak9[i];
+        }
+        this->fLastDyDx[i] = DP.fLastDyDx[i];
+        this->fLastInitialVector[i] = DP.fLastInitialVector[i];
+        this->fMidVector[i] = DP.fMidVector[i];
+        this->fMidError[i] = DP.fMidError[i];
+    }
+    
+    this->fLastStepLength = DP.fLastStepLength;
+    
+    
+    return *this;
+}

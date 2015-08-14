@@ -76,20 +76,21 @@ public:
                           G4double yOut[],
                           G4double tau );
 
-    G4double  DistChord()   const;
+    G4double  DistChord() const;
+    G4double DistChord2() const;
     G4int IntegratorOrder() const {return 4; }
+    
+    //Newly constructed copy constructor
+//    DormandPrince745(const DormandPrince745&);
     
 private :
     
-    DormandPrince745(const DormandPrince745&);
     DormandPrince745& operator=(const DormandPrince745&);
     
     G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7,
     *ak8, *ak9, 	//For additional stages in the interpolant
     *yTemp, *yIn;
     
-    //Only for use with DistChord :-
-    G4double *pseudoDydx_for_DistChord;
     
     G4double fLastStepLength;
     G4double *fLastInitialVector, *fLastFinalVector,
