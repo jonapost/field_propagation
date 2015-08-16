@@ -154,6 +154,8 @@ G4VPhysicalVolume* BuildGeometry()
 			"Crystal Box (tiny)");
 
 
+	/* Disable all geometry for a test
+
 	//  Place them.
 	//
 	//  1) Two big boxes in the world volume
@@ -224,6 +226,8 @@ G4VPhysicalVolume* BuildGeometry()
 		(0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
 		 worldPhys,false,0);
 
+   */
+
 	return worldPhys;
 }
 
@@ -257,6 +261,8 @@ G4VPhysicalVolume* BuildGeometry()
 
 #include "BogackiShampine45.hh"
 #include "DormandPrince745.hh"
+
+#include "TsitourasRK45.hh"
 
 #include "MagIntegratorStepperbyTime.hh"
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
@@ -301,14 +307,17 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
 //===============================================
 
+
+//G4UniformMagField      uniformMagField(1.*tesla, 0., 0.);
+
 /*
-G4UniformMagField      uniformMagField(10.*tesla, 0., 0.);
-G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm);
-G4String   fieldName("Uniform 10Tesla");
+G4UniformMagField      uniformMagField( G4ThreeVector(0.0 * tesla, 0.0 * tesla, -1. * tesla) );
+G4CachedMagneticField  myMagField( &uniformMagField, 0.0 * cm);
+G4String   fieldName("Uniform -1.0 Tesla");
 */
 
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm);
+G4CachedMagneticField  myMagField( &quadrupoleMagField, 0.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
 
 
@@ -382,11 +391,11 @@ G4FieldManager* SetupField(G4int type)
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
 
-	   /*case 9:
+	   case 9:
 	      fEquation = new G4Mag_UsualEqRhs(&myMagField);
-	      pStepper = new MagIntegratorStepper_byArcLength<    >( fEquation );
+	      pStepper = new MagIntegratorStepper_byArcLength<TsitourasRK45>( fEquation );
 	      break;
-      */
+
 	   /*
 		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
 		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
@@ -483,15 +492,17 @@ G4PropagatorInField *pMagFieldPropagator=0;
 // Test Stepping
 //
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
-			       G4int             type
+			       G4int             type,
+			       G4double          compute_step_len,
+			       G4int             no_steps
 
 #ifdef TRACKING
-			       ,char *stepTracker_output_filename = 0,
-			       char *stepTracker_no_function_calls_output_filename = 0,
-			       char *stepTracker_meta_output_filename = 0,
-			       char *intersection_indices_filename = 0,
-			       char *differences_of_intersection_points_filename = 0
-
+			       ,char *tPMF_output_filename = 0,
+			       char *tPMF_meta_output_filename = 0,
+			       char *tPMF_no_function_calls_filename = 0,
+			       char *tPMF_no_function_calls_overshoot_filename = 0,
+			       char *tPMF_intersection_indices_filename = 0,
+			       char *tPMF_overshoot_filename = 0
 #endif
 )
 {
@@ -569,15 +580,15 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4int iparticle = 0;
     //for( int iparticle=0; iparticle < 1; iparticle++ )
     //{
-       physStep=  30. * mm ;  // millimeters
-
+       //physStep=  5. * mm ;  // millimeters
+       physStep = compute_step_len * mm;
 
        //cout << " distance " << 7.5 * m << endl;
 
        //Position = G4ThreeVector(0.,0.,0.)
-       Position = G4ThreeVector(0.*m, 0.*m, 0.*m)
+       Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
-       UnitMomentum = (G4ThreeVector(0.5,0.5,0.5)
+       UnitMomentum = (G4ThreeVector(0.2,0.6,0.8)
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
 
        G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2; 
@@ -585,18 +596,24 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4double kineticEnergy =  momentum*momentum /
                   ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 ) 
 		    + proton_mass_c2 );
-       G4double velocity = momentum / ( proton_mass_c2 + kineticEnergy );
 
+
+       G4double velocity = momentum / ( proton_mass_c2 + kineticEnergy );
+       // Try this
+       //G4double velocity = momentum / proton_mass_c2;
 
 
        //////// Some additions: (Not sure about this. Should this be the non-relativistic mass?)
-       G4double mass = proton_mass_c2 + kineticEnergy;
+       G4double mass = proton_mass_c2; // + kineticEnergy;
 
        //if ( have_to_convert_arc_length_to_time ) { // is true if integrating w.r.t. arc length
        //    physStep *= velocity; // Converts to time
        //}
 
 
+
+       cout.precision(20);
+       cout << "Relativistic mass of particle (is constant for our field): " << proton_mass_c2 + kineticEnergy << endl;
 
 
        fEquation->SetChargeMomentumMass(chargeState,
@@ -637,7 +654,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        myStepTracker -> set_stepper_pointer( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() );
 
-       myStepTracker -> set_mass( proton_mass_c2 );
+       myStepTracker -> set_mass( proton_mass_c2 ); // Not used?? (Check)
 
 #endif
 
@@ -652,7 +669,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 //#endif
 
        clock_t total = 0;
-   for( int istep=0; istep < 50; istep++ ){
+   for( int istep=0; istep < no_steps; istep++ ){
        // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
 	  located = pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
@@ -701,7 +718,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	      EndUnitMomentum.mag2() - 1.0 << G4endl;
 
 	  G4ThreeVector MoveVec = EndPosition - Position;
-	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
+	  if ( MoveVec.mag() >= physStep*(1.+1.e-9) ) {
+	     cout.precision(15);
+	     cout << "At assert (testPropagateMagField:709): " << MoveVec.mag() << ", " << physStep << endl;
+	  }
+	  //assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
 	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
 	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
@@ -729,12 +750,13 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
         // ..............................  end for ( iparticle )
 
 #ifdef TRACKING
-    if (stepTracker_output_filename != 0) {
-       myStepTracker -> outputBuffer( stepTracker_output_filename,
-                                      stepTracker_meta_output_filename,
-                                      stepTracker_no_function_calls_output_filename,
-                                      intersection_indices_filename,
-                                      differences_of_intersection_points_filename);
+    if (tPMF_output_filename != 0) {
+       myStepTracker -> outputBuffer( tPMF_output_filename,
+                                      tPMF_meta_output_filename,
+                                      tPMF_no_function_calls_filename,
+                                      tPMF_no_function_calls_overshoot_filename,
+                                      tPMF_intersection_indices_filename,
+                                      tPMF_overshoot_filename);
     }
 
     delete Rhs;
@@ -842,14 +864,33 @@ int main(int argc, char **argv)
     G4bool optimiseVoxels=true;
     G4bool optimisePiFwithSafety=true;
 
+    G4double step_len;
+    G4int no_steps;
+
     //G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
     if( argc >= 2 ){
        type = atoi(argv[1]);
     }else{
 		type = 14;
-	}
+	 }
 
+    if( argc >= 3 ){
+       step_len = atof(argv[2]);
+    }else{
+      step_len = 10.;
+    }
+
+    if( argc >= 4 ){
+       no_steps = atoi(argv[3]);
+    }else{
+      no_steps = 10;
+    }
+
+
+
+
+    /*
     if( argc >=3 ){
       optim= atoi(argv[2]);
       if( optim == 0 ) { optimiseVoxels = false; }
@@ -859,6 +900,7 @@ int main(int argc, char **argv)
       optimSaf= atoi(argv[3]);
       if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
     }
+    */
 
 //	int len = 1;
 //	 for (int k = 0; k < len; k++){
@@ -897,21 +939,28 @@ int main(int argc, char **argv)
 
 #ifdef TRACKING
 
-    char *stepTracker_output_filename = "stepTracker_output1";
-    char *stepTracker_no_function_calls_output_filename = "no_function_calls1";
-    char *stepTracker_meta_output_filename = "meta_stepTracker_output1";
-    char *intersection_indices_filename = "intersection_indices1";
-    char *differences_of_intersection_points_filename = "overshoot_segments1";
+    char *stepTracker_output_filename = "tPMF_output1";
+    char *stepTracker_meta_output_filename = "tPMF_meta_output1";
+    char *stepTracker_no_function_calls_output_filename = "tPMF_no_function_calls1";
+    char *no_function_calls_overshoot_filename = "tPMF_no_function_calls_overshoot1";
+    char *intersection_indices_filename = "tPMF_intersection_indices1";
+    char *overshoot_segments = "tPMF_overshoot_segments1";
 #endif
 
-    testG4PropagatorInField( myTopNode, type
+
+
+
+
+
+    testG4PropagatorInField( myTopNode, type, step_len, no_steps
 
 #ifdef TRACKING
                                               , stepTracker_output_filename
-                                              , stepTracker_no_function_calls_output_filename
                                               , stepTracker_meta_output_filename
+                                              , stepTracker_no_function_calls_output_filename
+                                              , no_function_calls_overshoot_filename
                                               , intersection_indices_filename
-                                              , differences_of_intersection_points_filename
+                                              , overshoot_segments
 #endif
     );
 
@@ -923,7 +972,7 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
-
+    /*
 
     G4GeometryManager::GetInstance()->CloseGeometry(true);
 
@@ -931,6 +980,7 @@ int main(int argc, char **argv)
 
     stepTracker_output_filename = "stepTracker_output2";
     stepTracker_no_function_calls_output_filename = "no_function_calls2";
+    no_function_calls_overshoot_filename = "function_calls_overshoot2";
     stepTracker_meta_output_filename = "meta_stepTracker_output2";
     intersection_indices_filename = "intersection_indices2";
     differences_of_intersection_points_filename = "overshoot_segments2";
@@ -938,11 +988,12 @@ int main(int argc, char **argv)
 #endif
 
 
-    testG4PropagatorInField( myTopNode, type
+    testG4PropagatorInField( myTopNode, type, step_len, no_steps
 
 #ifdef TRACKING
                             , stepTracker_output_filename
                             , stepTracker_no_function_calls_output_filename
+                            , no_function_calls_overshoot_filename
                             , stepTracker_meta_output_filename
                             , intersection_indices_filename
                             , differences_of_intersection_points_filename
@@ -976,6 +1027,7 @@ int main(int argc, char **argv)
 
     stepTracker_output_filename = "stepTracker_output3";
     stepTracker_no_function_calls_output_filename = "no_function_calls3";
+    no_function_calls_overshoot_filename = "function_calls_overshoot3";
     stepTracker_meta_output_filename = "meta_stepTracker_output3";
     intersection_indices_filename = "intersection_indices3";
     differences_of_intersection_points_filename = "overshoot_segments3";
@@ -983,13 +1035,14 @@ int main(int argc, char **argv)
 #endif
 
 
-    testG4PropagatorInField( myTopNode, type
+    testG4PropagatorInField( myTopNode, type, step_len, no_steps
 
 
 
 #ifdef TRACKING
                           , stepTracker_output_filename
                           , stepTracker_no_function_calls_output_filename
+                          , no_function_calls_overshoot_filename
                           , stepTracker_meta_output_filename
                           , intersection_indices_filename
                           , differences_of_intersection_points_filename
@@ -1013,6 +1066,7 @@ int main(int argc, char **argv)
 
     stepTracker_output_filename = "stepTracker_output4";
     stepTracker_no_function_calls_output_filename = "no_function_calls4";
+    no_function_calls_overshoot_filename = "function_calls_overshoot4";
     stepTracker_meta_output_filename = "meta_stepTracker_output4";
     intersection_indices_filename = "intersection_indices4";
     differences_of_intersection_points_filename = "overshoot_segments4";
@@ -1021,11 +1075,12 @@ int main(int argc, char **argv)
 
 
 
-    testG4PropagatorInField( myTopNode, type
+    testG4PropagatorInField( myTopNode, type, step_len, no_steps
 
 #ifdef TRACKING
                                               , stepTracker_output_filename
                                               , stepTracker_no_function_calls_output_filename
+                                              , no_function_calls_overshoot_filename
                                               , stepTracker_meta_output_filename
                                               , intersection_indices_filename
                                               , differences_of_intersection_points_filename
@@ -1037,6 +1092,7 @@ int main(int argc, char **argv)
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
+   */
 
     // Cannot delete G4TransportationManager::GetInstance();
 

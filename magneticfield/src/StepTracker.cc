@@ -34,6 +34,9 @@ using namespace std;
 #include "G4CachedMagneticField.hh"
 #endif
 
+// For temporary testing with Murua (because interpolation doesn't work for it yet).
+#define IGNORING_DIST_CHORD_FUNCTION_CALLS
+
 
 StepTracker::StepTracker(G4double beginning[BUFFER_COLUMN_LEN]) {
    // beginning must be of the form
@@ -64,6 +67,7 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
    assert( last_time_val_was_accepted );
 
    if ( passed_curve_length < last_curve_length ) {
+
       // passed_curve_length is the curve_length of the prev
       // Here is where we do something to record in the buffer that we had an intersection pt.
 
@@ -93,6 +97,8 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
             passed_curve_length <= buffer.back().at(ENDPOINT_BASE_INDEX + 1) );
 
       overshoot_buffer.push_back( buffer_vector );
+      no_function_calls_overshoot_buffer.push_back( no_function_calls_buffer.back() );
+      no_function_calls_buffer.pop_back();
 
 
 
@@ -115,7 +121,7 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
          last_time_length = passed_curve_length / velocity; // We must have been at the beginning of the integration run.
       }
 
-      last_curve_length = passed_curve_length;
+      last_curve_length = passed_curve_length; // Very important!
 
       if ( indices_of_intersection_points.size() > 0 ){
          if (indices_of_intersection_points.back() != getBufferLength() ) {
@@ -130,6 +136,9 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
       }
    }
    else {
+
+      assert( passed_curve_length == last_curve_length );
+
       //cout << "passed_curve_length: " << passed_curve_length << ",  last_curve_length: " << last_curve_length << endl;
    }
    // Either way we don't want to erase the last row of buffer data.
@@ -139,6 +148,7 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
 void StepTracker::outputBuffer(char *outfile_name,
                                char *meta_outfile_name,
                                char *no_function_calls_outfile_name,
+                               char *no_function_calls_overshoot_filename,
                                char *indices_intersection_pts_filename,
                                //char *differences_of_intersection_points_filename
                                char * overshoot_outfilename) {
@@ -181,29 +191,24 @@ void StepTracker::outputBuffer(char *outfile_name,
 
       for (int i = 0; i < overshoot_buffer.size(); i ++) {
          for (int j = 0; j < BUFFER_COLUMN_LEN; j ++){
-            overshoot_outfile.write( reinterpret_cast<char*>( &(overshoot_buffer[i][j]) ), sizeof( G4double ) );
+            overshoot_outfile.write( reinterpret_cast<char*>( &(overshoot_buffer[i][j]) ),
+                                                               sizeof( G4double ) );
+
          }
       }
       overshoot_outfile.close();
-
-
-      /////
-      cout << "StepTracker.cc:192: no_function_calls_used_by_DistChord: " << no_function_calls_used_by_DistChord << endl;
-      cout << "Note: this is only calculated for MuruaRKN5459 stepper now. All other steppers will just output 0." << endl;
-
    }
 
+   if (no_function_calls_overshoot_filename != 0) {
+      ofstream no_function_calls_overshoot_file;
+      no_function_calls_overshoot_file.open(no_function_calls_overshoot_filename, ios::binary | ios::out);
 
-   /*
-   if (differences_of_intersection_points_filename != 0) {
-      ofstream differences_of_intersection_points_outfile( differences_of_intersection_points_filename, ios::out );
-      for (uint i = 0; i < differences_of_intersection_points.size(); i ++)
-         differences_of_intersection_points_outfile << differences_of_intersection_points[i] << endl;
-      differences_of_intersection_points_outfile.close();
+      for (int i = 0; i < no_function_calls_overshoot_buffer.size(); i ++) {
+         no_function_calls_overshoot_file.write(
+               reinterpret_cast<char*>( &(no_function_calls_overshoot_buffer[i]) ), sizeof( G4int ) );
+      }
+      no_function_calls_overshoot_file.close();
    }
-   */
-
-
 }
 
 void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
@@ -237,7 +242,13 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
       buffer[last_index][1] = last_curve_length;
 
       if (no_function_calls != -1)
+
+#ifdef IGNORING_DIST_CHORD_FUNCTION_CALLS
+
+         no_function_calls_buffer.push_back( no_function_calls - no_function_calls_used_by_DistChord);
+#else
          no_function_calls_buffer.push_back( no_function_calls );
+#endif
 
       last_time_val_was_accepted = false;
    }
@@ -299,6 +310,19 @@ void StepTracker::update_time_arclength( G4double time_to_add, G4double arclengt
 
    last_curve_length += arclength_to_add;
    last_time_length += time_to_add;
+
+
+   G4int last_index = buffer.size() - 1;
+
+   if (last_curve_length != buffer[last_index][ENDPOINT_BASE_INDEX + 1])
+      cout << last_curve_length << ", " << buffer[last_index][ENDPOINT_BASE_INDEX + 1] << endl;
+   if (last_time_length != buffer[last_index][ENDPOINT_BASE_INDEX + 0])
+         cout << last_time_length << ", " << buffer[last_index][ENDPOINT_BASE_INDEX + 0] << endl;
+
+   assert( last_curve_length == buffer[last_index][ENDPOINT_BASE_INDEX + 1] );
+   assert( last_time_length == buffer[last_index][ENDPOINT_BASE_INDEX + 0] );
+
+
 
    /*
    G4int last_index = buffer.size() - 1;

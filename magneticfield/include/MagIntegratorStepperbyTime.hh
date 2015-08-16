@@ -133,15 +133,17 @@ void MagIntegratorStepper_byTime<BaseStepper>::Stepper(const G4double yInput[],
          // step interval). We need this because it currently is not stored by
          // the stepper (FSAL?)
 
-         // Also, because we are currently in velocity coordinates, we just call
+         // Also, because yOutput is currently in velocity coordinates, we just call
          // the BaseStepper::ComputeRightHandSide() method.
          BaseStepper::ComputeRightHandSide(yOutput, nextFunctionEvaluation);
 
          // Now we have to undo the effect of Mag_UsualEqRhs_IntegrateByTime
          // which will scale nextFunctionEvaluation back to momentum coordinates,
          // so we have to scale back to velocity coordinates before we store it:
-         for (int i = 3; i < 6; i ++)
-            nextFunctionEvaluation[i] /= m_fEq -> FMass();
+
+         // On second thought I don't think this should be done:
+         //for (int i = 3; i < 6; i ++)
+         //   nextFunctionEvaluation[i] /= m_fEq -> FMass();
 
          // Getting number of function calls used so far:
          const G4CachedMagneticField *myField = (G4CachedMagneticField*)

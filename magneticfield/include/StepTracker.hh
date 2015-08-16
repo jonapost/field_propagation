@@ -50,7 +50,7 @@ public:
    // End of intersection pt. book keeping Functions.
 
 
-   void RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
+   virtual void RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
                                G4double yIn1[], G4double dydx1[],
                                G4double arclength_to_add,
                                G4int no_function_calls = -1);
@@ -62,10 +62,11 @@ public:
                              // coordinates. It's needed currently because neither
                              // ChordFinder or MagIntDriver do any record keeping.
 
-   void outputBuffer(char *outfile_name,
+   virtual void outputBuffer(char *outfile_name,
                      char *meta_outfile_name,
                      // recording function call history is optional:
                      char *no_function_calls_outfile_name = 0,
+                     char *no_function_calls_overshoot_filename = 0,
                      char *indices_intersection_pts_filename = 0,
                      //char *differences_of_intersection_points_filename = 0
                      char * overshoot_outfilename = 0);
@@ -124,7 +125,7 @@ private:
    vector<G4int> no_function_calls_buffer;
    vector<G4int> indices_of_intersection_points;
    vector< vector<G4double> > overshoot_buffer;
-   //vector<G4double> differences_of_intersection_points;
+   vector<G4int> no_function_calls_overshoot_buffer;
 
    G4double mass;
    G4bool last_time_val_was_accepted, armed;

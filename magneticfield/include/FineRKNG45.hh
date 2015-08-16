@@ -33,6 +33,9 @@ public:
 
    void InterpolatePosition(G4double xi, G4double yout[]);
 
+   inline G4double **get_intermediate_Rhs_evaluations() { return f; }
+
+
 private:
 
    G4double **a, **aprime;

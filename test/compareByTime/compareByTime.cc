@@ -51,7 +51,7 @@
 #include "MuruaRKN5459.hh"
 
 //#include "VernerRK78.hh"
-
+#include "TsitourasRK45.hh"
 
 #include <iostream>
 #include "G4ThreeVector.hh"
@@ -71,8 +71,16 @@ using namespace CLHEP;
 
 
 int main(int argc, char *args[]) {
-   G4double x_pos = 0.,                   //pos - position
-            y_pos = 0., z_pos = 0.,
+
+   //Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
+
+
+   //G4double x_pos = 0.,                   //pos - position
+   //         y_pos = 0., z_pos = 0.,
+   G4double x_pos = -100.*mm,                   //pos - position
+            y_pos = 50.*mm, z_pos = 150.*mm,
+
+
 
 
             // Might want to play around with the momentum values:
@@ -86,9 +94,14 @@ int main(int argc, char *args[]) {
    G4double momentum = 0.5 * proton_mass_c2;
    G4double imom = 1. / sqrt( x_mom * x_mom + y_mom * y_mom + z_mom * z_mom );
 
-   x_mom *= momentum * imom;
-   y_mom *= momentum * imom;
-   z_mom *= momentum * imom;
+   //x_mom *= momentum * imom;
+   //y_mom *= momentum * imom;
+   //z_mom *= momentum * imom;
+
+   x_mom *= imom;
+   y_mom *= imom;
+   z_mom *= imom;
+
 
    G4double kineticEnergy =  momentum*momentum /
                            ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 )
@@ -99,11 +112,16 @@ int main(int argc, char *args[]) {
    G4double particleCharge = +1.0,  // in e+ units
          spin = 0.0,                        // ignore the spin
          magneticMoment = 0.0,             // ignore the magnetic moment
-         mass = proton_mass_c2 + kineticEnergy;
+         mass = proton_mass_c2; // + kineticEnergy;
 
    //G4double imass = 1. / mass;
 
-   G4double yIn[10] = { x_pos, y_pos, z_pos, x_mom, y_mom, z_mom, 0., 0., 0., 0. };
+
+   G4double coeff = std::sqrt( kineticEnergy*kineticEnergy + 2.*mass*kineticEnergy );
+
+
+
+   G4double yIn[10] = { x_pos, y_pos, z_pos, coeff*x_mom, coeff*y_mom, coeff*z_mom, 0., 0., 0., 0. };
    G4double dydx[10] = { 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. };
 
    //G4UniformMagField *myUniformField;
@@ -112,41 +130,49 @@ int main(int argc, char *args[]) {
    G4CachedMagneticField *myMagField;
    G4Mag_EqRhs *fEquation;
 
-   G4int mag_field_choice = 1;
+   G4int mag_field_choice = 2; // Choice is quadropole mag field
    // if (argc > 4)
    //   mag_field_choice = atoi(args[4]);
 
    if (mag_field_choice == 1){
       my_non_cached_MagField = new G4UniformMagField(
                         G4ThreeVector(x_field, y_field, z_field));
-      myMagField = new G4CachedMagneticField( my_non_cached_MagField, 1.0 * cm);
+      myMagField = new G4CachedMagneticField( my_non_cached_MagField, 0.0 * cm);
 
       //fEquation = new Mag_UsualEqRhs_IntegrateByTime(myUniformField);
    }
    else {
       my_non_cached_MagField = new G4QuadrupoleMagField(
                         10. * tesla / (50. * cm));
-      myMagField = new G4CachedMagneticField( my_non_cached_MagField, 1.0 * cm);
+      myMagField = new G4CachedMagneticField( my_non_cached_MagField, 0.0 * cm);
       // myQuadField = new G4CachedMagneticField(quadrupoleMagField,
       //      1.0 * cm);
       //fEquation = new Mag_UsualEqRhs_IntegrateByTime(quadrupoleMagField);
    }
 
 
-   G4int stepper_no = 1, no_of_steps = 10;
-   G4double step_len = 1.;
+   G4int stepper_no = 1, no_of_steps = 30;
+   G4double step_len = 10.;
    char *outfile_name, *meta_outfile_name;
 
    if (argc > 1)
       stepper_no = atoi(args[1]);
+
    if (argc > 2)
       step_len = (float) (atof(args[2]) * mm);
+
    if (argc > 3)
       no_of_steps = atoi(args[3]);
+
    if (argc > 4)
       outfile_name = args[4];
+   else
+      outfile_name = "out";
+
    if (argc > 5)
       meta_outfile_name= args[5];
+   else
+      meta_outfile_name = "meta_out";
 
    G4MagIntegratorStepper *pStepper;
 
@@ -216,11 +242,11 @@ int main(int argc, char *args[]) {
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
 
-      /*case 9:
+      case 9:
          fEquation = new G4Mag_UsualEqRhs(myMagField);
-         pStepper = new MagIntegratorStepper_byArcLength<VernerRK78>( fEquation );
+         pStepper = new MagIntegratorStepper_byArcLength<TsitourasRK45>( fEquation );
          break;
-      */
+
    }
 
 
@@ -232,60 +258,24 @@ int main(int argc, char *args[]) {
                                     mass);
 
 
+
+
+
+
 #ifdef TRACKING
 
    pStepper -> ComputeRightHandSide(yIn, dydx);
    G4double beginning[11] = { 0., 0., x_pos, y_pos, z_pos, x_mom/mass, y_mom/mass, z_mom/mass, dydx[3]/mass, dydx[4]/mass, dydx[5]/mass };
+
+   //G4double beginning[11] = { 0., 0., x_pos, y_pos, z_pos, x_mom/mass, y_mom/mass, z_mom/mass, dydx[3], dydx[4], dydx[5] };
 
    StepTracker *myStepTracker = new StepTracker( beginning );
 
    pStepper -> setTracker(myStepTracker);
 
 
-   /*
-   switch( stepper_no ) {
+   myStepTracker -> set_within_AdvanceChordLimited(true);
 
-      case -1:
-         myStepTracker -> set_integrating_by_velocity(true);
-         break;
-
-
-      case 0:
-         myStepTracker -> set_integrating_by_velocity(true);
-         break;
-
-      case 1:
-         myStepTracker -> set_integrating_by_velocity(true);
-         break;
-      case 2:
-         myStepTracker -> set_integrating_by_velocity(true);
-         break;
-
-      case 3: // MuruaRKN6459
-         myStepTracker -> set_integrating_by_velocity(true);
-         break;
-      case 4:
-         myStepTracker -> set_integrating_by_velocity(false);
-         break;
-      case 5:
-         myStepTracker -> set_integrating_by_velocity(false);
-         break;
-      case 6:
-         myStepTracker -> set_integrating_by_velocity(false);
-         break;
-      case 7:
-         myStepTracker -> set_integrating_by_velocity(false);
-         break;
-
-      case 8:
-         myStepTracker -> set_integrating_by_velocity(false);
-         break;
-
-      case 9:
-         myStepTracker -> set_integrating_by_velocity(false);
-         break;
-   }
-   */
 #endif
 
    // MagIntegratorStepper_byTime<G4ClassicalRK4>  *myStepper = new MagIntegratorStepper_byTime<G4ClassicalRK4>(fEquation);
@@ -340,9 +330,9 @@ int main(int argc, char *args[]) {
       }
 
       // Output yerr:
-      for (int k = 0; k < 6; k ++)
-         cout << yout[k] << ", ";
-      cout << endl;
+      //for (int k = 0; k < 6; k ++)
+      //   cout << yout[k] << ", ";
+      //cout << endl;
 
    }
    // Record final step:

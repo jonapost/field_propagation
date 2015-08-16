@@ -62,10 +62,18 @@ void Interpolant::construct_velocity_polynomials() {
    G4double h2 = h*h;
 
    for (int k = 0; k < 3; k ++) {
-      q1[k] = 2.*h2*y1prime2[k];
-      q2[k] = -30.*(1/h)*y1[k] - 18.*y1prime[k] -  9.*(h2/2.)*y1prime2[k] + 3.*(h2/2.)*y2prime2[k] - 12.*y2prime[k] + 30.*(1/h)*y2[k];
-      q3[k] =  60.*(1/h)*y1[k] + 32.*y1prime[k] + 12.*(h2/2.)*y1prime2[k] - 8.*(h2/2.)*y2prime2[k] + 28.*y2prime[k] - 60.*(1/h)*y2[k];
-      q4[k] = -30.*(1/h)*y1[k] - 15.*y1prime[k] -  5.*(h2/2.)*y1prime2[k] + 5.*(h2/2.)*y2prime2[k] - 15.*y2prime[k] + 30.*(1/h)*y2[k];
+      /*
+      q1[k] = 2.*(h2/2.)*y1prime2[k];
+      q2[k] = -30.*y1[k] - 18.*h*y1prime[k] -  9.*(h2/2.)*y1prime2[k] + 3.*(h2/2.)*y2prime2[k] - 12.*h*y2prime[k] + 30.*y2[k];
+      q3[k] =  60.*y1[k] + 32.*h*y1prime[k] + 12.*(h2/2.)*y1prime2[k] - 8.*(h2/2.)*y2prime2[k] + 28.*h*y2prime[k] - 60.*y2[k];
+      q4[k] = -30.*y1[k] - 15.*h*y1prime[k] -  5.*(h2/2.)*y1prime2[k] + 5.*(h2/2.)*y2prime2[k] - 15.*h*y2prime[k] + 30.*y2[k];
+      */
+      q1[k] = 2.*(h/2.)*y1prime2[k];
+      q2[k] = -30.*(1/h)*y1[k] - 18.*y1prime[k] -  9.*(h/2.)*y1prime2[k] + 3.*(h/2.)*y2prime2[k] - 12.*y2prime[k] + 30.*(1/h)*y2[k];
+      q3[k] =  60.*(1/h)*y1[k] + 32.*y1prime[k] + 12.*(h/2.)*y1prime2[k] - 8.*(h/2.)*y2prime2[k] + 28.*y2prime[k] - 60.*(1/h)*y2[k];
+      q4[k] = -30.*(1/h)*y1[k] - 15.*y1prime[k] -  5.*(h/2.)*y1prime2[k] + 5.*(h/2.)*y2prime2[k] - 15.*y2prime[k] + 30.*(1/h)*y2[k];
+
+
    }
    velocity_polynomials_constructed = true;
 }

@@ -121,7 +121,7 @@ void FineRKNG45::Stepper( const G4double y[],
    G4int i, j, k;
 
    for (k = 0; k < 3; k ++) {
-      f[0][k + 3] = fInitial[k + 3] = dydx[k + 3];
+      f[0][k + 3] = dydx[k + 3];
    }
 
    for (i = 1; i < 7; i++) {
