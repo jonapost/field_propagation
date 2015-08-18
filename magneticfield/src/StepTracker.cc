@@ -37,6 +37,8 @@ using namespace std;
 // For temporary testing with Murua (because interpolation doesn't work for it yet).
 #define IGNORING_DIST_CHORD_FUNCTION_CALLS
 
+#define TOL 0.00000001
+
 
 StepTracker::StepTracker(G4double beginning[BUFFER_COLUMN_LEN]) {
    // beginning must be of the form
@@ -65,6 +67,8 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
                                                      G4double passed_curve_length ) {
 
    assert( last_time_val_was_accepted );
+
+   //cout << passed_curve_length << ", " << last_curve_length << endl;
 
    if ( passed_curve_length < last_curve_length ) {
 
@@ -137,7 +141,10 @@ void StepTracker::record_if_post_intersection_point( G4FieldTrack& possible_post
    }
    else {
 
-      assert( passed_curve_length == last_curve_length );
+      if (! (passed_curve_length < last_curve_length + TOL) ) {
+
+         assert( passed_curve_length == last_curve_length );
+      }
 
       //cout << "passed_curve_length: " << passed_curve_length << ",  last_curve_length: " << last_curve_length << endl;
    }

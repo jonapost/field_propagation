@@ -16,6 +16,8 @@
 #include <iomanip>
 
 
+#include "G4MagHelicalStepper.hh"
+
 #include "G4QuadrupoleMagField.hh"
 #include "G4CachedMagneticField.hh"
 
@@ -51,7 +53,7 @@
 #include "MuruaRKN5459.hh"
 
 //#include "VernerRK78.hh"
-#include "TsitourasRK45.hh"
+//#include "TsitourasRK45.hh"
 
 #include <iostream>
 #include "G4ThreeVector.hh"
@@ -75,10 +77,10 @@ int main(int argc, char *args[]) {
    //Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
 
 
-   //G4double x_pos = 0.,                   //pos - position
-   //         y_pos = 0., z_pos = 0.,
-   G4double x_pos = -100.*mm,                   //pos - position
-            y_pos = 50.*mm, z_pos = 150.*mm,
+   G4double x_pos = 0.,                   //pos - position
+            y_pos = 0., z_pos = 0.,
+   //G4double x_pos = -100.*mm,                   //pos - position
+   //         y_pos = 50.*mm, z_pos = 150.*mm,
 
 
 
@@ -130,7 +132,7 @@ int main(int argc, char *args[]) {
    G4CachedMagneticField *myMagField;
    G4Mag_EqRhs *fEquation;
 
-   G4int mag_field_choice = 2; // Choice is quadropole mag field
+   G4int mag_field_choice = 1; // Choice is quadropole mag field
    // if (argc > 4)
    //   mag_field_choice = atoi(args[4]);
 
@@ -175,6 +177,7 @@ int main(int argc, char *args[]) {
       meta_outfile_name = "meta_out";
 
    G4MagIntegratorStepper *pStepper;
+   G4MagHelicalStepper *pHelicalStepper;
 
       //G4cout << " Setting up field of type: " << fieldName << G4endl;
    switch ( stepper_no )
@@ -242,10 +245,10 @@ int main(int argc, char *args[]) {
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
 
-      case 9:
-         fEquation = new G4Mag_UsualEqRhs(myMagField);
-         pStepper = new MagIntegratorStepper_byArcLength<TsitourasRK45>( fEquation );
-         break;
+
+      //case 9:
+      //   fEquation = new G4Mag_UsualEqRhs(myMagField);
+      //   pHelicalStepper = new G4ExactHelixStepper(fEquation);
 
    }
 
@@ -256,10 +259,6 @@ int main(int argc, char *args[]) {
                                     G4ThreeVector(x_mom, y_mom, z_mom).mag(),
                                     //momentum magnitude
                                     mass);
-
-
-
-
 
 
 #ifdef TRACKING
@@ -313,6 +312,9 @@ int main(int argc, char *args[]) {
 
    for (int j = 0; j < no_of_steps; j++) {
 
+
+      //if (! (stepper_no == 9) ) {
+
       pStepper->ComputeRightHandSide(yIn, dydx);
 
 #ifdef TRACKING
@@ -320,6 +322,26 @@ int main(int argc, char *args[]) {
 #endif
 
       pStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
+
+      }
+
+      /*
+      if (stepper_no == 9) {
+
+         pHelicalStepper -> AdvanceHelix(yIn, G4ThreeVector(x_field, y_field, z_field), step_len, yout);
+
+         //pHelicalStepper -> ComputeRightHandSide(yIn, dydx);
+         //pHelicalStepper -> Stepper(yIn, dydx, step_len, yout, yerr);
+
+         //cout << pHelicalStepper -> GetRadHelix() << endl;
+         return 0;
+
+      }
+      */
+
+
+
+
 
 #ifdef TRACKING
       myStepTracker -> update_time_arclength(step_len / ( myStepTracker -> last_velocity() ), step_len );

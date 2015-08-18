@@ -154,7 +154,7 @@ G4VPhysicalVolume* BuildGeometry()
 			"Crystal Box (tiny)");
 
 
-	/* Disable all geometry for a test
+	///* Disable all geometry for a test
 
 	//  Place them.
 	//
@@ -226,7 +226,7 @@ G4VPhysicalVolume* BuildGeometry()
 		(0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
 		 worldPhys,false,0);
 
-   */
+  // */
 
 	return worldPhys;
 }
@@ -262,7 +262,7 @@ G4VPhysicalVolume* BuildGeometry()
 #include "BogackiShampine45.hh"
 #include "DormandPrince745.hh"
 
-#include "TsitourasRK45.hh"
+//#include "TsitourasRK45.hh"
 
 #include "MagIntegratorStepperbyTime.hh"
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
@@ -310,16 +310,16 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 
 //G4UniformMagField      uniformMagField(1.*tesla, 0., 0.);
 
-/*
+
 G4UniformMagField      uniformMagField( G4ThreeVector(0.0 * tesla, 0.0 * tesla, -1. * tesla) );
 G4CachedMagneticField  myMagField( &uniformMagField, 0.0 * cm);
 G4String   fieldName("Uniform -1.0 Tesla");
-*/
 
+/*
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 0.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
-
+*/
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
@@ -391,41 +391,6 @@ G4FieldManager* SetupField(G4int type)
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
 
-	   case 9:
-	      fEquation = new G4Mag_UsualEqRhs(&myMagField);
-	      pStepper = new MagIntegratorStepper_byArcLength<TsitourasRK45>( fEquation );
-	      break;
-
-	   /*
-		case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
-		case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
-		case 2: pStepper = new G4SimpleRunge( fEquation ); break;
-		case 3: pStepper = new G4SimpleHeum( fEquation ); break;
-		case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
-		case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
-		case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
-		case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
-		case 8: pStepper = new G4CashKarpRKF45( fEquation );    break;
-		case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
-		case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
-		case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
-		case 12: pStepper = new G4ConstRK4( fEquation ); break;
-		case 13: pStepper = new G4NystromRK4( fEquation ); break; 
-      */
-
-
-
-		/*
-
-		//=============test template mode================
-		case 14: pStepper = new Stepper_t(tEquation); break;
-		case 15: pStepper = new StepperRK4_t(tEquation); break;
-      case 16: pStepper = new StepperHeum_t(tEquation); break;
-      case 17: pStepper = new StepperRunge_t(tEquation); break;
-      case 18: pStepper = new StepperExEuler_t(tEquation); break;
-      //===============================================
-
-      */
 		default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
           G4ExceptionDescription ErrorMsg;
@@ -585,8 +550,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        //cout << " distance " << 7.5 * m << endl;
 
-       //Position = G4ThreeVector(0.,0.,0.)
-       Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
+       Position = G4ThreeVector(0.,0.,0.)
+       //Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
        UnitMomentum = (G4ThreeVector(0.2,0.6,0.8)
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
@@ -611,9 +576,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        //}
 
 
-
-       cout.precision(20);
-       cout << "Relativistic mass of particle (is constant for our field): " << proton_mass_c2 + kineticEnergy << endl;
+       //cout.precision(20);
+       //cout << "Relativistic mass of particle (is constant for our field): " << proton_mass_c2 + kineticEnergy << endl;
 
 
        fEquation->SetChargeMomentumMass(chargeState,
@@ -886,9 +850,6 @@ int main(int argc, char **argv)
     }else{
       no_steps = 10;
     }
-
-
-
 
     /*
     if( argc >=3 ){

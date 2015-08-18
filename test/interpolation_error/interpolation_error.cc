@@ -142,11 +142,6 @@ int main(int argc, char *args[]) {
    //                                                     bufferB );
 
 
-
-
-
-
-
    Interpolant * minterpolant = new Interpolant();
 
    G4double F0[3];
@@ -166,8 +161,6 @@ int main(int argc, char *args[]) {
 
    vector< vector<G4double> > *er_ptr = new vector< vector<G4double> >();
    //vector< vector<G4double> > er = *er_ptr;
-
-
 
 
    for (int i = 0; i < bufferB.size(); i ++) {
@@ -231,7 +224,6 @@ int main(int argc, char *args[]) {
                er_ptr -> at(i). at(POSITION_SLOT + k) =
                      bufferB[i][POSITION_SLOT + k] - interpolant[k];
             }
-
 
 
             // To see what's going wrong with velocity interpolation:
@@ -326,69 +318,6 @@ int main(int argc, char *args[]) {
    output.close();
 
    delete er_ptr;
-
-
-
-
-
-
-
-
-
-
-
-
-
-   /*
-   G4double **err = new G4double* [len_bufferB];
-   for (int i = 0; i < len_bufferB; i ++) {
-      err[i] = new G4double[2 + NUMBER_INTERPOLATION_VARIABLES]; // 2 is for time/arclength data
-      // Right now, just record error for position
-      // (time goes in the first component).
-   }
-   */
-
-   //err.resize( len_bufferB, vector<G4double> (2 + NUMBER_INTERPOLATION_VARIABLES) );
-
-
-   //G4int len_err;
-   // Main work of program:
-   //er_ptr = mErrorComputer -> ErrorArray(len_err);
-   //mErrorComputer -> ErrorArray();
-
-   /*
-   ofstream meta_outfile("interpolation_error_metafile", ios::out);
-   meta_outfile << len_err;
-   meta_outfile.close();
-
-   ofstream output(output_filename, ios::binary | ios::out);
-   for (int i = 0; i < len_err; i ++) {
-      for (int j = 0; j < 2 + NUMBER_INTERPOLATION_VARIABLES; j ++)
-         d = er_ptr -> at(i). at(j);
-         output.write( reinterpret_cast<char*>( &d ), sizeof(G4double) );
-   }
-   output.close();
-   */
-   // Clean up:
-   /*
-   for (int i = 0; i < len_bufferA; i ++) {
-      delete[] bufferA[i];
-   }
-   for (int i = 0; i < len_alt_buffer; i ++) {
-      delete[] alt_buffer[i];
-   }
-
-   for (int i = 0; i < len_bufferB; i ++) {
-      delete[] bufferB[i];
-      //delete[] err[i];
-   }
-   delete[] bufferA; delete[] alt_buffer; delete[] bufferB; //delete[] err;
-   */
-
-
-   //delete bufferA; delete bufferB; delete alt_buffer; //delete er;
-   //delete mErrorComputer;
-
 
    return 0;
 }
