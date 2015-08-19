@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldTrack.hh 68935 2013-04-12 00:21:35Z gum $
+// $Id: G4FieldTrack.hh 80079 2014-04-01 13:57:28Z gcosmo $
 //
 //
 // class G4FieldTrack
@@ -145,8 +145,8 @@ class  G4FieldTrack
        // Needed and should be used only for RK integration driver
 
      inline void DumpToArray(G4double valArr[ncompSVEC]) const; 
-     inline void LoadFromArray(const G4double valArr[ncompSVEC],
-                                     G4int noVarsIntegrated);
+     void LoadFromArray(const G4double valArr[ncompSVEC],
+                              G4int noVarsIntegrated);
      friend  std::ostream&
              operator<<( std::ostream& os, const G4FieldTrack& SixVec);
 
