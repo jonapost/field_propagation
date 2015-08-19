@@ -1,0 +1,65 @@
+***************
+*** 246,252 ****
+  #include "G4NystromRK4.hh"
+  #include "G4HelixMixedStepper.hh"
+  
+! #include "BogackiShampine.hh"
+  
+  #include "globals.hh"
+  
+--- 246,257 ----
+  #include "G4NystromRK4.hh"
+  #include "G4HelixMixedStepper.hh"
+  
+! //----------------------------------------------------------------------------
+! //----------------------------------------------------------------------------
+! // #include "mG4CashKarpRKF45.hh"
+! //----------------------------------------------------------------------------
+! //----------------------------------------------------------------------------
+! #include "ChawlaSharmaRKNstepper.hh"
+  
+  #include "globals.hh"
+  
+***************
+*** 282,289 ****
+        case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
+        case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
+        case 12: pStepper = new G4ConstRK4( fEquation ); break;
+!       case 13: pStepper = new G4NystromRK4( fEquation ); break;
+!       case 14: pStepper = new BogackiShampine( fEquation ); break; 
+        default: 
+            pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
+            G4ExceptionDescription ErrorMsg;
+--- 287,300 ----
+        case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
+        case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
+        case 12: pStepper = new G4ConstRK4( fEquation ); break;
+!       case 13: pStepper = new G4NystromRK4( fEquation ); break; 
+! 
+! //----------------------------------------------------------------------------
+! //----------------------------------------------------------------------------
+!       case 14: pStepper = new ChawlaSharmaRKNstepper( fEquation ); break;
+! //----------------------------------------------------------------------------
+! //----------------------------------------------------------------------------
+! 
+        default: 
+            pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
+            G4ExceptionDescription ErrorMsg;
+***************
+*** 472,479 ****
+  	      EndUnitMomentum.mag2() - 1.0 << G4endl;
+  
+  	  G4ThreeVector MoveVec = EndPosition - Position;
+! 	  G4cerr << " Attemped move: " << MoveVec << " mag= " <<  MoveVec.mag() << " physStep= " << physStep << G4endl;
+! 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );          
+  
+  	  // G4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
+  	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
+--- 483,489 ----
+  	      EndUnitMomentum.mag2() - 1.0 << G4endl;
+  
+  	  G4ThreeVector MoveVec = EndPosition - Position;
+! 	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
+  
+  	  // G4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
+  	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
