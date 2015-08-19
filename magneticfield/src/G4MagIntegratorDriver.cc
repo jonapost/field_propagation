@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.cc 82798 2014-07-10 08:26:20Z japost $
+// $Id: G4MagIntegratorDriver.cc 87849 2015-01-15 16:40:05Z japost $
 //
 // 
 //
@@ -552,30 +552,6 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   static G4ThreadLocal G4int tot_no_trials=0; 
   const G4int max_trials=100; 
 
-  const G4double max_reduction = 0.1 ; // Largest_reduction_factor for step size
-  const G4double local_Pow_shrink = 0.5*GetPshrnk(); 
-
-  // We choose to use a linear approximation of the Taylor series
-  //       ( 1 + x ) ^ p =  1 + p * x - 0.5 * p * (1-p) x^2  + O( x^3 ) 
-  // if the second order term is smaller than
-  const G4double acc_limit= 0.01;
-  
-  // This limit is reached when
-  //      0.5 * p * (1-p) x^2 = acc_limit
-  // ie
-  //            p * (1-p) x^2 = acc_limit * 2.0
-
-  // NEW constants -- here for now only
-  // The following value is the value of 'x' at which this limit is reached:
-  const G4double  limit_fac = 0.5 * local_Pow_shrink * (1.0 - local_Pow_shrink) ;
-  //  linear_limit_fac
-  // To avoid the division here by limit_fac, we check below that
-  //            limit_fac * x^2 < acc_limt 
-
-  const G4double err_limit = std::pow( max_reduction / GetSafety(), 2/GetPshrnk() ); 
-  // This is constant when the value of the 'shrink' power is constant
-  //  TODO: These should become data members ( this one is expensive to calculate! )
-
   G4ThreeVector Spin(y[9],y[10],y[11]);
   G4double   spin_mag2 =Spin.mag2() ;
   G4bool     hasSpin= (spin_mag2 > 0.0); 
@@ -616,39 +592,13 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
     }
 
     if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
+
     // Step failed; compute the size of retrial Step.
+    htemp = GetSafety()*h* std::pow( errmax_sq, 0.5*GetPshrnk() );
 
-#if 1  // NEW_METHOD
-    // New method of calculation - avoids power if step is very small
-    G4double hnew = 0.0; 
-    G4double x = errmax_sq - 1.0; 
-    if (errmax_sq >= err_limit)  { 
-       // if( limit_fac * x * x < acc_limt ) {
-       //   hnew = 1.0 + local_Pow_shrink * x; 
-       // }else{
-          hnew = GetSafety()*h* std::pow( errmax_sq, local_Pow_shrink); // 0.5*GetPshrnk() );
-       // }
-    }  
-    else  { hnew = max_reduction*h; } // Truncation error was too large,
-                                      // reduce stepsize, but no more than x10
-#endif
-
-#if 1  // OLD_METHOD
-    // Old method of calculation  - always used power
-    htemp = GetSafety()*h* std::pow( errmax_sq, local_Pow_shrink); // 0.5*GetPshrnk() );
-
-    if (htemp >= max_reduction*h)  { h = htemp; }  // Truncation error too large,
-    else  { h =  max_reduction*h; }                 // reduce stepsize, but no more
+    if (htemp >= 0.1*h)  { h = htemp; }  // Truncation error too large,
+    else  { h = 0.1*h; }                 // reduce stepsize, but no more
                                          // than a factor of 10
-#if 1  // NEW_METHOD
-    assert( std::fabs(hnew - h) < 0.00001 * std::fabs(hnew+h) ); 
-#endif
-#endif
-
-#if 1  // NEW_METHOD
-    h= hnew; 
-#endif
-
     xnew = x + h;
     if(xnew == x)
     {
