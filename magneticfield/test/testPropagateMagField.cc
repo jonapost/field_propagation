@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 69604 2013-05-08 17:39:18Z japost $
+// $Id: testPropagateMagField.cc 82240 2014-06-12 13:30:16Z japost $
 //
 //  
 //
@@ -422,9 +422,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
        G4double labTof= 10.0*ns, properTof= 0.1*ns;
        G4ThreeVector Spin(1.0, 0.0, 0.0);
                                                    // Momentum in Mev/c ?
+
+       G4ChargeState chargeSt(1.0, 0.0, 0.5 ); 
        // pMagFieldPropagator
        equationOfMotion->SetChargeMomentumMass(
-		      +1,                    // charge in e+ units
+		      chargeSt,                    // charge in e+ units
 		      momentum, 
 		      proton_mass_c2); 
        G4cout << G4endl;
