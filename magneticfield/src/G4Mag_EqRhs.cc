@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4Mag_EqRhs.cc 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: G4Mag_EqRhs.cc 68948 2013-04-12 00:40:47Z gum $
 //
 //  This is the standard right-hand side for equation of motion  
 //    in a pure Magnetic Field .

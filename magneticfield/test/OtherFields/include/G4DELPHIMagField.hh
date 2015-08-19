@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4DELPHIMagField.hh 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4DELPHIMagField.hh 66241 2012-12-13 18:34:42Z gunter $
 //
 
 // Class describing the DELPHI magnetic field. This axial symmetry

@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ElectroMagneticField.hh 68055 2013-03-13 14:43:28Z gcosmo $
+// $Id: G4ElectroMagneticField.hh 67605 2013-02-26 20:20:03Z adotti $
 //
 //
 // class G4ElectroMagneticField

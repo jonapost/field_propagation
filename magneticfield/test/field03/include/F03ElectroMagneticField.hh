@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: F03ElectroMagneticField.hh 68055 2013-03-13 14:43:28Z gcosmo $
+// $Id: F03ElectroMagneticField.hh 67605 2013-02-26 20:20:03Z adotti $
 //
 //
 //    A class for control of the Magnetic Field of the detector.
