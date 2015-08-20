@@ -19,7 +19,34 @@
 #include <assert.h>
 using namespace std;
 
-#define NO_STATE_VARIABLES 12
+#include "isTracking.hh"
+#ifdef TRACKING
+#include "StepTracker.hh"
+#endif
+
+#ifdef INTENDED_FOR_ERROR_BY_STEPPER_PROGRAM
+
+#define BUFFER_COLUMN_LEN 28 // room for start point and end point of each step
+                             // plus time/arclength entries for each.
+
+#define ENDPOINT_BASE_INDEX 14
+#define POSITION_SLOT 2
+#define MOMENTUM_SLOT 5
+#define RHS_SLOT 8
+
+
+
+
+
+#else
+#define BUFFER_COLUMN_LEN 22 // room for start point and end point of each step
+                             // plus time/arclength entries for each.
+
+#define ENDPOINT_BASE_INDEX 11
+#define POSITION_SLOT 2
+#define MOMENTUM_SLOT 5
+#define RHS_SLOT 8
+#endif
 
 
 // G4MagIntegratorStepper_byArcLength, (a wrapper class so that CashKarp, ClassicalRK4 and others

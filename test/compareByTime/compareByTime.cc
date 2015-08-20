@@ -36,7 +36,6 @@
 #include "G4NystromRK4.hh"
 
 
-#include "G4CachedMagneticField.hh"
 
 #include "Mag_UsualEqRhs_IntegrateByTime.hh"
 #include "MagEqRhsbyTimestoreB.hh"
@@ -119,6 +118,7 @@ int main(int argc, char *args[]) {
    //G4double imass = 1. / mass;
 
 
+
    G4double coeff = std::sqrt( kineticEnergy*kineticEnergy + 2.*mass*kineticEnergy );
 
 
@@ -132,7 +132,7 @@ int main(int argc, char *args[]) {
    G4CachedMagneticField *myMagField;
    G4Mag_EqRhs *fEquation;
 
-   G4int mag_field_choice = 1; // Choice is quadropole mag field
+   G4int mag_field_choice = 2; // Choice is quadropole mag field
    // if (argc > 4)
    //   mag_field_choice = atoi(args[4]);
 
@@ -177,7 +177,7 @@ int main(int argc, char *args[]) {
       meta_outfile_name = "meta_out";
 
    G4MagIntegratorStepper *pStepper;
-   G4MagHelicalStepper *pHelicalStepper;
+   //G4MagHelicalStepper *pHelicalStepper;
 
       //G4cout << " Setting up field of type: " << fieldName << G4endl;
    switch ( stepper_no )
@@ -323,7 +323,7 @@ int main(int argc, char *args[]) {
 
       pStepper->Stepper(yIn, dydx, step_len, yout, yerr); //call the stepper
 
-      }
+      //}
 
       /*
       if (stepper_no == 9) {

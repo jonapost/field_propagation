@@ -63,6 +63,69 @@
 #include "isTracking.hh"
 
 
+
+
+// Globals to store parameters passed from the input arguments to main():
+G4bool is_uniform_field, is_quadropole_field, cached_field, geometry_on;
+G4double uniform_field_input[3]; // Will get multiplied by tesla.
+G4double quadropole_field_strength; // Will get multiplied by 10.*tesla/(50.*cm)
+G4double cache_distance; // For cached mag field, will get multiplied by cm.
+G4double pos[3], mom[3]; // Initial Position/momentum data parsed from the input arguments
+
+
+
+void read_args() {
+   int arg_counter = 1;
+
+    if (argc >= arg_counter) {
+       if (string(argv[arg_counter]) == "uniform") {
+          is_uniform_field = true;
+          uniform_field_input[0] = atof(argv[arg_counter + 1]);
+          uniform_field_input[1] = atof(argv[arg_counter + 2]);
+          uniform_field_input[2] = atof(argv[arg_counter + 3]);
+          arg_counter += 4;
+       }
+    }
+    if (argc >= arg_counter) {
+       if (string(argv[arg_counter]) == "quadropole") {
+          is_quadropole_field = true;
+          quadropole_field_strength = atof(argv[arg_counter + 1]);
+          arg_counter += 2;
+       }
+    }
+
+
+    if (argc >= arg_counter) {
+       if ( string(argv[arg_counter]) == "cached" ) {
+          cached_field = true;
+          cache_distance = atof(argv[arg_counter + 1]);
+          arg_counter += 2;
+       }
+    }
+    if (argc >= arg_counter) {
+       if (string(argv[arg_counter]) == "geometry_on")
+          geometry_on = true;
+       else if (string(argv[arg_counter]) == "geometry_off")
+          geometry_on = false;
+    }
+    if (argc >= arg_counter) {
+       if (string(argv[arg_counter]) == "initial_pos/mom")
+           pos[0] = atof(argv[arg_counter + 1]);
+           pos[1] = atof(argv[arg_counter + 2]);
+           pos[2] = atof(argv[arg_counter + 3]);
+           mom[0] = atof(argv[arg_counter + 4]);
+           mom[1] = atof(argv[arg_counter + 5]);
+           mom[2] = atof(argv[arg_counter + 6]);
+       }
+   }
+
+}
+
+
+
+
+
+
 // Sample Parameterisation
 class G4LinScale : public G4VPVParameterisation
 {
@@ -226,7 +289,7 @@ G4VPhysicalVolume* BuildGeometry()
 		(0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
 		 worldPhys,false,0);
 
-  // */
+   //*/
 
 	return worldPhys;
 }
@@ -310,16 +373,16 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 
 //G4UniformMagField      uniformMagField(1.*tesla, 0., 0.);
 
-
+/*
 G4UniformMagField      uniformMagField( G4ThreeVector(0.0 * tesla, 0.0 * tesla, -1. * tesla) );
 G4CachedMagneticField  myMagField( &uniformMagField, 0.0 * cm);
 G4String   fieldName("Uniform -1.0 Tesla");
+*/
 
-/*
 G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
 G4CachedMagneticField  myMagField( &quadrupoleMagField, 0.0 * cm);
 G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
-*/
+
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
@@ -459,7 +522,8 @@ G4PropagatorInField *pMagFieldPropagator=0;
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
 			       G4int             type,
 			       G4double          compute_step_len,
-			       G4int             no_steps
+			       G4int             no_steps,
+			       G4double          largest_possible_step
 
 #ifdef TRACKING
 			       ,char *tPMF_output_filename = 0,
@@ -497,8 +561,6 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                               magneticMoment=0.0); 
 
 
-
-    assert( fEquation != 0 );
 
     // Added by J. Suagee: (EquationOfMotion was not getting set in a constructor somewhere)
     ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
@@ -550,7 +612,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
        //cout << " distance " << 7.5 * m << endl;
 
-       Position = G4ThreeVector(0.,0.,0.)
+       Position = G4ThreeVector(100.*mm,100.*mm,0.*mm)
        //Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
        UnitMomentum = (G4ThreeVector(0.2,0.6,0.8)
@@ -631,6 +693,22 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 //#ifdef TRACKING
        G4double last_curve_length = 0;
 //#endif
+
+
+       // To limit step size for Baseline:
+
+
+       if (largest_possible_step != -1.0) {
+
+          pMagFieldPropagator -> SetLargestAcceptableStep( largest_possible_step );
+
+          G4double  maxEpsStep= 0.00001;
+          G4double  minEpsStep= 2.5e-10;
+            //G4cout << " Setting values for Min Eps = " << minEpsStep
+             //     << " and MaxEps = " << maxEpsStep << G4endl;
+          pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
+          pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
+       }
 
        clock_t total = 0;
    for( int istep=0; istep < no_steps; istep++ ){
@@ -818,6 +896,11 @@ void report_endPV(G4ThreeVector    Position,
 		G4cout << G4endl;
 	}
 }
+
+
+
+
+
 // Main program
 // -------------------------------
 int main(int argc, char **argv)
@@ -830,6 +913,8 @@ int main(int argc, char **argv)
 
     G4double step_len;
     G4int no_steps;
+
+    G4double largest_possible_step;
 
     //G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
@@ -850,6 +935,63 @@ int main(int argc, char **argv)
     }else{
       no_steps = 10;
     }
+
+    if(argc >= 5)
+       largest_possible_step = atof(argv[4]);
+    else
+       largest_possible_step = -1.0;
+
+    if (argc >= 6) {
+       pos[0] = atof(argv[5]);
+       pos[1] = atof(argv[6]);
+       pos[2] = atof(argv[7]);
+       mom[0] = atof(argv[8]);
+       mom[1] = atof(argv[9]);
+       mom[2] = atof(argv[10]);
+
+       if (argc >= 12) {
+          if (string(argv[11]) == "uniform") {
+             is_uniform_field = true;
+             uniform_field_input[0] = atof(argv[12]);
+             uniform_field_input[1] = atof(argv[13]);
+             uniform_field_input[2] = atof(argv[14]);
+
+             if (argc >= 16) {
+                if ( string(argv[15]) == "cached" ) {
+                   cached = true;
+                   cache_distance = atof(argv[16]);
+                   if (argc >= 18) {
+                      if (string(argv[17]) == "geometry_on")
+                         geometry_on = true;
+                      else
+                         geometry_on = false;
+                   }
+                }
+                else {
+                   cached = false;
+                   if (string(argv[15]) == "geometry_on") {
+                      geometry_on = true;
+                   }
+                   else {
+                      geometry_on = false;
+                   }
+                }
+             }
+          }
+          else {
+             if (string(argv[11]) != "quadropole") {
+                cout << "argv[11] if present, must be either \"uniform\" or \"quadropole\"" << endl;
+                assert( string(argv[11]) == "quadropole" );
+             }
+             is_uniform_field = false;
+             quadropole_field_strength = atof(argv[12]);
+          }
+       }
+
+
+    }
+
+
 
     /*
     if( argc >=3 ){
@@ -888,11 +1030,11 @@ int main(int argc, char **argv)
 
     // Setup the propagator (will be overwritten by testG4Propagator ...)
     pMagFieldPropagator= SetupPropagator(type);
-    //G4cout << " Using default values for " 
-	//   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
-      //     << " and "
-	   //<< " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
-	   //<< G4endl; 
+    G4cout << " Using default values for "
+	   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
+           << " and "
+	   << " MaxEps = " <<  pMagFieldPropagator->GetMaximumEpsilonStep()
+	   << G4endl;
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimisePiFwithSafety); 
 	// Do the tests without voxels
@@ -913,7 +1055,7 @@ int main(int argc, char **argv)
 
 
 
-    testG4PropagatorInField( myTopNode, type, step_len, no_steps
+    testG4PropagatorInField( myTopNode, type, step_len, no_steps, largest_possible_step
 
 #ifdef TRACKING
                                               , stepTracker_output_filename

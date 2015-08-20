@@ -28,14 +28,25 @@ using namespace std;
 
 #define NO_STATE_VARIABLES 12
 
-// Not all of these are needed (they are used in StepTracker.cc).
-// Here we only use POSITION_SLOT:
-// (Everything is offset by 2, one for time and one for arclength.)
+#ifdef INTENDED_FOR_ERROR_BY_STEPPER_PROGRAM
+
+#define BUFFER_COLUMN_LEN 28 // room for start point and end point of each step
+                             // plus time/arclength entries for each.
+
+#define ENDPOINT_BASE_INDEX 14
 #define POSITION_SLOT 2
 #define MOMENTUM_SLOT 5
 #define RHS_SLOT 8
-#define BUFFER_COLUMN_LEN 11
 
+#else
+#define BUFFER_COLUMN_LEN 22 // room for start point and end point of each step
+                             // plus time/arclength entries for each.
+
+#define ENDPOINT_BASE_INDEX 11
+#define POSITION_SLOT 2
+#define MOMENTUM_SLOT 5
+#define RHS_SLOT 8
+#endif
 
 template <class BaseStepper>
 

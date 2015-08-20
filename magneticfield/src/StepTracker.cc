@@ -21,6 +21,22 @@ using namespace std;
 
 #include "G4ThreeVector.hh"
 
+
+#ifdef INTENDED_FOR_ERROR_BY_STEPPER_PROGRAM
+
+#define BUFFER_COLUMN_LEN 28 // room for start point and end point of each step
+                             // plus time/arclength entries for each.
+
+#define ENDPOINT_BASE_INDEX 14
+#define POSITION_SLOT 2
+#define MOMENTUM_SLOT 5
+#define RHS_SLOT 8
+
+
+#define NUMBER_RHS_VARIABLES 6
+
+
+#else
 #define BUFFER_COLUMN_LEN 22 // room for start point and end point of each step
                              // plus time/arclength entries for each.
 
@@ -28,6 +44,11 @@ using namespace std;
 #define POSITION_SLOT 2
 #define MOMENTUM_SLOT 5
 #define RHS_SLOT 8
+
+#define NUMBER_RHS_VARIABLES 3
+
+
+#endif
 
 
 #ifndef G4CACHED_MAGNETIC_FIELD_DEF
@@ -271,14 +292,14 @@ void StepTracker::RecordResultOfStepper( G4double yIn0[], G4double dydx0[],
    for (int i = 0; i < 6; i ++) {
       buffer[last_index][i + POSITION_SLOT] = yIn0[i];
    }
-   for (int i = 0; i < 3; i ++) {
+   for (int i = 0; i < NUMBER_RHS_VARIABLES; i ++) {
       buffer[last_index][i + RHS_SLOT] = dydx0[i + 3];
    }
    // Now copy over endpoint values:
    for (int i = 0; i < 6; i ++) {
       buffer[last_index][ENDPOINT_BASE_INDEX + POSITION_SLOT + i] = yIn1[i];
    }
-   for (int i = 0; i < 3; i ++) {
+   for (int i = 0; i < NUMBER_RHS_VARIABLES; i ++) {
       buffer[last_index][ENDPOINT_BASE_INDEX + RHS_SLOT + i] = dydx1[i + 3];
    }
 
