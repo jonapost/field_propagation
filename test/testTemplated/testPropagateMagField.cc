@@ -62,67 +62,133 @@
 // Are we using StepTracker?
 #include "isTracking.hh"
 
-
-
+#include <string>
+#include <iostream>
+using namespace std;
 
 // Globals to store parameters passed from the input arguments to main():
 G4bool is_uniform_field, is_quadropole_field, cached_field, geometry_on;
 G4double uniform_field_input[3]; // Will get multiplied by tesla.
 G4double quadropole_field_strength; // Will get multiplied by 10.*tesla/(50.*cm)
 G4double cache_distance; // For cached mag field, will get multiplied by cm.
-G4double pos[3], mom[3]; // Initial Position/momentum data parsed from the input arguments
+G4double pos_input[3], mom_dir[3]; // Initial Position/momentum data parsed from the input arguments
+G4double input_momentum; // Gets multiplied by proton_mass_c2
 
+G4double step_length, largest_possible_step;
+G4int stepper_type, number_ComputeSteps;
 
+#ifdef TRACKING
+    char *stepTracker_output_filename = "tPMF_output";
+    char *stepTracker_meta_output_filename = "tPMF_meta_output";
+    char *stepTracker_no_function_calls_output_filename = "tPMF_no_function_calls";
+    char *no_function_calls_overshoot_filename = "tPMF_no_function_calls_overshoot";
+    char *intersection_indices_filename = "tPMF_intersection_indices";
+    char *overshoot_segments = "tPMF_overshoot_segments";
+#endif
 
-void read_args() {
+void read_args(int argc, char **argv) {
    int arg_counter = 1;
 
-    if (argc >= arg_counter) {
-       if (string(argv[arg_counter]) == "uniform") {
-          is_uniform_field = true;
-          uniform_field_input[0] = atof(argv[arg_counter + 1]);
-          uniform_field_input[1] = atof(argv[arg_counter + 2]);
-          uniform_field_input[2] = atof(argv[arg_counter + 3]);
-          arg_counter += 4;
-       }
-    }
-    if (argc >= arg_counter) {
-       if (string(argv[arg_counter]) == "quadropole") {
-          is_quadropole_field = true;
-          quadropole_field_strength = atof(argv[arg_counter + 1]);
-          arg_counter += 2;
-       }
-    }
+   is_uniform_field = true;
+   uniform_field_input[0] = 0.0; uniform_field_input[0] = 0.0; uniform_field_input[0] = -1.0;
+
+   is_quadropole_field = false;
+   cached_field = false;
+   cache_distance = 0.0;
+   geometry_on = true;
+   pos_input[0] = 0.0; pos_input[1] = 0.0; pos_input[2] = 0.0;
+   mom_dir[0] = 0.2; mom_dir[1] = 0.6; mom_dir[2] = 0.8;
+   input_momentum = 0.5;
+
+   stepper_type = 5;
+   step_length = 1000.0;
+   number_ComputeSteps = 10;
+   largest_possible_step = 2000.0;
 
 
-    if (argc >= arg_counter) {
-       if ( string(argv[arg_counter]) == "cached" ) {
-          cached_field = true;
-          cache_distance = atof(argv[arg_counter + 1]);
-          arg_counter += 2;
-       }
-    }
-    if (argc >= arg_counter) {
-       if (string(argv[arg_counter]) == "geometry_on")
-          geometry_on = true;
-       else if (string(argv[arg_counter]) == "geometry_off")
-          geometry_on = false;
-    }
-    if (argc >= arg_counter) {
-       if (string(argv[arg_counter]) == "initial_pos/mom")
-           pos[0] = atof(argv[arg_counter + 1]);
-           pos[1] = atof(argv[arg_counter + 2]);
-           pos[2] = atof(argv[arg_counter + 3]);
-           mom[0] = atof(argv[arg_counter + 4]);
-           mom[1] = atof(argv[arg_counter + 5]);
-           mom[2] = atof(argv[arg_counter + 6]);
-       }
+   if (argc > arg_counter) {
+      stepper_type = atoi(argv[1]);
+      arg_counter ++;
    }
-
+   // Beginning of loop, arg_counter = 2
+   while (argc > arg_counter) {
+      if (argc > arg_counter) {
+         if (std::string(argv[arg_counter]) == "init_data") {
+            step_length = atof(argv[arg_counter + 1]);
+            number_ComputeSteps = atoi(argv[arg_counter + 2]);
+            largest_possible_step = atof(argv[arg_counter + 3]);
+            arg_counter += 4;
+         }
+      }
+      if (argc > arg_counter) {
+         if (std::string(argv[arg_counter]) == "uniform") {
+            is_quadropole_field = false;
+            is_uniform_field = true;
+            uniform_field_input[0] = atof(argv[arg_counter + 1]);
+            uniform_field_input[1] = atof(argv[arg_counter + 2]);
+            uniform_field_input[2] = atof(argv[arg_counter + 3]);
+            arg_counter += 4;
+         }
+      }
+       if (argc > arg_counter) {
+          if (std::string(argv[arg_counter]) == "quadropole") {
+             is_uniform_field = false;
+             is_quadropole_field = true;
+             quadropole_field_strength = atof(argv[arg_counter + 1]);
+             arg_counter += 2;
+          }
+       }
+       if (argc > arg_counter) {
+          if ( std::string(argv[arg_counter]) == "cached_on" ) {
+             cached_field = true;
+             cache_distance = atof(argv[arg_counter + 1]);
+             arg_counter += 2;
+          }
+          else if (std::string(argv[arg_counter]) == "cached_off" ) {
+             cached_field = false;
+             cache_distance = 0.0;
+             arg_counter += 1;
+             //cout << arg_counter << endl;
+          }
+       }
+       if (argc > arg_counter) {
+          if (std::string(argv[arg_counter]) == "geometry_on") {
+             geometry_on = true;
+             arg_counter ++;
+          }
+          else if (std::string(argv[arg_counter]) == "geometry_off") {
+             geometry_on = false;
+             arg_counter ++;
+          }
+       }
+       if (argc > arg_counter) {
+          if (std::string(argv[arg_counter]) == "initial_pos/mom") {
+              pos_input[0] = atof(argv[arg_counter + 1]);
+              pos_input[1] = atof(argv[arg_counter + 2]);
+              pos_input[2] = atof(argv[arg_counter + 3]);
+              mom_dir[0] = atof(argv[arg_counter + 4]);
+              mom_dir[1] = atof(argv[arg_counter + 5]);
+              mom_dir[2] = atof(argv[arg_counter + 6]);
+              input_momentum = atof(argv[arg_counter + 7]);
+              arg_counter += 8;
+          }
+      }
+#ifdef TRACKING
+      if (argc > arg_counter) {
+         if (std::string(argv[arg_counter]) == "file_store_info") {
+            stepTracker_output_filename = argv[arg_counter + 1];
+            stepTracker_meta_output_filename = argv[arg_counter + 2];
+            stepTracker_no_function_calls_output_filename = argv[arg_counter + 3];
+            no_function_calls_overshoot_filename = argv[arg_counter + 4];
+            intersection_indices_filename = argv[arg_counter + 5];
+            overshoot_segments = argv[arg_counter + 6];
+            arg_counter += 7;
+            //cout << setw(20) <<
+         }
+      }
+#endif
+   }
 }
-
-
-
 
 
 
@@ -219,76 +285,78 @@ G4VPhysicalVolume* BuildGeometry()
 
 	///* Disable all geometry for a test
 
-	//  Place them.
-	//
-	//  1) Two big boxes in the world volume
-	//
-	// G4PVPlacement *BigTg1Phys=
-	new G4PVPlacement(0,G4ThreeVector(0,0,-15*m),
-			"Big Target 1",BigBoxLog,
-			worldPhys,false,0);
-	// G4PVPlacement *BigTg2Phys=
-	new G4PVPlacement(0,G4ThreeVector(0,0, 15*m),
-			"Big Target 2",BigBoxLog,
-			worldPhys,false,0);
+	if (geometry_on) {
 
-	//  2) Four (medium) boxes in X & Y near the origin of the world volume
-	//
-	// G4PVPlacement *MedTg3a_Phys=
-	new G4PVPlacement(0,G4ThreeVector(0, 7.5*m,0),
-			"Target 3a",smallBoxLog,
-			worldPhys,false,0);
-	// G4PVPlacement *MedTg3b_Phys=
-	new G4PVPlacement(0,G4ThreeVector(0,-7.5*m,0),
-			"Target 3b",smallBoxLog,
-			worldPhys,false,0);
-	// G4PVPlacement *MedTg3c_Phys=
-	new G4PVPlacement(0,G4ThreeVector(-7.5*m,0,0),
-			"Target 3c",smallBoxLog,
-			worldPhys,false,0);
-	// G4PVPlacement *MedTg3d_Phys=
-	new G4PVPlacement(0,G4ThreeVector( 7.5*m,0,0),
-			"Target 3d",smallBoxLog,
-			worldPhys,false,0);
+      //  Place them.
+      //
+      //  1) Two big boxes in the world volume
+      //
+      // G4PVPlacement *BigTg1Phys=
+      new G4PVPlacement(0,G4ThreeVector(0,0,-15*m),
+            "Big Target 1",BigBoxLog,
+            worldPhys,false,0);
+      // G4PVPlacement *BigTg2Phys=
+      new G4PVPlacement(0,G4ThreeVector(0,0, 15*m),
+            "Big Target 2",BigBoxLog,
+            worldPhys,false,0);
+
+      //  2) Four (medium) boxes in X & Y near the origin of the world volume
+      //
+      // G4PVPlacement *MedTg3a_Phys=
+      new G4PVPlacement(0,G4ThreeVector(0, 7.5*m,0),
+            "Target 3a",smallBoxLog,
+            worldPhys,false,0);
+      // G4PVPlacement *MedTg3b_Phys=
+      new G4PVPlacement(0,G4ThreeVector(0,-7.5*m,0),
+            "Target 3b",smallBoxLog,
+            worldPhys,false,0);
+      // G4PVPlacement *MedTg3c_Phys=
+      new G4PVPlacement(0,G4ThreeVector(-7.5*m,0,0),
+            "Target 3c",smallBoxLog,
+            worldPhys,false,0);
+      // G4PVPlacement *MedTg3d_Phys=
+      new G4PVPlacement(0,G4ThreeVector( 7.5*m,0,0),
+            "Target 3d",smallBoxLog,
+            worldPhys,false,0);
 
 
-	//  3) Eight small boxes around the origin of the world volume 
-	//        (in +-X, +-Y & +-Z)
-	//
-	// G4PVPlacement *SmTg4a_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector( 0.3*m, 0.3*m,0.3*m), "Target 4a",tinyBoxLog,
-		 worldPhys,false,0);
-	// G4PVPlacement *SmTg4b_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector( 0.3*m,-0.3*m,0.3*m), "Target 4b",tinyBoxLog,
-		 worldPhys,false,0);
-	// G4PVPlacement *SmTg4c_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector(-0.3*m,-0.3*m,0.3*m), "Target 4c",tinyBoxLog,
-		 worldPhys,false,0);
-	// G4PVPlacement *SmTg4d_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector(-0.3*m, 0.3*m,0.3*m), "Target 4d",tinyBoxLog,
-		 worldPhys,false,0);
+      //  3) Eight small boxes around the origin of the world volume
+      //        (in +-X, +-Y & +-Z)
+      //
+      // G4PVPlacement *SmTg4a_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector( 0.3*m, 0.3*m,0.3*m), "Target 4a",tinyBoxLog,
+          worldPhys,false,0);
+      // G4PVPlacement *SmTg4b_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector( 0.3*m,-0.3*m,0.3*m), "Target 4b",tinyBoxLog,
+          worldPhys,false,0);
+      // G4PVPlacement *SmTg4c_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector(-0.3*m,-0.3*m,0.3*m), "Target 4c",tinyBoxLog,
+          worldPhys,false,0);
+      // G4PVPlacement *SmTg4d_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector(-0.3*m, 0.3*m,0.3*m), "Target 4d",tinyBoxLog,
+          worldPhys,false,0);
 
-	// G4PVPlacement *SmTg4e_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector( 0.3*m, 0.3*m,-0.3*m), "Target 4e",tinyBoxLog,
+      // G4PVPlacement *SmTg4e_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector( 0.3*m, 0.3*m,-0.3*m), "Target 4e",tinyBoxLog,
+          worldPhys,false,0);
+      // G4PVPlacement *SmTg4f_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector( 0.3*m,-0.3*m,-0.3*m), "Target 4f",tinyBoxLog,
+          worldPhys,false,0);
+      // G4PVPlacement *SmTg4g_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector(-0.3*m,-0.3*m,-0.3*m), "Target 4g",tinyBoxLog,
+          worldPhys,false,0);
+      // G4PVPlacement *SmTg4h_Phys=
+      new G4PVPlacement
+         (0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
 		 worldPhys,false,0);
-	// G4PVPlacement *SmTg4f_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector( 0.3*m,-0.3*m,-0.3*m), "Target 4f",tinyBoxLog,
-		 worldPhys,false,0);
-	// G4PVPlacement *SmTg4g_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector(-0.3*m,-0.3*m,-0.3*m), "Target 4g",tinyBoxLog,
-		 worldPhys,false,0);
-	// G4PVPlacement *SmTg4h_Phys=
-	new G4PVPlacement
-		(0,G4ThreeVector(-0.3*m, 0.3*m,-0.3*m), "Target 4h",tinyBoxLog,
-		 worldPhys,false,0);
-
+	}
    //*/
 
 	return worldPhys;
@@ -368,21 +436,26 @@ typedef TExplicitEuler<Equation_t, 6> StepperExEuler_t;
 //TQuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) );
 //G4QuadrupoleMagField   tQuadrupoleMagField( 10.*tesla/(50.*cm) );
 //Field_t  tMagField( &tQuadrupoleMagField, 1.0 * cm);
-//===============================================
+//===================================h============
 
 
 //G4UniformMagField      uniformMagField(1.*tesla, 0., 0.);
 
-/*
-G4UniformMagField      uniformMagField( G4ThreeVector(0.0 * tesla, 0.0 * tesla, -1. * tesla) );
-G4CachedMagneticField  myMagField( &uniformMagField, 0.0 * cm);
-G4String   fieldName("Uniform -1.0 Tesla");
-*/
 
-G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 0.0 * cm);
-G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
+G4UniformMagField *uniformMagField_ptr;
+//G4UniformMagField      uniformMagField( G4ThreeVector(0.0 * tesla, 0.0 * tesla, -1. * tesla) );
+//G4CachedMagneticField  myUniformCachedMagField( &uniformMagField, 0.0 * cm);
+//G4String   fieldName("Uniform -1.0 Tesla");
 
+G4QuadrupoleMagField *quadrupoleMagField_ptr;
+//G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) );
+//G4CachedMagneticField  myQuadropoleCachedMagField( &quadrupoleMagField, 0.0 * cm);
+//G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm");
+
+G4CachedMagneticField *myMagField_ptr;
+
+
+G4String fieldName;
 
 //G4Mag_UsualEqRhs *fEquation;
 G4Mag_EqRhs *fEquation;
@@ -391,6 +464,23 @@ G4Mag_EqRhs *fEquation;
 
 G4FieldManager* SetupField(G4int type)
 {
+
+   assert( is_uniform_field || is_quadropole_field );
+
+   if (is_uniform_field) {
+      uniformMagField_ptr = new G4UniformMagField( G4ThreeVector(
+            uniform_field_input[0], uniform_field_input[1], uniform_field_input[2] ) );
+      myMagField_ptr = new G4CachedMagneticField(uniformMagField_ptr, cache_distance*cm);
+      fieldName = G4String("Uniform -1.0 Tesla");
+   }
+   if (is_quadropole_field) {
+      quadrupoleMagField_ptr = new G4QuadrupoleMagField(
+                                       quadropole_field_strength * 10.*tesla/(50.*cm));
+      myMagField_ptr = new G4CachedMagneticField( quadrupoleMagField_ptr, cache_distance*cm);
+      fieldName = G4String("Cached Quadropole field, 20T/meter, cache=1cm");
+   }
+
+
 	G4FieldManager   *pFieldMgr;
 	G4ChordFinder    *pChordFinder;
 	//Mag_UsualEqRhs_IntegrateByTime *fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
@@ -407,50 +497,50 @@ G4FieldManager* SetupField(G4int type)
 	G4MagIntegratorStepper *pStepper;
 
 	//G4cout << " Setting up field of type: " << fieldName << G4endl;
-	switch ( type ) 
+	switch ( stepper_type )
 	{
 	   case -1: // will currently fail because DistChord() uses the wrong interpolant!
-         fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byTime<ChawlaSharmaRKNstepper>( fEquation );
          break;
 
 	   case 0: // will currently fail because DistChord() uses the wrong interpolant!
-         fEquation = new MagEqRhs_byTime_storeB(&myMagField);
+         fEquation = new MagEqRhs_byTime_storeB(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byTime<MuruaRKN5459>( fEquation );
          break;
 
 	   case 1:
-	      fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
+	      fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField_ptr);
 	      pStepper = new MagIntegratorStepper_byTime<FineRKNG45>( fEquation );
 	      break;
       case 2:
-         fEquation = new Mag_UsualEqRhs_IntegrateByTime(&myMagField);
+         fEquation = new Mag_UsualEqRhs_IntegrateByTime(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byTime<FineRKNG34>( fEquation );
          break;
 
       case 3: // MuruaRKN6459 will fail (wrong coefficients)!
-         fEquation = new MagEqRhs_byTime_storeB(&myMagField);
+         fEquation = new MagEqRhs_byTime_storeB(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byTime<MuruaRKN6459>( fEquation );
          break;
 	   case 4:
-	      fEquation = new G4Mag_UsualEqRhs(&myMagField);
+	      fEquation = new G4Mag_UsualEqRhs(myMagField_ptr);
 	      pStepper = new MagIntegratorStepper_byArcLength<G4CashKarpRKF45>( fEquation );
 	      break;
 	   case 5:
-         fEquation = new G4Mag_UsualEqRhs(&myMagField);
+         fEquation = new G4Mag_UsualEqRhs(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byArcLength<G4ClassicalRK4>( fEquation );
          break;
 	   case 6:
-         fEquation = new G4Mag_UsualEqRhs(&myMagField);
+         fEquation = new G4Mag_UsualEqRhs(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byArcLength<G4SimpleHeum>( fEquation );
          break;
 	   case 7:
-         fEquation = new G4Mag_UsualEqRhs(&myMagField);
+         fEquation = new G4Mag_UsualEqRhs(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byArcLength<DormandPrince745>( fEquation );
          break;
 
 	   case 8:
-         fEquation = new G4Mag_UsualEqRhs(&myMagField);
+         fEquation = new G4Mag_UsualEqRhs(myMagField_ptr);
          pStepper = new MagIntegratorStepper_byArcLength<BogackiShampine45>( fEquation );
          break;
 
@@ -470,9 +560,9 @@ G4FieldManager* SetupField(G4int type)
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
 
-    pFieldMgr->SetDetectorField( &myMagField );
+    pFieldMgr->SetDetectorField( myMagField_ptr );
 
-    pChordFinder = new G4ChordFinder( &myMagField,
+    pChordFinder = new G4ChordFinder( myMagField_ptr,
 				      1.0e-2 * mm,
 				      pStepper);
     pChordFinder->SetVerbose(0);  // ity();
@@ -520,13 +610,13 @@ G4PropagatorInField *pMagFieldPropagator=0;
 // Test Stepping
 //
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
-			       G4int             type,
-			       G4double          compute_step_len,
-			       G4int             no_steps,
-			       G4double          largest_possible_step
+			       //G4int             type, // Is not used
+			       //G4double          compute_step_len,
+			       //G4int             no_steps,
+			       //G4double          largest_possible_step
 
 #ifdef TRACKING
-			       ,char *tPMF_output_filename = 0,
+			       char *tPMF_output_filename = 0,
 			       char *tPMF_meta_output_filename = 0,
 			       char *tPMF_no_function_calls_filename = 0,
 			       char *tPMF_no_function_calls_overshoot_filename = 0,
@@ -550,7 +640,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4Navigator   *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
     
-    pMagFieldPropagator= SetupPropagator(type);
+    pMagFieldPropagator= SetupPropagator(stepper_type);
 
     G4double particleCharge= +1.0;  // in e+ units
     G4double spin=0.0;              // ignore the spin
@@ -566,7 +656,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper())
             ->SetEquationOfMotion(fEquation);
 
-    if (type == 0)
+    if (stepper_type == 0)
        dynamic_cast< MagIntegratorStepper_byTime<MuruaRKN5459>* >
                      ( pMagFieldPropagator->GetChordFinder()->GetIntegrationDriver()->GetStepper() )
              -> set_MagEqRhs_storedBfield(fEquation);
@@ -608,17 +698,25 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     //for( int iparticle=0; iparticle < 1; iparticle++ )
     //{
        //physStep=  5. * mm ;  // millimeters
-       physStep = compute_step_len * mm;
+       physStep = step_length * mm;
 
        //cout << " distance " << 7.5 * m << endl;
 
-       Position = G4ThreeVector(100.*mm,100.*mm,0.*mm)
+
+
+       Position = G4ThreeVector( pos_input[0]*mm, pos_input[1]*mm, pos_input[2]*mm)
+       //Position = G4ThreeVector(100.*mm,100.*mm,0.*mm)
        //Position = G4ThreeVector(-100.*mm, 50.*mm, 150.*mm)
 	        + iparticle * G4ThreeVector(0.2, 0.3, 0.4); 
-       UnitMomentum = (G4ThreeVector(0.2,0.6,0.8)
+
+       UnitMomentum = (G4ThreeVector(mom_dir[0],mom_dir[1],mom_dir[2])
+       //UnitMomentum = (G4ThreeVector(0.2,0.6,0.8)
 		    + (float)iparticle * G4ThreeVector(0.1, 0.2, 0.3)).unit();
 
-       G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2; 
+       //G4double momentum = (0.5+iparticle*10.0) * proton_mass_c2;
+       G4double momentum = (input_momentum + iparticle*10.0) * proton_mass_c2;
+
+
 
        G4double kineticEnergy =  momentum*momentum /
                   ( std::sqrt( momentum*momentum + proton_mass_c2 * proton_mass_c2 ) 
@@ -702,16 +800,16 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
           pMagFieldPropagator -> SetLargestAcceptableStep( largest_possible_step );
 
-          G4double  maxEpsStep= 0.00001;
-          G4double  minEpsStep= 2.5e-10;
+          //G4double  maxEpsStep= 0.00001;
+          //G4double  minEpsStep= 2.5e-10;
             //G4cout << " Setting values for Min Eps = " << minEpsStep
              //     << " and MaxEps = " << maxEpsStep << G4endl;
-          pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
-          pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
+          //pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
+          //pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
        }
 
        clock_t total = 0;
-   for( int istep=0; istep < no_steps; istep++ ){
+   for( int istep=0; istep < number_ComputeSteps; istep++ ){
        // G4cerr << "UnitMomentum Magnitude is " << UnitMomentum.mag() << G4endl;
 	  located = pNavig->LocateGlobalPointAndSetup(Position);
 	  // G4cerr << "Starting Step " << istep << " in volume " 
@@ -764,7 +862,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	     cout.precision(15);
 	     cout << "At assert (testPropagateMagField:709): " << MoveVec.mag() << ", " << physStep << endl;
 	  }
-	  //assert( MoveVec.mag() < physStep*(1.+1.e-9) );
+	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
 	  //4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
 	  //report_endPV(Position, UnitMomentum, step_len, physStep, safety,
@@ -785,9 +883,9 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	  UnitMomentum= EndUnitMomentum;
 	  physStep *= 1.;
        } // ...........................  end for ( istep )
-       G4cout << "=============="<<total<<"================="<<G4endl;
-       myMagField.ReportStatistics();
-       myMagField.ClearCounts(); // J. Suagee
+       //G4cout << "=============="<<total<<"================="<<G4endl;
+       //myMagField_ptr -> ReportStatistics();
+       myMagField_ptr -> ClearCounts(); // J. Suagee
 
         // ..............................  end for ( iparticle )
 
@@ -911,87 +1009,15 @@ int main(int argc, char **argv)
     G4bool optimiseVoxels=true;
     G4bool optimisePiFwithSafety=true;
 
-    G4double step_len;
-    G4int no_steps;
+    read_args(argc, argv);
 
-    G4double largest_possible_step;
+
+    //G4double step_len;
+    //G4int no_steps;
+
+    //G4double largest_possible_step;
 
     //G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
-
-    if( argc >= 2 ){
-       type = atoi(argv[1]);
-    }else{
-		type = 14;
-	 }
-
-    if( argc >= 3 ){
-       step_len = atof(argv[2]);
-    }else{
-      step_len = 10.;
-    }
-
-    if( argc >= 4 ){
-       no_steps = atoi(argv[3]);
-    }else{
-      no_steps = 10;
-    }
-
-    if(argc >= 5)
-       largest_possible_step = atof(argv[4]);
-    else
-       largest_possible_step = -1.0;
-
-    if (argc >= 6) {
-       pos[0] = atof(argv[5]);
-       pos[1] = atof(argv[6]);
-       pos[2] = atof(argv[7]);
-       mom[0] = atof(argv[8]);
-       mom[1] = atof(argv[9]);
-       mom[2] = atof(argv[10]);
-
-       if (argc >= 12) {
-          if (string(argv[11]) == "uniform") {
-             is_uniform_field = true;
-             uniform_field_input[0] = atof(argv[12]);
-             uniform_field_input[1] = atof(argv[13]);
-             uniform_field_input[2] = atof(argv[14]);
-
-             if (argc >= 16) {
-                if ( string(argv[15]) == "cached" ) {
-                   cached = true;
-                   cache_distance = atof(argv[16]);
-                   if (argc >= 18) {
-                      if (string(argv[17]) == "geometry_on")
-                         geometry_on = true;
-                      else
-                         geometry_on = false;
-                   }
-                }
-                else {
-                   cached = false;
-                   if (string(argv[15]) == "geometry_on") {
-                      geometry_on = true;
-                   }
-                   else {
-                      geometry_on = false;
-                   }
-                }
-             }
-          }
-          else {
-             if (string(argv[11]) != "quadropole") {
-                cout << "argv[11] if present, must be either \"uniform\" or \"quadropole\"" << endl;
-                assert( string(argv[11]) == "quadropole" );
-             }
-             is_uniform_field = false;
-             quadropole_field_strength = atof(argv[12]);
-          }
-       }
-
-
-    }
-
-
 
     /*
     if( argc >=3 ){
@@ -1029,7 +1055,7 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->CloseGeometry(false);
 
     // Setup the propagator (will be overwritten by testG4Propagator ...)
-    pMagFieldPropagator= SetupPropagator(type);
+    pMagFieldPropagator= SetupPropagator(stepper_type);
     G4cout << " Using default values for "
 	   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
            << " and "
@@ -1040,6 +1066,7 @@ int main(int argc, char **argv)
 	// Do the tests without voxels
     //G4cout << " Test with no voxels" << G4endl; 
 
+    /*
 #ifdef TRACKING
 
     char *stepTracker_output_filename = "tPMF_output1";
@@ -1049,13 +1076,10 @@ int main(int argc, char **argv)
     char *intersection_indices_filename = "tPMF_intersection_indices1";
     char *overshoot_segments = "tPMF_overshoot_segments1";
 #endif
+*/
 
-
-
-
-
-
-    testG4PropagatorInField( myTopNode, type, step_len, no_steps, largest_possible_step
+    testG4PropagatorInField( myTopNode //, stepper_type,
+                             //step_length, number_ComputeSteps, largest_possible_step
 
 #ifdef TRACKING
                                               , stepTracker_output_filename
@@ -1198,6 +1222,13 @@ int main(int argc, char **argv)
    */
 
     // Cannot delete G4TransportationManager::GetInstance();
+
+    if (is_uniform_field)
+       delete uniformMagField_ptr;
+    if (is_quadropole_field)
+       delete quadrupoleMagField_ptr;
+    delete myMagField_ptr;
+    delete fEquation;
 
     return 0;
 }
