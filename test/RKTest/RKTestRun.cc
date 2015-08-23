@@ -20,9 +20,9 @@ using namespace std;
 int main(int argc, char* argv[]){
     
     RKTest myTest;
-        int columns[] = {0,0,0,0,0,0};
+        int columns[] = {1,1,1,0,0,0};
     
-    G4double Field_factor = 1.0;
+    G4double Field_factor = 0.8;
     
     if(argc > 1)
         Field_factor = atof(argv[1]);
@@ -38,19 +38,20 @@ int main(int argc, char* argv[]){
     //    myTest.testSteppersFixedUMF<<#class STEPPER#>>(<#int *columns#>)
 
     
-    cout<<" ::::: INTERPOLATION ACCURACY RECORD ::: ";
+//    cout<<" ::::: INTERPOLATION ACCURACY RECORD ::: ";
     cout<<"\n\n TESTING PERFORMANCE IN UMF \n";
     cout<< "\n    :::> Field_factor = "<<Field_factor<<endl;
 
-    G4double div_list[] = {0.5,2.0/3.0,3.0/4.0,1.0,2.0,3.0,4.0,6.0,8.0,12.0 };
+//    G4double div_list[] = {0.5,2.0/3.0,3.0/4.0,1.0,2.0,3.0,4.0,6.0,8.0,12.0 };
 
     int i=0;
-    while(div_list[i] && i<50){
-        cout<<"\n\n :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n"
-        <<"Testing VernerRK78 ...\n" ;
-        myTest.testStepperInterpolant<VernerRK78, VernerRK78>(columns,div_list[i], 4.0*pi) ;
-        i++;
-    }
+//    while(div_list[i] && i<50){
+//        cout<<"\n\n :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n"
+//        <<"Testing VernerRK78 ...\n" ;
+    cout<<"\n Testing Some Stepper";
+    myTest.testSteppersFixedUMF<DormandPrinceRK56>(columns,Field_factor);//<DormandPrinceRK56>();
+
+//    }
 
 //    cout<<"\n\n :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n"
 //    <<"Testing VernerRK67  ...\n" ;
@@ -86,3 +87,27 @@ int main(int argc, char* argv[]){
     return 0;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

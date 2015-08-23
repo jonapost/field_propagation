@@ -42,6 +42,17 @@ public:
                  		G4double yout[],
                  		G4double yerr[] ) ;
     
+    G4double  DistChord()   const;
+    G4int IntegratorOrder() const { return 5; }
+    
+
+
+    
+
+    
+    DormandPrinceRK56(const DormandPrinceRK56&);
+    DormandPrinceRK56& operator=(const DormandPrinceRK56&);
+    
     
     //For Preparing the Interpolant and calculating the extra stages
     void SetupInterpolate_low( const G4double yInput[],
@@ -81,13 +92,6 @@ public:
                           G4double yOut[],
                           G4double tau );
     
-
-    
-    G4double  DistChord()   const;
-    G4int IntegratorOrder() const { return 5; }
-    
-    DormandPrinceRK56(const DormandPrinceRK56&);
-    DormandPrinceRK56& operator=(const DormandPrinceRK56&);
     
     
 private:
@@ -103,10 +107,6 @@ private:
     
     DormandPrinceRK56* fAuxStepper;
     
-    //	G4int No_of_vars;
-    //	G4double hinit, tinit, tmax, *yinit;
-    //	double hmax, hmin, safe_const, err0, Step_factor;
-    //	void (*derivs)(double, double *, double *);
     
     
 };

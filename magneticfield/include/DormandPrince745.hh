@@ -78,6 +78,7 @@ public:
 
     G4double  DistChord() const;
     G4double DistChord2() const;
+    G4double DistChord3() const;
     G4int IntegratorOrder() const {return 4; }
     
     //Newly constructed copy constructor

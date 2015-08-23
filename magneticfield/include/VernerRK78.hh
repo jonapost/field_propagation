@@ -70,8 +70,8 @@ public:
     
     
     G4double  DistChord()   const;
+    G4double DistChord2() const;
     G4int IntegratorOrder() const { return 7; }
-    G4bool isFSAL() const{ return false;}
     
     VernerRK78(const VernerRK78&);
     VernerRK78& operator=(const VernerRK78&);

@@ -209,7 +209,7 @@ void VernerRK78::Stepper(const G4double yInput[],
     c12 = -.2361324633071542145259900641263517600737,
    
 
-    //Redundancy here
+    //Redundancy here - could directly use dci = ci - ._.
     dc1 = .4427989419007951074716746668098518862111e-1 - .4431261522908979212486436510209029764893e-1,
     dc2 =  0.,
     dc3 =  0.,
@@ -401,6 +401,9 @@ G4double  VernerRK78::DistChord() const
     return distChord;
 }
 
+G4double VernerRK78::DistChord2() const{
+    return 2.0;
+}
 
 void VernerRK78::SetupInterpolate_low( const G4double yInput[],
                                        const G4double dydx[],

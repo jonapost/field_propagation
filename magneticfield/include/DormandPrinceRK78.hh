@@ -29,7 +29,6 @@ public:
     
     G4double  DistChord()   const;
     G4int IntegratorOrder() const {return 7; }
-    //    G4double *getLastDydx();
     
     private :
     

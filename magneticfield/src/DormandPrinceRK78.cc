@@ -106,9 +106,9 @@ DormandPrinceRK78::~DormandPrinceRK78(){
 
 void DormandPrinceRK78::Stepper(const G4double yInput[],
                                 const G4double dydx[],
-                                G4double Step,
-                                G4double yOut[],
-                                G4double yErr[])
+                                	  G4double Step,
+                                      G4double yOut[],
+                                	  G4double yErr[])
 {
     G4int i;
     

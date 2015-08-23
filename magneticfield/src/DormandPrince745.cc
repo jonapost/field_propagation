@@ -95,6 +95,7 @@ DormandPrince745::~DormandPrince745(){
     
     if(ak8)
         delete[] ak8;
+    
     if(ak9)
         delete[] ak9;
     
@@ -179,19 +180,19 @@ void DormandPrince745::Stepper(const G4double yInput[],
 // Difference between the higher and the lower order method coeff. :
     // b7j are the coefficients of higher order
     
-    dc1 = b71 - 5179.0/57600.0,
-    dc2 = b72 - .0,
-    dc3 = b73 - 7571.0/16695.0,
-    dc4 = b74 - 393.0/640.0,
-    dc5 = b75 + 92097.0/339200.0,
-    dc6 = b76 - 187.0/2100.0,
-    dc7 = - 1.0/40.0 ; //end of declaration
+    dc1 = -( b71 - 5179.0/57600.0),
+    dc2 = -( b72 - .0),
+    dc3 = -( b73 - 7571.0/16695.0),
+    dc4 = -( b74 - 393.0/640.0),
+    dc5 = -( b75 + 92097.0/339200.0),
+    dc6 = -( b76 - 187.0/2100.0),
+    dc7 = -( - 1.0/40.0 ); //end of declaration
     
     
     const G4int numberOfVariables= this->GetNumberOfVariables();
     
     // The number of variables to be integrated over
-    yOut[7] = yTemp[7]  = yIn[7];
+    yOut[7] = yTemp[7]  = yInput[7];
     //  Saving yInput because yInput and yOut can be aliases for same array
     
     for(i=0;i<numberOfVariables;i++)
@@ -239,7 +240,7 @@ void DormandPrince745::Stepper(const G4double yInput[],
     for(i=0;i<numberOfVariables;i++)
     {
         yOut[i] = yIn[i] + Step*(b71*DyDx[i] + b72*ak2[i] + b73*ak3[i] +
-                                  b74*ak4[i] + b75*ak5[i] + b76*ak6[i]);
+                                  b74*ak4[i] + b75*ak5[i] + b76*ak6[i] );
     }
     RightHandSide(yOut, ak7);				//7th and Final stage
     
@@ -247,7 +248,7 @@ void DormandPrince745::Stepper(const G4double yInput[],
     {
         
         yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
-                        dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] ) ;
+                            dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] ) + 1.5e-18 ;
         
 
         // Store Input and Final values, for possible use in calculating chord
@@ -270,7 +271,7 @@ void DormandPrince745::Stepper(const G4double yInput[],
 
 
 //The original DistChord() function fot the class - must define it here.
-G4double  DormandPrince745::DistChord2() const
+G4double  DormandPrince745::DistChord3() const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -304,7 +305,7 @@ G4double  DormandPrince745::DistChord2() const
 }
 
 //The newly made DistChord function using interpolation
-G4double DormandPrince745::DistChord() const {
+G4double DormandPrince745::DistChord2() const {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
     
@@ -342,6 +343,51 @@ G4double DormandPrince745::DistChord() const {
     }
     return distChord;
 
+}
+
+G4double DormandPrince745::DistChord() const{
+        G4double distLine, distChord;
+    G4ThreeVector initialPoint, finalPoint, midPoint;
+    
+    // Store last initial and final points (they will be overwritten in self-Stepper call!)
+    initialPoint = G4ThreeVector( fLastInitialVector[0],
+                                 fLastInitialVector[1], fLastInitialVector[2]);
+    finalPoint   = G4ThreeVector( fLastFinalVector[0],
+                                 fLastFinalVector[1],  fLastFinalVector[2]);
+    
+    //Coefficients for halfway interpolation
+    G4double
+    hf1 = 5783653.0/57600000.0 ,
+    hf2 = 0. ,
+    hf3 = 466123.0/1192500.0 ,
+    hf4 = -41347.0/1920000.0 ,
+    hf5 = 16122321.0/339200000.0 ,
+    hf6 = -7117.0/20000.0,
+    hf7 = 183.0/10000.0 ;
+
+
+    for(int i=0; i<3; i++){
+                fMidVector[i] = fLastInitialVector[i] + fLastStepLength*(
+                    hf1*fLastDyDx[i] + hf2*ak2[i] + hf3*ak3[i] + hf4*ak4[i] +
+                    hf5*ak5[i] + hf6*ak6[i] + hf7*ak7[i] );
+    }
+     
+    midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
+    
+    // Use stored values of Initial and Endpoint + new Midpoint to evaluate
+    //  distance of Chord
+    
+    
+    if (initialPoint != finalPoint)
+    {
+        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
+        distChord = distLine;
+    }
+    else
+    {
+        distChord = (midPoint-initialPoint).mag();
+    }
+    return distChord;
 }
 
 // The lower (4th) order interpolant given by Dormand and prince
@@ -581,7 +627,7 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
 //    
 //}
 
-
+// Overloaded = operator
 DormandPrince745& DormandPrince745::operator=(const DormandPrince745& DP)
 {
 //    this->DormandPrince745(DP.GetEquationOfMotion(),DP.GetNumberOfVariables(), false);
@@ -596,18 +642,18 @@ DormandPrince745& DormandPrince745::operator=(const DormandPrince745& DP)
         this->ak6[i] = DP.ak6[i];
         this->ak7[i] = DP.ak7[i];
 
-        if(DP.ak8)
-        {
-            if(!this->ak8)
-                this->ak8 = new G4double[noVars];
-            this->ak8[i] = DP.ak8[i];
-        }
-        if(DP.ak9)
-        {
-            if(!this->ak9)
-                this->ak9 = new G4double[noVars];
-            this->ak9[i] = DP.ak9[i];
-        }
+//        if(DP.ak8)
+//        {
+//            if(!this->ak8)
+//                this->ak8 = new G4double[noVars];
+//            this->ak8[i] = DP.ak8[i];
+//        }
+//        if(DP.ak9)
+//        {
+//            if(!this->ak9)
+//                this->ak9 = new G4double[noVars];
+//            this->ak9[i] = DP.ak9[i];
+//        }
         this->fLastDyDx[i] = DP.fLastDyDx[i];
         this->fLastInitialVector[i] = DP.fLastInitialVector[i];
         this->fMidVector[i] = DP.fMidVector[i];

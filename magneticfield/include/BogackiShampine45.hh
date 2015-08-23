@@ -95,7 +95,6 @@ public:
     *ak9, *ak10, *ak11,
     *yTemp, *yIn;
     
-    G4double *pseudoDydx_for_DistChord;
     G4double fLastStepLength;
     G4double *fLastInitialVector, *fLastFinalVector,
     *fLastDyDx, *fMidVector, *fMidError;
