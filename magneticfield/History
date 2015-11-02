@@ -1,4 +1,4 @@
-$Id: History 88093 2015-01-28 11:09:18Z japost $
+$Id: History 90610 2015-06-04 21:36:12Z gum $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,11 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+Jun 4, 2015 P. Gumplinger              - field-V10-01-04
+-------------------------
+- change assignment to field instead of Field array in G4RepleteEofM.cc
+
 Jan 28, 2015 J.Apostolakis             - field-V10-01-01 (-02,03 fixed)
 --------------------------                               ( History    )
 - Revert unintended inclusion of changes in G4MagIntegratorDriver

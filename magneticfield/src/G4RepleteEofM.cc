@@ -244,13 +244,13 @@ G4RepleteEofM::EvaluateRhsGivenB(const G4double y[],
 //      G4cout << "y[9,10,11]  " << y[9] << " " << y[10] << " " << y[11] << G4endl;
       G4ThreeVector BField(0.,0.,0.);
       if (fBfield) {
-         G4ThreeVector F(Field[0],Field[1],Field[2]);
+         G4ThreeVector F(field[0],field[1],field[2]);
          BField = F;
       }
 
       G4ThreeVector EField(0.,0.,0.);
       if (fEfield) {
-         G4ThreeVector F(Field[3],Field[4],Field[5]);
+         G4ThreeVector F(field[3],field[4],field[5]);
          EField = F;
       }
 
