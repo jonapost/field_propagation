@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldTrack.cc 90643 2015-06-05 13:18:26Z gcosmo $
+// $Id: G4FieldTrack.cc 93800 2015-11-02 10:13:10Z japost $
 //
 // -------------------------------------------------------------------
 
@@ -48,9 +48,15 @@ std::ostream& operator<<( std::ostream& os, const G4FieldTrack& SixVec)
      os << " Pmag= "
         << G4ThreeVector(SixV[3], SixV[4], SixV[5]).mag(); // mom magnitude
      os << " Ekin= " << SixVec.fKineticEnergy ;
+     os.precision(precLen);
+     os << " l= " << SixVec.GetCurveLength();
      os.precision(6);
      os << " m0= " <<   SixVec.fRestMass_c2;
      os << " (Pdir-1)= " <<  SixVec.fMomentumDir.mag()-1.0;
+     if( SixVec.fLabTimeOfFlight > 0.0 )   os.precision(precTime);
+     else                                  os.precision(3); 
+     os << " t_lab= "    << SixVec.fLabTimeOfFlight; 
+     os << " t_proper= " << SixVec.fProperTimeOfFlight ;
      G4ThreeVector pol= SixVec.GetPolarization();
      if( pol.mag2() > 0.0 ){
         os.precision(precSpin);
@@ -58,12 +64,6 @@ std::ostream& operator<<( std::ostream& os, const G4FieldTrack& SixVec)
      }else{
         os << " PolV= (0,0,0) "; 
      }
-     os.precision(precLen);
-     os << " l= " << SixVec.GetCurveLength();
-     if( SixVec.fLabTimeOfFlight > 0.0 )   os.precision(precTime);
-     else                                  os.precision(3); 
-     os << " t_lab= "    << SixVec.fLabTimeOfFlight; 
-     os << " t_proper= " << SixVec.fProperTimeOfFlight ; 
      os << " ) ";
      os.precision(oldpr);
      return os;

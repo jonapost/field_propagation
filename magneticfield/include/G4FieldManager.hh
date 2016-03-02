@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManager.hh 90856 2015-06-10 16:39:40Z japost $
+// $Id: G4FieldManager.hh 93802 2015-11-02 10:28:00Z japost $
 //
 //  
 // class G4FieldManager
@@ -65,7 +65,6 @@
 // valid for each region detector.
 
 // History:
-// - 09.06.15 John Apostolakis, Fix to push G4FieldManager* to equation
 // - 05.11.03 John Apostolakis, Added Min/MaximumEpsilonStep
 // - 20.06.03 John Apostolakis, Abstract & ability to ConfigureForTrack
 // - 10.03.97 John Apostolakis, design and implementation.
@@ -94,30 +93,7 @@ class G4FieldManager
           //   - assumes pure magnetic field (so Energy constant)
      virtual ~G4FieldManager();
 
-     G4bool   SetDetectorField(G4Field *detectorField, int failMode= 0);
-        // Pushes the field to the equation.
-        //   ( New behaviour June 2015 - to avoid the simplest user confusion. )   
-        // Failure to push the field ( due to absence of a chord finder, driver,
-        //    stepper or equation )  is
-        //      - '0' = quiet      : Do not complain if chordFinder == 0
-        //                            (It will still warn for other error.)
-        //      - '1' = warn       : a warning if anything is missing
-        //      - '2'/else = FATAL : a fatal error for all other values.
-        //  Returns success (true) or failure (false)
-
-     inline void  ProposeDetectorField(G4Field *detectorField);
-        // Pushes the field to this class only -- no further.
-        //   Should be used  to initialise this field, only *before* creating
-        //    the chord finder and its dependent classes.
-        //   User is then responsible to ensure that:
-        //     i) an equation, stepper, driver and chord finder are created
-        //    ii) this field is used by the equation.
-
-     inline void  ChangeDetectorField(G4Field *detectorField);    
-        // Pushes the field to the equation ( & keeps its address )
-        //   Can be used only once the equation, stepper, driver and chord finder
-        //    have all been created.  Else it is an error.
-        
+     G4bool          SetDetectorField(G4Field *detectorField);
      inline const G4Field*  GetDetectorField() const;
      inline G4bool          DoesFieldExist() const;
         // Set, get and check the field object
@@ -173,12 +149,6 @@ class G4FieldManager
      G4FieldManager& operator=(const G4FieldManager&);
        // Private copy constructor and assignment operator.
 
-     void SetFieldChangesEnergy();
-       // Check whether field/equation change the energy,
-       //  and sets the data member accordingly
-       // Note: does not handle special cases - this must be done
-       //  separately  (e.g. magnetic monopole in B field )
-   
   private:
      // Dependent objects -- with state that depends on tracking
      G4Field*        fDetectorField;
