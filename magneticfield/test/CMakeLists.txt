@@ -29,4 +29,4 @@ GEANT4_ADD_UNIT_TESTS(test*.cc
                                    ${CLHEP_INCLUDE_DIRS}
                       LIBRARIES G4geometry G4particles G4interfaces G4run)
 
-subdirectory(field07)
+add_subdirectory(field07)
