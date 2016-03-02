@@ -1,4 +1,4 @@
-$Id: History 94860 2015-12-11 21:46:56Z adotti $
+$Id: History 95819 2016-02-26 00:05:24Z gum $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,14 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+Feb 25, 2016 P.Gumplinger             - field-V10-02-01
+-------------------------
+- address Problem Report: 1831
+  change: G4Mag_SpinEqRhs, G4EqEMFieldWithSpin, G4EqEMFieldWithEDM and
+          G4RepleteEofM.cc from g_BMT = (magMoment/muB)/spin
+                           to   g_BMT = (std::abs(magMoment)/muB)/spin
+
 
 Dec 11, 2015 A.Dotti		      - field-V10-02-00
 --------------------------
