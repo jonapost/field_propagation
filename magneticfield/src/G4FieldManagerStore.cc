@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManagerStore.cc 68216 2013-03-19 13:23:50Z gcosmo $
+// $Id: G4FieldManagerStore.cc 69589 2013-05-08 14:35:28Z gcosmo $
 //
 // G4FieldManagerStore
 //

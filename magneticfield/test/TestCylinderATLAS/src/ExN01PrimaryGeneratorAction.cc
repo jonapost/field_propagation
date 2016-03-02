@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: ExN01PrimaryGeneratorAction.cc 66241 2012-12-13 18:34:42Z gunter $
+// $Id: ExN01PrimaryGeneratorAction.cc 66356 2012-12-18 09:02:32Z gcosmo $
 // GEANT4 tag $Name: geant4-08-01-patch-01-ref $
 //
 

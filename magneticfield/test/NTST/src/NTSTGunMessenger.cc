@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: NTSTGunMessenger.cc 66241 2012-12-13 18:34:42Z gunter $
+// $Id: NTSTGunMessenger.cc 66356 2012-12-18 09:02:32Z gcosmo $
 //
 
 #include "NTSTGunMessenger.hh"

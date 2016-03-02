@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.hh 69599 2013-05-08 16:42:49Z japost $
+// $Id: G4MagIntegratorDriver.hh 69699 2013-05-13 08:50:30Z gcosmo $
 //
 //
 // class G4MagInt_Driver

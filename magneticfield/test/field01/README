@@ -1,4 +1,4 @@
-$Id: README 66241 2012-12-13 18:34:42Z gunter $
+$Id: README 90643 2015-06-05 13:18:26Z gcosmo $
 -------------------------------------------------------------------
 
      =========================================================
@@ -12,7 +12,7 @@ $Id: README 66241 2012-12-13 18:34:42Z gunter $
     and field dependent electromagnetic processes.
 
 	
-    This test has moved to extended/field/field01, and is being refined 
+    This test has moved to examples/extended/field/field01, and is being refined 
     into an example.
 
     Only run script are now in this directory.

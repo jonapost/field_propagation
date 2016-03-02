@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4EqEMFieldWithSpin.cc 70805 2013-06-05 23:40:33Z gum $
+// $Id: G4EqEMFieldWithSpin.cc 71664 2013-06-20 08:36:05Z gcosmo $
 //
 //
 //  This is the standard right-hand side for equation of motion.

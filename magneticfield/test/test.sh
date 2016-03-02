@@ -3,7 +3,7 @@
 # A simple script to run all the tests in this directory and check
 # their results against the expected (previous) results
 #
-# $Id: test.sh 66241 2012-12-13 18:34:42Z gunter $
+# $Id: test.sh 66356 2012-12-18 09:02:32Z gcosmo $
 # $Name: geant4-09-02-ref-05 $
 #
 

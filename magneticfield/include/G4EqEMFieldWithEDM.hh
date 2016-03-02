@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4EqEMFieldWithEDM.hh 68963 2013-04-12 01:39:55Z gum $
+// $Id: G4EqEMFieldWithEDM.hh 69699 2013-05-13 08:50:30Z gcosmo $
 //
 //
 // class G4EqEMFieldWithEDM

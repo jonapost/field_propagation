@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4EquationOfMotion.hh 70971 2013-06-07 15:58:26Z japost $
+// $Id: G4EquationOfMotion.hh 71664 2013-06-20 08:36:05Z gcosmo $
 //
 //
 // class G4EquationOfMotion
