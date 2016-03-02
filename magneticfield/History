@@ -1,4 +1,4 @@
-$Id: History 91280 2015-06-30 08:14:48Z gcosmo $
+$Id: History 93229 2015-10-13 09:34:51Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,11 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+Oct 13, 2015 J.Apostolakis             - field-V10-01-13
+--------------------------
+- G4ChordFinder::FindNextChord: Added check against number of iterations, 
+  to identify potential issue of lack of convergence.
+- test: fixed testProElectricMagField.cc
 
 Jun 26, 2015 P.Gumplinger              - field-V10-01-12, 11
 -------------------------
