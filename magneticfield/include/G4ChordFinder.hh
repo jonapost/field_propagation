@@ -60,11 +60,14 @@ class G4ChordFinder
       
       virtual ~G4ChordFinder();
 
-      G4double    AdvanceChordLimited( G4FieldTrack& yCurrent,
+      G4double    AdvanceChordLimited(G4FieldTrack& yCurrent,
                                        G4double stepInitial,
                                        G4double epsStep_Relative,
                                        const G4ThreeVector latestSafetyOrigin,
-                                       G4double lasestSafetyRadius);
+                                       G4double lasestSafetyRadius,
+                                       Array2d& yvec,
+                                       Array2d& dydxvec
+                                       );
         // Uses ODE solver's driver to find the endpoint that satisfies 
         // the chord criterion: that d_chord < delta_chord
         // -> Returns Length of Step taken.
@@ -141,14 +144,15 @@ class G4ChordFinder
                         G4double& stepEstimate_Unconstrained ) ;  
       
       virtual G4double FindNextChord( const  G4FieldTrack& yStart,
-                              G4double     stepMax,
-                              G4FieldTrack& yEnd,
-                              G4double&    dyErr,      //  Error of endpoint 
-                              G4double     epsStep,
-                              G4double*  pNextStepForAccuracy,  // = 0,
-                              const G4ThreeVector latestSafetyOrigin,
-                              G4double       latestSafetyRadius 
-                                      );  
+                                      G4double     stepMax,
+                                      G4FieldTrack& yEnd,
+                                      G4double&    dyErr,      //  Error of endpoint
+                                      G4double     epsStep,
+                                      G4double*  pNextStepForAccuracy,  // = 0,
+                                      const G4ThreeVector latestSafetyOrigin,
+                                      G4double       latestSafetyRadius,
+                                      Array2d& yvec,
+                                      Array2d& dydxvec);
 
       void     PrintDchordTrial(G4int     noTrials, 
                                 G4double  stepTrial, 

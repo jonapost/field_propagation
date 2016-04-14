@@ -45,6 +45,9 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
+using Array1d = std::vector<G4double>;
+using Array2d = std::vector<Array1d>;
+
 class G4MagInt_Driver
 {
    public:  // with description
@@ -52,12 +55,19 @@ class G4MagInt_Driver
      G4bool  AccurateAdvance(G4FieldTrack&  y_current,
                              G4double hstep,
                              G4double eps,            // Requested y_err/hstep
-                             G4double hinitial=0.0);  // Suggested 1st interval
+                             G4double hinitial = 0.0);  // Suggested 1st interval
        // Above drivers for integrator (Runge-Kutta) with stepsize control. 
        // Integrates ODE starting values y_current
        // from current s (s=s0) to s=s0+h with accuracy eps. 
        // On output ystart is replaced by value at end of interval. 
        // The concept is similar to the odeint routine from NRC p.721-722.
+
+     G4bool  AccurateAdvance(G4FieldTrack&  y_current,
+                             G4double hstep,
+                             G4double eps,            // Requested y_err/hstep
+                             Array2d& yvec,
+                             Array2d& dydxvec,
+                             G4double hinitial = 0.0);
 
      G4bool  QuickAdvance(      G4FieldTrack& y_val,      // INOUT
                           const G4double     dydx[],  
