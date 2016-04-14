@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4ChordFinder.cc 93806 2015-11-02 11:21:01Z gcosmo $
 //
 //
 // 25.02.97 - John Apostolakis - Design and implementation 
@@ -169,21 +169,26 @@ G4ChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 // ......................................................................
 
 G4double 
-G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
+G4ChordFinder::AdvanceChordLimited(G4FieldTrack& yCurrent,
                                     G4double      stepMax,
                                     G4double      epsStep,
                                     const G4ThreeVector latestSafetyOrigin,
-                                    G4double       latestSafetyRadius )
+                                    G4double       latestSafetyRadius,
+                                    Array2d& yvec,
+                                    Array2d& dydxvec
+                                  )
 {
   G4double stepPossible;
   G4double dyErr;
   G4FieldTrack yEnd( yCurrent);
   G4double  startCurveLen= yCurrent.GetCurveLength();
   G4double nextStep;
+  Array2d yvectmp;
+  Array2d dydxvectmp;
   //            *************
-  stepPossible= FindNextChord(yCurrent, stepMax, yEnd, dyErr, epsStep,
-                              &nextStep, latestSafetyOrigin, latestSafetyRadius
-                             );
+  stepPossible= FindNextChord(yCurrent, stepMax, yEnd, dyErr,
+                              epsStep, &nextStep, latestSafetyOrigin,
+                              latestSafetyRadius,yvectmp,dydxvectmp);
   //            *************
 
   G4bool good_advance;
@@ -193,14 +198,31 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      // Accept this accuracy.
 
      yCurrent = yEnd;
-     good_advance = true; 
+     good_advance = true;
+
+     for (Array2d::size_type i = 0; i < yvectmp.size(); ++i){
+         yvec.push_back(yvectmp[i]);
+         dydxvec.push_back(dydxvectmp[i]);
+     }
   }
   else
   {  
      // Advance more accurately to "end of chord"
      //                           ***************
-     good_advance = fIntgrDriver->AccurateAdvance(yCurrent, stepPossible,
-                                                  epsStep, nextStep);
+      /*
+     good_advance = fIntgrDriver->AccurateAdvance(yCurrent,
+                                                  stepPossible,
+                                                  epsStep,
+                                                  nextStep
+                                                  );*/
+     //allows caching
+     good_advance = fIntgrDriver->AccurateAdvance(yCurrent,
+                                                        stepPossible,
+                                                        epsStep,
+                                                        yvec,
+                                                        dydxvec,
+                                                        nextStep
+                                                       );
      if ( ! good_advance )
      { 
        // In this case the driver could not do the full distance
@@ -221,14 +243,16 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
                                      G4double    epsStep,
                                      G4double*  pStepForAccuracy, 
                               const  G4ThreeVector, //  latestSafetyOrigin,
-                                     G4double       //  latestSafetyRadius 
-                                        )
+                                     G4double,       //  latestSafetyRadius
+                                     Array2d& yvec,
+                                     Array2d& dydxvec)
 {
   // Returns Length of Step taken
 
-  G4FieldTrack yCurrent=  yStart;  
-  G4double    stepTrial, stepForAccuracy;
-  G4double    dydx[G4FieldTrack::ncompSVEC]; 
+  G4FieldTrack yCurrent = yStart;
+  G4double stepTrial, stepForAccuracy;
+  G4double dydx[G4FieldTrack::ncompSVEC];
+  G4double y[G4FieldTrack::ncompSVEC];
 
   //  1.)  Try to "leap" to end of interval
   //  2.)  Evaluate if resulting chord gives d_chord that is good enough.
@@ -237,22 +261,30 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
   G4bool    validEndPoint= false;
   G4double  dChordStep, lastStepLength; //  stepOfLastGoodChord;
 
-  fIntgrDriver-> GetDerivatives( yCurrent, dydx );
+  fIntgrDriver-> GetDerivatives(yCurrent, dydx);
+  yCurrent.DumpToArray(y);
 
-  G4int     noTrials=0;
+  yvec.push_back(Array1d(std::begin(y),std::end(y)));
+  dydxvec.push_back(Array1d(std::begin(dydx),std::end(dydx)));
+
+
+  unsigned int        noTrials=0;
+  const unsigned int  maxTrials= 300; // Avoid endless loop for bad convergence 
+
   const G4double safetyFactor= fFirstFraction; //  0.975 or 0.99 ? was 0.999
 
   stepTrial = std::min( stepMax, safetyFactor*fLastStepEstimate_Unconstrained );
 
   G4double newStepEst_Uncons= 0.0; 
+  G4double stepForChord;
   do
   { 
-     G4double stepForChord;  
      yCurrent = yStart;    // Always start from initial point
     
      //            ************
      fIntgrDriver->QuickAdvance( yCurrent, dydx, stepTrial, 
                                  dChordStep, dyErrPos);
+
      //            ************
      
      //  We check whether the criterion is met here.
@@ -281,7 +313,21 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
      }
      noTrials++; 
   }
-  while( ! validEndPoint );   // End of do-while  RKD 
+  while( (! validEndPoint) && (noTrials < maxTrials) );   // End of do-while  RKD 
+
+  if( noTrials >= maxTrials )
+  {
+      std::ostringstream message;
+      message << "Exceeded maximum number of trials= " << maxTrials << G4endl
+              << "Current sagita dist= " << dChordStep << G4endl
+              << "Step sizes (actual and proposed): " << G4endl
+              << "Last trial =         " << lastStepLength  << G4endl
+              << "Next trial =         " << stepTrial  << G4endl
+              << "Proposed for chord = " << stepForChord  << G4endl              
+              ;
+      G4Exception("G4ChordFinder::FindNextChord()", "GeomField0003",
+                  JustWarning, message);
+  }
 
   if( newStepEst_Uncons > 0.0  )
   {
