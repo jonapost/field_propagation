@@ -175,25 +175,6 @@ G4ChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 
 // ......................................................................
 
-template< class Fac1 = double >
-struct rel_error
-{
-    const Fac1 m_eps_abs , m_eps_rel , m_a_x , m_a_dxdt;
-
-    rel_error( Fac1 eps_abs , Fac1 eps_rel , Fac1 a_x , Fac1 a_dxdt )
-    : m_eps_abs( eps_abs ) , m_eps_rel( eps_rel ) , m_a_x( a_x ) , m_a_dxdt( a_dxdt ) { }
-
-
-    template< class T1 , class T2 , class T3 >
-    void operator()( T3 &t3 , const T1 &t1 , const T2 &t2 ) const
-    {
-        using std::abs;
-        set_unit_value( t3 , abs( get_unit_value( t3 ) ) / ( m_eps_abs + m_eps_rel * ( m_a_x * abs( get_unit_value( t1 ) ) + m_a_dxdt * abs( get_unit_value( t2 ) ) ) ) );
-    }
-
-    typedef void result_type;
-};
-
 G4double  G4ChordFinder::driver(G4FieldTrack& yCurrent,
                                 G4double stepInitial,
                                 G4double epsStep_Relative){
