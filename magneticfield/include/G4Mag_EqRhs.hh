@@ -40,9 +40,9 @@
 #ifndef G4_MAG_EQRHS_DEF
 #define G4_MAG_EQRHS_DEF
 
+#include "G4Types.hh"
 #include "G4ChargeState.hh"
 #include "G4EquationOfMotion.hh"
-#include "G4Types.hh"
 
 class G4MagneticField;
 
@@ -63,8 +63,6 @@ class G4Mag_EqRhs : public G4EquationOfMotion
        // The other two functions use Rhs_givenB.
 
      inline G4double FCof() const;
-     inline G4double FMass() const;
-
 
      virtual void SetChargeMomentumMass( G4ChargeState particleCharge,
                                          G4double MomentumXc,
@@ -73,7 +71,6 @@ class G4Mag_EqRhs : public G4EquationOfMotion
   private:
 
      G4double fCof_val;
-     G4double fMass;
 
      static const G4double fUnitConstant;     // Set in G4Mag_EqRhs.cc 
                                               // to 0.299792458
@@ -87,11 +84,6 @@ inline
 G4double G4Mag_EqRhs::FCof() const
 {
   return fCof_val;
-}
-inline
-G4double G4Mag_EqRhs::FMass() const
-{
-  return fMass;
 }
 
 #endif /* G4_MAG_EQRHS_DEF */
