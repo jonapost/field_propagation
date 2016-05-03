@@ -60,6 +60,10 @@ class G4ChordFinder
       
       virtual ~G4ChordFinder();
 
+      G4double  driver(G4FieldTrack& yCurrent,
+                       G4double stepInitial,
+                       G4double epsStep_Relative);
+
       G4double    AdvanceChordLimited( G4FieldTrack& yCurrent,
                                        G4double stepInitial,
                                        G4double epsStep_Relative,

@@ -38,7 +38,14 @@
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4ClassicalRK4.hh"
 
+#include <boost/array.hpp>
+#define private public
+#include <boost/numeric/odeint.hpp>
+#define private private
 
+
+typedef boost::array< double , G4FieldTrack::ncompSVEC > state_type;
+using namespace boost::numeric::odeint;
 // ..........................................................................
 
 G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
@@ -167,6 +174,78 @@ G4ChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 
 
 // ......................................................................
+
+template< class Fac1 = double >
+struct rel_error
+{
+    const Fac1 m_eps_abs , m_eps_rel , m_a_x , m_a_dxdt;
+
+    rel_error( Fac1 eps_abs , Fac1 eps_rel , Fac1 a_x , Fac1 a_dxdt )
+    : m_eps_abs( eps_abs ) , m_eps_rel( eps_rel ) , m_a_x( a_x ) , m_a_dxdt( a_dxdt ) { }
+
+
+    template< class T1 , class T2 , class T3 >
+    void operator()( T3 &t3 , const T1 &t1 , const T2 &t2 ) const
+    {
+        using std::abs;
+        set_unit_value( t3 , abs( get_unit_value( t3 ) ) / ( m_eps_abs + m_eps_rel * ( m_a_x * abs( get_unit_value( t1 ) ) + m_a_dxdt * abs( get_unit_value( t2 ) ) ) ) );
+    }
+
+    typedef void result_type;
+};
+
+G4double  G4ChordFinder::driver(G4FieldTrack& yCurrent,
+                                G4double stepInitial,
+                                G4double epsStep_Relative){
+
+    state_type dydx;
+    fIntgrDriver->GetDerivatives(yCurrent, dydx.data());
+
+    state_type yin;
+    yCurrent.DumpToArray(yin.data());
+
+    static G4ThreadLocal bulirsch_stoer<state_type> stepper(0,epsStep_Relative*stepInitial);
+    stepper.m_error_checker.m_eps_rel = epsStep_Relative*stepInitial;
+    /*
+        I am not sure about error checking in boost.
+        Maybe I should create my class Operations to chenge the default one.
+    */
+
+    state_type yout = yin;
+    G4double h = stepInitial;
+    G4double curveLength = yCurrent.GetCurveLength();
+    G4double clbegin = curveLength;
+
+    const auto system = [this](const state_type & _y, state_type & _dydx, const double /*t*/){
+        fIntgrDriver->GetStepper()->RightHandSide(_y.data(),_dydx.data());
+        //fIntgrDriver->GetStepper()->ComputeRightHandSide(_y.data(),_dydx.data()); the same
+        //fEquation->RightHandSide(_y.data(),_dydx.data()); //does not calculate _dydx[3],_dydx[4],_dydx[5]
+    };
+    G4int count = 0;
+    G4int nok = 0;
+    G4int nbad = 0;
+    //integrate_adaptive(stepper,system,yout,curveLength,curveLength+stepInitial,stepInitial);
+    const G4double hmin = 1e-8;
+    G4double hdid, hrest;
+
+    do{
+        //G4cout<<"eps "<<epsStep_Relative<<" h "<<h<<" nok "<<nok<<" nbad "<<nbad<<" curveLength "<<curveLength<<G4endl;
+        auto res = stepper.try_step(system, yout, dydx, curveLength, h);
+        hdid = curveLength - clbegin;
+        hrest = stepInitial - hdid;
+        h = std::min(hrest, h);
+        ++count;
+        if (res == success) ++nok;
+        else  ++nbad;
+    }while(hrest > hmin);
+
+    yCurrent.SetCurveLength(curveLength);
+    yCurrent.LoadFromArray(yout.data(),G4FieldTrack::ncompSVEC);
+
+    return hdid;
+}
+
+
 
 G4double 
 G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
