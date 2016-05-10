@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4CachedMagneticField.cc 68055 2013-03-13 14:43:28Z gcosmo $
+// $Id: G4CachedMagneticField.cc 96679 2016-04-29 16:21:45Z gcosmo $
 //
 // --------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ G4CachedMagneticField::G4CachedMagneticField(G4MagneticField *pMagField,
     fLastValue(DBL_MAX,DBL_MAX,DBL_MAX),
     fCountCalls(0),  fCountEvaluations(0)
 {
-  fpMagneticField=     pMagField;
+  fpMagneticField= pMagField;
   fDistanceConst= distance;
 
   // G4cout << " Cached-B-Field constructor> Distance = " << distance << G4endl;
@@ -46,13 +46,14 @@ G4CachedMagneticField::G4CachedMagneticField(G4MagneticField *pMagField,
 
 G4CachedMagneticField* G4CachedMagneticField::Clone() const
 {
-    //Cannot use copy constructor: I need to clone the associated magnetif field
-    G4MagneticField* aF = static_cast<G4MagneticField*>(this->fpMagneticField->Clone());
-    G4CachedMagneticField* cloned = new G4CachedMagneticField( aF ,
-                                                              this->fDistanceConst );
-    cloned->fLastLocation = this->fLastLocation;
-    cloned->fLastValue = this->fLastValue;
-    return cloned;
+  // Cannot use copy constructor: I need to clone the associated magnetic field
+  // G4MagneticField* aF = static_cast<G4MagneticField*>(this->fpMagneticField->Clone());   ???
+  // G4CachedMagneticField* cloned = new G4CachedMagneticField( aF ,                        ???
+  //                                                            this->fDistanceConst );     ???
+  G4CachedMagneticField* cloned = new G4CachedMagneticField(fpMagneticField, fDistanceConst);
+  cloned->fLastLocation = fLastLocation;
+  cloned->fLastValue = fLastValue;
+  return cloned;
 }
 
 G4CachedMagneticField::~G4CachedMagneticField()
@@ -68,9 +69,9 @@ G4CachedMagneticField::ReportStatistics()
 }
 
 G4CachedMagneticField::G4CachedMagneticField(const G4CachedMagneticField &rightCMF)
-  : G4MagneticField()
+  : G4MagneticField(rightCMF)
 {
-  fpMagneticField=      rightCMF.fpMagneticField;
+  fpMagneticField= rightCMF.fpMagneticField;  // NOTE: sharing pointer here!
   fDistanceConst = rightCMF.fDistanceConst;
   fLastLocation  = rightCMF.fLastLocation;
   fLastValue     = rightCMF.fLastValue;
@@ -79,7 +80,14 @@ G4CachedMagneticField::G4CachedMagneticField(const G4CachedMagneticField &rightC
 
 G4CachedMagneticField& G4CachedMagneticField::operator = (const G4CachedMagneticField &p)
 {
-  if (&p == this) return *this; *this = p; return *this;
+  if (&p == this) return *this;
+  G4MagneticField::operator=(p);
+  fpMagneticField= p.fpMagneticField;  // NOTE: sharing pointer here!
+  fDistanceConst = p.fDistanceConst;
+  fLastLocation  = p.fLastLocation;
+  fLastValue     = p.fLastValue;
+  this->ClearCounts(); 
+  return *this;
 }
 
 void

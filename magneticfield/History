@@ -1,4 +1,4 @@
-$Id: History 95819 2016-02-26 00:05:24Z gum $
+$Id: History 96679 2016-04-29 16:21:45Z gcosmo $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,11 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+Apr 29, 2016 G.Cosmo                  - field-V10-02-02
+--------------------
+- Corrected implementation of operator=() and copy-ctor for G4Field,
+  G4ElectroMagneticField, G4ElectricField and G4CachedMagneticField.
 
 Feb 25, 2016 P.Gumplinger             - field-V10-02-01
 -------------------------

@@ -29,6 +29,7 @@ include_directories(${CMAKE_SOURCE_DIR}/source/global/management/include)
 include(Geant4MacroDefineModule)
 GEANT4_DEFINE_MODULE(NAME G4magneticfield
     HEADERS
+        BogackiShampine.hh
         G4CachedMagneticField.hh
         G4CashKarpRKF45.hh
         G4ChargeState.hh
@@ -89,6 +90,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformGravityField.hh
         G4UniformMagField.hh
     SOURCES
+        BogackiShampine.cc
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
         G4ChargeState.cc
