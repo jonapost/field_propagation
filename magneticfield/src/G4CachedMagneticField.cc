@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4CachedMagneticField.cc 96679 2016-04-29 16:21:45Z gcosmo $
+// $Id: G4CachedMagneticField.cc 96752 2016-05-04 09:40:23Z gcosmo $
 //
 // --------------------------------------------------------------------
 
@@ -44,13 +44,12 @@ G4CachedMagneticField::G4CachedMagneticField(G4MagneticField *pMagField,
   this->ClearCounts(); 
 }
 
-G4CachedMagneticField* G4CachedMagneticField::Clone() const
+G4Field* G4CachedMagneticField::Clone() const
 {
   // Cannot use copy constructor: I need to clone the associated magnetic field
-  // G4MagneticField* aF = static_cast<G4MagneticField*>(this->fpMagneticField->Clone());   ???
-  // G4CachedMagneticField* cloned = new G4CachedMagneticField( aF ,                        ???
-  //                                                            this->fDistanceConst );     ???
-  G4CachedMagneticField* cloned = new G4CachedMagneticField(fpMagneticField, fDistanceConst);
+  G4MagneticField* aF = static_cast<G4MagneticField*>(fpMagneticField->Clone());
+  G4CachedMagneticField* cloned = new G4CachedMagneticField(aF, fDistanceConst);
+
   cloned->fLastLocation = fLastLocation;
   cloned->fLastValue = fLastValue;
   return cloned;

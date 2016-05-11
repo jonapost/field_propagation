@@ -1,4 +1,4 @@
-$Id: History 96679 2016-04-29 16:21:45Z gcosmo $
+$Id: History 96752 2016-05-04 09:40:23Z gcosmo $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,11 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+May 4, 2016 G.Cosmo                   - field-V10-02-03
+-------------------
+- Fixed Clone() signatures in derived Field classes.
+  More corrections on implementations of operator=() and copy-ctors.
 
 Apr 29, 2016 G.Cosmo                  - field-V10-02-02
 --------------------

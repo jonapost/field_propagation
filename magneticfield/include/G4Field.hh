@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4Field.hh 96679 2016-04-29 16:21:45Z gcosmo $
+// $Id: G4Field.hh 96752 2016-05-04 09:40:23Z gcosmo $
 //
 //
 // class G4Field
@@ -99,9 +99,11 @@ class G4Field
        //  Does this field include gravity?
       inline void SetGravityActive( G4bool OnOffFlag );
     
-    virtual G4Field* Clone() const;
-      //Implements cloning, needed by G4 MT
+      virtual G4Field* Clone() const;
+       // Implements cloning, needed by G4 MT
+
   private:
+
       G4bool  fGravityActive;
 };
 
