@@ -59,8 +59,8 @@ public:
             G4MagInt_Driver testDr(hmin,&testSt);
             G4MagInt_Driver refDr(hmin,&refSt);
             for (G4int i = 0; i < NSteps; ++i){
-                testDr.AccurateAdvance(*testTrack,stepLen,precision/2,stepLen);
-                refDr.AccurateAdvance(*refTrack,stepLen,precision/2,stepLen);
+                testDr.AccurateAdvance(*testTrack,stepLen,precision,stepLen);
+                refDr.AccurateAdvance(*refTrack,stepLen,precision,stepLen);
 
                 testTrack->DumpToArray(yOut);
                 refTrack->DumpToArray(yOutRef);
