@@ -54,7 +54,21 @@ public:
         if (verbosity == Verbose){
             G4cout<<"test position                ref position \n ";
         }
-        if (!useDriver){
+
+        if (useDriver){
+            G4MagInt_Driver testDr(hmin,&testSt);
+            G4MagInt_Driver refDr(hmin,&refSt);
+            for (G4int i = 0; i < NSteps; ++i){
+                testDr.AccurateAdvance(*testTrack,stepLen,precision/2,stepLen);
+                refDr.AccurateAdvance(*refTrack,stepLen,precision/2,stepLen);
+
+                testTrack->DumpToArray(yOut);
+                refTrack->DumpToArray(yOutRef);
+
+                CrossCheck(yOut,yOutRef,verbosity);
+            }
+        }
+        else{
             for (G4int i = 0; i < NSteps; ++i){
                 testTrack->DumpToArray(yIn);
                 refTrack->DumpToArray(yInRef);
@@ -71,19 +85,7 @@ public:
                 CrossCheck(yOut,yOutRef,verbosity);
             }
         }
-        if (useDriver){
-            G4MagInt_Driver testDr(hmin,&testSt);
-            G4MagInt_Driver refDr(hmin,&refSt);
-            for (G4int i = 0; i < NSteps; ++i){
-                testDr.AccurateAdvance(*testTrack,stepLen,precision/2,stepLen);
-                refDr.AccurateAdvance(*refTrack,stepLen,precision/2,stepLen);
 
-                testTrack->DumpToArray(yOut);
-                refTrack->DumpToArray(yOutRef);
-
-                CrossCheck(yOut,yOutRef,verbosity);
-            }
-        }
         if (verbosity == Silent){
             G4cout<<"diffSteps# "<<diffSteps<<" maxDiff "<<maxDiff<<G4endl;
         }
