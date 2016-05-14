@@ -1,9 +1,26 @@
 #include <Comparator.hh>
 #include <cmath>
 #include <iomanip>
+#include <fstream>
 using namespace CLHEP;
 
 #define save2File
+
+Comparator::Comparator(G4DynamicParticle* pDynParticle, G4MagneticField* pfield):
+    testTrack(nullptr),
+    refTrack(nullptr),
+    field(pfield),
+    equation(nullptr),
+    dynParticle(pDynParticle),
+    pos(0,0,0),
+    hmin(1e-6),
+    precision(1e-4),
+    diffSteps(0),
+    maxDiff(0)
+{
+    initTracks();
+    initEquation();
+}
 
 Comparator::~Comparator(){
     if (testTrack != nullptr) delete testTrack;
