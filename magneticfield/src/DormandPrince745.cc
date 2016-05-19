@@ -59,13 +59,16 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
     ak5 = new G4double[numberOfVariables];
     ak6 = new G4double[numberOfVariables];
     ak7 = new G4double[numberOfVariables];
+    // Also always allocate arrays for interpolation stages
+    ak8 = new G4double[numberOfVariables];
+    ak9 = new G4double[numberOfVariables];
     
     yTemp = new G4double[numberOfVariables] ;
     yIn =   new G4double[numberOfVariables] ;
 
     fLastInitialVector = new G4double[numberOfVariables] ;
     fLastFinalVector = new G4double[numberOfVariables] ;
-    fLastDyDx = new G4double[numberOfVariables];
+    fInitialDyDx = new G4double[numberOfVariables];
     
     fMidVector = new G4double[numberOfVariables];
     fMidError =  new G4double[numberOfVariables];
@@ -87,19 +90,16 @@ DormandPrince745::~DormandPrince745()
     delete[] ak5;
     delete[] ak6;
     delete[] ak7;
-    
-    if(ak8)
-        delete[] ak8;
-    
-    if(ak9)
-        delete[] ak9;
+    // Used only for interpolation
+    delete[] ak8;
+    delete[] ak9;
     
     delete[] yTemp;
     delete[] yIn;
     
     delete[] fLastInitialVector;
     delete[] fLastFinalVector;
-    delete[] fLastDyDx;
+    delete[] fInitialDyDx;
     delete[] fMidVector;
     delete[] fMidError;
     
@@ -241,7 +241,7 @@ void DormandPrince745::Stepper(const G4double yInput[],
         // Store Input and Final values, for possible use in calculating chord
         fLastInitialVector[i] = yIn[i] ;
         fLastFinalVector[i]   = yOut[i];
-        fLastDyDx[i]          = DyDx[i];        
+        fInitialDyDx[i]          = DyDx[i];        
     }
     
     fLastStepLength = Step;
@@ -257,21 +257,22 @@ void DormandPrince745::Stepper(const G4double yInput[],
 //The original DistChord() function for the class
 G4double  DormandPrince745::DistChord3() const
 {
+    // Do half a step using StepNoErr    
+    fAuxStepper->Stepper( fLastInitialVector, fInitialDyDx, 0.5 * fLastStepLength,
+                          fAuxStepper->fMidVector,  fAuxStepper->fMidError) ;
+    return DistLine( fLastInitialVector, fAuxStepper->fMidVector, fLastFinalVector);
+}
+
+// Calculate DistChord given start, mid and end-point of step
+G4double DormandPrince745::DistLine( G4double yStart[], G4double yMid[], G4double yEnd[] ) const
+{
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
     
-    // Store last initial and final points (they will be overwritten in self-Stepper call!)
-    initialPoint = G4ThreeVector( fLastInitialVector[0],
-                                 fLastInitialVector[1], fLastInitialVector[2]);
-    finalPoint   = G4ThreeVector( fLastFinalVector[0],
-                                 fLastFinalVector[1],  fLastFinalVector[2]);
-    
-    // Do half a step using StepNoErr
-    
-    fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength, fMidVector,   fMidError) ;
-    
-    midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
-    
+    initialPoint = G4ThreeVector( yStart[0], yStart[1], yStart[2]);
+    finalPoint   = G4ThreeVector( yEnd[0], yEnd[1],  yEnd[2]);
+    midPoint = G4ThreeVector( yMid[0], yMid[1], yMid[2]);
+
     // Use stored values of Initial and Endpoint + new Midpoint to evaluate
     //  distance of Chord
     if (initialPoint != finalPoint)
@@ -286,59 +287,26 @@ G4double  DormandPrince745::DistChord3() const
     return distChord;
 }
 
-//The newly made DistChord function using interpolation
-G4double DormandPrince745::DistChord2() const {
-    G4double distLine, distChord;
-    G4ThreeVector initialPoint, finalPoint, midPoint;
-    
-    // Store last initial and final points (they will be overwritten in self-Stepper call!)
-    initialPoint = G4ThreeVector( fLastInitialVector[0],
-                                 fLastInitialVector[1], fLastInitialVector[2]);
-    finalPoint   = G4ThreeVector( fLastFinalVector[0],
-                                 fLastFinalVector[1],  fLastFinalVector[2]);
-    
-    //Getting copying the values of stages from the original stepper
-    // into the Aux Stepper
+// (New) DistChord function using interpolation
+G4double DormandPrince745::DistChord2() const
+{
+    // Using auxiliary stepper because method is 'const'
+   
+    // Copy values of stages, yInitial, yInitialDyDx & Step length into the Aux Stepper
     *fAuxStepper = *this;
 
     //Preparing for the interpolation
-    fAuxStepper->SetupInterpolate(fLastInitialVector, fLastDyDx, fLastStepLength);
-    //Interpolating to half step
-    fAuxStepper->Interpolate(fLastInitialVector, fLastDyDx, fLastStepLength, fMidVector, 0.5);
-    
-//    fAuxStepper->Stepper( fLastInitialVector, fLastDyDx, 0.5 * fLastStepLength, fMidVector,   fMidError) ;
-    
-    midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
-    
-    // Use stored values of Initial and Endpoint + new Midpoint to evaluate
-    //  distance of Chord
-    
-    
-    if (initialPoint != finalPoint)
-    {
-        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
-        distChord = distLine;
-    }
-    else
-    {
-        distChord = (midPoint-initialPoint).mag();
-    }
-    return distChord;
+    fAuxStepper->SetupInterpolation(); // (fLastInitialVector, fInitialDyDx, fLastStepLength);
+    //Interpolate to half step
+    fAuxStepper->Interpolate( /*fLastInitialVector, fInitialDyDx, fLastStepLength,*/ 0.5, fAuxStepper->fMidVector);
 
+    return DistLine( fLastInitialVector, fAuxStepper->fMidVector, fLastFinalVector);
 }
 
-G4double DormandPrince745::DistChord() const{
-        G4double distLine, distChord;
-    G4ThreeVector initialPoint, finalPoint, midPoint;
-    
-    // Store last initial and final points (they will be overwritten in self-Stepper call!)
-    initialPoint = G4ThreeVector( fLastInitialVector[0],
-                                 fLastInitialVector[1], fLastInitialVector[2]);
-    finalPoint   = G4ThreeVector( fLastFinalVector[0],
-                                 fLastFinalVector[1],  fLastFinalVector[2]);
-    
+G4double DormandPrince745::DistChord() const
+{
     //Coefficients for halfway interpolation
-    G4double
+    const G4double
     hf1 = 5783653.0/57600000.0 ,
     hf2 = 0. ,
     hf3 = 466123.0/1192500.0 ,
@@ -349,26 +317,14 @@ G4double DormandPrince745::DistChord() const{
 
     for(int i=0; i<3; i++){
                 fMidVector[i] = fLastInitialVector[i] + fLastStepLength*(
-                    hf1*fLastDyDx[i] + hf2*ak2[i] + hf3*ak3[i] + hf4*ak4[i] +
+                    hf1*fInitialDyDx[i] + hf2*ak2[i] + hf3*ak3[i] + hf4*ak4[i] +
                     hf5*ak5[i] + hf6*ak6[i] + hf7*ak7[i] );
     }
      
-    midPoint = G4ThreeVector( fMidVector[0], fMidVector[1], fMidVector[2]);
-    
     // Use stored values of Initial and Endpoint + new Midpoint to evaluate
     //  distance of Chord
-    
-    
-    if (initialPoint != finalPoint)
-    {
-        distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
-        distChord = distLine;
-    }
-    else
-    {
-        distChord = (midPoint-initialPoint).mag();
-    }
-    return distChord;
+
+    return DistLine( fLastInitialVector, fMidVector, fLastFinalVector);
 }
 
 // The lower (4th) order interpolant given by Dormand and prince
@@ -379,34 +335,31 @@ G4double DormandPrince745::DistChord() const{
 //	pp. 1007–1017, 1986.
 //---------------------------
 
-void DormandPrince745::SetupInterpolate_low(const G4double *yInput, const G4double *dydx, const G4double Step){
+void DormandPrince745::SetupInterpolation_low() // const G4double *yInput, const G4double *dydx, const G4double Step)
+{
     //Nothing to be done
 }
 
 
-void DormandPrince745::Interpolate_low( const G4double yInput[],
-                                                const G4double dydx[],
-                                                const G4double Step,
+void DormandPrince745::Interpolate_low( /* const G4double yInput[],
+                                                const G4double dydx[], 
+                                                const G4double Step, */
                                                 G4double yOut[],
-                                               G4double tau ){
-    
-    G4double
-    bf1, bf2, bf3, bf4, bf5, bf6, bf7;
+                                               G4double tau )
+{
+    G4double bf1, bf2, bf3, bf4, bf5, bf6, bf7;
     // Coefficients for all the seven stages.
-
+    G4double Step = fLastStepLength;
+    const G4double *dydx= fInitialDyDx;
+    
     const G4int numberOfVariables= this->GetNumberOfVariables();
+
+    // for(int i=0;i<numberOfVariables;i++) { yIn[i]=yInput[i]; }
     
-    G4double tau0 = tau;
-    
-    for(int i=0;i<numberOfVariables;i++)
-    {
-        yIn[i]=yInput[i];
-    }
-    
-    G4double
-    tau_2 = tau0*tau0 ,
-    tau_3 = tau0*tau_2,
-    tau_4 = tau_2*tau_2;
+    const G4double
+      tau_2 = tau   * tau,
+      tau_3 = tau   * tau_2,
+      tau_4 = tau_2 * tau_2;
     
     bf1 = (157015080.0*tau_4 - 13107642775.0*tau_3+ 34969693132.0*tau_2- 32272833064.0*tau
            + 11282082432.0)/11282082432.0,
@@ -434,12 +387,12 @@ void DormandPrince745::Interpolate_low( const G4double yInput[],
 //---------------------
 
 // Calculating the extra stages for the interpolant :
-void DormandPrince745::SetupInterpolate_high(const G4double yInput[],
-                                   const G4double dydx[],
-                                   const G4double Step ){
+void DormandPrince745::SetupInterpolation_high( /* const G4double yInput[],
+                                               const G4double dydx[],
+                                               const G4double Step */  ){
     
     //Coefficients for the additional stages :
-    G4double
+    const G4double
     b81 =  6245.0/62208.0 ,
     b82 =  0.0 ,
     b83 =  8875.0/103032.0 ,
@@ -458,18 +411,13 @@ void DormandPrince745::SetupInterpolate_high(const G4double yInput[],
     b98 = -805.0/4104.0 ;
     
     const G4int numberOfVariables= this->GetNumberOfVariables();
+    const G4double *dydx = fInitialDyDx;
+    const G4double  Step = fLastStepLength;
     
     //  Saving yInput because yInput and yOut can be aliases for same array
-    for(int i=0;i<numberOfVariables;i++)
-    {
-        yIn[i]=yInput[i];
-    }
-    
-    yTemp[7]  = yIn[7];
-    
-    ak8 = new G4double[numberOfVariables];
-    ak9 = new G4double[numberOfVariables];
-    
+    // for(int i=0;i<numberOfVariables;i++) { yIn[i]=yInput[i]; }
+    // yTemp[7]  = yIn[7];
+
     //Evaluate the extra stages :
     for(int i=0;i<numberOfVariables;i++)
     {
@@ -490,14 +438,19 @@ void DormandPrince745::SetupInterpolate_high(const G4double yInput[],
 
 
 // Calculating the interpolated result yOut with the coefficients
-void DormandPrince745::Interpolate_high( const G4double yInput[],
-                                    const G4double dydx[],
-                 					const G4double Step,
-                 						  G4double yOut[],
-						                  G4double tau ){
+void DormandPrince745::Interpolate_high( /* const G4double yInput[],
+                                         const G4double dydx[],
+                                         const G4double Step, */
+                                               G4double yOut[],
+                                               G4double tau ){
     //Define the coefficients for the polynomials
     G4double bi[10][5], b[10];
-    G4int numberOfVariables = this->GetNumberOfVariables();
+    const G4int numberOfVariables = this->GetNumberOfVariables();
+    const G4double *dydx = fInitialDyDx;
+    // const G4double fullStep = fLastStepLength;
+
+    // If given requestedStep in argument:
+    // G4double tau = requestedStep / fLastStepLength;
     
     //  COEFFICIENTS OF   bi[1]
     bi[1][0] =  1.0 ,
@@ -571,11 +524,23 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
     bi[9][4] = -648.0/55.0 ;
     //  --------------------------------------------------------
     
-    for(G4int i = 0; i< numberOfVariables; i++)
-        yIn[i] = yInput[i];
+    // for(G4int i = 0; i< numberOfVariables; i++) { yIn[i] = yInput[i]; }
     
-    G4double tau0 = tau;
     //    Calculating the polynomials :
+#if 1    
+    for(int iStage=1; iStage<=9; iStage++){
+        b[iStage] = 0;
+    }
+
+    for(int j=0; j<=4; j++){
+       G4double tauPower = 1.0;       
+       for(int iStage=1; iStage<=9; iStage++){
+            b[iStage] += bi[iStage][j]*tauPower;
+       }
+       tauPower *= tau;       
+    }
+#else    
+    G4double tau0 = tau;
     
     for(int i=1; i<=9; i++){	//Here i is NOT the coordinate no. , it's stage no.
         b[i] = 0;
@@ -584,12 +549,14 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
             b[i] += bi[i][j]*tau;
             tau*=tau0;
         }
-    }
+    }    
+#endif
     
+    G4double stepLen = fLastStepLength * tau;
     for(int i=0; i<numberOfVariables; i++){		//Here i IS the cooridnate no.
-        yOut[i] = yIn[i] + Step*tau0*(b[1]*dydx[i] + b[2]*ak2[i] + b[3]*ak3[i] +
-                                      b[4]*ak4[i] + b[5]*ak5[i] + b[6]*ak6[i] +
-                                      b[7]*ak7[i] + b[8]*ak8[i] + b[9]*ak9[i] );
+        yOut[i] = yIn[i] + stepLen *(b[1]*dydx[i] + b[2]*ak2[i] + b[3]*ak3[i] +
+                                     b[4]*ak4[i] + b[5]*ak5[i] + b[6]*ak6[i] +
+                                     b[7]*ak7[i] + b[8]*ak8[i] + b[9]*ak9[i] );
     }
 
 }
@@ -599,39 +566,28 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
 //}
 
 // Overloaded = operator
-DormandPrince745& DormandPrince745::operator=(const DormandPrince745& DP)
+DormandPrince745& DormandPrince745::operator=(const DormandPrince745& right)
 {
-//    this->DormandPrince745(DP.GetEquationOfMotion(),DP.GetNumberOfVariables(), false);
+//    this->DormandPrince745(right.GetEquationOfMotion(),right.GetNumberOfVariables(), false);
 
-    int noVars = DP.GetNumberOfVariables();
-    for(int i =0; i< noVars; i++){
-        
-        this->ak2[i] = DP.ak2[i];
-        this->ak3[i] = DP.ak3[i];
-        this->ak4[i] = DP.ak4[i];
-        this->ak5[i] = DP.ak5[i];
-        this->ak6[i] = DP.ak6[i];
-        this->ak7[i] = DP.ak7[i];
+    int noVars = right.GetNumberOfVariables();
+    for(int i =0; i< noVars; i++)
+    {
+        this->ak2[i] = right.ak2[i];
+        this->ak3[i] = right.ak3[i];
+        this->ak4[i] = right.ak4[i];
+        this->ak5[i] = right.ak5[i];
+        this->ak6[i] = right.ak6[i];
+        this->ak7[i] = right.ak7[i];
+        this->ak8[i] = right.ak8[i];
+        this->ak9[i] = right.ak9[i];     
 
-//        if(DP.ak8)
-//        {
-//            if(!this->ak8)
-//                this->ak8 = new G4double[noVars];
-//            this->ak8[i] = DP.ak8[i];
-//        }
-//        if(DP.ak9)
-//        {
-//            if(!this->ak9)
-//                this->ak9 = new G4double[noVars];
-//            this->ak9[i] = DP.ak9[i];
-//        }
-        this->fLastDyDx[i] = DP.fLastDyDx[i];
-        this->fLastInitialVector[i] = DP.fLastInitialVector[i];
-        this->fMidVector[i] = DP.fMidVector[i];
-        this->fMidError[i] = DP.fMidError[i];
+        this->fInitialDyDx[i] = right.fInitialDyDx[i];
+        this->fLastInitialVector[i] = right.fLastInitialVector[i];
+        this->fMidVector[i] = right.fMidVector[i];
+        this->fMidError[i] = right.fMidError[i];
     }
-    
-    this->fLastStepLength = DP.fLastStepLength;
-    
+    this->fLastStepLength = right.fLastStepLength;
+
     return *this;
 }

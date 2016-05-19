@@ -41,46 +41,56 @@ class DormandPrince745 : public G4MagIntegratorStepper
                         G4double yerr[] ) ;
 
     //For Preparing the Interpolant and calculating the extra stages
-    void SetupInterpolate_low( const G4double yInput[],
-                              const G4double dydx[],
-                              const G4double Step );
+    void SetupInterpolation_low( /* const G4double yInput[],
+                                    const G4double dydx[],
+                                    const G4double Step */ );
     
     //For calculating the output at the tau fraction of Step
-    void Interpolate_low( const G4double yInput[],
-                         const G4double dydx[],
-                         const G4double Step,
-                         G4double yOut[],
-                         G4double tau );
-    
-    inline void SetupInterpolate( const G4double yInput[],
-                                 const G4double dydx[],
-                                 const G4double Step ){
-        SetupInterpolate_low( yInput, dydx, Step);
-    }
-    
-    //For calculating the output at the tau fraction of Step
-    inline void Interpolate( const G4double yInput[],
-                            const G4double dydx[],
-                            const G4double Step,
-                            G4double yOut[],
-                            G4double tau ){
-        Interpolate_low( yInput, dydx, Step, yOut, tau);
-    }
-    
-    void SetupInterpolate_high( const G4double yInput[],
-                               const G4double dydx[],
-                               const G4double Step );
-    
-    //For calculating the output at the tau fraction of Step
-    void Interpolate_high( const G4double yInput[],
-                          const G4double dydx[],
-                          const G4double Step,
+    void Interpolate_low( /* const G4double yInput[],
+                             const G4double dydx[],
+                             const G4double Step, */ 
                           G4double yOut[],
                           G4double tau );
+    
+    inline void SetupInterpolation()
+                            /* ( const G4double yInput[],
+                                 const G4double dydx[],
+                                 const G4double Step ) */
+    { 
+       SetupInterpolation_low( /* yInput, dydx, Step */ );
+       // SetupInterpolation_high( /* yInput, dydx, Step */ );       
+    }
+    
+    //For calculating the output at the tau fraction of Step
+    inline void Interpolate(
+                         /* const G4double yInput[],
+                            const G4double dydx[],
+                            const G4double Step,  */
+                                  G4double tau,    
+                                  G4double yOut[]
+       )
+    {
+        Interpolate_low(  /* yInput, dydx, Step, */  yOut, tau);
+        // Interpolate_high(  /* yInput, dydx, Step, */  yOut, tau);        
+    }
+    
+    void SetupInterpolation_high( /* const G4double yInput[],
+                               const G4double dydx[],
+                               const G4double Step */ );
+    
+    //For calculating the output at the tau fraction of Step
+    void Interpolate_high( /* const G4double yInput[],
+                              const G4double dydx[],
+                              const G4double Step, */ 
+                                 G4double yOut[],
+                                 G4double tau );
 
     G4double  DistChord() const;
     G4double DistChord2() const;
     G4double DistChord3() const;
+   
+    //  Enabling method, with common code between implementations (and steppers)
+    G4double DistLine( G4double yStart[], G4double yMid[], G4double yEnd[] ) const;   
     G4int IntegratorOrder() const {return 4; }
     
     //New copy constructor
@@ -96,7 +106,7 @@ private :
     
     G4double fLastStepLength;
     G4double *fLastInitialVector, *fLastFinalVector,
-    *fLastDyDx, *fMidVector, *fMidError;
+             *fInitialDyDx, *fMidVector, *fMidError;
     // for DistChord calculations
     
     DormandPrince745* fAuxStepper;
