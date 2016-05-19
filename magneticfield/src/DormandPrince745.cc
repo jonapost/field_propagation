@@ -19,15 +19,12 @@
 //    field propagation.
 //	  The coefficients and the algorithm have been adapted from
 //
-
-
-
 //    Table 2 : Coefficients of RK5(4)7M
 //	  ---Ref---
 //    J. R. Dormand and P. J. Prince, “A family of embedded Runge-Kutta formulae,”
 //		Journal of computational and applied …, vol. 6, no. 1, pp. 19–26, 1980.
 //		------------------
-
+//
 //    The Butcher table of the Dormand-Prince-7-4-5 method is as follows :
 //
 //    0   |
@@ -41,18 +38,16 @@
 //          35/384       0        500/1113    125/192  −2187/6784    11/84   0
 //          5179/57600   0       7571/16695  393/640  −92097/339200 187/2100 1/40
 
-
 #include "DormandPrince745.hh"
 #include "G4LineSection.hh"
 #include <cmath>
-
 
 //Constructor
 DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
                                    G4int noIntegrationVariables,
                                    G4bool primary)
-: G4MagIntegratorStepper(EqRhs, noIntegrationVariables){
-    
+: G4MagIntegratorStepper(EqRhs, noIntegrationVariables)
+{
     const G4int numberOfVariables = noIntegrationVariables;
     
     //New Chunk of memory being created for use by the stepper
@@ -66,8 +61,7 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
     ak7 = new G4double[numberOfVariables];
     
     yTemp = new G4double[numberOfVariables] ;
-    yIn = new G4double[numberOfVariables] ;
-    
+    yIn =   new G4double[numberOfVariables] ;
 
     fLastInitialVector = new G4double[numberOfVariables] ;
     fLastFinalVector = new G4double[numberOfVariables] ;
@@ -84,7 +78,8 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
 
 
 //Destructor
-DormandPrince745::~DormandPrince745(){
+DormandPrince745::~DormandPrince745()
+{
     //clear all previously allocated memory for stepper and DistChord
     delete[] ak2;
     delete[] ak3;
@@ -109,8 +104,6 @@ DormandPrince745::~DormandPrince745(){
     delete[] fMidError;
     
     delete fAuxStepper;
-    
-    
 }
 
 
@@ -167,7 +160,6 @@ void DormandPrince745::Stepper(const G4double yInput[],
     b73 = 500.0/1113.0, b74 = 125.0/192.0,
     b75 = -2187.0/6784.0, b76 = 11.0/84.0,
     
-    
     //Sum of columns, sum(bij) = ei
 //    e1 = 0. ,
 //    e2 = 1.0/5.0 ,
@@ -188,7 +180,6 @@ void DormandPrince745::Stepper(const G4double yInput[],
     dc6 = -( b76 - 187.0/2100.0),
     dc7 = -( - 1.0/40.0 ); //end of declaration
     
-    
     const G4int numberOfVariables= this->GetNumberOfVariables();
     
     // The number of variables to be integrated over
@@ -199,8 +190,6 @@ void DormandPrince745::Stepper(const G4double yInput[],
     {
         yIn[i]=yInput[i];
     }
-    
-    
     
     // RightHandSide(yIn, DyDx) ;
     // 1st Step - Not doing, getting passed
@@ -246,16 +235,13 @@ void DormandPrince745::Stepper(const G4double yInput[],
     
     for(i=0;i<numberOfVariables;i++)
     {
-        
         yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
                             dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] ) + 1.5e-18 ;
-        
 
         // Store Input and Final values, for possible use in calculating chord
         fLastInitialVector[i] = yIn[i] ;
         fLastFinalVector[i]   = yOut[i];
         fLastDyDx[i]          = DyDx[i];        
-        
     }
     
     fLastStepLength = Step;
@@ -268,9 +254,7 @@ void DormandPrince745::Stepper(const G4double yInput[],
     return ;
 }
 
-
-
-//The original DistChord() function fot the class - must define it here.
+//The original DistChord() function for the class
 G4double  DormandPrince745::DistChord3() const
 {
     G4double distLine, distChord;
@@ -290,8 +274,6 @@ G4double  DormandPrince745::DistChord3() const
     
     // Use stored values of Initial and Endpoint + new Midpoint to evaluate
     //  distance of Chord
-    
-    
     if (initialPoint != finalPoint)
     {
         distLine  = G4LineSection::Distline( midPoint, initialPoint, finalPoint );
@@ -364,7 +346,6 @@ G4double DormandPrince745::DistChord() const{
     hf5 = 16122321.0/339200000.0 ,
     hf6 = -7117.0/20000.0,
     hf7 = 183.0/10000.0 ;
-
 
     for(int i=0; i<3; i++){
                 fMidVector[i] = fLastInitialVector[i] + fLastStepLength*(
@@ -442,8 +423,6 @@ void DormandPrince745::Interpolate_low( const G4double yInput[],
         yOut[i] = yIn[i] + Step*tau*(bf1*dydx[i] + bf2*ak2[i] + bf3*ak3[i] + bf4*ak4[i]
                                      + bf5*ak5[i] + bf6*ak6[i] + bf7*ak7[i]  ) ;
     }
-    
-
 }
 
 
@@ -507,8 +486,6 @@ void DormandPrince745::SetupInterpolate_high(const G4double yInput[],
                                  b97*ak7[i] + b98*ak8[i] );
     }
     RightHandSide(yTemp, ak9);          //9th Stage
-    
-    
 }
 
 
@@ -594,8 +571,6 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
     bi[9][4] = -648.0/55.0 ;
     //  --------------------------------------------------------
     
-
-    
     for(G4int i = 0; i< numberOfVariables; i++)
         yIn[i] = yInput[i];
     
@@ -618,10 +593,6 @@ void DormandPrince745::Interpolate_high( const G4double yInput[],
     }
 
 }
-
-//---------Verified-------------- - hackabot
-
-
 
 //DormandPrince745::DormandPrince745(DormandPrince745& DP_Obj){
 //    
@@ -661,7 +632,6 @@ DormandPrince745& DormandPrince745::operator=(const DormandPrince745& DP)
     }
     
     this->fLastStepLength = DP.fLastStepLength;
-    
     
     return *this;
 }
