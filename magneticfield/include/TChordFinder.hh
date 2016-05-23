@@ -20,13 +20,13 @@ class TChordFinder : public G4ChordFinder
         TChordFinder(T_Driver* pIntegrationDriver)
             : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
             fDeltaChord( fDefaultDeltaChord ),    //   Internal parameters
-            fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 
-            fMultipleRadius(15.0), 
+            fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
+            fMultipleRadius(15.0),
             fStatsVerbose(0),
-            fDriversStepper(0),                    // Dependent objects 
+            fDriversStepper(0),                    // Dependent objects
             fAllocatedStepper(false),
-            fEquation(0),      
-            fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0), 
+            fEquation(0),
+            fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),
             G4ChordFinder(pIntegrationDriver)
     {
         // Simple constructor -- it does not create equation
@@ -35,7 +35,7 @@ class TChordFinder : public G4ChordFinder
 
         fLastStepEstimate_Unconstrained = DBL_MAX;          // Should move q, p to
 
-        SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);  
+        SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);
         // check the values and set the other parameters
     }
 
@@ -43,16 +43,16 @@ class TChordFinder : public G4ChordFinder
         // ..........................................................................
 
         TChordFinder( T_Field*        theMagField,
-                G4double                stepMinimum, 
+                G4double                stepMinimum,
                 T_Stepper* pItsStepper )
-            : fDefaultDeltaChord( 0.25 * mm ),     // Constants 
+            : fDefaultDeltaChord( 0.25 * mm ),     // Constants
             fDeltaChord( fDefaultDeltaChord ),   // Parameters
-            fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 
-            fMultipleRadius(15.0), 
+            fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
+            fMultipleRadius(15.0),
             fStatsVerbose(0),
             fDriversStepper(0),                  //  Dependent objects
             fAllocatedStepper(false),
-            fEquation(0), 
+            fEquation(0),
             fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),  // State - stats
             G4ChordFinder(theMagField, stepMinimum, pItsStepper)
     {
@@ -60,11 +60,11 @@ class TChordFinder : public G4ChordFinder
         //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
 
         T_Equation *pEquation = new T_Equation(theMagField);
-        fEquation = pEquation;                            
+        fEquation = pEquation;
         fLastStepEstimate_Unconstrained = DBL_MAX;          // Should move q, p to
         //    G4FieldTrack ??
 
-        SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);  
+        SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);
         // check the values and set the other parameters
 
         // --->>  Charge    Q = 0 
@@ -182,7 +182,7 @@ class TChordFinder : public G4ChordFinder
                     yb=-(PointG-CurrentF_Point).mag();
                     xc=(Point_A-Point_B).mag();
                     yc=-(CurrentE_Point-Point_B).mag();
-                }    
+                }
                 else
                 {
                     xa=0.;
@@ -397,7 +397,7 @@ class TChordFinder : public G4ChordFinder
         inline
             void  ResetStepEstimate()
             {
-                fLastStepEstimate_Unconstrained = DBL_MAX;    
+                fLastStepEstimate_Unconstrained = DBL_MAX;
             }
 
         // ......................................................................
@@ -462,7 +462,7 @@ class TChordFinder : public G4ChordFinder
         // ...........................................................................
 
 
-        void   
+        void
             SetFractions_Last_Next( G4double fractLast=0.90, G4double fractNext=0.95 )
             { 
                 // Use -1.0 as request for Default.
@@ -591,17 +591,17 @@ class TChordFinder : public G4ChordFinder
             {
                 if ( dChordStep > 1000.0 * fDeltaChord )
                 {
-                    stepTrial= stepTrialOld * 0.03;   
+                    stepTrial= stepTrialOld * 0.03;
                 }
                 else
                 {
                     if ( dChordStep > 100. * fDeltaChord )
                     {
-                        stepTrial= stepTrialOld * 0.1;   
+                        stepTrial= stepTrialOld * 0.1;
                     }
                     else   // Try halving the length until dChordStep OK
                     {
-                        stepTrial= stepTrialOld * 0.5;   
+                        stepTrial= stepTrialOld * 0.5;
                     }
                 }
             }
@@ -619,17 +619,17 @@ class TChordFinder : public G4ChordFinder
 
             if ( dChordStep > 1000. * fDeltaChord )
             {
-                stepTrial= stepTrialOld * 0.03;   
+                stepTrial= stepTrialOld * 0.03;
             }
             else
             {
                 if ( dChordStep > 100. * fDeltaChord )
                 {
-                    stepTrial= stepTrialOld * 0.1;   
+                    stepTrial= stepTrialOld * 0.1;
                 }
                 else  // Keep halving the length until dChordStep OK
                 {
-                    stepTrial= stepTrialOld * 0.5;   
+                    stepTrial= stepTrialOld * 0.5;
                 }
             }
 
@@ -641,7 +641,7 @@ class TChordFinder : public G4ChordFinder
             //      Calculate R, r_helix (eg at orig point)
             //      if( stepTrial < 2 pi  R )
             //          stepTrial = R arc_cos( 1 - fDeltaChord / r_helix )
-            //      else    
+            //      else
             //          ??
 
             return stepTrial;
@@ -763,12 +763,12 @@ class TChordFinder : public G4ChordFinder
         inline 
             G4double  GetLastStepEstimateUnc()
             {
-                return fLastStepEstimate_Unconstrained;   
+                return fLastStepEstimate_Unconstrained;
             } 
         inline 
             void  SetLastStepEstimateUnc( G4double stepEst )
             {
-                fLastStepEstimate_Unconstrained = stepEst;    
+                fLastStepEstimate_Unconstrained = stepEst;
             }
 
     private:  // ............................................................
