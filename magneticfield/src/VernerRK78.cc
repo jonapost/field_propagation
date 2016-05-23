@@ -4,14 +4,17 @@
   The following code uses the work of J.H.Verner, obtained from
   http://people.math.sfu.ca/~jverner/
  
+  Choice is tableau and interpolants of
+    'A "most efficient" Runge--Kutta (8)7 Pair with Interpolants'
+
   Sets of all coefficients provided in attachments are copyrighted
-  as such by the author. They many not be published for general
-  distribution. They may be used for any research, industrial
-  application or development of software provided that any
-  product arising using any set of coefficients acknowledges this
-  source and includes the URL for this site within the produced
-  item.
- 
+  by the author. They are provided under the following conditions
+
+  "They many not be published for general distribution. They may 
+  be used for any research, industrial application or development 
+  of software provided that any product arising using any set of 
+  coefficients acknowledges this source and includes the URL for this 
+  site within the produced item."
  *********************************************************************/
 
 #include "VernerRK78.hh"

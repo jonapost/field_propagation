@@ -1,5 +1,5 @@
 
-//  Dormnad-Prince 8(7)13M non-FSAL implementation by Somnath Banerjee
+//  Dormand-Prince 8(7)13M non-FSAL implementation by Somnath Banerjee
 //  Supervision / code review: John Apostolakis
 //
 // Sponsored by Google in Google Summer of Code 2015.
@@ -13,6 +13,11 @@
 //  DormandPrinceRK78.cc
 //  Geant4
 //
+// 
+//  Paper proposing this RK scheme:
+//     Title:    "High order embedded Runge-Kutta formulae"
+//     Authors:  P.J. Prince, J.R. Dormand,
+//     Reference:  DOI: 10.1016/0771-050X(81)90010-3
 //  History
 // -----------------------------
 //  Created by Somnath on 28 June 2015
@@ -364,16 +369,18 @@ void DormandPrinceRK78::Stepper(const G4double yInput[],
     {
         // Accumulate increments with proper weights
         
-        yOut[i] = yIn[i] + Step*(c1*dydx[i] + c2*ak2[i] + c3*ak3[i] +
-                                 c4*ak4[i] + c5*ak5[i] + c6*ak6[i] +
+        yOut[i] = yIn[i] + Step*(c1*dydx[i] + // c2*ak2[i] + c3*ak3[i]
+                                 // + c4*ak4[i] + c5*ak5[i]
+                                 + c6*ak6[i] +
                                  c7*ak7[i] + c8*ak8[i] +c9*ak9[i] + c10*ak10[i]
                                  + c11*ak11[i] + c12*ak12[i]  + c13*ak13[i]) ;
         
         // Estimate error as difference between 7th and
         // 8th order methods
         
-        yErr[i] = Step*(dc1*dydx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
-                        dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] + dc8*ak8[i] +
+        yErr[i] = Step*(dc1*dydx[i] + dc2*ak2[i] + // dc3*ak3[i] + dc4*ak4[i]
+                        // + dc5*ak5[i] 
+                        + dc6*ak6[i] + dc7*ak7[i] + dc8*ak8[i] +
                         dc9*ak9[i] + dc10*ak10[i] + dc11*ak11[i] + dc12*ak12[i]
                         + dc13*ak13[i] ) ;
         // Store Input and Final values, for possible use in calculating chord
