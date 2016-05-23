@@ -27,7 +27,7 @@
 //
 
 inline
-G4EquationOfMotion* G4MagIntegratorStepper::GetEquationOfMotion() const
+G4EquationOfMotion* G4MagIntegratorStepper::GetEquationOfMotion()
 {
   return  fEquation_Rhs;
 } 
@@ -54,7 +54,6 @@ G4int G4MagIntegratorStepper::GetNumberOfStateVariables() const
   return fNoStateVariables;
 }
 
-
 inline
 void G4MagIntegratorStepper::NormaliseTangentVector( G4double vec[6] )
 {
@@ -80,4 +79,17 @@ void G4MagIntegratorStepper::NormalisePolarizationVector( G4double vec[12] )
       for(G4int i=9;i<12;i++)  { vec[i] *= normx; }
     }
   }
+}
+
+inline
+void G4MagIntegratorStepper::increasefNORHSCalls()
+{
+    fNoRHSCalls++;
+}
+
+inline
+void G4MagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )
+{
+   fEquation_Rhs-> RightHandSide(y, dydx);
+   increasefNORHSCalls();
 }

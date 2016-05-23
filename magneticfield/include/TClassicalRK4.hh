@@ -26,8 +26,8 @@ class TClassicalRK4 : public  TMagErrorStepper
 
         __attribute__((always_inline)) 
         void 
-        RightHandSide(G4double y[], G4double dydx[]) 
-        { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
+        RightHandSideInl(G4double y[], G4double dydx[]) 
+        { fEquation_Rhs->T_Equation::RightHandSideInl(y, dydx); }
 
 
         // A stepper that does not know about errors.
@@ -60,20 +60,20 @@ class TClassicalRK4 : public  TMagErrorStepper
             {
                 yt[i] = yIn[i] + hh*dydx[i] ;             // 1st Step K1=h*dydx
             }
-            this->RightHandSide(yt,dydxt) ;                   // 2nd Step K2=h*dydxt
+            this->RightHandSideInl(yt,dydxt) ;                   // 2nd Step K2=h*dydxt
 
             for(i=0;i<N;i++)
             { 
                 yt[i] = yIn[i] + hh*dydxt[i] ;
             }
-            this->RightHandSide(yt,dydxm) ;                   // 3rd Step K3=h*dydxm
+            this->RightHandSideInl(yt,dydxm) ;                   // 3rd Step K3=h*dydxm
 
             for(i=0;i<N;i++)
             {
                 yt[i]   = yIn[i] + h*dydxm[i] ;
                 dydxm[i] += dydxt[i] ;                    // now dydxm=(K2+K3)/h
             }
-            this->RightHandSide(yt,dydxt) ;                   // 4th Step K4=h*dydxt
+            this->RightHandSideInl(yt,dydxt) ;                   // 4th Step K4=h*dydxt
 
             for(i=0;i<N;i++)    // Final RK4 output
             {

@@ -1,20 +1,20 @@
-//  Bogacki-Shampine - 8 - 5(4) non-FSAL implementation by Somnath Banerjee
+//  An implementation of the embedded RK method from the following paper 
+//  by P. Bogacki and L. F. Shampine:
+//    “An efficient Runge-Kutta (4,5) pair,” 
+//   Comput. Math. with Appl., vol. 32, no. 6, pp. 15–28, Sep. 1996.
+//
+//  This version does not utilise the FSAL property of the method,
+//  which would allow the reuse of the last derivative in the next step.
+//  (Alternative FSAL implementation created with revised interface)
+//
+//  Implemented by Somnath Banerjee
 //  Supervision / code review: John Apostolakis
 //
-// Sponsored by Google in Google Summer of Code 2015.
-// 
-// First version: 26 May 2015
+// Work supported by the Google Summer of Code 2015.
 //
 // This code is made available subject to the Geant4 license, a copy of
 // which is available at
 //   http://geant4.org/license
-//  BogackiShampine45.hh
-//  Geant4
-//
-//  History
-// -----------------------------
-//  Created by Somnath on 26 May 2015
-//
 //
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -83,8 +83,10 @@ class G4MagIntegratorStepper
 
      inline void NormalisePolarizationVector( G4double vec[12] );
        // Simple utility function to (re)normalise 'unit spin' vector.
-//    inline
-    virtual void RightHandSide( const double y[], double dydx[] );
+
+     // virtual    // Allowed  T-Stepper classes  to overload it ! (To Revert!)
+     inline  // Original - and fast
+     void RightHandSide( const double y[], double dydx[] );
     
     // Utility method to supply the standard Evaluation of the
        // Right Hand side of the associated equation.
@@ -102,7 +104,7 @@ class G4MagIntegratorStepper
        // Returns the order of the integrator
        // i.e. its error behaviour is of the order O(h^order).
 
-     inline G4EquationOfMotion *GetEquationOfMotion() const;
+     inline G4EquationOfMotion *GetEquationOfMotion();
        // As some steppers (eg RKG3) require other methods of Eq_Rhs
        // this function allows for access to them.
      inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
@@ -113,9 +115,7 @@ class G4MagIntegratorStepper
     }
     void increasefNORHSCalls();
     
-    inline void ResetfNORHSCalls(){
-        fNoRHSCalls = 0;
-    }
+    inline void ResetfNORHSCalls(){ fNoRHSCalls = 0; }
     //--- --- ///////// --- ---
 
   private:
@@ -131,7 +131,7 @@ class G4MagIntegratorStepper
      const G4int  fNoStateVariables;        // Number required for FieldTrack
 	
     //--- --- For DEBUG --- ---
-    G4int fNoRHSCalls;
+    mutable unsigned int fNoRHSCalls;
     //--- --- ///////// --- ---
     
     // const G4int  fNumberOfVariables;
