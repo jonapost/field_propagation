@@ -1,4 +1,4 @@
-$Id: History 97061 2016-05-23 18:38:51Z japost $
+$Id: History 97090 2016-05-24 16:50:38Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,7 +16,11 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
-
+May 24, 2016 J.Apostolakis             - field-V10-02-06, 07
+--------------------------
+- Added TsitourasRK45 stepper.
+- Made Cash-Karp the default stepper (in G4ChordFinder).
+    
 May 23, 2016 J.Apostolakis             - field-V10-02-05
 --------------------------
 - Made DormandPrince745 (DP45) the default stepper (in G4ChordFinder).

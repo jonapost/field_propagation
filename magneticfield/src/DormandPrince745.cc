@@ -79,7 +79,6 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
     }
 }
 
-
 //Destructor
 DormandPrince745::~DormandPrince745()
 {

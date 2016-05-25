@@ -11,7 +11,7 @@
 #
 # Generated on : 29/9/2010
 #
-# $Id: sources.cmake 97025 2016-05-20 11:00:44Z japost $
+# $Id: sources.cmake 97090 2016-05-24 16:50:38Z japost $
 #
 #------------------------------------------------------------------------------
 
@@ -88,6 +88,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4SimpleRunge.hh
         G4TrialsCounter.hh
         G4TrialsCounter.icc
+        TsitourasRK45.hh
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
@@ -142,6 +143,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4SimpleHeum.cc
         G4SimpleRunge.cc
         G4TrialsCounter.cc
+        TsitourasRK45.cc	
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
