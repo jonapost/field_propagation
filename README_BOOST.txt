@@ -6,17 +6,3 @@ to add boost to Geant4 do the following steps:
 find_package(Boost REQUIRED)
 include_directories( ${Boost_INCLUDEDIR})
 
-5. to use Bulirsch-Stoer stepper do:
-In G4PropagatorInField::ComputeStep() replace 
-
-    s_length_taken = GetChordFinder()->AdvanceChordLimited( 
-                             CurrentState,    // Position & velocity
-                             h_TrialStepSize,
-                             fEpsilonStep,
-                             fPreviousSftOrigin,
-                             fPreviousSafety
-                             );
-with 
-
-    s_length_taken = GetChordFinder()->driver(CurrentState,h_TrialStepSize,fEpsilonStep);
-

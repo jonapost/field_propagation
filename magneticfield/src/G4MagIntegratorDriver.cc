@@ -47,6 +47,11 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
 
+#include <boost/array.hpp>
+#include <boost/numeric/odeint.hpp>
+typedef boost::array< double , 6 > state_type;
+using namespace boost::numeric::odeint;
+
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
 //
@@ -127,7 +132,8 @@ G4MagInt_Driver::~G4MagInt_Driver()
 // #define  G4DEBUG_FIELD 1    
 
 // ---------------------------------------------------------
-
+#define BS
+#ifndef BS
 G4bool
 G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
                                  G4double     hstep,
@@ -429,6 +435,36 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
 
   return succeeded;
 }  // end of AccurateAdvance ...........................
+#endif
+
+#ifdef BS
+G4bool
+G4MagInt_Driver::AccurateAdvance(G4FieldTrack& yCurrent,
+                                 G4double     hstep,
+                                 G4double     eps,
+                                 G4double /*hinitial*/ )
+{
+    G4double dydx[12];
+    G4double y[12];
+    yCurrent.DumpToArray(y);
+    G4double hdid = 0;
+    G4double hnext = hstep;
+    G4double hrest = hstep;
+    G4double curveLength = yCurrent.GetCurveLength();
+    do{
+        GetStepper()->ComputeRightHandSide(y,dydx);
+        OneGoodStep(y,dydx,curveLength,hnext,eps,hdid,hnext);
+        hrest -= hdid;
+        hnext = std::min(hrest, hnext);
+        //G4cout<<"hdid "<<hdid<<" hrest "<<hrest<<" hnext "<<hnext<<G4endl;
+    }while(hrest > eps*hstep);
+    //G4cout<<"driver: did step "<<stepInitial<<G4endl;
+    yCurrent.SetCurveLength(curveLength);
+    yCurrent.LoadFromArray(y,12);
+
+    return  true;
+}
+#endif
 
 // ---------------------------------------------------------
 
@@ -516,7 +552,7 @@ G4MagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
 }
 
 // ---------------------------------------------------------
-
+#ifndef BS
 void
 G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
                              const G4double dydx[],
@@ -575,6 +611,14 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
     G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
     G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
 
+
+    //Error calculation like in Boost dmitrySorokin
+    errmax_sq = 0;
+    for (int i = 0; i < 6; ++i){
+        errmax_sq = std::max(std::fabs(yerr[i] / (y[i] * eps_rel_max)), errmax_sq);
+    }
+
+/*    original error calculation
     // Evaluate accuracy
     //
     errpos_sq =  sqr(yerr[0]) + sqr(yerr[1]) + sqr(yerr[2]) ;
@@ -601,6 +645,7 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
       errspin_sq *= inv_eps_vel_sq;
       errmax_sq = std::max( errmax_sq, errspin_sq ); 
     }
+*/
 
     if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
 
@@ -645,6 +690,41 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
 
   return;
 }   // end of  OneGoodStep .............................
+#endif
+
+#ifdef BS
+
+void
+G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
+                             const G4double dydx[],
+                                   G4double& curveLength,         // InOut
+                                   G4double htry,
+                                   G4double eps_rel_max,
+                                   G4double& hdid,      // Out
+                                   G4double& hnext )    // Out
+{
+    bulirsch_stoer<state_type> stepper(0,eps_rel_max,1,0);//(epsStep_Relative, epsStep_Relative);
+    hnext = htry;
+    hdid = 0;
+
+    const auto system = [this](const state_type & _y, state_type & _dydx, const double /*t*/){
+        // there is access out of range!
+        //solution: copy _y and _dydx to array of 8 elements
+        pIntStepper->RightHandSide(_y.data(),_dydx.data());
+    };
+    state_type yState, dydxState;
+    for (int i = 0; i < 6; ++i){
+        yState[i] = y[i];
+        dydxState[i] = dydx[i];
+    }
+    // System system , const StateIn &in , time_type &t , StateOut &out , time_type &dt
+    stepper.try_step(system, yState, dydxState, hdid, hnext);
+    for (int i = 0; i < 6; ++i){
+        y[i] = yState[i];
+    }
+    curveLength += hdid;
+}
+#endif
 
 //----------------------------------------------------------------------
 
