@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="testNTST" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\geant\;CMake Files\..\..\..\geant\geant4.10.02-install\;CMake Files\..\..\..\geant\geant4.10.02-install\lib64\;CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\;CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\Modules\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\lib64\;CMake Files\..\..\..\..\..\usr\lib64\cmake\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5OpenGL\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5PrintSupport\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="edit_cache">
+         <Option working_dir="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="testNTST">
+         <Option output="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/testNTST" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DG4_STORE_TRAJECTORY" />
+            <Add option="-DG4VERBOSE" />
+            <Add option="-DG4UI_USE" />
+            <Add option="-DG4VIS_USE" />
+            <Add option="-DQT_WIDGETS_LIB" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_PRINTSUPPORT_LIB" />
+            <Add directory="/home/Dmitry/geant/geant4.10.02-install/include/Geant4" />
+            <Add directory="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include" />
+            <Add directory="/usr/include/qt5" />
+            <Add directory="/usr/include/qt5/QtCore" />
+            <Add directory="/usr/include/qt5/QtGui" />
+            <Add directory="/usr/include/qt5/QtPrintSupport" />
+            <Add directory="/usr/include/qt5/QtWidgets" />
+            <Add directory="/usr/lib64/qt5/./mkspecs/linux-g++" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 testNTST" />
+            <CompileFile command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="testNTST/fast">
+         <Option output="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/testNTST" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/Dmitry/work/GSoC/testNTST-2016-04-28/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DG4_STORE_TRAJECTORY" />
+            <Add option="-DG4VERBOSE" />
+            <Add option="-DG4UI_USE" />
+            <Add option="-DG4VIS_USE" />
+            <Add option="-DQT_WIDGETS_LIB" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_PRINTSUPPORT_LIB" />
+            <Add directory="/home/Dmitry/geant/geant4.10.02-install/include/Geant4" />
+            <Add directory="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include" />
+            <Add directory="/usr/include/qt5" />
+            <Add directory="/usr/include/qt5/QtCore" />
+            <Add directory="/usr/include/qt5/QtGui" />
+            <Add directory="/usr/include/qt5/QtPrintSupport" />
+            <Add directory="/usr/include/qt5/QtWidgets" />
+            <Add directory="/usr/lib64/qt5/./mkspecs/linux-g++" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 testNTST/fast" />
+            <CompileFile command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/gmake -f &quot;/home/Dmitry/work/GSoC/testNTST-2016-04-28/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTBabarEvtReadGenerator.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTDetectorConstruction.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTDetectorMessenger.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTEventAction.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTEventActionMessenger.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTField.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTFileRead.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTGunGenerator.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTGunMessenger.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTLooperDeath.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTPhysicsList.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTPhysicsListMessenger.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTPrimaryGeneratorAction.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTPrimaryGeneratorMessenger.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTRotationMatrix.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTRunAction.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/include/NTSTSteppingAction.hh">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTBabarEvtReadGenerator.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTDetectorConstruction.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTDetectorMessenger.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTEventAction.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTEventActionMessenger.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTFileRead.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTGunGenerator.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTGunMessenger.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTLooperDeath.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTPhysicsList.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTPhysicsListMessenger.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTPrimaryGeneratorAction.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTPrimaryGeneratorMessenger.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTRotationMatrix.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTRunAction.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/src/NTSTSteppingAction.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/testNTST.cc">
+         <Option target="testNTST"/>
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/run2a.mac">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/run2b.mac">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/run2c.mac">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/run2xa.mac">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/run2xb.mac">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/run2xc.mac">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/Geant4ConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/Geant4Config.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/Geant4LibraryDepends.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/Geant4LibraryDepends-debug.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/UseGeant4.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/UseGeant4.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../geant/geant4.10.02-install/lib64/Geant4-10.2.1/Modules/IntelCompileFeatures.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\geant\geant4.10.02-install\lib64\Geant4-10.2.1\Modules\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreMacros.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QGtk2ThemePlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSKmsIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevTouchScreenPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevTabletPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevMousePlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5OpenGL/Qt5OpenGLConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5OpenGL\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5OpenGL/Qt5OpenGLConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5OpenGL\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5PrintSupport/Qt5PrintSupportConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5PrintSupport\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5PrintSupport/Qt5PrintSupportConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5PrintSupport\" />
+      </Unit>
+      <Unit filename="/home/Dmitry/work/GSoC/testNTST-2016-04-28/../../../../../usr/lib64/cmake/Qt5PrintSupport/Qt5PrintSupport_QCupsPrinterSupportPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5PrintSupport\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>
