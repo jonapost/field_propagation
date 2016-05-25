@@ -1,4 +1,4 @@
-$Id: History 96752 2016-05-04 09:40:23Z gcosmo $
+$Id: History 97025 2016-05-20 11:00:44Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,30 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+May 9, 2016 J.Apostolakis             - field-V10-02-04
+-------------------------
+- Added steppers created by Somnath Banerjee as part of GSoC 2015,
+    G4BogackiShampine23 (BS23 below), G4BogackiShampine45 (BS45) and
+    DormandPrince745 (DP45).
+  These implement third order (BS23) and fifth order (BS45, DP45)
+    embedded RK tableaus.
+- DP45 includes interpolation method, to evaluate the interpolant
+    ('y') at intermediate points of a successful step.
+  BS45's interpolation method exists, but is not validated (fails).
+- G4ChordFinder changed to use G4BogackiShampine45 as default
+    stepper.
+
+ References:
+  - BS45 is embedded pair from paper by P. Bogacki and L. F. Shampine:
+      “An efficient Runge-Kutta (4,5) pair,”
+      Comput. Math. with Appl., vol. 32, no. 6, pp. 15–28, Sep. 1996.
+  - BS23 is four stage RK method from the paper of P. Bogacki and L. F. Shampine,
+      “A 3(2) pair of Runge - Kutta formulas,” 
+      Appl. Math. Lett., vol 2, no 4, p.321 (1989).
+  - DP45 are from Table 2 of  J. R. Dormand and P. J. Prince's 
+      “A family of embedded Runge-Kutta formulae,”
+      Journal of comput. and applied Math., vol. 6, no. 1, pp. 19–26, 1980.    
 
 May 4, 2016 G.Cosmo                   - field-V10-02-03
 -------------------

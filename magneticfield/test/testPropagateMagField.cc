@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 85845 2014-11-05 15:43:58Z gcosmo $
+// $Id: testPropagateMagField.cc 97025 2016-05-20 11:00:44Z japost $
 //
 //  
 //
@@ -239,6 +239,9 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4SimpleRunge.hh"
 #include "G4SimpleHeum.hh"
 #include "G4ClassicalRK4.hh"
+#include "G4BogackiShampine23.hh"
+#include "G4BogackiShampine45.hh"
+#include "DormandPrince745.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4CashKarpRKF45.hh"
 #include "G4RKG3_Stepper.hh"
@@ -249,12 +252,12 @@ G4VPhysicalVolume* BuildGeometry()
 #include "globals.hh"
 
 G4UniformMagField      uniformMagField(10.*tesla, 0., 0.); 
-// G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
-// G4String   fieldName("Uniform 10Tesla"); 
+G4CachedMagneticField  myMagField( &uniformMagField, 1.0 * cm); 
+G4String   fieldName("Uniform 10Tesla"); 
 
-G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
-G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
-G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
+// G4QuadrupoleMagField   quadrupoleMagField( 10.*tesla/(50.*cm) ); 
+// G4CachedMagneticField  myMagField( &quadrupoleMagField, 1.0 * cm); 
+// G4String   fieldName("Cached Quadropole field, 20T/meter, cache=1cm"); 
 
 G4FieldManager* SetupField(G4int type)
 {
@@ -281,6 +284,10 @@ G4FieldManager* SetupField(G4int type)
       case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
       case 12: pStepper = new G4ConstRK4( fEquation ); break;
       case 13: pStepper = new G4NystromRK4( fEquation ); break; 
+
+      case 23: pStepper = new G4BogackiShampine23( fEquation ); break;
+      case 45: pStepper = new G4BogackiShampine45( fEquation ); break; 
+      case 745: pStepper = new DormandPrince745( fEquation ); break; 
       default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
           G4ExceptionDescription ErrorMsg;
@@ -324,9 +331,13 @@ G4PropagatorInField*  SetupPropagator( G4int type)
       G4TransportationManager::GetTransportationManager()->
        GetPropagatorInField ();
 
+    G4double epsilon = 1.0e-4;
+    G4double minEpsilon = epsilon;
+    G4double maxEpsilon = epsilon;
+    
     // Let us test the new Minimum Epsilon Step functionality
-    // thePropagator -> SetMinimumEpsilonStep( 1.0e-3 ) ; 
-    // thePropagator -> SetMaximumEpsilonStep( 1.0e-5 ) ; 
+    thePropagator -> SetMinimumEpsilonStep( minEpsilon ) ; 
+    thePropagator -> SetMaximumEpsilonStep( maxEpsilon ) ;
 
     G4Navigator *theNavigator= G4TransportationManager::GetTransportationManager()->
        GetNavigatorForTracking();
@@ -574,6 +585,23 @@ void report_endPV(G4ThreeVector    Position,
     }
 }
 
+void repeatWith( double minEpsStep, double maxEpsStep, G4VPhysicalVolume *topNode, int stepperType )
+{
+    G4cout << "Test with more accurate parameters " << G4endl; 
+    pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
+    pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
+
+    G4cout << " Setting values for Min Eps = "
+           << pMagFieldPropagator->GetMinimumEpsilonStep()
+           << " ( intended = " << minEpsStep << " ) "
+           << " and MaxEps = " << pMagFieldPropagator->GetMaximumEpsilonStep()
+           << " ( intended = " << maxEpsStep << " ). "
+           << G4endl; 
+
+    testG4PropagatorInField(topNode, stepperType);   
+}
+
+
 // Main program
 // -------------------------------
 int main(int argc, char **argv)
@@ -620,7 +648,10 @@ int main(int argc, char **argv)
     pNavig->SetWorldVolume(myTopNode);
 
     G4GeometryManager::GetInstance()->CloseGeometry(false);
-
+    
+    // pMagFieldPropagator->SetMinimumEpsilonStep();
+    // pMagFieldPropagator->SetMaximumEpsilonStep();
+       
     // Setup the propagator (will be overwritten by testG4Propagator ...)
     pMagFieldPropagator= SetupPropagator(type);
     G4cout << " Using default values for " 
@@ -653,23 +684,44 @@ int main(int argc, char **argv)
 	   << G4endl; 
 
 // Repeat tests with full voxels and modified parameters
-    G4cout << "Test with more accurate parameters " << G4endl; 
-
-    G4double  maxEpsStep= 0.001;
-    G4double  minEpsStep= 2.5e-8;
-    G4cout << " Setting values for Min Eps = " << minEpsStep 
-           << " and MaxEps = " << maxEpsStep << G4endl; 
-
-    pMagFieldPropagator->SetMaximumEpsilonStep(maxEpsStep);
-    pMagFieldPropagator->SetMinimumEpsilonStep(minEpsStep);
-
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4GeometryManager::GetInstance()->CloseGeometry(true);
 
+    G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
+
+    G4double  maxEps= 1.0e-5;
+    G4double  minEps= 1.0e-5;
+    G4cout << " Setting values for Min Eps = " << minEps 
+           << " and MaxEps = " << maxEps << G4endl; 
+
+    pMagFieldPropagator->SetMaximumEpsilonStep(maxEps);
+    pMagFieldPropagator->SetMinimumEpsilonStep(minEps);
+
     testG4PropagatorInField(myTopNode, type);
 
+    
+// Repeat tests with full voxels and modified parameters
+    G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
+    maxEps= 1.0e-6;
+    minEps= 1.0e-6;
+    repeatWith( minEps, maxEps, myTopNode, type );
+    
+    G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
+    maxEps= 1.0e-7;
+    minEps= 1.0e-7;
+    repeatWith( minEps, maxEps, myTopNode, type );
+    
+    G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
+    maxEps= 1.0e-8;
+    minEps= 1.0e-8;
+    repeatWith( minEps, maxEps, myTopNode, type );
+    
+    G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
+    maxEps= 1.0e-9;
+    minEps= 1.0e-9;
+    repeatWith( minEps, maxEps, myTopNode, type );
+    
     G4GeometryManager::GetInstance()->OpenGeometry();
-
     optimiseVoxels = ! optimiseVoxels;
 // Repeat tests but with the opposite optimisation choice
     G4cout << " Now test with optimisation " ; 

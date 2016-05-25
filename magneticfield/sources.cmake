@@ -11,7 +11,7 @@
 #
 # Generated on : 29/9/2010
 #
-# $Id: sources.cmake 75774 2013-11-06 09:16:47Z gcosmo $
+# $Id: sources.cmake 97025 2016-05-20 11:00:44Z japost $
 #
 #------------------------------------------------------------------------------
 
@@ -29,7 +29,8 @@ include_directories(${CMAKE_SOURCE_DIR}/source/global/management/include)
 include(Geant4MacroDefineModule)
 GEANT4_DEFINE_MODULE(NAME G4magneticfield
     HEADERS
-        BogackiShampine.hh
+        G4BogackiShampine23.hh
+        G4BogackiShampine45.hh
         G4CachedMagneticField.hh
         G4CashKarpRKF45.hh
         G4ChargeState.hh
@@ -39,6 +40,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
+        DormandPrince745.hh
         G4ElectricField.hh
         G4ElectroMagneticField.hh
         G4EqEMFieldWithEDM.hh
@@ -90,7 +92,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformGravityField.hh
         G4UniformMagField.hh
     SOURCES
-        BogackiShampine.cc
+        G4BogackiShampine23.cc
+        G4BogackiShampine45.cc
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
         G4ChargeState.cc
@@ -99,6 +102,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc
+        DormandPrince745.cc
         G4ElectricField.cc
         G4ElectroMagneticField.cc
         G4EqEMFieldWithEDM.cc
