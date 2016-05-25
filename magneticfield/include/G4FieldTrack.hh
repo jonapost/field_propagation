@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldTrack.hh 87868 2015-01-16 08:22:22Z gcosmo $
+// $Id: G4FieldTrack.hh 88944 2015-03-16 16:11:10Z gcosmo $
 //
 //
 // class G4FieldTrack
@@ -183,7 +183,8 @@ class  G4FieldTrack
    public: // Access
 
      const G4ChargeState* GetChargeState() const { return &fChargeState; } 
-}; 
+
+};
 
 #include "G4FieldTrack.icc"
 

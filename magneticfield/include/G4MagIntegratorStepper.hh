@@ -69,13 +69,14 @@ class G4MagIntegratorStepper
        // Integrates ODE starting values y[0 to 6].
        // Outputs yout[] and its estimated error yerr[].
 
-     virtual  G4double  DistChord() const = 0; 
+     virtual  G4double  DistChord() const = 0;
        // Estimate the maximum distance of a chord from the true path
        // over the segment last integrated.
 
      virtual void ComputeRightHandSide( const G4double y[], G4double dydx[] ); 
        // Must compute the RightHandSide as in the method below
        // Optionally can cache the input y[] and the dydx[] values computed.
+    
 
      inline void NormaliseTangentVector( G4double vec[6] );
        // Simple utility function to (re)normalise 'unit velocity' vector.
@@ -83,8 +84,11 @@ class G4MagIntegratorStepper
      inline void NormalisePolarizationVector( G4double vec[12] );
        // Simple utility function to (re)normalise 'unit spin' vector.
 
-     inline void RightHandSide( const double y[], double dydx[] );   
-       // Utility method to supply the standard Evaluation of the
+     // virtual    // Allowed  T-Stepper classes  to overload it ! (To Revert!)
+     inline  // Original - and fast
+     void RightHandSide( const double y[], double dydx[] );
+    
+    // Utility method to supply the standard Evaluation of the
        // Right Hand side of the associated equation.
 
 
@@ -100,10 +104,19 @@ class G4MagIntegratorStepper
        // Returns the order of the integrator
        // i.e. its error behaviour is of the order O(h^order).
 
-     inline G4EquationOfMotion *GetEquationOfMotion(); 
+     inline G4EquationOfMotion *GetEquationOfMotion();
        // As some steppers (eg RKG3) require other methods of Eq_Rhs
        // this function allows for access to them.
-     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
+     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+    
+    //--- --- For DEBUG --- ---
+    inline G4int GetfNoRHSCalls(){
+        return fNoRHSCalls;
+    }
+    void increasefNORHSCalls();
+    
+    inline void ResetfNORHSCalls(){ fNoRHSCalls = 0; }
+    //--- --- ///////// --- ---
 
   private:
   
@@ -116,7 +129,13 @@ class G4MagIntegratorStepper
      G4EquationOfMotion *fEquation_Rhs;
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack
-     // const G4int  fNumberOfVariables;
+	
+    //--- --- For DEBUG --- ---
+    mutable unsigned int fNoRHSCalls;
+    //--- --- ///////// --- ---
+    
+    // const G4int  fNumberOfVariables;
+
 };
 
 #include  "G4MagIntegratorStepper.icc"

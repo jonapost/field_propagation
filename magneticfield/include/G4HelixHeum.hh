@@ -64,6 +64,8 @@ class G4HelixHeum : public G4MagHelicalStepper
   public: // without description
   
     G4int IntegratorOrder() const { return 2; }
+
+//	G4double *getLastDydx();
 };
 
 #endif /* G4HELIXHEUM_HH */

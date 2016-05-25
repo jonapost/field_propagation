@@ -55,7 +55,7 @@ class G4ErrorMag_UsualEqRhs : public G4Mag_UsualEqRhs
 
      void EvaluateRhsGivenB( const G4double y[],
                              const G4double B[3],
-                                   G4double dydx[] ) const;
+                            G4double dydx[] ) const;
        // Reverses dedx if propagation is backwards
 };
 

@@ -49,8 +49,11 @@ G4Mag_UsualEqRhs::EvaluateRhsGivenB( const G4double y[],
 			             const G4double B[3],
 				           G4double dydx[] ) const
 {
+    
+
    G4double momentum_mag_square = y[3]*y[3] + y[4]*y[4] + y[5]*y[5];
    G4double inv_momentum_magnitude = 1.0 / std::sqrt( momentum_mag_square );
+
 
    G4double cof = FCof()*inv_momentum_magnitude;
 

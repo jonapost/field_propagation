@@ -72,6 +72,8 @@ class G4HelixExplicitEuler : public G4MagHelicalStepper
     // in G4HelicalStepper
   
     G4int IntegratorOrder() const { return 1; }
+    
+
 };
 
 #endif /* G4EXPLICITEULER_HH */

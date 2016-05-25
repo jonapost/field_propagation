@@ -72,6 +72,8 @@ class G4ExactHelixStepper : public G4MagHelicalStepper
       // Estimate maximum distance of curved solution and chord ... 
 
     virtual G4int IntegratorOrder() const;
+    G4bool isFSAL() const{ return false; }
+
 
   private:
 

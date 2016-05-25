@@ -32,8 +32,8 @@ class TSimpleHeum : public  TMagErrorStepper
 
         __attribute__((always_inline)) 
         void 
-        RightHandSide(G4double y[], G4double dydx[]) 
-            { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
+        RightHandSideInl(G4double y[], G4double dydx[]) 
+            { fEquation_Rhs->T_Equation::RightHandSideInl(y, dydx); }
 
         __attribute__((always_inline)) 
         void
@@ -48,14 +48,14 @@ class TSimpleHeum : public  TMagErrorStepper
                 yTemp[i] = yIn[i] + (1.0/3.0) * h *  dydx[i] ;
             }
 
-            this->RightHandSide(yTemp,dydxTemp);
+            this->RightHandSideInl(yTemp,dydxTemp);
 
             for( i = 0; i < N; i++ ) 
             {
                 yTemp2[i] = yIn[i] + (2.0/3.0) * h * dydxTemp[i] ;
             }
 
-            this->RightHandSide(yTemp2,dydxTemp2);
+            this->RightHandSideInl(yTemp2,dydxTemp2);
 
             for( i = 0; i < N; i++ ) 
             {

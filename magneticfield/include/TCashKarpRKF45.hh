@@ -44,8 +44,9 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
             delete fAuxStepper;
         }
 
-        __attribute__((always_inline)) void RightHandSide(G4double y[], G4double dydx[]) 
-        {fEquation_Rhs->T_Equation::RightHandSide(y, dydx);}
+        __attribute__((always_inline)) 
+        void RightHandSideInl(G4double y[], G4double dydx[]) 
+        {fEquation_Rhs->T_Equation::RightHandSideInl(y, dydx);}
 
         inline void Stepper(const G4double __restrict__ yInput[],
                 const G4double __restrict__ dydx[],
@@ -87,39 +88,39 @@ class TCashKarpRKF45 : public G4MagIntegratorStepper
             {
                 yIn[i]=yInput[i];
             }
-            // RightHandSide(yIn, dydx) ;              // 1st Step
+            // RightHandSideInl(yIn, dydx) ;              // 1st Step
 
             for(i=0;i<N;i++) 
             {
                 yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
             }
-            this->RightHandSide(yTemp, ak2) ;              // 2nd Step
+            this->RightHandSideInl(yTemp, ak2) ;              // 2nd Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
             }
-            this->RightHandSide(yTemp, ak3) ;              // 3rd Step
+            this->RightHandSideInl(yTemp, ak3) ;              // 3rd Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b41*dydx[i] + b42*ak2[i] + b43*ak3[i]) ;
             }
-            this->RightHandSide(yTemp, ak4) ;              // 4th Step
+            this->RightHandSideInl(yTemp, ak4) ;              // 4th Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b51*dydx[i] + b52*ak2[i] + b53*ak3[i] +
                         b54*ak4[i]) ;
             }
-            this->RightHandSide(yTemp, ak5) ;              // 5th Step
+            this->RightHandSideInl(yTemp, ak5) ;              // 5th Step
 
             for(i=0;i<N;i++)
             {
                 yTemp[i] = yIn[i] + Step*(b61*dydx[i] + b62*ak2[i] + b63*ak3[i] +
                         b64*ak4[i] + b65*ak5[i]) ;
             }
-            this->RightHandSide(yTemp, ak6) ;              // 6th Step
+            this->RightHandSideInl(yTemp, ak6) ;              // 6th Step
 
             for(i=0;i<N;i++)
             {

@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldTrack.icc 90643 2015-06-05 13:18:26Z gcosmo $
+// $Id: G4FieldTrack.icc 88944 2015-03-16 16:11:10Z gcosmo $
 //
 // -------------------------------------------------------------------
 
@@ -187,10 +187,7 @@ void G4FieldTrack::SetMomentum(G4ThreeVector pMomentum)
   SixVector[4] = pMomentum.y(); 
   SixVector[5] = pMomentum.z(); 
 
-  if( pMomentum.mag2() > 0.0 ) 
-     fMomentumDir = pMomentum.unit();
-  else
-     fMomentumDir = G4ThreeVector( 0.0, 0.0, 0.0 ); 
+  fMomentumDir = pMomentum.unit(); 
 }
 
 inline
