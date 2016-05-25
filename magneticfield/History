@@ -1,4 +1,4 @@
-$Id: History 97025 2016-05-20 11:00:44Z japost $
+$Id: History 97061 2016-05-23 18:38:51Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -17,7 +17,11 @@ committal in the CVS repository !
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
 
-May 9, 2016 J.Apostolakis             - field-V10-02-04
+May 23, 2016 J.Apostolakis             - field-V10-02-05
+--------------------------
+- Made DormandPrince745 (DP45) the default stepper (in G4ChordFinder).
+    
+May 20, 2016 J.Apostolakis             - field-V10-02-04
 -------------------------
 - Added steppers created by Somnath Banerjee as part of GSoC 2015,
     G4BogackiShampine23 (BS23 below), G4BogackiShampine45 (BS45) and
@@ -27,8 +31,6 @@ May 9, 2016 J.Apostolakis             - field-V10-02-04
 - DP45 includes interpolation method, to evaluate the interpolant
     ('y') at intermediate points of a successful step.
   BS45's interpolation method exists, but is not validated (fails).
-- G4ChordFinder changed to use G4BogackiShampine45 as default
-    stepper.
 
  References:
   - BS45 is embedded pair from paper by P. Bogacki and L. F. Shampine:

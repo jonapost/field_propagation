@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.cc 93227 2015-10-13 09:32:31Z japost $
+// $Id: G4ChordFinder.cc 97061 2016-05-23 18:38:51Z japost $
 //
 //
 // 25.02.97 - John Apostolakis - Design and implementation 
@@ -37,7 +37,10 @@
 #include "G4MagneticField.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4ClassicalRK4.hh"
-
+// #include "G4CashKarpRKF45.hh"
+// #include "G4BogackiShampine23.hh"
+#include "G4BogackiShampine45.hh"
+#include "DormandPrince745.hh"
 
 // ..........................................................................
 
@@ -94,7 +97,11 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
 
   if( pItsStepper == 0 )
   { 
-     pItsStepper = fDriversStepper = new G4ClassicalRK4(pEquation);
+     pItsStepper = fDriversStepper =
+        new DormandPrince745(pEquation);              
+         // new G4ClassicalRK4(pEquation);    // The old default
+         // new G4CashKarpRKF45(pEquation);        
+         // new G4BogackiShampine45(pEquation);
      fAllocatedStepper= true;
   }
   else
