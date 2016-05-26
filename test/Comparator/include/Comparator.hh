@@ -25,6 +25,8 @@
 #include "G4Proton.hh"
 #include "G4DynamicParticle.hh"
 
+#include "ChordFinder.hh"
+
 enum mode{
     Default,
     Verbose,
@@ -40,6 +42,10 @@ public:
     void CrossCheck(const G4double* const testData, const G4double* const refData, G4int mode = Default);
     template <class testStepper, class refStepper>
     void Compare(const G4double stepLen, const G4int NSteps, const bool useDriver, const G4int verbosity);
+
+    //emulates FindNextChord()
+    template <class testDriver, class refDriver>
+    void CompareDrivers(const G4double stepLen, const G4int NSteps, const G4int verb);
 
     //setters
     void setParticle(G4DynamicParticle* pDynParticle);
@@ -119,6 +125,13 @@ void Comparator::Compare(const G4double stepLen, const G4int NSteps, const bool 
         G4cout<<"diffSteps# "<<diffSteps<<" maxDiff "<<maxDiff<<G4endl;
     }
 }
+
+//template <class testDriver, class refDriver>
+//void CompareDrivers(const G4double stepLen, const G4int NSteps, const G4int verb){
+//    //class T_Field, class T_Equation, class T_Stepper, class T_Driver
+//    ChordFinder<G4MagneticField, G4EquationOfMotion, > chordFinder(new testDriver);
+
+
 
 
 #endif
