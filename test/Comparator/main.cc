@@ -10,6 +10,7 @@
 #include "G4CashKarpRKF45.hh"
 #include "G4ExplicitEuler.hh"
 
+#include "BulirschStoerDriver.hh"
 
 using namespace std;
 using namespace CLHEP;
