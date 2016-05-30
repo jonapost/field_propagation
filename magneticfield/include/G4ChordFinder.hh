@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.hh 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: G4ChordFinder.hh 68937 2013-04-12 00:23:33Z gum $
 //
 // 
 // Class G4ChordFinder
@@ -43,6 +43,10 @@
 #define G4CHORDFINDER_HH
 
 #include "G4MagIntegratorDriver.hh"
+#include "FSALMagIntegratorDriver.hh"
+class FSALMagIntegratorStepper;
+// #include "FSALMagIntegratorStepper.hh"
+
 #include "G4FieldTrack.hh"
 
 class G4MagneticField;  
@@ -51,13 +55,23 @@ class G4ChordFinder
 { 
    public:  // with description
 
+
       G4ChordFinder( G4MagInt_Driver* pIntegrationDriver );
 
       G4ChordFinder( G4MagneticField* itsMagField,
                      G4double         stepMinimum = 1.0e-2, // * mm 
                      G4MagIntegratorStepper* pItsStepper = 0 );  
         // A constructor that creates defaults for all "children" classes.
-      
+
+      G4ChordFinder( FSALIntegratorDriver* pFSALIntegrationDriver);
+        // Experimental for FSAL drivers and steppers
+
+      G4ChordFinder( G4MagneticField* itsMagField,
+                     FSALMagIntegratorStepper* pFSALStepper,
+                     G4double         stepMinimum = 1.0e-2 // * mm 
+         );  
+        // A constructor that creates defaults for all "children" classes.
+   
       virtual ~G4ChordFinder();
 
       G4double    AdvanceChordLimited( G4FieldTrack& yCurrent,
@@ -92,7 +106,14 @@ class G4ChordFinder
       inline void SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver);
       inline G4MagInt_Driver* GetIntegrationDriver();
         // Access and set Driver.
-
+  
+      inline void SetFSALIntegrationDriver(FSALIntegratorDriver* fsalDriver);
+      inline FSALIntegratorDriver* GetFSALIntegrationDriver();
+         // Access and set Driver.
+  
+      inline G4EquationOfMotion* GetEquationOfMotion();
+        //  New - to cope with different type for FSAL steppers
+  
       inline void ResetStepEstimate();
         // Clear internal state (last step estimate)
 
@@ -128,8 +149,14 @@ class G4ChordFinder
       inline   G4double GetMultipleRadius();        // No original value
         //  Parameters for adapting performance ... use with great care
 
+   private: 
+      G4ChordFinder();   
+        //  Default constructor - only for use in implementer 
+        //      other constructors
+   
    protected:   // .........................................................
 
+   
       inline  void    AccumulateStatistics( G4int noTrials ); 
         // Accumulate the basic statistics 
         //   - other specialised ones must be kept by derived classes
@@ -181,7 +208,11 @@ class G4ChordFinder
       //  DEPENDENT Objects
       //  ---------------------
       G4MagInt_Driver*        fIntgrDriver;
-      G4MagIntegratorStepper* fDriversStepper; 
+      G4MagIntegratorStepper* fDriversStepper;
+
+      FSALIntegratorDriver*     fFSALIntgrDriver;
+      FSALMagIntegratorStepper* fFSALStepper;
+   
       G4bool                  fAllocatedStepper;  // Bookkeeping of dependent object
       G4EquationOfMotion*     fEquation; 
 
