@@ -24,61 +24,61 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.icc 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: FSALMagIntegratorDriver.icc 97124 2016-05-25 23:55:41Z japost $
 //
 // --------------------------------------------------------------------
 
 inline
-G4double FSALMagInt_Driver::GetHmin() const
+G4double FSALIntegratorDriver::GetHmin() const
 {
       return fMinimumStep;
 } 
 
 inline
-G4double FSALMagInt_Driver::Hmin() const
+G4double FSALIntegratorDriver::Hmin() const
 {
       return fMinimumStep;
 }
 
 inline
-G4double FSALMagInt_Driver::GetSafety() const
+G4double FSALIntegratorDriver::GetSafety() const
 {
       return safety;
 }
 
 inline
-G4double FSALMagInt_Driver::GetPshrnk() const
+G4double FSALIntegratorDriver::GetPshrnk() const
 {
       return pshrnk;
 } 
 
 inline
-G4double FSALMagInt_Driver::GetPgrow() const
+G4double FSALIntegratorDriver::GetPgrow() const
 {
       return pgrow;
 }
  
 inline
-G4double FSALMagInt_Driver::GetErrcon() const
+G4double FSALIntegratorDriver::GetErrcon() const
 {
       return errcon;
 }
 
 inline
-void FSALMagInt_Driver::SetHmin(G4double newval)
+void FSALIntegratorDriver::SetHmin(G4double newval)
 {
       fMinimumStep = newval;
 } 
 
 inline
-G4double FSALMagInt_Driver::ComputeAndSetErrcon()
+G4double FSALIntegratorDriver::ComputeAndSetErrcon()
 {
       errcon = std::pow(max_stepping_increase/GetSafety(),1.0/GetPgrow());
       return errcon;
 } 
 
 inline
-void FSALMagInt_Driver::ReSetParameters(G4double new_safety)
+void FSALIntegratorDriver::ReSetParameters(G4double new_safety)
 {
       safety = new_safety;
       pshrnk = -1.0 / pIntStepper->IntegratorOrder();
@@ -87,58 +87,58 @@ void FSALMagInt_Driver::ReSetParameters(G4double new_safety)
 }
 
 inline
-void FSALMagInt_Driver::SetSafety(G4double val)
+void FSALIntegratorDriver::SetSafety(G4double val)
 { 
       safety=val;
       ComputeAndSetErrcon();
 }
 
 inline
-void FSALMagInt_Driver::SetPgrow(G4double  val)
+void FSALIntegratorDriver::SetPgrow(G4double  val)
 { 
       pgrow=val;
       ComputeAndSetErrcon(); 
 }
 
 inline
-void FSALMagInt_Driver::SetErrcon(G4double val)
+void FSALIntegratorDriver::SetErrcon(G4double val)
 { 
       errcon=val;
 }
 
 inline
-void FSALMagInt_Driver::RenewStepperAndAdjust(FSALMagIntegratorStepper *pItsStepper)
+void FSALIntegratorDriver::RenewStepperAndAdjust(FSALMagIntegratorStepper *pItsStepper)
 {  
       pIntStepper = pItsStepper; 
       ReSetParameters();
 }
 
 inline
-const FSALMagIntegratorStepper* FSALMagInt_Driver::GetStepper() const
+const FSALMagIntegratorStepper* FSALIntegratorDriver::GetStepper() const
 {
   return pIntStepper;
 }
 
 inline
-FSALMagIntegratorStepper* FSALMagInt_Driver::GetStepper()
+FSALMagIntegratorStepper* FSALIntegratorDriver::GetStepper()
 {
   return pIntStepper;
 }
 
 inline
-G4int FSALMagInt_Driver::GetMaxNoSteps() const
+G4int FSALIntegratorDriver::GetMaxNoSteps() const
 {
   return fMaxNoSteps;
 }
 
 inline
-void FSALMagInt_Driver::SetMaxNoSteps(G4int val)
+void FSALIntegratorDriver::SetMaxNoSteps(G4int val)
 {
   fMaxNoSteps= val;
 }
 
 inline
-void FSALMagInt_Driver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
+void FSALIntegratorDriver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
                                            G4double     dydx[])  // OUTput
 { 
   G4double  tmpValArr[G4FieldTrack::ncompSVEC];
@@ -147,31 +147,31 @@ void FSALMagInt_Driver::GetDerivatives(const G4FieldTrack &y_curr, // const, INp
 }
 
 inline
-G4double FSALMagInt_Driver::GetVerboseLevel() const
+G4double FSALIntegratorDriver::GetVerboseLevel() const
 {
       return fVerboseLevel;
 } 
 
 inline 
-void FSALMagInt_Driver::SetVerboseLevel(G4int newLevel)
+void FSALIntegratorDriver::SetVerboseLevel(G4int newLevel)
 {
       fVerboseLevel= newLevel;
 }
 
 inline
-G4double FSALMagInt_Driver::GetSmallestFraction() const
+G4double FSALIntegratorDriver::GetSmallestFraction() const
 {
       return fSmallestFraction; 
 }
 
 inline
-G4int FSALMagInt_Driver::GetNoTotalSteps() const
+G4int FSALIntegratorDriver::GetNoTotalSteps() const
 {
     return fNoTotalSteps;
 }
 
 inline
-G4int FSALMagInt_Driver::GetTotalNoStepperCalls() const
+G4int FSALIntegratorDriver::GetTotalNoStepperCalls() const
 {
     return TotalNoStepperCalls;
 }

@@ -24,10 +24,10 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.hh 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: FSALMagIntegratorDriver.hh 97124 2016-05-25 23:55:41Z japost $
 //
 //
-// class FSALMagInt_Driver
+// class FSALIntegratorDriver
 //
 // Class description:
 //
@@ -38,16 +38,14 @@
 // - Created. J.Apostolakis.
 // --------------------------------------------------------------------
 
-#ifndef FSALMagInt_Driver_Def
-#define FSALMagInt_Driver_Def
+#ifndef FSALIntegratorDriver_Def
+#define FSALIntegratorDriver_Def
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
 #include "FSALMagIntegratorStepper.hh"
 
-
-
-class FSALMagInt_Driver
+class FSALIntegratorDriver
 {
    public:  // with description
 
@@ -79,11 +77,11 @@ class FSALMagInt_Driver
        //    but does return the errors in  position and
        //        momentum (normalised: Delta_Integration(p^2)/(p^2) )
 
-     FSALMagInt_Driver( G4double                hminimum, 
-                      FSALMagIntegratorStepper *pItsStepper,
-                      G4int                   numberOfComponents=6,
-                      G4int                   statisticsVerbosity=1);
-     ~FSALMagInt_Driver();
+     FSALIntegratorDriver( G4double                hminimum, 
+                        FSALMagIntegratorStepper *pItsStepper,
+                        G4int                   numberOfComponents=6,
+                        G4int                   statisticsVerbosity=1);
+     ~FSALIntegratorDriver();
         // Constructor, destructor.
 
      inline G4double GetHmin() const;
@@ -212,8 +210,8 @@ class FSALMagInt_Driver
 
    private:
 
-     FSALMagInt_Driver(const FSALMagInt_Driver&);
-     FSALMagInt_Driver& operator=(const FSALMagInt_Driver&);
+     FSALIntegratorDriver(const FSALIntegratorDriver&);
+     FSALIntegratorDriver& operator=(const FSALIntegratorDriver&);
         // Private copy constructor and assignment operator.
 
    private:
@@ -269,4 +267,4 @@ class FSALMagInt_Driver
 
 #include "FSALMagIntegratorDriver.icc"
 
-#endif /* FSALMagInt_Driver_Def */
+#endif /* FSALIntegratorDriver_Def */
