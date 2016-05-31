@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4MagIntegratorStepper.hh 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4MagIntegratorStepper.hh 97255 2016-05-30 23:30:02Z japost $
 //
 //
 // class G4MagIntegratorStepper
@@ -34,9 +34,9 @@
 // used in tracking in space dependent magnetic field
 //
 //  A Stepper must integrate over                NumberOfVariables elements,
-//   and also copy (from input to output) any of NoStateVariables  
-//   not included in the NumberOfVariables.  
-// 
+//   and also copy (from input to output) any of NoStateVariables
+//   not included in the NumberOfVariables.
+//
 //  So it is expected that NoStateVariables >= NumberOfVariables
 
 // History:
@@ -53,9 +53,12 @@ class G4MagIntegratorStepper
 {
   public:  // with description
 
-     G4MagIntegratorStepper(G4EquationOfMotion *Equation, 
+     G4MagIntegratorStepper(G4EquationOfMotion *Equation,
                             G4int              numIntegrationVariables,
-                            G4int              numStateVariables=12);
+                            G4int              numStateVariables=12,
+                            bool               isFSAL= false
+                            // , G4int       methodOrder
+                           );
      virtual ~G4MagIntegratorStepper();
        // Constructor and destructor. No actions.
 
@@ -73,10 +76,9 @@ class G4MagIntegratorStepper
        // Estimate the maximum distance of a chord from the true path
        // over the segment last integrated.
 
-     virtual void ComputeRightHandSide( const G4double y[], G4double dydx[] ); 
+     virtual void ComputeRightHandSide( const G4double y[], G4double dydx[] );
        // Must compute the RightHandSide as in the method below
        // Optionally can cache the input y[] and the dydx[] values computed.
-    
 
      inline void NormaliseTangentVector( G4double vec[6] );
        // Simple utility function to (re)normalise 'unit velocity' vector.
@@ -84,18 +86,12 @@ class G4MagIntegratorStepper
      inline void NormalisePolarizationVector( G4double vec[12] );
        // Simple utility function to (re)normalise 'unit spin' vector.
 
-     // virtual    // Allowed  T-Stepper classes  to overload it ! (To Revert!)
-     inline  // Original - and fast
-     void RightHandSide( const double y[], double dydx[] );
-    
-    // Utility method to supply the standard Evaluation of the
+     inline void RightHandSide( const double y[], double dydx[] );
+       // Utility method to supply the standard Evaluation of the
        // Right Hand side of the associated equation.
-
 
      inline G4int  GetNumberOfVariables() const;
        // Get the number of variables that the stepper will integrate over.
-
-     // void   SetNumberOfVariables(G4int newNo);  // Dangerous & obsolete ...
 
      inline G4int  GetNumberOfStateVariables() const;
        // Get the number of variables of state variables (>= above, integration)
@@ -104,22 +100,27 @@ class G4MagIntegratorStepper
        // Returns the order of the integrator
        // i.e. its error behaviour is of the order O(h^order).
 
+     G4int IntegrationOrder() { return fIntegrationOrder; }
+       //  Replacement method - using new data member
+
      inline G4EquationOfMotion *GetEquationOfMotion();
        // As some steppers (eg RKG3) require other methods of Eq_Rhs
        // this function allows for access to them.
      inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
-    
-    //--- --- For DEBUG --- ---
-    inline G4int GetfNoRHSCalls(){
-        return fNoRHSCalls;
-    }
-    void increasefNORHSCalls();
-    
-    inline void ResetfNORHSCalls(){ fNoRHSCalls = 0; }
-    //--- --- ///////// --- ---
+
+     inline unsigned long GetfNoRHSCalls(){ return fNoRHSCalls; }
+     // void IncrementRHSCalls() { fNoRHSCalls++; }
+     inline void ResetfNORHSCalls(){ fNoRHSCalls = 0; }
+       // Count number of calls to RHS method(s)
+
+     bool IsFSAL() { return fIsFSAL; }
+
+  protected:
+     void SetIntegrationOrder(int order) { fIntegrationOrder= order; }
+     void SetFSAL( bool flag= true) { fIsFSAL= flag; }
 
   private:
-  
+
      G4MagIntegratorStepper(const G4MagIntegratorStepper&);
      G4MagIntegratorStepper& operator=(const G4MagIntegratorStepper&);
        // Private copy constructor and assignment operator.
@@ -129,13 +130,15 @@ class G4MagIntegratorStepper
      G4EquationOfMotion *fEquation_Rhs;
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack
-	
-    //--- --- For DEBUG --- ---
-    mutable unsigned int fNoRHSCalls;
-    //--- --- ///////// --- ---
-    
-    // const G4int  fNumberOfVariables;
+     // const G4int  fNumberOfVariables;
 
+     // Counter for calls to RHS method
+     mutable unsigned long fNoRHSCalls;
+
+     // Parameters of a RK method -- must be shared by all steppers of a type
+     // -- Invariants for a class
+     /* const */ int     fIntegrationOrder;  // all ClassicalRK4 steppers are 4th order
+     /* const */ bool    fIsFSAL;            // Depends on RK method & implementation
 };
 
 #include  "G4MagIntegratorStepper.icc"
