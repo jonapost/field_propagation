@@ -1,3 +1,8 @@
+//
+//  Created by quarkxie <qxie@coe.com> 
+//    for GSoC 2014 
+//
+
 #ifndef TMAGERRORSTEPPER_HH
 #define TMAGERRORSTEPPER_HH
 
@@ -25,8 +30,8 @@ class TMagErrorStepper : public G4MagIntegratorStepper
         virtual ~TMagErrorStepper() {;}
 
 
-        inline void RightHandSide(G4double y[], G4double dydx[]) 
-        {fEquation_Rhs->T_Equation::RightHandSide(y, dydx);}
+        inline void RightHandSideInl(G4double y[], G4double dydx[])
+        {fEquation_Rhs->T_Equation::RightHandSideInl(y, dydx);}
 
         inline void Stepper( const G4double yInput[],
                 const G4double dydx[],
@@ -59,7 +64,7 @@ class TMagErrorStepper : public G4MagIntegratorStepper
             // Do two half steps
 
             static_cast<T_Stepper*>(this)->DumbStepper (yInitial,  dydx,   halfStep, yMiddle);
-            this->RightHandSide(yMiddle, dydxMid);    
+            this->RightHandSideInl(yMiddle, dydxMid);    
             static_cast<T_Stepper*>(this)->DumbStepper (yMiddle, dydxMid, halfStep, yOutput); 
 
             // Store midpoint, chord calculation

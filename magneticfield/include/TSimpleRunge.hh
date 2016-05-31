@@ -33,8 +33,8 @@ class TSimpleRunge : public TMagErrorStepper
 
         __attribute__((always_inline)) 
         void 
-        RightHandSide(G4double y[], G4double dydx[]) 
-        { fEquation_Rhs->T_Equation::RightHandSide(y, dydx); }
+        RightHandSideInl(G4double y[], G4double dydx[]) 
+        { fEquation_Rhs->T_Equation::RightHandSideInl(y, dydx); }
 
 
         __attribute__((always_inline)) 
@@ -54,7 +54,7 @@ class TSimpleRunge : public TMagErrorStepper
                 yTemp[i] = yIn[i] + 0.5 * h*dydx[i] ;
             }
 
-            this->RightHandSide(yTemp,dydxTemp);
+            this->RightHandSideInl(yTemp,dydxTemp);
 
             for( i = 0; i < N; i++ ) 
             {

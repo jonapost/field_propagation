@@ -1,0 +1,155 @@
+ ::::: INTERPOLATION ACCURACY RECORD ::: 
+
+ TESTING PERFORMANCE IN UMF 
+
+    :::> Field_factor = 1
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 2095.85 mm 	 theta_step = pi/0.5
+# The Max. error in each coordinate : 
+#	2.89e+00  3.75e+00  0.00e+00  3.75e+00  2.42e+00  0.00e+00  
+ The Average error in each coordinate : 
+#	4.80e-01  1.01e+00  0.00e+00  1.01e+00  5.44e-01  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.6e+03 mm 	 theta_step = pi/0.67
+# The Max. error in each coordinate : 
+#	6.46e+01  1.50e+01  0.00e+00  1.50e+01  5.81e+00  0.00e+00  
+ The Average error in each coordinate : 
+#	5.69e+00  1.72e+00  0.00e+00  1.72e+00  1.29e+00  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.4e+03 mm 	 theta_step = pi/0.75
+# The Max. error in each coordinate : 
+#	4.81e+01  6.09e+00  0.00e+00  6.09e+00  4.27e+00  0.00e+00  
+ The Average error in each coordinate : 
+#	5.73e+00  1.07e+00  0.00e+00  1.07e+00  1.42e+00  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1e+03 mm 	 theta_step = pi/1
+# The Max. error in each coordinate : 
+#	1.34e+02  3.41e+00  0.00e+00  3.41e+00  1.26e+01  0.00e+00  
+ The Average error in each coordinate : 
+#	5.55e+00  1.06e+00  0.00e+00  1.06e+00  1.55e+00  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 5.2e+02 mm 	 theta_step = pi/2
+# The Max. error in each coordinate : 
+#	2.24e+02  1.36e+01  0.00e+00  1.36e+01  1.93e+01  0.00e+00  
+ The Average error in each coordinate : 
+#	1.42e+00  2.68e-01  0.00e+00  2.68e-01  3.31e-01  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 3.5e+02 mm 	 theta_step = pi/3
+# The Max. error in each coordinate : 
+#	1.04e+01  6.54e-01  0.00e+00  6.54e-01  3.88e+02  0.00e+00  
+ The Average error in each coordinate : 
+#	6.44e-02  1.66e-02  0.00e+00  1.66e-02  7.44e-01  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 2.6e+02 mm 	 theta_step = pi/4
+# The Max. error in each coordinate : 
+#	6.67e+00  1.84e-01  0.00e+00  1.84e-01  2.51e-01  0.00e+00  
+ The Average error in each coordinate : 
+#	1.49e-02  2.14e-03  0.00e+00  2.14e-03  3.04e-03  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.7e+02 mm 	 theta_step = pi/6
+# The Max. error in each coordinate : 
+#	1.17e+00  2.15e-02  0.00e+00  2.15e-02  1.66e-02  0.00e+00  
+ The Average error in each coordinate : 
+#	1.63e-03  1.50e-04  0.00e+00  1.50e-04  1.43e-04  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.3e+02 mm 	 theta_step = pi/8
+# The Max. error in each coordinate : 
+#	1.86e+00  8.05e-03  0.00e+00  8.05e-03  1.07e-02  0.00e+00  
+ The Average error in each coordinate : 
+#	5.93e-04  1.75e-05  0.00e+00  1.75e-05  2.39e-05  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing DormandPrince745 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 87 mm 	 theta_step = pi/12
+# The Max. error in each coordinate : 
+#	1.01e-01  5.79e-04  0.00e+00  5.79e-04  4.61e-04  0.00e+00  
+ The Average error in each coordinate : 
+#	3.47e-05  1.36e-06  0.00e+00  1.36e-06  1.31e-06  0.00e+00  
+
+#						------------- End of output ----------------- 
+

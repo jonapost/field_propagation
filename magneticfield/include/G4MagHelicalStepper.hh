@@ -74,7 +74,7 @@ class G4MagHelicalStepper : public G4MagIntegratorStepper
       // Performs a 'dump' Step without error calculation.
   
     G4double DistChord()const ;
-      // Estimate maximum distance of curved solution and chord ... 
+      // Estimate maximum distance of curved solution and chord ...
 
   protected:  // with description
 

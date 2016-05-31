@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorStepper.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: G4MagIntegratorStepper.cc 97255 2016-05-30 23:30:02Z japost $
 //
 // --------------------------------------------------------------------
 
@@ -35,11 +35,15 @@
 
 G4MagIntegratorStepper::G4MagIntegratorStepper(G4EquationOfMotion* Equation,
 					       G4int       num_integration_vars,
-					       G4int       num_state_vars)
+					       G4int       num_state_vars,
+                                               bool        isFSAL
+                                               // , G4int       methodOrder
+   )
   : fEquation_Rhs(Equation),
     fNoIntegrationVariables(num_integration_vars),
-    fNoStateVariables(num_state_vars)
-    // fNumberOfVariables( std::max(num_var,fNoStateVariables) )
+    fNoStateVariables(num_state_vars),
+    fIsFSAL(isFSAL)
+    // , fIntegrationOrder( methodOrder )
 {
 }
 

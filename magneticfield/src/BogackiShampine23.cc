@@ -1,9 +1,23 @@
-/*
- * BogackiShampine23.cc
- *
- *  Created on: 20-May-2015
- *      Author: hackabot
- */
+//  Bogacki-Shampine - 4 - 3(2) non-FSAL implementation by Somnath Banerjee
+//  Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2015.
+// 
+// First version: 20 May 2015
+//
+// This code is made available subject to the Geant4 license, a copy of
+// which is available at
+//   http://geant4.org/license
+//  BogackiShapine23.cc
+//  Geant4
+//
+//  History
+// -----------------------------
+//  Created by Somnath on 20 May 2015
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
 
 /*
 
@@ -35,13 +49,14 @@ BogackiShampine23::BogackiShampine23(G4EquationOfMotion *EqRhs,
 {
   const G4int numberOfVariables = noIntegrationVariables;
 
-//New Chunk of memory being created for use by the stepper
   ak2 = new G4double[numberOfVariables] ;
   ak3 = new G4double[numberOfVariables] ;
   ak4 = new G4double[numberOfVariables] ;
 
   yTemp = new G4double[numberOfVariables] ;
   yIn = new G4double[numberOfVariables] ;
+    
+  pseudoDydx_for_DistChord = new G4double[numberOfVariables];
 
   fLastInitialVector = new G4double[numberOfVariables] ;
   fLastFinalVector = new G4double[numberOfVariables] ;
@@ -59,10 +74,6 @@ BogackiShampine23::BogackiShampine23(G4EquationOfMotion *EqRhs,
 //Destructor
 BogackiShampine23::~BogackiShampine23()
 {
-
-
-//clear all previously allocated memory for stepper and DistChord
-
   delete[] ak2;
   delete[] ak3;
   delete[] ak4;
@@ -79,82 +90,93 @@ BogackiShampine23::~BogackiShampine23()
   delete fAuxStepper;
 }
 
-void BogackiShampine23::Stepper(const G4double yInput[],
-                         const G4double dydx[],
-                               G4double Step,
-                               G4double yOut[],
-                               G4double yErr[])
+//******************************************************************************
+//
+// Given values for n = 4 variables yIn[0,...,n-1]
+// known  at x, use the 3rd order Bogacki Shampine method
+// to advance the solution over an interval Step
+// and return the incremented variables as yOut[0,...,n-1]. Also
+// return an estimate of the local truncation error yErr[] using the
+// embedded 2nd order method. The user supplies routine
+// RightHandSide(y,dydx), which returns derivatives dydx for y .
+
+
+//******************************************************************************
+
+
+void
+BogackiShampine23::Stepper( const G4double yInput[],
+                         	const G4double DyDx[],
+                              	  G4double Step,
+                              	  G4double yOut[],
+                              	  G4double yErr[])
 {
     
  G4int i;
-    
 
  const G4double  b21 = 0.5 ,
-                 b31 = 0 , b32 = 3.0/4.0 ,
-                 b41 = 2.0/9.0, b42 = 1.0/3.0 , b43 = 4.0/9.0 ,
-				 c1 = 2.0/9.0, c2 = 1.0/3.0 , c3 = 4.0/9.0 , c4 = 0 ;
+                 b31 = 0. , b32 = 3.0/4.0 ,
+                 b41 = 2.0/9.0, b42 = 1.0/3.0 , b43 = 4.0/9.0;
 
 
- const G4double  dc1 = c1 - 7.0/24.0 ,  dc2 = c2 - 1.0/4.0 ,
-  				 dc3 = c3 - 1.0/3.0 , dc4 = c4 - 0.125 ;
+ const G4double  dc1 = b41 - 7.0/24.0 ,  dc2 = b42 - 1.0/4.0 ,
+  				 dc3 = b43 - 1.0/3.0 , dc4 = - 0.125 ;
+    
+    
 
  // Initialise time to t0, needed when it is not updated by the integration.
  //        [ Note: Only for time dependent fields (usually electric)
  //                  is it neccessary to integrate the time.]
  yOut[7] = yTemp[7]   = yIn[7];
 
- const G4int numberOfVariables= this->GetNumberOfVariables();
-    
-   // The number of variables to be integrated over
+ const G4int numberOfVariables= this->GetNumberOfVariables();	// The number of variables to be integrated over
 
    //  Saving yInput because yInput and yOut can be aliases for same array
 
    for(i=0;i<numberOfVariables;i++)
    {
-     yIn[i]=yInput[i];
+     	yIn[i]=yInput[i];
    }
  // RightHandSide(yIn, dydx) ;              // 1st Step --Not doing, getting passed
+    
+    for(i=0;i<numberOfVariables;i++)
+    {
+        yTemp[i] = yIn[i] + b21*Step*DyDx[i] ;
+    }
+    RightHandSide(yTemp, ak2) ;              // 2nd Step
+    
+    for(i=0;i<numberOfVariables;i++)
+    {
+        yTemp[i] = yIn[i] + Step*(b31*DyDx[i] + b32*ak2[i]) ;
+    }
+    RightHandSide(yTemp, ak3) ;              // 3rd Step
+    
+    for(i=0;i<numberOfVariables;i++)
+    {
+        yOut[i] = yIn[i] + Step*(b41*DyDx[i] + b42*ak2[i] + b43*ak3[i]) ;
+    }
+    RightHandSide(yOut, ak4) ;              // 4th Step
+    
+    for(i=0;i<numberOfVariables;i++)
+    {
+        //         yOut[i] = yIn[i] + Step*(c1*DyDx[i]+ c2*ak2[i] + c3*ak3[i] + c4*ak4[i]);
+        
+        yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] +
+                        dc4*ak4[i] ) ;
 
-	 for(i=0;i<numberOfVariables;i++)
-	 {
-	   yTemp[i] = yIn[i] + b21*Step*dydx[i] ;
-	 }
-	 RightHandSide(yTemp, ak2) ;              // 2nd Step
-
-	 for(i=0;i<numberOfVariables;i++)
-	 {
-		yTemp[i] = yIn[i] + Step*(b31*dydx[i] + b32*ak2[i]) ;
-	 }
-	 RightHandSide(yTemp, ak3) ;              // 3rd Step
-
-	 for(i=0;i<numberOfVariables;i++)
-	 {
-		yTemp[i] = yIn[i] + Step*(b41*dydx[i] + b42*ak2[i] + b43*ak3[i]) ;
-	 }
-	 RightHandSide(yTemp, ak4) ;              // 4th Step
-
-	 for(i=0;i<numberOfVariables;i++)
-	 {
-         yOut[i] = yIn[i] + Step*(c1*dydx[i]+ c2*ak2[i] + c3*ak3[i] + c4*ak4[i]);
-         
-         yErr[i] = Step*(dc1*dydx[i] + dc2*ak2[i] + dc3*ak3[i] +
-		          dc4*ak4[i] ) ;
-
-		// Store Input and Final values, for possible use in calculating chord
-		fLastInitialVector[i] = yIn[i] ;
-		fLastFinalVector[i]   = yOut[i];
-		fLastDyDx[i]          = dydx[i];
-	 }
- // NormaliseTangentVector( yOut ); // Not wanted
-
- fLastStepLength =Step;
-
- return ;
+        
+        // Store Input and Final values, for possible use in calculating chord
+        fLastInitialVector[i] = yIn[i] ;
+        fLastFinalVector[i]   = yOut[i];
+        fLastDyDx[i]          = DyDx[i];
+    }
+    // NormaliseTangentVector( yOut ); // Not wanted
+    
+    fLastStepLength =Step;
+    
+    return ;
 }
 
-
-//The following has not been tested
-//The DistChord() function - must define it here
 G4double  BogackiShampine23::DistChord() const
 {
   G4double distLine, distChord;
@@ -189,27 +211,4 @@ G4double  BogackiShampine23::DistChord() const
   return distChord;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//------Verified-------

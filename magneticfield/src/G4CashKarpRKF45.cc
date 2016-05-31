@@ -141,7 +141,8 @@ G4CashKarpRKF45::Stepper(const G4double yInput[],
  //                  is it neccessary to integrate the time.] 
  yOut[7] = yTemp[7]   = yIn[7]; 
 
- const G4int numberOfVariables= this->GetNumberOfVariables(); 
+ const G4int numberOfVariables= this->GetNumberOfVariables();
+    
  // The number of variables to be integrated over
 
    //  Saving yInput because yInput and yOut can be aliases for same array
@@ -262,3 +263,9 @@ G4double  G4CashKarpRKF45::DistChord() const
 }
 
 
+//inline
+//void G4MagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )
+//{
+//    fEquation_Rhs-> RightHandSide(y, dydx);
+//    increasefNORHSCalls();
+//}

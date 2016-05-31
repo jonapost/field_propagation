@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.icc 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: G4ChordFinder.icc 68939 2013-04-12 00:24:29Z gum $
 //
 // G4ChordFinder inline implementations
 //
@@ -129,3 +129,34 @@ inline G4double G4ChordFinder::InvParabolic ( const G4double xa, const G4double 
 	const G4double P = S*(T*(R-T)*(xc-xb) - (1-R)*(xb-xa));
 	return xb + P/Q;
 }
+
+//  New - to cope with different type for FSAL steppers
+// =====================================================
+inline void G4ChordFinder::SetFSALIntegrationDriver(FSALIntegratorDriver* fsalDriver)
+{
+  fFSALIntgrDriver= fsalDriver;
+}
+
+inline FSALIntegratorDriver* G4ChordFinder::GetFSALIntegrationDriver()
+{
+  return fFSALIntgrDriver;
+}
+
+#include "G4MagIntegratorStepper.hh"
+#include "FSALMagIntegratorStepper.hh"
+
+inline G4EquationOfMotion* G4ChordFinder::GetEquationOfMotion()
+{
+  G4EquationOfMotion* pEquation;
+  if( fIntgrDriver ) {
+     G4MagIntegratorStepper* stepper= fIntgrDriver->GetStepper();
+     pEquation = stepper->GetEquationOfMotion();
+  } else {
+     FSALMagIntegratorStepper* fsalStepper = fFSALIntgrDriver->GetStepper();
+     pEquation = fsalStepper->GetEquationOfMotion();
+  }
+  return pEquation;
+}
+
+
+

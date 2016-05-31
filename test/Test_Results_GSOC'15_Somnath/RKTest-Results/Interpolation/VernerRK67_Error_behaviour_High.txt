@@ -1,0 +1,155 @@
+ ::::: INTERPOLATION ACCURACY RECORD ::: 
+
+ TESTING PERFORMANCE IN UMF 
+
+    :::> Field_factor = 1
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 2095.85 mm 	 theta_step = pi/0.5
+# The Max. error in each coordinate : 
+#	2.01e+01  2.82e+00  0.00e+00  2.82e+00  4.96e+00  0.00e+00  
+ The Average error in each coordinate : 
+#	3.05e+00  5.49e-01  0.00e+00  5.49e-01  1.91e+00  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.6e+03 mm 	 theta_step = pi/0.67
+# The Max. error in each coordinate : 
+#	1.12e+02  4.12e+01  0.00e+00  4.12e+01  1.15e+01  0.00e+00  
+ The Average error in each coordinate : 
+#	6.70e+00  2.94e+00  0.00e+00  2.94e+00  2.36e+00  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.4e+03 mm 	 theta_step = pi/0.75
+# The Max. error in each coordinate : 
+#	1.11e+01  8.93e+00  0.00e+00  8.93e+00  1.17e+01  0.00e+00  
+ The Average error in each coordinate : 
+#	1.86e+00  1.20e+00  0.00e+00  1.20e+00  1.67e+00  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1e+03 mm 	 theta_step = pi/1
+# The Max. error in each coordinate : 
+#	2.17e+00  2.83e+00  0.00e+00  2.83e+00  4.44e+00  0.00e+00  
+ The Average error in each coordinate : 
+#	1.80e-01  1.93e-01  0.00e+00  1.93e-01  2.58e-01  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 5.2e+02 mm 	 theta_step = pi/2
+# The Max. error in each coordinate : 
+#	4.85e-01  2.83e-02  0.00e+00  2.83e-02  4.06e-02  0.00e+00  
+ The Average error in each coordinate : 
+#	3.15e-03  5.99e-04  0.00e+00  5.99e-04  7.29e-04  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 3.5e+02 mm 	 theta_step = pi/3
+# The Max. error in each coordinate : 
+#	4.49e-02  2.88e-03  0.00e+00  2.88e-03  8.59e+00  0.00e+00  
+ The Average error in each coordinate : 
+#	2.82e-04  7.41e-05  0.00e+00  7.41e-05  5.88e-02  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 2.6e+02 mm 	 theta_step = pi/4
+# The Max. error in each coordinate : 
+#	2.82e-02  7.74e-04  0.00e+00  7.74e-04  1.06e-03  0.00e+00  
+ The Average error in each coordinate : 
+#	6.34e-05  9.08e-06  0.00e+00  9.08e-06  1.29e-05  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.7e+02 mm 	 theta_step = pi/6
+# The Max. error in each coordinate : 
+#	3.32e-03  5.87e-05  0.00e+00  5.87e-05  4.52e-05  0.00e+00  
+ The Average error in each coordinate : 
+#	4.70e-06  4.05e-07  0.00e+00  4.05e-07  3.86e-07  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 1.3e+02 mm 	 theta_step = pi/8
+# The Max. error in each coordinate : 
+#	2.96e-03  1.19e-05  0.00e+00  1.19e-05  1.59e-05  0.00e+00  
+ The Average error in each coordinate : 
+#	9.51e-07  2.58e-08  0.00e+00  2.58e-08  3.53e-08  0.00e+00  
+
+#						------------- End of output ----------------- 
+
+
+
+ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+Testing VernerRK67 ...
+
+# 			  -------| RESULTS |--------
+
+# 	Step_len = 87 mm 	 theta_step = pi/12
+# The Max. error in each coordinate : 
+#	1.22e-05  1.36e-07  0.00e+00  1.36e-07  1.14e-07  0.00e+00  
+ The Average error in each coordinate : 
+#	5.17e-09  3.68e-10  0.00e+00  3.68e-10  3.62e-10  0.00e+00  
+
+#						------------- End of output ----------------- 
+

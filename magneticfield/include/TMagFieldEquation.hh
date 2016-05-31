@@ -25,7 +25,7 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
         }
 
         __attribute__((always_inline)) 
-        void RightHandSide(const G4double y[], G4double dydx[] )
+        void RightHandSideInl(const G4double y[], G4double dydx[] )
             //	const
         {
                 G4double Field[G4maximum_number_of_field_components]; 
@@ -36,6 +36,11 @@ class TMagFieldEquation : public G4Mag_UsualEqRhs
                 PositionAndTime[3] = y[7];   
                 GetFieldValue(PositionAndTime, Field) ;
                 TEvaluateRhsGivenB(y, Field, dydx);
+        }
+
+        void RightHandSide(const G4double y[], G4double dydx[] )
+        {
+             RightHandSideInl( y, dydx );
         }
 
         inline void TEvaluateRhsGivenB( const G4double y[],

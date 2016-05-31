@@ -27,6 +27,8 @@ using namespace CLHEP;
     2. BogackiShampine23
     3. DormandPrince745
     4. BogackiShampine45
+    5. G4ClassicalRK4
+    6. G4SimpleHeum
  */
 
 
@@ -72,6 +74,7 @@ int main(int argc, char *args[]){
         0 ,  //x_mom
         0 ,  //y_mom
         0    //z_mom
+        
         
     }; //Variables in yOut[] you want to display - 0 for No, 1 for yes
     
@@ -122,7 +125,7 @@ int main(int argc, char *args[]){
                               magneticMoment=0.0);
 
     fEquation->SetChargeMomentumMass( chargeState,
-                                G4ThreeVector(x_field, y_field, z_field).mag(), //momentum magnitude
+                                G4ThreeVector(x_mom, y_mom, z_mom).mag(), //momentum magnitude
                                 mass);//No place fo mass in fEquation though
     
     //Create a stepper :
@@ -161,6 +164,7 @@ int main(int argc, char *args[]){
             cout << setw(13)<< "yOut[" << i << "]"
                  << setw(13) << "yErr[" << i << "]"
                  << setw(13) << "yOut-yOutX[" << i << "]";
+    cout<<setw(13)<<"tan-1(y/x)";
 
     
         //-> Then print the data
@@ -176,6 +180,8 @@ int main(int argc, char *args[]){
     /*----------------NOW STEPPING-----------------*/
     
         for(int j=0; j<no_of_steps; j++){
+            
+            
         
             cout<<setw(8)<<j + 1;           //Printing Step number
             
@@ -184,18 +190,23 @@ int main(int argc, char *args[]){
             
         
             exactStepper->RightHandSide(yInX, dydxRef);                 //compute the value of dydx for the exact stepper
-                                                                            // ^ Same dydx space being used
+                                                                            
             exactStepper->Stepper(yInX,dydxRef,step_len,youtX,yerrX);       //call the exact stepper
 
             
 
         //-> Then print the data
+            cout.setf (ios_base::scientific);
+            cout.precision(3);
             for(int i=0; i<6;i++)
                 if(columns[i]){
                     cout<<setw(15)<<yout[i]<<setw(15);
                     cout<<setw(15)<<yerr[i];
                     cout<<setw(15)<<yout[i] - youtX[i];
                 }
+            cout.unsetf(ios_base::scientific);
+            cout.precision(6);
+            cout<<setw(13)<<atan(yout[1]/yout[0])/degree;
         
         //Copy yout into yIn
             for(int i=0; i<6;i++){

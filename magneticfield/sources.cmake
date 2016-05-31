@@ -29,6 +29,8 @@ include_directories(${CMAKE_SOURCE_DIR}/source/global/management/include)
 include(Geant4MacroDefineModule)
 GEANT4_DEFINE_MODULE(NAME G4magneticfield
     HEADERS
+        BogackiShampine23.hh
+        BogackiShampine45.hh
         G4CachedMagneticField.hh
         G4CashKarpRKF45.hh
         G4ChargeState.hh
@@ -38,6 +40,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
+        DormandPrince745.hh
         G4ElectricField.hh
         G4ElectroMagneticField.hh
         G4EqEMFieldWithEDM.hh
@@ -55,6 +58,12 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4FieldManagerStore.hh
         G4FieldTrack.hh
         G4FieldTrack.icc
+        FBogackiShampine45.hh
+        FDormandPrince745.hh
+        FSALIntegratorDriver.hh
+        FSALIntegratorDriver.icc
+        FSALMagIntegratorStepper.hh
+        FSALMagIntegratorStepper.icc
         G4HarmonicPolMagField.hh
         G4HelixExplicitEuler.hh
         G4HelixHeum.hh
@@ -85,26 +94,16 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4SimpleRunge.hh
         G4TrialsCounter.hh
         G4TrialsCounter.icc
+        TsitourasRK45.hh
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
-	    TCashKarpRKF45.hh
-	    TMagFieldEquation.hh
-	    TCachedMagneticField.hh
-	    TQuadrupoleMagField.hh
-	    TMagErrorStepper.hh
-	    TClassicalRK4.hh
-        TUniformMagField.hh
-        TSimpleHeum.hh
-        TSimpleRunge.hh
-        TExplicitEuler.hh
-        TMagIntegratorDriver.hh
-        TChordFinder.hh
-        DormandPrince745.hh 
-        BogackiShampine23.hh
-        BogackiShampine45.hh
-
+        VernerRK56.hh
+        VernerRK67.hh
+        VernerRK78.hh
     SOURCES
+        BogackiShampine23.cc
+        BogackiShampine45.cc
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
         G4ChargeState.cc
@@ -113,6 +112,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc
+        DormandPrince745.cc
         G4ElectricField.cc
         G4ElectroMagneticField.cc
         G4EqEMFieldWithEDM.cc
@@ -127,6 +127,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4FieldManager.cc
         G4FieldManagerStore.cc
         G4FieldTrack.cc
+        FSALIntegratorDriver.cc
+        FSALMagIntegratorStepper.cc
         G4HarmonicPolMagField.cc
         G4HelixExplicitEuler.cc
         G4HelixHeum.cc
@@ -152,12 +154,13 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4SimpleHeum.cc
         G4SimpleRunge.cc
         G4TrialsCounter.cc
+        TsitourasRK45.cc
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
-        DormandPrince745.cc
-        BogackiShampine23.cc
-        BogackiShampine45.cc
+        VernerRK56.cc
+        VernerRK67.cc
+        VernerRK78.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

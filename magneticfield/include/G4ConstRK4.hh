@@ -74,6 +74,8 @@ class G4ConstRK4 : public G4MagErrorStepper
    public:  // without description
 
      G4int IntegratorOrder() const { return 4; }
+    G4bool isFSAL() const{ return false; }
+
 
    private:
 
