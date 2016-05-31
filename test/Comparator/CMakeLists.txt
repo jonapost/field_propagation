@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 set(pname Comparator)
 project(${pname})
 
+find_package(Boost REQUIRED)
+include_directories( ${Boost_INCLUDE_DIR} )
+
 find_package(Geant4 REQUIRED)
 
 # Setup Geant4 include directories and compile definitions

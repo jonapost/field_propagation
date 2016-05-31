@@ -126,11 +126,18 @@ void Comparator::Compare(const G4double stepLen, const G4int NSteps, const bool 
     }
 }
 
-//template <class testDriver, class refDriver>
-//void CompareDrivers(const G4double stepLen, const G4int NSteps, const G4int verb){
-//    //class T_Field, class T_Equation, class T_Stepper, class T_Driver
-//    ChordFinder<G4MagneticField, G4EquationOfMotion, > chordFinder(new testDriver);
+template <class testDriver, class refDriver>
+void Comparator::CompareDrivers(const G4double stepLen, const G4int NSteps, const G4int verb)
+{
+    ChordFinder<G4MagneticField, testDriver> testChordFinder(equation);
+    ChordFinder<G4MagneticField, refDriver> refChordFinder(equation);
+    G4double yOut[N], yOutRef[N];
+    for (G4int i = 0; i < NSteps; ++i){
+        G4cout<<"Comparator::CompareDrivers "<<i<<" stepLen "<<stepLen<<G4endl;
+        testChordFinder.AdvanceChordLimited(*testTrack,stepLen,1e-2);
 
+    }
+}
 
 
 
