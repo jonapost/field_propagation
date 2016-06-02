@@ -172,7 +172,7 @@ G4ChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 
 // ......................................................................
 
-#define BS
+//#define BS
 
 #ifdef BS
 G4double

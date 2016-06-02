@@ -132,7 +132,7 @@ G4MagInt_Driver::~G4MagInt_Driver()
 // #define  G4DEBUG_FIELD 1    
 
 // ---------------------------------------------------------
-#define BS
+//#define BS
 #ifndef BS
 G4bool
 G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
