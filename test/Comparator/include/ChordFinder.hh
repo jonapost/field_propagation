@@ -44,12 +44,14 @@ G4double ChordFinder<T_Driver>::AdvanceChordLimited(G4FieldTrack& track,
                                                     G4double hstep,
                                                     G4double epsStep){
 
-
+    //G4cout<<"AdvanceChordLimited: hstep "<<hstep<<G4endl;
     G4FieldTrack tmpTrack(track);
-    hstep = FindNextChord(tmpTrack, hstep, epsStep);
-    fIntgrDriver->AccurateAdvance(track, hstep, epsStep);
+    G4double dostep = FindNextChord(tmpTrack, hstep, epsStep);
+    //G4cout<<"do step "<<dostep<<G4endl;
 
-    return hstep;
+    fIntgrDriver->AccurateAdvance(track, dostep, epsStep);
+
+    return dostep;
  }
 
 template <class T_Driver>
@@ -74,7 +76,7 @@ G4double ChordFinder<T_Driver>::FindNextChord(G4FieldTrack& track,
 
          // Check whether the chord is small enough.
          validEndPoint = chordStep < fDeltaChord;
-         //G4cout<<"dChordStep "<<dChordStep<<"  fDeltaChord "<<fDeltaChord<<" hstep "<<hstep<<G4endl;
+         //G4cout<<"chordStep "<<chordStep<<"  fDeltaChord "<<fDeltaChord<<" hstep "<<hstep<<G4endl;
 
          if(!validEndPoint ) hstep *= 0.1;
 

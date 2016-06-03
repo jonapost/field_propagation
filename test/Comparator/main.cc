@@ -10,12 +10,10 @@
 #include "G4CashKarpRKF45.hh"
 #include "G4ExplicitEuler.hh"
 
-#include "BulirschStoerDenceDriver.hh"
+#include "G4CachedMagneticField.hh"
 
 using namespace std;
 using namespace CLHEP;
-
-
 
 
 int main(){

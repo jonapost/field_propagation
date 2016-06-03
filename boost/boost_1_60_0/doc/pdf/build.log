@@ -1,0 +1,229 @@
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+Jamfile.v2:67: in modules.load
+ERROR: rule "doxygen" unknown in module "Jamfile</home/dmitry/boost/boost_1_60_0/libs/accumulators/doc>".
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+Jamfile.v2:50: in modules.load
+ERROR: rule "doxygen" unknown in module "Jamfile</home/dmitry/boost/boost_1_60_0/libs/container/doc>".
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/type.jam:157: in type.validate from module type
+error: Unknown target type DOCBOOK
+(builtin):-1: in sequence.transform from module sequence
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/generators.jam:237: in class@generator.__init__ from module object(auto-index-generator)@1472
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/class.jam:90: in class.new from module class
+/home/dmitry/boost/boost_1_60_0/tools/build/src/tools/auto-index.jam:187: in load from module auto-index
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import from module modules
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/toolset.jam:41: in toolset.using from module toolset
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:1052: in using from module project-rules
+Jamfile.v2:10: in modules.load from module Jamfile</home/dmitry/boost/boost_1_60_0/libs/interprocess/doc>
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile from module project
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load from module project
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find from module project
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load from module build-system
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import from module modules
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build from module
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope from module
+
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/type.jam:157: in type.validate from module type
+error: Unknown target type DOCBOOK
+(builtin):-1: in sequence.transform from module sequence
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/generators.jam:237: in class@generator.__init__ from module object(auto-index-generator)@1470
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/class.jam:90: in class.new from module class
+/home/dmitry/boost/boost_1_60_0/tools/build/src/tools/auto-index.jam:187: in load from module auto-index
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import from module modules
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/toolset.jam:41: in toolset.using from module toolset
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:1052: in using from module project-rules
+Jamfile.v2:10: in modules.load from module Jamfile</home/dmitry/boost/boost_1_60_0/libs/intrusive/doc>
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile from module project
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load from module project
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find from module project
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load from module build-system
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import from module modules
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build from module
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope from module
+
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+Jamfile.v2:22: in modules.load
+ERROR: rule "doxygen" unknown in module "Jamfile</home/dmitry/boost/boost_1_60_0/libs/functional/overloaded_function/doc>".
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+Jamfile.v2:25: in modules.load
+ERROR: rule "doxygen" unknown in module "Jamfile</home/dmitry/boost/boost_1_60_0/libs/local_function/doc>".
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+Jamfile.v2:20: in modules.load
+ERROR: rule "doxygen" unknown in module "Jamfile</home/dmitry/boost/boost_1_60_0/libs/utility/identity_type/doc>".
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+Building the odeint docs with automatic index generation enabled.
+Jamfile.v2:141: in modules.load
+*** argument error
+* rule doxygen ( target : sources + : requirements * : default-build * : usage-requirements * )
+* called with: ( reference :  : <doxygen:param>WARNINGS=YES <doxygen:param>WARN_LOGFILE=AutoDoxywarnings.log <doxygen:param>WARN_IF_UNDOCUMENTED=NO <doxygen:param>QUIET=NO <doxygen:param>WARN_NO_PARAMDOC=NO <doxygen:param>DOXYFILE_ENCODING=UTF-8 <doxygen:param>PROJECT_NAME=odeint <doxygen:param>PROJECT_NUMBER=2.2 <doxygen:param>TAB_SIZE=2 <doxygen:param>SORT_MEMBER_DOCS=NO <doxygen:param>SORT_BRIEF_DOCS=NO <doxygen:param>SORT_MEMBERS_CTORS_1ST=NO <doxygen:param>EXTRACT_PRIVATE=NO <doxygen:param>INLINE_INHERITED_MEMB=YES <doxygen:param>INHERIT_DOCS=YES <doxygen:param>EXTRACT_STATIC=YES <doxygen:param>EXTRACT_ANON_NSPACES=NO <doxygen:param>EXTRACT_LOCAL_CLASSES=YES <doxygen:param>EXTRACT_LOCAL_METHODS=YES <doxygen:param>HIDE_UNDOC_MEMBERS=NO <doxygen:param>HIDE_UNDOC_CLASSES=YES <doxygen:param>HIDE_FRIEND_COMPOUNDS=NO <doxygen:param>INTERNAL_DOCS=YES <doxygen:param>CASE_SENSE_NAMES=NO <doxygen:param>HIDE_SCOPE_NAMES=NO <doxygen:param>PREDEFINED= \
+    "BOOST_UNITS_STATIC_CONSTANT(a,b)=static const b a" \
+    "BOOST_UNITS_TYPEOF(a)=typeof(a)" \
+    "BOOST_PREVENT_MACRO_SUBSTITUTION=" \
+    "BOOST_UNITS_HAS_TYPEOF=1" \
+    "DOXYGEN_SKIP=1"  <doxygen:param>ENABLE_PREPROCESSING=YES <doxygen:param>MACRO_EXPANSION=YES <doxygen:param>EXPAND_ONLY_PREDEF=YES <doxygen:param>SEARCH_INCLUDES=YES <doxygen:param>INLINE_INFO=YES <doxygen:param>SHOW_INCLUDE_FILES=NO <doxygen:param>REPEAT_BRIEF=YES <doxygen:param>BRIEF_MEMBER_DESC=YES <doxygen:param>MULTILINE_CPP_IS_BRIEF=YES <doxygen:param>SHOW_USED_FILES=YES <doxygen:param>SHOW_DIRECTORIES=YES <doxygen:param>SHOW_FILES=YES <doxygen:param>SHOW_NAMESPACES=YES <doxygen:param>FILE_PATTERNS= <doxygen:param>RECURSIVE=YES <doxygen:param>EXCLUDE= <doxygen:param>HTML_STYLESHEET=doxygen/doxygen.css <xsl:param>boost.doxygen.reftitle=odeint Reference )
+* missing argument sources
+/home/dmitry/boost/boost_1_60_0/tools/build/src/tools/doxygen.jam:622:see definition of rule 'doxygen' being called
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:325: in load-jamfile
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:64: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/project.jam:145: in project.find
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:535: in load
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+warning: No toolsets are configured.
+warning: Configuring default toolset "gcc".
+warning: If the default is wrong, your build may not work correctly.
+warning: Use the "toolset=xxxxx" option to override our guess.
+warning: For more configuration options, please consult
+warning: http://boost.org/boost-build2/doc/html/bbv2/advanced/configuration.html
+Performing configuration checks
+
+    - 32-bit                   : no
+    - 64-bit                   : yes
+    - arm                      : no
+    - mips1                    : no
+    - power                    : no
+    - sparc                    : no
+    - x86                      : yes
+    - symlinks supported       : yes
+...patience...
+...found 1992 targets...
+...updating 33 targets...
+common.mkdir ../../../../../../../bin.v2/libs
+common.mkdir ../../../../../../../bin.v2/libs/geometry
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src/docutils
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools/doxygen_xml2qbk
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools/doxygen_xml2qbk/gcc-5.3.1
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools/doxygen_xml2qbk/gcc-5.3.1/release
+common.mkdir ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools/doxygen_xml2qbk/gcc-5.3.1/release/link-static
+gcc.compile.c++ ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools/doxygen_xml2qbk/gcc-5.3.1/release/link-static/doxygen_xml2qbk.o
+common.mkdir ../../../../../../../bin.v2/libs/program_options
+common.mkdir ../../../../../../../bin.v2/libs/program_options/build
+common.mkdir ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1
+common.mkdir ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release
+common.mkdir ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/cmdline.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/config_file.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/options_description.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/parsers.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/variables_map.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/value_semantic.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/positional_options.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/utf8_codecvt_facet.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/convert.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/winmain.o
+gcc.compile.c++ ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/split.o
+gcc.archive ../../../../../../../bin.v2/libs/program_options/build/gcc-5.3.1/release/link-static/libboost_program_options.a
+gcc.link ../../../../../../../bin.v2/libs/geometry/doc/src/docutils/tools/doxygen_xml2qbk/gcc-5.3.1/release/link-static/doxygen_xml2qbk
+common.mkdir ../../../../../../../dist
+common.mkdir ../../../../../../../dist/bin
+common.copy ../../../../../../../dist/bin/doxygen_xml2qbk
+...updated 33 targets...
+sh: doxygen: command not found
+Boost.Geometry is making .qbk files in /home/dmitry/boost/boost_1_60_0/libs/geometry/doc
+Traceback (most recent call last):
+  File "./make_qbk.py", line 84, in <module>
+    call_doxygen()
+  File "./make_qbk.py", line 51, in call_doxygen
+    run_command(doxygen_cmd)
+  File "./make_qbk.py", line 41, in run_command
+    raise Exception("Error running %s" % command)
+Exception: Error running doxygen
+warning: mismatched versions of Boost.Build engine and core
+warning: Boost.Build engine (bjam) is 2014.03.00
+warning: Boost.Build core (at /home/dmitry/boost/boost_1_60_0/tools/build/src) is 2015.07-git
+warning: No toolsets are configured.
+warning: Configuring default toolset "gcc".
+warning: If the default is wrong, your build may not work correctly.
+warning: Use the "toolset=xxxxx" option to override our guess.
+warning: For more configuration options, please consult
+warning: http://boost.org/boost-build2/doc/html/bbv2/advanced/configuration.html
+Performing configuration checks
+
+    - 32-bit                   : no  (cached)
+    - 64-bit                   : yes (cached)
+    - arm                      : no  (cached)
+    - mips1                    : no  (cached)
+    - power                    : no  (cached)
+    - sparc                    : no  (cached)
+    - x86                      : yes (cached)
+warn: Unable to construct ./array_docs
+warn: Unable to construct ./any_docs
+warn: Unable to construct ./array_docs
+warn: Unable to construct ./any_docs
+    - symlinks supported       : yes
+warn: Unable to construct ../../libs/align/doc/standalone
+/home/dmitry/boost/boost_1_60_0/tools/build/src/tools/boostbook.jam:704: in construct from module object(boostbook-target-class)@2237
+error: Cannot build documentation type 'pdf'.
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:1353: in class@basic-target.generate from module object(boostbook-target-class)@2237
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:774: in generate-really from module object(main-target)@2247
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:746: in class@main-target.generate from module object(main-target)@2247
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:895: in targets.generate-from-reference from module targets
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:1266: in generate-dependencies from module object(install-target-class)@1541
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:1323: in class@basic-target.generate from module object(install-target-class)@1541
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:774: in generate-really from module object(main-target)@1652
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:746: in class@main-target.generate from module object(main-target)@1652
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build/targets.jam:272: in class@project-target.generate from module object(project-target)@1513
+/home/dmitry/boost/boost_1_60_0/tools/build/src/build-system.jam:710: in load from module build-system
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/modules.jam:295: in import from module modules
+/home/dmitry/boost/boost_1_60_0/tools/build/src/kernel/bootstrap.jam:139: in boost-build from module
+/home/dmitry/boost/boost_1_60_0/boost-build.jam:17: in module scope from module
+
