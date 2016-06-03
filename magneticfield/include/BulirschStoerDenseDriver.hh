@@ -40,7 +40,7 @@ public:
                             G4double hstep,
                             G4double eps); //relative error
 
-    //tries one Step with lower accuracy returns error
+    //tries one Step with lower accuracy returns step did
     G4double QuickAdvance(G4FieldTrack& track,
                           G4double hstep,
                           G4double& chord, //chord between start and end points

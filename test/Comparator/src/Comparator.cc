@@ -14,7 +14,7 @@ Comparator::Comparator(G4DynamicParticle* pDynParticle, G4MagneticField* pfield)
     equation(nullptr),
     dynParticle(pDynParticle),
     pos(0,0,0),
-    hmin(1e-6),
+    hmin(1e-4),
     precision(1e-4),
     diffSteps(0),
     maxDiff(0)

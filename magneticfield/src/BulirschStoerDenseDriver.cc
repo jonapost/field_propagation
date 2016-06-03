@@ -44,6 +44,7 @@ G4double  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
                                                  G4double& chord,
                                                  G4double eps){
 
+
     eps = std::sqrt(sqr(quickEps) + sqr(eps)); //geometric mean
     bulirsch_stoer_dense_out<state_type> stepper(0,eps,1,0);
 
@@ -97,8 +98,8 @@ void BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
     G4double clEnd = curveLength + hstep;
     G4double hrest = hstep;
 
-    G4cout<<"in: ";
-    print(y);
+    //G4cout<<"in: ";
+    //print(y);
 
     while(hrest > eps){
         stepper.initialize(y,curveLength,hrest);
@@ -107,8 +108,8 @@ void BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
         hrest = clEnd - curveLength;
         y = stepper.current_state();
     }
-    G4cout<<" out: ";
-    print(y);
+    //G4cout<<" out: ";
+    //print(y);
 
     track.SetCurveLength(curveLength);
     memcpy(arrayY,y.data(),sizeof(G4double)*nvar);
