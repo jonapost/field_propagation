@@ -29,6 +29,7 @@
 #include "G4ChordFinder.hh"
 #include "BulirschStoerDenseDriver.hh"
 
+#include "G4CachedMagneticField.hh"
 #include <fstream>
 
 enum mode{
@@ -145,21 +146,28 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     G4double pathRest = path;
     G4double step;
     G4double y[N];
-    std::ofstream out("out.txt");
+    std::ofstream outRef("outRef.txt");
+    std::ofstream outBS("outBS.txt");
+    G4CachedMagneticField* cachedField = static_cast<G4CachedMagneticField*>(field);
 
     while (pathRest > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,hmin,vec,latestSafetyRadius);
         pathRest -= step;
+        refTrack->DumpToArray(y);
+        outRef << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
     }
-    refChordFinder.PrintStatistics();
+    G4cout<<"ref calls: "<<cachedField->GetCountCalls()<<G4endl;
+    cachedField->ClearCounts();
+    //refChordFinder.PrintStatistics();
 
     pathRest = path;
     while (pathRest > hmin){
         step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest,hmin);
         pathRest -= step;
         testTrack->DumpToArray(y);
-        out << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
+        outBS << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
     }
+    G4cout<<"BS calls: "<<cachedField->GetCountCalls()<<G4endl;
 }
 
 
