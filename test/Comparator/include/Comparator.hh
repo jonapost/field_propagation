@@ -146,18 +146,18 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     G4double step;
     G4double y[N];
     std::ofstream out("out.txt");
+
     while (pathRest > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,hmin,vec,latestSafetyRadius);
         pathRest -= step;
-
     }
+    refChordFinder.PrintStatistics();
 
     pathRest = path;
     while (pathRest > hmin){
-        testChordFinder.AdvanceChordLimited(*testTrack,pathRest,hmin);
+        step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest,hmin);
         pathRest -= step;
-        G4cout<<"step "<<step<<G4endl;
-        refTrack->DumpToArray(y);
+        testTrack->DumpToArray(y);
         out << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
     }
 }
