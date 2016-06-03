@@ -95,6 +95,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
+	BulirschStoerDenseDriver.hh
 	BulirschStoerDriver.hh
     SOURCES
         TsitourasRK45.cc
@@ -154,6 +155,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
+	BulirschStoerDenseDriver.cc
 	BulirschStoerDriver.cc
     GRANULAR_DEPENDENCIES
         G4globman

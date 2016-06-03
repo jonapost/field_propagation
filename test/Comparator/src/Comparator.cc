@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iomanip>
 #include <fstream>
+#include <G4MagneticField.hh>
 using namespace CLHEP;
 
 #define save2File

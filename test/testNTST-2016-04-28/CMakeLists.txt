@@ -10,7 +10,14 @@ include(${Geant4_USE_FILE})
 # relies on these scripts being in the current working directory.
 #
 set(fieldNTST_SCRIPTS
-    run2a.mac run2b.mac run2c.mac run2xa.mac run2xb.mac run2xc.mac
+    	run2a.mac 
+	run2b.mac 
+	run2c.mac 
+	run2xa.mac 
+	run2xb.mac 
+	run2xc.mac
+	babarevt.out
+	SVT.dat
   )
 # do-runs.csh  do-runs.sh
 

@@ -26,6 +26,10 @@
 #include "G4DynamicParticle.hh"
 
 #include "ChordFinder.hh"
+#include "G4ChordFinder.hh"
+#include "BulirschStoerDenseDriver.hh"
+
+#include <fstream>
 
 enum mode{
     Default,
@@ -43,9 +47,9 @@ public:
     template <class testStepper, class refStepper>
     void Compare(const G4double stepLen, const G4int NSteps, const bool useDriver, const G4int verbosity);
 
-    //emulates FindNextChord()
-    template <class testDriver, class refDriver>
-    void CompareDrivers(const G4double stepLen, const G4int NSteps, const G4int verb);
+    //compare with Bulirsch-Stoer driver
+    template <class refStepper>
+    void CompareWithBS(const G4double path, const G4int verb);
 
     //setters
     void setParticle(G4DynamicParticle* pDynParticle);
@@ -126,11 +130,37 @@ void Comparator::Compare(const G4double stepLen, const G4int NSteps, const bool 
     }
 }
 
-//template <class testDriver, class refDriver>
-//void CompareDrivers(const G4double stepLen, const G4int NSteps, const G4int verb){
-//    //class T_Field, class T_Equation, class T_Stepper, class T_Driver
-//    ChordFinder<G4MagneticField, G4EquationOfMotion, > chordFinder(new testDriver);
+template <class refStepper>
+void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
+{
+    refStepper refSt(equation);
+    G4MagInt_Driver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
+    G4ChordFinder refChordFinder(refDriver);
+    ChordFinder<BulirschStoerDenseDriver> testChordFinder(equation);
 
+    //unused variables for G4ChordFinder
+    const G4ThreeVector vec(0,0,0);
+    G4double latestSafetyRadius = 0;
+
+    G4double pathRest = path;
+    G4double step;
+    G4double y[N];
+    std::ofstream out("out.txt");
+    while (pathRest > hmin){
+        step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,hmin,vec,latestSafetyRadius);
+        pathRest -= step;
+
+    }
+
+    pathRest = path;
+    while (pathRest > hmin){
+        testChordFinder.AdvanceChordLimited(*testTrack,pathRest,hmin);
+        pathRest -= step;
+        G4cout<<"step "<<step<<G4endl;
+        refTrack->DumpToArray(y);
+        out << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
+    }
+}
 
 
 
