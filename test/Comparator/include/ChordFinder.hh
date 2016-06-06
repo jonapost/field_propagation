@@ -58,10 +58,11 @@ G4double ChordFinder<T_Driver>::AdvanceChordLimited(G4FieldTrack& track,
                                                     G4double hstep,
                                                     G4double epsStep){
 
-    G4cout<<"AdvanceChordLimited: hstep "<<hstep<<G4endl;
+    //G4cout<<"AdvanceChordLimited: hstep "<<hstep<<G4endl;
     G4FieldTrack tmpTrack(track);
     G4double dostep = FindNextChord(tmpTrack, hstep, epsStep);
-    G4cout<<"do step "<<dostep<<G4endl;
+    //G4cout<<"do step "<<dostep<<G4endl;
+    //G4double dostep = fIntgrDriver->do_step(tmpTrack,hstep,epsStep,0.25*mm);
 
     fIntgrDriver->AccurateAdvance(track, dostep, epsStep);
 
@@ -97,11 +98,12 @@ G4double ChordFinder<T_Driver>::FindNextChord(G4FieldTrack& track,
 
          // Check whether the chord is small enough.
          validEndPoint = AcceptableMissDist(dChordStep);
-         G4cout<<"stepTrial "<<stepTrial<<" valid "<<validEndPoint<<G4endl;
+
+        //G4cout<<"stepTrial "<<stepTrial<<" valid "<<validEndPoint<<G4endl;
 
          // This method estimates to step size for a good chord.
          stepForChord = NewStep(stepTrial, dChordStep, newStepEst_Uncons );
-         G4cout<<"stepForChord "<<stepForChord<<G4endl;
+         //G4cout<<"stepForChord "<<stepForChord<<G4endl;
          if(!validEndPoint)
          {
             if(stepTrial<=0.0 )
@@ -112,7 +114,6 @@ G4double ChordFinder<T_Driver>::FindNextChord(G4FieldTrack& track,
             {
               // Reduce by a fraction, possibly up to 20%
               stepTrial = std::min( stepForChord, fFractionLast * stepTrial);
-              G4cout<<"if "<<stepTrial<<G4endl;
             }
             else
             {

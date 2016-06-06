@@ -46,6 +46,11 @@ public:
                           G4double& chord, //chord between start and end points
                           G4double eps);
 
+    G4double do_step(G4FieldTrack&  track,
+                     G4double hstep,
+                     G4double eps,
+                     G4double dChordStep);
+
 private:
 
     //dependent object

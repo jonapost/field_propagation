@@ -28,6 +28,7 @@
 #include "ChordFinder.hh"
 #include "G4ChordFinder.hh"
 #include "BulirschStoerDenseDriver.hh"
+#include "BulirschStoerDriver.hh"
 
 #include "G4CachedMagneticField.hh"
 #include <fstream>
@@ -159,10 +160,13 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     G4cout<<"ref calls: "<<cachedField->GetCountCalls()<<G4endl;
     cachedField->ClearCounts();
     //refChordFinder.PrintStatistics();
+    //BulirschStoerDenseDriver BS(equation);
+    BulirschStoerDriver BS(equation,hmin);
 
     pathRest = path;
     while (pathRest > hmin){
         step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest,hmin);
+        //step = BS.do_step(*testTrack,pathRest,hmin,0.25*mm);
         pathRest -= step;
         testTrack->DumpToArray(y);
         outBS << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
