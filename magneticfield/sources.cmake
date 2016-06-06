@@ -97,6 +97,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformMagField.hh
 	BulirschStoerDenseDriver.hh
 	BulirschStoerDriver.hh
+	BulirschStoerDenseOut.hh
+	ModifiedMidpoint.hh
     SOURCES
         TsitourasRK45.cc
         VernerRK78.cc

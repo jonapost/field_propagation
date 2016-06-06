@@ -107,7 +107,7 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
                                        G4double eps,
                                        G4double& hdid,
                                        G4double& hnext){
-    bulirsch_stoer<state_type> stepper(0,eps,1,0); //(epsStep_Relative, epsStep_Relative);
+    bulirsch_stoer<state_type> stepper(0,eps,1,0,htry); //(epsStep_Relative, epsStep_Relative);
 
     hnext = htry;
     hdid = 0;

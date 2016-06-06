@@ -22,7 +22,7 @@ int main(){
     G4MagneticField* field = new G4QuadrupoleMagField(0.001*tesla/meter);
     Comparator comparator(dynParticle,new G4CachedMagneticField(field,0));
     //comparator.Compare<G4ExplicitEuler,G4CashKarpRKF45>(10*cm,10000,false,Verbose);
-    comparator.CompareWithBS<G4CashKarpRKF45>(1000*m,Verbose);
+    comparator.CompareWithBS<G4ClassicalRK4>(1000*m,Verbose);
 
     return 0;
 }
