@@ -22,20 +22,5 @@ void BaseDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[] ){
 
 G4double BaseDriver::ComputeNewStepSize(double errMaxNorm,
                                         double hstepCurrent ){
-    G4double hnew;
-
-    // Compute size of next Step for a failed step
-    if(errMaxNorm > 1.0 )
-    {
-      // Step failed; compute the size of retrial Step.
-      hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPshrnk()) ;
-    } else if(errMaxNorm > 0.0 ) {
-      // Compute size of next Step for a successful step
-      hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPgrow()) ;
-    } else {
-      // if error estimate is zero (possible) or negative (dubious)
-      hnew = max_stepping_increase * hstepCurrent;
-    }
-
-    return hnew;
+    return hstepCurrent;
 }

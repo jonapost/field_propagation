@@ -141,9 +141,9 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     refStepper refSt(equation);
     G4MagInt_Driver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
     G4ChordFinder refChordFinder(refDriver);
-    //ChordFinder<BulirschStoerDenseDriver> testChordFinder(equation);
-    BulirschStoerDenseDriver BSDriver(equation);
-    //BulirschStoerDriver BSDriver(equation);
+
+    //BulirschStoerDenseDriver BSDriver(equation);
+    BulirschStoerDriver BSDriver(equation);
 
     BSChordFinder testChordFinder(&BSDriver);
     refChordFinder.SetDeltaChord(5*cm);
@@ -160,7 +160,7 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     std::ofstream outBS("outBS.txt");
     G4CachedMagneticField* cachedField = static_cast<G4CachedMagneticField*>(field);
 
-    G4double eps = 1e-5;
+    G4double eps = 1e-3;
     while (pathRest > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
         pathRest -= step;

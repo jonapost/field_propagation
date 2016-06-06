@@ -98,7 +98,7 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
                         G4double eps,
                         G4double /*beginStep = 0*/){  // Suggested 1st interval
 
-    G4cout<<"BulirschStoerDenseDriver::AccurateAdvance \n";
+    //G4cout<<"BulirschStoerDenseDriver::AccurateAdvance \n";
 
     theStepper.m_error_checker.m_eps_rel = eps;
     theStepper.m_max_dt = hstep;

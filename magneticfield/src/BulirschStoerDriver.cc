@@ -25,7 +25,7 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
                          G4double hstep,
                          G4double eps,
                          G4double beginStep){
-    G4cout<<"BulirschStoerDriver::AccurateAdvance \n";
+    //G4cout<<"BulirschStoerDriver::AccurateAdvance \n";
     G4double dydx[ncomp];
     G4double y[ncomp];
     track.DumpToArray(y);
