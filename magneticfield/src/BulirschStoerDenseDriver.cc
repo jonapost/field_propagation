@@ -7,8 +7,6 @@
 
 #define ncomp G4FieldTrack::ncompSVEC
 
-using namespace boost::numeric::odeint;
-typedef boost::array<G4double,6> state_type;
 
 void print(const state_type& state){
     for (int i = 0; i < 6; ++i){
@@ -20,80 +18,93 @@ void print(const state_type& state){
 BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4EquationOfMotion* pequation,
                                                    G4int numberOfComponents,
                                                    G4int statisticsVerbosity):
-    equation(pequation),
-    nvar(numberOfComponents),
-    verb(statisticsVerbosity),
-    quickEps(0.01)
+    BaseDriver(pequation,numberOfComponents,statisticsVerbosity),
+    quickEps(0.01),
+    tBegin(DBL_MAX),
+    tEnd(DBL_MIN),
+    theStepper(0,0,1,0,0,true)
 {
-    system = [this](const state_type& y, state_type& dydx, double /*t*/){
-        G4double arrayY[ncomp],arrayDydx[ncomp];
-        memcpy(arrayY,y.data(),sizeof(G4double)*nvar);
-        memcpy(arrayDydx,dydx.data(),sizeof(G4double)*nvar);
-        equation->RightHandSide(arrayY,arrayDydx);
-        memcpy(dydx.data(),arrayDydx,sizeof(G4double)*nvar);
-        //print(dydx);
-    };
 }
 
 BulirschStoerDenseDriver::~BulirschStoerDenseDriver(){
 
 }
 
-G4double  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
+G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
+                                               const G4double dydx[],
                                                  G4double hstep,
-                                                 G4double& chord,
-                                                 G4double eps){
+                                                 G4double& missDist,
+                                                 G4double& dyerr){
 
 
-    eps = std::sqrt(sqr(quickEps) + sqr(eps)); //geometric mean
-    bulirsch_stoer_dense_out<state_type> stepper(0,eps,1,0,hstep);
-
-    G4double arrayY[ncomp];
+    G4double eps = std::sqrt(sqr(quickEps) + sqr(theStepper.m_error_checker.m_eps_rel)); //geometric mean
+    dyerr = eps;
+    theStepper.m_error_checker.m_eps_rel = eps;
+    theStepper.m_max_dt = hstep;
     state_type yIn, yMid, yOut;
-    track.DumpToArray(arrayY);
-    memcpy(yIn.data(),arrayY,sizeof(G4double)*nvar);
-    G4double curveLengthBegin = track.GetCurveLength();
-    //print(yIn);
+    G4ThreeVector inVec,midVec,outVec;
+    track.DumpToArray(yIn.data());
+    G4double time = track.GetCurveLength();
+    if (time >= tBegin && (time+hstep) <= tEnd){
 
-    //G4cout<<"QuickAdvance: "<<"curverLength "<<curveLength<<" hstep "<<hstep<<G4endl;
+        theStepper.calc_state(time + hstep/2.,yMid);
 
-    stepper.initialize(yIn,curveLengthBegin,hstep);
-    stepper.do_step(system);
-    G4double curveLengthEnd = stepper.current_time();
-    G4double curverLengthMid = 0.5*(curveLengthBegin + curveLengthEnd);
+        theStepper.calc_state(time+hstep,yOut);
 
-    //interpolate to h/2
-    stepper.calc_state(curverLengthMid, yMid);
+        for (int i = 0; i < 3; ++i){
+            inVec[i] = yIn[i];
+            midVec[i] = yMid[i];
+            outVec[i] = yOut[i];
+        }
 
-    yOut = stepper.current_state();
+        missDist = G4LineSection::Distline(midVec,inVec,outVec);
 
-    G4ThreeVector mid(yMid[0],yMid[1],yMid[2]);
-    G4ThreeVector in(yIn[0],yIn[1],yIn[2]);
-    G4ThreeVector out(yOut[0],yOut[1],yOut[2]);
+        track.SetCurveLength(time+hstep);
+        track.LoadFromArray(yOut.data(),ncomp);
 
-    //G4cout<<"in "<<in<<" mid "<<mid<<" out "<<out<<G4endl;
+    }
+    else{
 
-    chord = G4LineSection::Distline(mid,in,out);
+        theStepper.initialize(yIn,time,hstep);
+        auto tInterval = theStepper.do_step(system);
+        tBegin = tInterval.first;
+        tEnd = tInterval.second;
+        G4double tMid = 0.5*(tBegin + tEnd);
+
+        //interpolate to h/2
+        theStepper.calc_state(tMid, yMid);
+
+        yOut = theStepper.current_state();
 
 
-    track.SetCurveLength(curveLengthEnd);
-    memcpy(arrayY,yOut.data(),sizeof(G4double)*nvar);
-    track.LoadFromArray(arrayY,ncomp);
+        for (int i = 0; i < 3; ++i){
+            inVec[i] = yIn[i];
+            midVec[i] = yMid[i];
+            outVec[i] = yOut[i];
+        }
 
-    return stepper.current_time_step();
+        missDist = G4LineSection::Distline(midVec,inVec,outVec);
+
+
+        track.SetCurveLength(tEnd);
+        track.LoadFromArray(yOut.data(),ncomp);
+    }
+
+    return true;
 }
 
+G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
+                        G4double hstep,
+                        G4double eps,
+                        G4double /*beginStep = 0*/){  // Suggested 1st interval
 
-void BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
-                                               G4double hstep,
-                                               G4double eps){
+    G4cout<<"BulirschStoerDenseDriver::AccurateAdvance \n";
 
+    theStepper.m_error_checker.m_eps_rel = eps;
+    theStepper.m_max_dt = hstep;
 
-    bulirsch_stoer_dense_out<state_type> stepper(0,eps,1,0,hstep);
-    G4double arrayY[ncomp];
     state_type y;
-    track.DumpToArray(arrayY);
-    memcpy(y.data(),arrayY,sizeof(G4double)*nvar);
+    track.DumpToArray(y.data());
     G4double curveLength = track.GetCurveLength();
     G4double clEnd = curveLength + hstep;
     G4double hrest = hstep;
@@ -101,56 +112,20 @@ void BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
     //G4cout<<"in: ";
     //print(y);
 
+    theStepper.initialize(y,curveLength,hrest);
     while(hrest > eps){
-        stepper.initialize(y,curveLength,hrest);
-        stepper.do_step(system);
-        curveLength = stepper.current_time();
+        theStepper.do_step(system);
+        curveLength = theStepper.current_time();
         hrest = clEnd - curveLength;
-        y = stepper.current_state();
+        theStepper.m_max_dt = hrest;
+        theStepper.m_dt = hrest;
     }
+    y = theStepper.current_state();
     //G4cout<<" out: ";
     //print(y);
 
     track.SetCurveLength(curveLength);
-    memcpy(arrayY,y.data(),sizeof(G4double)*nvar);
-    track.LoadFromArray(arrayY,ncomp);
-}
+    track.LoadFromArray(y.data(),ncomp);
 
-G4double BulirschStoerDenseDriver::do_step(G4FieldTrack&  track,
-                                           G4double hstep,
-                                           G4double eps,
-                                           G4double dChordStep){
-
-    eps = sqrt(eps*eps + quickEps*quickEps);
-    bulirsch_stoer_dense_out<state_type> stepper(0,eps,1,0,hstep,false);
-    G4double arrayY[ncomp];
-    state_type yIn;
-    track.DumpToArray(arrayY);
-    memcpy(yIn.data(),arrayY,sizeof(G4double)*nvar);
-    G4double curveLength = track.GetCurveLength();
-
-    stepper.initialize(yIn,curveLength,hstep);
-    stepper.do_step(system);
-    G4double hdid = stepper.current_time_step();
-
-    G4double chord = DBL_MAX;
-
-    state_type yOut,yMid;
-    while(true){
-        stepper.calc_state(curveLength + hdid,yOut);
-        stepper.calc_state(curveLength + hdid/2,yMid);
-        chord = G4LineSection::Distline(G4ThreeVector(yMid[0],yMid[1],yMid[2]),
-                                        G4ThreeVector(yIn[0],yIn[1],yIn[2]),
-                                        G4ThreeVector(yOut[0],yOut[1],yOut[2]));
-        if (chord < dChordStep){
-            break;
-        }
-        hdid /= 1.1;
-    }
-
-    track.SetCurveLength(curveLength + hdid);
-    memcpy(arrayY,yOut.data(),sizeof(G4double)*nvar);
-    track.LoadFromArray(arrayY,ncomp);
-
-    return hdid;
+    return true;
 }

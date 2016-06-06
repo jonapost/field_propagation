@@ -20,7 +20,8 @@ def plot(fname):
 
 	fig = plt.figure()
 	ax = fig.gca(projection='3d')
-	plt.plot(px, py, pz)
+	plt.plot(px, py, pz,label=fname)
+	plt.legend()
 	
 plot("outBS.txt")
 plot("outRef.txt")

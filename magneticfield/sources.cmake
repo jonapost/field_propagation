@@ -99,6 +99,9 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	BulirschStoerDriver.hh
 	BulirschStoerDenseOut.hh
 	ModifiedMidpoint.hh
+	BSChordFinder.hh
+	BSChordFinder.icc
+	BaseDriver.hh
     SOURCES
         TsitourasRK45.cc
         VernerRK78.cc
@@ -159,6 +162,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformMagField.cc
 	BulirschStoerDenseDriver.cc
 	BulirschStoerDriver.cc
+	BSChordFinder.cc
+	BaseDriver.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

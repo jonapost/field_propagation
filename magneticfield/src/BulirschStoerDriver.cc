@@ -5,15 +5,15 @@
 #include <boost/numeric/odeint.hpp>
 
 #define ncomp G4FieldTrack::ncompSVEC
-#define nvar 6
 
 using namespace boost::numeric::odeint;
-typedef boost::array<G4double,6> state_type;
 
-BulirschStoerDriver::BulirschStoerDriver(G4EquationOfMotion* _equation,G4double  _hmin,G4int _integComp, G4int  _verb):
-    equation(_equation),hmin(_hmin),integComp(_integComp),verb(_verb)
+BulirschStoerDriver::BulirschStoerDriver(G4EquationOfMotion* equation,
+                                         G4int integratedComponents,
+                                         G4int  verb):
+    BaseDriver(equation,integratedComponents,verb)
+
 {
-
 }
 
 BulirschStoerDriver::~BulirschStoerDriver(){
@@ -25,15 +25,17 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
                          G4double hstep,
                          G4double eps,
                          G4double beginStep){
+    G4cout<<"BulirschStoerDriver::AccurateAdvance \n";
     G4double dydx[ncomp];
     G4double y[ncomp];
     track.DumpToArray(y);
     G4double hdid = 0;
-    G4double hnext = beginStep;
+    G4double hnext = beginStep != 0 ? beginStep : hstep;
+    //G4double hnext = beginStep;
     G4double hrest = hstep;
     G4double curveLength = track.GetCurveLength();
     do{
-        equation->RightHandSide(y,dydx);
+        fequation->RightHandSide(y,dydx);
         OneGoodStep(y,dydx,curveLength,hnext,eps,hdid,hnext);
         hrest -= hdid;
         hnext = std::min(hrest, hnext);
@@ -42,6 +44,7 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
     //G4cout<<"driver: did step "<<stepInitial<<G4endl;
     track.SetCurveLength(curveLength);
     track.LoadFromArray(y,ncomp);
+    //G4cout<<y[0]<<"  "<<y[1]<<"  "<<y[2]<<G4endl;
 
     return  true;
 }
@@ -52,19 +55,13 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
                                           G4double& missDist,
                                           G4double& dyerr){
 
+    //G4cout<<"BulirschStoerDriver::QuickAdvance \n";
     state_type yIn, yOutMid, yOut1, yOut2;
     state_type dydxMid, dydxIn;
     track.DumpToArray(yIn.data());
-    for (int i = 0; i < ncomp; ++i){
-        dydxIn[i] = dydx[i];
-    }
+    memcpy(dydxIn.data(),dydx,sizeof(G4double)*ncomp);
     G4double curveLength1 = track.GetCurveLength();
     G4double curveLength2 = curveLength1;
-    const auto system = [this](const state_type & _y, state_type & _dydx, const double /*t*/){
-        // there is access out of range!
-        //solution: copy _y and _dydx to array of 8 elements
-        equation->RightHandSide(_y.data(),_dydx.data());
-    };
 
     modified_midpoint<state_type> mp;
     mp.do_step(system,yIn,dydxIn,curveLength2,yOut2,hstep);
@@ -79,26 +76,26 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
 
 
     G4double yErr[ncomp];
-    for (int i = 0; i < nvar; ++i){
+    for (int i = 0; i < fnvar; ++i){
         yErr[i] = yOut1[i] - yOut2[i];
     }
 
     G4double errPos2 = sqr(yErr[0]) + sqr(yErr[1]) + sqr(yErr[2]);
     G4double errMom2 = sqr(yErr[3]) + sqr(yErr[4]) + sqr(yErr[5]);
     G4double Mom2 = sqr(yOut1[3]) + sqr(yOut1[4]) + sqr(yOut1[5]);
+    errMom2 /= Mom2;
+    errPos2 /= (hstep*hstep);
 
-    dyerr = std::max(std::sqrt(errPos2)/hstep, std::sqrt(errMom2/Mom2));
+    track.LoadFromArray(yOut1.data(),ncomp);
+
+    dyerr = std::max(sqrt(errPos2), sqrt(errMom2)*hstep);
+    //G4cout<<"dyerr "<<dyerr<<G4endl;
+
+    //G4cout<<yOut2[0]<<"  "<<yOut2[1]<<"  "<<yOut2[2]<<G4endl;
 
     return true;
-
 }
 
-
-void BulirschStoerDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[] ){
-    G4double y[ncomp];
-    track.DumpToArray(y);
-    equation->RightHandSide(y,dydx);
-}
 
 void  BulirschStoerDriver::OneGoodStep(G4double  y[],
                                        const G4double  dydx[],
@@ -112,20 +109,13 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
     hnext = htry;
     hdid = 0;
 
-    const auto system = [this](const state_type & _y, state_type & _dydx, const double /*t*/){
-        // there is access out of range!
-        //solution: copy _y and _dydx to array of 8 elements
-        equation->RightHandSide(_y.data(),_dydx.data());
-    };
     state_type yState, dydxState;
-    for (int i = 0; i < 6; ++i){
-        yState[i] = y[i];
-        dydxState[i] = dydx[i];
-    }
+    memcpy(yState.data(),y,sizeof(G4double)*ncomp);
+    memcpy(dydxState.data(),dydx,sizeof(G4double)*ncomp);
+
     // System system , const StateIn &in , time_type &t , StateOut &out , time_type &dt
     stepper.try_step(system, yState, dydxState, hdid, hnext);
-    for (int i = 0; i < 6; ++i){
-        y[i] = yState[i];
-    }
+    memcpy(y,yState.data(),sizeof(G4double)*ncomp);
+
     curveLength += hdid;
 }
