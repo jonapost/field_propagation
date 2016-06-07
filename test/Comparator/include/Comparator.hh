@@ -159,9 +159,9 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     std::ofstream outRef("outRef.txt");
     std::ofstream outBS("outBS.txt");
     G4CachedMagneticField* cachedField = static_cast<G4CachedMagneticField*>(field);
-/*
+
     G4double eps = 1e-2;
-    G4double step2;
+/*    G4double step2;
     G4double pathRest2 = pathRest;
     while (std::min(pathRest,pathRest2) > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
