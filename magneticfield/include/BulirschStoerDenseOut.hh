@@ -14,7 +14,7 @@ typedef std::vector<std::vector<double>> double_matrix;
 
 class DefaultErrorChecker{
 public:
-    DefaultErrorChecker(double eps):eps_rel(eps){
+    DefaultErrorChecker(double eps):m_eps_rel(eps){
     }
     double operator() (const state_type& in, const state_type& err, double hstep){
         double errh2 = 0,errp2 = 0,p2 = 0;
@@ -25,11 +25,11 @@ public:
         }
         errh2 /= hstep;
         errp2 /= p2;
-        return std::max(errh2,errp2)/(eps_rel*eps_rel);
+        return std::max(errh2,errp2)/(m_eps_rel*m_eps_rel);
     }
 
 private:
-    double eps_rel;
+    double m_eps_rel;
 };
 
 enum controlled_step_result{
@@ -40,7 +40,7 @@ enum controlled_step_result{
 class BulirschStoerDenseOut{
 public:
 
-    const static size_t m_k_max = 8;
+    const static int m_k_max = 8;
 
     BulirschStoerDenseOut(
         int nvar,
@@ -73,7 +73,7 @@ public:
             else
                 m_cost[i] = m_cost[i-1] + m_interval_sequence[i];
             m_coeff[i].resize(i);
-            for( size_t k = 0 ; k < i ; ++k  )
+            for( int k = 0 ; k < i ; ++k  )
             {
                 const double r = m_interval_sequence[i] / m_interval_sequence[k];
                 m_coeff[i][k] = 1.0 / (r*r - 1.0); // coefficients for extrapolation
@@ -106,8 +106,6 @@ public:
             return fail;
         }
 
-        static const double val1( 1.0 );
-
         bool reject = true;
 
         double_vector h_opt( m_k_max+1 );
@@ -118,12 +116,12 @@ public:
 
         //std::cout << "t=" << t <<", dt=" << dt << ", k_opt=" << m_current_k_opt << ", first: " << m_first << std::endl;
 
-        for( size_t k = 0 ; k <= m_current_k_opt+1 ; k++ )
+        for( int k = 0 ; k <= m_current_k_opt+1 ; k++ )
         {
             m_midpoint.set_steps(m_interval_sequence[k]);
             if( k == 0 )
             {
-                m_midpoint.do_step( system , in , dxdt, out , dt , m_mp_states[k].m_v , m_derivs[k]);
+                m_midpoint.do_step( system , in , dxdt, out , dt , m_mp_states[k] , m_derivs[k]);
             }
             else
             {
@@ -244,7 +242,7 @@ public:
             return success;
     }
 
-    void initialize( const state &x0 , const double &t0 , const double &dt0 )
+    void initialize( const state_type &x0 , const double &t0 , const double &dt0 )
     {
         //m_resizer.adjust_size( x0 , detail::bind( &controlled_error_bs_type::template resize_impl< StateType > , detail::ref( *this ) , detail::_1 ) );
         get_current_state() = x0;
@@ -317,41 +315,43 @@ public:
 
 private:
 
-    template< class StateInOut , class StateVector >
-    void extrapolate( size_t k , StateVector &table , const value_matrix &coeff , StateInOut &xest , size_t order_start_index = 0 )
+    void extrapolate( int k , state_vector_type &table , const double_matrix &coeff , state_type &xest , int order_start_index = 0 )
     //polynomial extrapolation, see http://www.nr.com/webnotes/nr3web21.pdf
     {
-        static const double val1( 1.0 );
         for( int j=k-1 ; j>0 ; --j )
         {
-            m_algebra.for_each3( table[j-1].m_v , table[j].m_v , table[j-1].m_v ,
-                                 typename operations_type::template scale_sum2< double , double >( val1 + coeff[k + order_start_index][j + order_start_index] ,
-                                                                                                           -coeff[k + order_start_index][j + order_start_index] ) );
+            for (int i = 0; i < fnvar; ++i){
+                table[j-1][i] = table[j][i] * (1 + coeff[k + order_start_index][j + order_start_index]) +
+                                table[j-1][i] * (-coeff[k + order_start_index][j + order_start_index]);
+            }
+
         }
-        m_algebra.for_each3( xest , table[0].m_v , xest ,
-                             typename operations_type::template scale_sum2< double , double >( val1 + coeff[k + order_start_index][0 + order_start_index] ,
-                                                                                                       -coeff[k + order_start_index][0 + order_start_index]) );
+        for (int i = 0; i < fnvar; ++i){
+            xest[i] = table[0][i] * (1 + coeff[k + order_start_index][0 + order_start_index]) +
+                      xest[i] * (-coeff[k + order_start_index][0 + order_start_index]);
+        }
     }
 
 
-    template< class StateVector >
-    void extrapolate_dense_out( size_t k , StateVector &table , const value_matrix &coeff , size_t order_start_index = 0 )
+    void extrapolate_dense_out( int k , state_vector_type &table , const double_matrix &coeff , int order_start_index = 0 )
     //polynomial extrapolation, see http://www.nr.com/webnotes/nr3web21.pdf
     {
         // result is written into table[0]
-        static const double val1( 1.0 );
         for( int j=k ; j>1 ; --j )
         {
-            m_algebra.for_each3( table[j-1].m_v , table[j].m_v , table[j-1].m_v ,
-                                 typename operations_type::template scale_sum2< double , double >( val1 + coeff[k + order_start_index][j + order_start_index - 1] ,
-                                                                                                           -coeff[k + order_start_index][j + order_start_index - 1] ) );
+            for (int i = 0; i < fnvar; ++i){
+                table[j-1][i] = table[j][i] * (1 + coeff[k + order_start_index][j + order_start_index - 1]) +
+                                table[j-1][i] * (-coeff[k + order_start_index][j + order_start_index - 1]);
+            }
         }
-        m_algebra.for_each3( table[0].m_v , table[1].m_v , table[0].m_v ,
-                             typename operations_type::template scale_sum2< double , double >( val1 + coeff[k + order_start_index][order_start_index] ,
-                                                                                                       -coeff[k + order_start_index][order_start_index]) );
+        for (int i = 0; i < fnvar; ++i){
+            table[0][i] = table[1][i] * (1 + coeff[k + order_start_index][order_start_index]) +
+                          table[0][i] * (-coeff[k + order_start_index][order_start_index]);
+        }
+
     }
 
-    double calc_h_opt( double h , double error , size_t k ) const
+    double calc_h_opt( double h , double error , int k ) const
     {
         double expo = 1./(m_interval_sequence[k-1]);
         double facmin = std::pow( STEPFAC3 , expo );
@@ -366,14 +366,14 @@ private:
         return h*fac;
     }
 
-    bool in_convergence_window( size_t k ) const
+    bool in_convergence_window( int k ) const
     {
         if( (k == m_current_k_opt-1) && !m_last_step_rejected )
             return true; // decrease order only if last step was not rejected
         return ( (k == m_current_k_opt) || (k == m_current_k_opt+1) );
     }
 
-    bool should_reject( double error , size_t k ) const
+    bool should_reject( double error , int k ) const
     {
         if( k == m_current_k_opt-1 )
         {
@@ -390,8 +390,9 @@ private:
             return error > 1.0;
     }
 
-    double prepare_dense_output( int k , const state &x_start , const state &dxdt_start ,
-                                     const state & /* x_end */ , const state & /*dxdt_end */ , double dt )
+    double prepare_dense_output( int k , const state_type &x_start , const state_type &dxdt_start ,
+                                 const state_type & /* x_end */ , const state_type & /*dxdt_end */ ,
+                                 double dt )
     /* k is the order to which the result was approximated */
     {
 
@@ -407,7 +408,7 @@ private:
         for( int j = 0 ; j<=k ; j++ )
         {
             /* not working with boost units... */
-            const double d = m_interval_sequence[j] / ( static_cast<double>(2) * dt );
+            const double d = m_interval_sequence[j] / ( 2 * dt );
             double f = 1.0; //factor 1/2 here because our interpolation interval has length 2 !!!
             for( int kappa = 0 ; kappa <= 2*j+1 ; ++kappa )
             {
@@ -430,8 +431,9 @@ private:
             // extrapolation results are now stored in m_diffs[kappa][0]
 
             // divide kappa-th derivative by kappa because we need these terms for dense output interpolation
-            m_algebra.for_each1( m_diffs[kappa][0].m_v , typename operations_type::template scale< double >( static_cast<double>(d) ) );
-
+            for (int i = 0; i < fnvar; ++i){
+                m_diffs[kappa][0][i] *= d;
+            }
             d *= dt/(2*(kappa+2));
         }
 
@@ -443,43 +445,50 @@ private:
         double error = 0.0;
         if( m_control_interpolation )
         {
-            boost::numeric::odeint::copy( m_diffs[2*k+1][0], m_err);
-            error = m_error_checker.error(x_start, m_err.m_v , dt );
+            m_err = m_diffs[2*k+1][0];
+            error = m_error_checker(x_start, m_err , dt );
         }
 
         return error;
     }
 
-    void calculate_finite_difference( size_t j , size_t kappa , double fac , const state &dxdt )
+    void calculate_finite_difference( int j , int kappa , double fac , const state_type &dxdt )
     {
         const int m = m_interval_sequence[j]/2-1;
         if( kappa == 0) // no calculation required for 0th derivative of f
         {
-            m_algebra.for_each2( m_diffs[0][j].m_v , m_derivs[j][m].m_v ,
-                                 typename operations_type::template scale_sum1< double >( fac ) );
+            for (int i = 0; i < fnvar; ++i){
+                m_diffs[0][j][i] = m_derivs[j][m][i] * fac;
+            }
         }
         else
         {
             // calculate the index of m_diffs for this kappa-j-combination
             const int j_diffs = j - kappa/2;
 
-            m_algebra.for_each2( m_diffs[kappa][j_diffs].m_v , m_derivs[j][m+kappa].m_v ,
-                                 typename operations_type::template scale_sum1< double >( fac ) );
+            for (int i = 0; i < fnvar; ++i){
+                m_diffs[kappa][j_diffs][i] = m_derivs[j][m+kappa][i] * fac;
+            }
+
             double sign = -1.0;
             int c = 1;
             //computes the j-th order finite difference for the kappa-th derivative of f at t+dt/2 using function evaluations stored in m_derivs
-            for( int i = m+static_cast<int>(kappa)-2 ; i >= m-static_cast<int>(kappa) ; i -= 2 )
+            for( int i = m + kappa - 2 ; i >= m - kappa ; i -= 2 )
             {
                 if( i >= 0 )
                 {
-                    m_algebra.for_each3( m_diffs[kappa][j_diffs].m_v , m_diffs[kappa][j_diffs].m_v , m_derivs[j][i].m_v ,
-                                         typename operations_type::template scale_sum2< double , double >( 1.0 ,
-                                                                                                                   sign * fac * boost::math::binomial_coefficient< double >( kappa , c ) ) );
+                    for (int idx = 0; idx < fnvar; ++idx){
+                        m_diffs[kappa][j_diffs][idx] =  m_diffs[kappa][j_diffs][idx] +
+                                                   m_derivs[j][i][idx] * sign * fac * boost::math::binomial_coefficient< double >( kappa , c );
+                    }
+
                 }
                 else
                 {
-                    m_algebra.for_each3( m_diffs[kappa][j_diffs].m_v , m_diffs[kappa][j_diffs].m_v , dxdt ,
-                                         typename operations_type::template scale_sum2< double , double >( 1.0 , sign * fac ) );
+                    for (int idx = 0; idx < fnvar; ++idx){
+                        m_diffs[kappa][j_diffs][idx] = m_diffs[kappa][j_diffs][idx] +
+                                                  dxdt[idx] * sign * fac;
+                    }
                 }
                 sign *= -1;
                 ++c;
@@ -487,21 +496,22 @@ private:
         }
     }
 
-    void do_interpolation( double t , state &out ) const
+    void do_interpolation( double t , state_type &out ) const
     {
         // interpolation polynomial is defined for theta = -1 ... 1
         // m_k_final is the number of order-iterations done for the last step - it governs the order of the interpolation polynomial
-        const double theta = 2 * get_unit_value( (t - m_t_last) / (m_t - m_t_last) ) - 1;
+        const double theta = 2 *  (t - m_t_last) / (m_t - m_t_last)  - 1;
         // we use only values at interval center, that is theta=0, for interpolation
         // our interpolation polynomial is thus of order 2k+2, hence we have 2k+3 terms
 
-        boost::numeric::odeint::copy( m_mp_states[0] , out );
+        out = m_mp_states[0];
         // add remaining terms: x += a_1 theta + a2 theta^2 + ... + a_{2k} theta^{2k}
         double theta_pow( theta );
-        for( size_t i=0 ; i<=2*m_k_final+1 ; ++i )
+        for( int i=0 ; i<=2*m_k_final+1 ; ++i )
         {
-            m_algebra.for_each3( out , out , m_diffs[i][0],
-                                 typename operations_type::template scale_sum2< double >( static_cast<double>(1) , theta_pow ) );
+            for (int idx = 0; idx < fnvar; ++idx){
+                out[idx] = out[idx] + m_diffs[i][0][idx] * theta_pow;
+            }
             theta_pow *= theta;
         }
     }
@@ -527,22 +537,22 @@ private:
         return m_current_state_x1 ? m_x2 : m_x1;
     }
 
-    state& get_current_deriv()
+    state_type& get_current_deriv()
     {
         return m_current_state_x1 ? m_dxdt1 : m_dxdt2;
     }
 
-    const state& get_current_deriv() const
+    const state_type& get_current_deriv() const
     {
         return m_current_state_x1 ? m_dxdt1 : m_dxdt2;
     }
 
-    state& get_old_deriv( void )
+    state_type& get_old_deriv( void )
     {
         return m_current_state_x1 ? m_dxdt2 : m_dxdt1;
     }
 
-    const state& get_old_deriv() const
+    const state_type& get_old_deriv() const
     {
         return m_current_state_x1 ? m_dxdt2 : m_dxdt1;
     }
@@ -570,8 +580,8 @@ private:
     double m_dt_last;
     double m_t_last;
 
-    size_t m_current_k_opt;
-    size_t m_k_final;
+    int m_current_k_opt;
+    int m_k_final;
 
     state_type m_x1 , m_x2;
     state_type m_dxdt1 , m_dxdt2;

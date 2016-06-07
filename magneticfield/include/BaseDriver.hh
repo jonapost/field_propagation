@@ -53,7 +53,7 @@ public:
                                 G4double&    dyerr )  = 0 ;
         // QuickAdvance just tries one Step - it does not ensure accuracy.
 
-     void GetDerivatives(const G4FieldTrack& track, G4double dydx[] );
+     virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] ) = 0;
 
      G4double ComputeNewStepSize(double dyErr_relative,
                                  double lastStepLength );
@@ -66,6 +66,7 @@ public:
      G4int fnvar;
 
      std::function<void(const state_type&, state_type&, G4double)> system;
+     std::function<void(const state_type&, state_type&)> System;
 };
 
 

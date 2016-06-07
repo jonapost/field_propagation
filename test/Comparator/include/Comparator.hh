@@ -42,6 +42,7 @@ enum mode{
     Silent
 };
 
+
 class Comparator{
 public:
     Comparator(G4DynamicParticle* pDynParticle, G4MagneticField* pfield);
@@ -141,13 +142,12 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     refStepper refSt(equation);
     G4MagInt_Driver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
     G4ChordFinder refChordFinder(refDriver);
-
-    //BulirschStoerDenseDriver BSDriver(equation);
     BulirschStoerDriver BSDriver(equation);
+    //BulirschStoerDenseDriver BSDriver(equation);
 
     BSChordFinder testChordFinder(&BSDriver);
-    refChordFinder.SetDeltaChord(5*cm);
-    testChordFinder.SetDeltaChord(5*cm);
+    //refChordFinder.SetDeltaChord(1*cm);
+    //testChordFinder.SetDeltaChord(1*cm);
 
     //unused variables for G4ChordFinder
     const G4ThreeVector vec(0,0,0);
@@ -160,7 +160,20 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     std::ofstream outBS("outBS.txt");
     G4CachedMagneticField* cachedField = static_cast<G4CachedMagneticField*>(field);
 
-    G4double eps = 1e-3;
+    G4double eps = 1e-2;
+/*    G4double step2;
+    G4double pathRest2 = pathRest;
+    while (std::min(pathRest,pathRest2) > hmin){
+        step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
+        step2 = testChordFinder.AdvanceChordLimited(*testTrack,pathRest2,eps,vec,latestSafetyRadius);
+        pathRest -= step;
+        pathRest2 -= step2;
+        G4cout<<step<<"   "<<step2<<G4endl;
+        refTrack->DumpToArray(y);
+        outRef << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
+    }*/
+
+
     while (pathRest > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
         pathRest -= step;
@@ -170,12 +183,11 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
     G4cout<<"ref calls: "<<cachedField->GetCountCalls()<<G4endl;
     cachedField->ClearCounts();
     //refChordFinder.PrintStatistics();
-    //BulirschStoerDenseDriver BS(equation);
+
 
     pathRest = path;
     while (pathRest > hmin){
         step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest,eps,vec,latestSafetyRadius);
-        //step = BS.do_step(*testTrack,pathRest,hmin,0.25*mm);
         pathRest -= step;
         testTrack->DumpToArray(y);
         outBS << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;

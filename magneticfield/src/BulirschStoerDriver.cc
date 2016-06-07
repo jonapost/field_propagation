@@ -96,6 +96,12 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
     return true;
 }
 
+void BulirschStoerDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[] ){
+    G4double y[G4FieldTrack::ncompSVEC];
+    track.DumpToArray(y);
+    fequation->RightHandSide(y,dydx);
+}
+
 
 void  BulirschStoerDriver::OneGoodStep(G4double  y[],
                                        const G4double  dydx[],

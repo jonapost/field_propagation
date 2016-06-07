@@ -19,10 +19,11 @@ BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4EquationOfMotion* pequation
                                                    G4int numberOfComponents,
                                                    G4int statisticsVerbosity):
     BaseDriver(pequation,numberOfComponents,statisticsVerbosity),
-    quickEps(0.01),
+    quickEps(1e50),
     tBegin(DBL_MAX),
     tEnd(DBL_MIN),
     theStepper(0,0,1,0,0,true)
+
 {
 }
 
@@ -31,14 +32,14 @@ BulirschStoerDenseDriver::~BulirschStoerDenseDriver(){
 }
 
 G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
-                                               const G4double dydx[],
+                                               const G4double /*dydx*/[],
                                                  G4double hstep,
                                                  G4double& missDist,
                                                  G4double& dyerr){
 
 
     G4double eps = std::sqrt(sqr(quickEps) + sqr(theStepper.m_error_checker.m_eps_rel)); //geometric mean
-    dyerr = eps;
+    dyerr = eps*hstep;
     theStepper.m_error_checker.m_eps_rel = eps;
     theStepper.m_max_dt = hstep;
     state_type yIn, yMid, yOut;
@@ -46,7 +47,6 @@ G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
     track.DumpToArray(yIn.data());
     G4double time = track.GetCurveLength();
     if (time >= tBegin && (time+hstep) <= tEnd){
-
         theStepper.calc_state(time + hstep/2.,yMid);
 
         theStepper.calc_state(time+hstep,yOut);
@@ -75,7 +75,6 @@ G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
         theStepper.calc_state(tMid, yMid);
 
         yOut = theStepper.current_state();
-
 
         for (int i = 0; i < 3; ++i){
             inVec[i] = yIn[i];
@@ -128,4 +127,9 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
     track.LoadFromArray(y.data(),ncomp);
 
     return true;
+}
+
+void BulirschStoerDenseDriver::GetDerivatives(const G4FieldTrack &/*track*/, G4double /*dydx*/[]){
+    //no need to calculate dydx
+    //it is calculated internaly
 }

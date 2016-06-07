@@ -612,13 +612,6 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
     G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
 
 
-    //Error calculation like in Boost dmitrySorokin
-    errmax_sq = 0;
-    for (int i = 0; i < 6; ++i){
-        errmax_sq = std::max(std::fabs(yerr[i] / (y[i] * eps_rel_max)), errmax_sq);
-    }
-
-/*    original error calculation
     // Evaluate accuracy
     //
     errpos_sq =  sqr(yerr[0]) + sqr(yerr[1]) + sqr(yerr[2]) ;
@@ -645,7 +638,7 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
       errspin_sq *= inv_eps_vel_sq;
       errmax_sq = std::max( errmax_sq, errspin_sq ); 
     }
-*/
+
 
     if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
 

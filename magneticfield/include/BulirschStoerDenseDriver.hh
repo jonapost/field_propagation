@@ -15,9 +15,13 @@
 
 #include "BaseDriver.hh"
 
+
 #define private public
+//#include "BulirschStoerDenseOut.hh"
 #include "boost/numeric/odeint.hpp"
 #define private private
+
+#include "functional"
 
 class BulirschStoerDenseDriver: public BaseDriver{
 public:
@@ -45,13 +49,15 @@ public:
                                 G4double& missDist, //chord between start and end points
                                 G4double& dyerr );
 
+    virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] );
+
 
 private:
     //epsilon for QuickAdvance
     const G4double quickEps;
     G4double tBegin,tEnd;
     boost::numeric::odeint::bulirsch_stoer_dense_out<state_type> theStepper;
-
+    //BulirschStoerDenseOut theStepper;
 };
 
 
