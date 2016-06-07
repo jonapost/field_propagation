@@ -94,6 +94,7 @@ BSChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                              );
   //            *************
 
+  //G4cout<<"stepMax: "<<stepMax<<" stepPossible "<<stepPossible<<G4endl;
   G4bool good_advance;
 
   if ( dyErr < epsStep * stepPossible )
@@ -102,15 +103,18 @@ BSChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
 
      yCurrent = yEnd;
      good_advance = true;
+     //G4cout<<"good advance \n";
   }
   else
   {
+      //G4cout<<"bad advance \n";
      // Advance more accurately to "end of chord"
      //                           ***************
      good_advance = fIntgrDriver->AccurateAdvance(yCurrent, stepPossible,
                                                   epsStep, nextStep);
      if ( ! good_advance )
      {
+
        // In this case the driver could not do the full distance
        stepPossible= yCurrent.GetCurveLength()-startCurveLen;
      }

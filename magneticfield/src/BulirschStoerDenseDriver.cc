@@ -23,6 +23,7 @@ BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4EquationOfMotion* pequation
     tBegin(DBL_MAX),
     tEnd(DBL_MIN),
     theStepper(0,0,1,0,0,true)
+
 {
 }
 
@@ -31,14 +32,15 @@ BulirschStoerDenseDriver::~BulirschStoerDenseDriver(){
 }
 
 G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
-                                               const G4double dydx[],
+                                               const G4double /*dydx*/[],
                                                  G4double hstep,
                                                  G4double& missDist,
                                                  G4double& dyerr){
 
 
-    G4double eps = std::sqrt(sqr(quickEps) + sqr(theStepper.m_error_checker.m_eps_rel)); //geometric mean
-    dyerr = eps;
+    //G4double eps = std::sqrt(sqr(quickEps) + sqr(theStepper.m_error_checker.m_eps_rel)); //geometric mean
+    G4double eps = 1e50;
+    dyerr = eps*hstep;
     theStepper.m_error_checker.m_eps_rel = eps;
     theStepper.m_max_dt = hstep;
     state_type yIn, yMid, yOut;
@@ -46,7 +48,6 @@ G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
     track.DumpToArray(yIn.data());
     G4double time = track.GetCurveLength();
     if (time >= tBegin && (time+hstep) <= tEnd){
-
         theStepper.calc_state(time + hstep/2.,yMid);
 
         theStepper.calc_state(time+hstep,yOut);
@@ -76,7 +77,6 @@ G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
 
         yOut = theStepper.current_state();
 
-
         for (int i = 0; i < 3; ++i){
             inVec[i] = yIn[i];
             midVec[i] = yMid[i];
@@ -98,7 +98,7 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
                         G4double eps,
                         G4double /*beginStep = 0*/){  // Suggested 1st interval
 
-    G4cout<<"BulirschStoerDenseDriver::AccurateAdvance \n";
+    //G4cout<<"BulirschStoerDenseDriver::AccurateAdvance \n";
 
     theStepper.m_error_checker.m_eps_rel = eps;
     theStepper.m_max_dt = hstep;
@@ -128,4 +128,8 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
     track.LoadFromArray(y.data(),ncomp);
 
     return true;
+}
+
+void BulirschStoerDenseDriver::GetDerivatives(const G4FieldTrack &track, G4double dydx[]){
+
 }

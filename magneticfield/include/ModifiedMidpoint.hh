@@ -6,6 +6,7 @@
 #include <array>
 
 #include "G4FieldTrack.hh"
+#include "boost/numeric/odeint.hpp"
 
 typedef std::array<double,G4FieldTrack::ncompSVEC> state_type;
 typedef std::vector<state_type> state_vector_type;
@@ -15,7 +16,6 @@ class ModifiedMidpoint
 public :
     ModifiedMidpoint(unsigned int steps = 2, unsigned int nvar = 6):fsteps(steps),fnvar(nvar)
     {
-        fnvar = std::min(fnvar,state_type.size());
     }
     ~ModifiedMidpoint(){
     }
@@ -28,7 +28,7 @@ public :
 
         // y1 = yIn + h*dydx
         for (int i = 0; i < fnvar; ++i){
-            y1[i] = yIn + h*dydxIn[i];
+            y1[i] = yIn[i] + h*dydxIn[i];
         }
 
         system(y1, dydx);
@@ -44,7 +44,6 @@ public :
             }
             y0 = tmp;
 
-            th += h;
             system(y1 , dydx);
         }
 
@@ -91,9 +90,8 @@ public :
     ModifiedMidpointDenseOut(unsigned int steps = 2 , unsigned int nvar = 6)
     : fsteps(steps), fnvar(nvar)
     {
-        fnvar = std::min(fnvar,state_type.size());
     }
-    ~ModifiedMidpoint(){
+    ~ModifiedMidpointDenseOut(){
     }
 
     /*
@@ -112,7 +110,7 @@ public :
 
         // y1 = yIn + h*dydx
         for (int i = 0; i < fnvar; ++i){
-            y1[i] = yIn + h*dydxIn[i];
+            y1[i] = yIn[i] + h*dydxIn[i];
         }
 
         // result of first step already gives approximation at the center of the interval
@@ -142,7 +140,7 @@ public :
         // last step
         // yOut = 0.5*(y0 + y1 + h*dydx)
         for (int i = 0; i < fnvar; ++i){
-            yOut[i] = 0.5*(y0[i] + y1[i] + h*derivs[fsteps-1]);
+            yOut[i] = 0.5*(y0[i] + y1[i] + h*derivs[fsteps-1][i]);
         }
 
      }

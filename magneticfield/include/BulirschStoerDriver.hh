@@ -39,10 +39,12 @@ public:
 
      virtual G4bool  QuickAdvance(      G4FieldTrack& y_val,      // INOUT
                           const G4double     dydx[],
-                                G4double     hstep,       // IN
+                                G4double     hstep,
                                 G4double&    missDist,
                                 G4double&    dyerr )  ;
         // QuickAdvance just tries one Step - it does not ensure accuracy.
+
+    virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] );
 
 
 private:
