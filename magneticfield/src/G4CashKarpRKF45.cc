@@ -72,7 +72,7 @@ G4CashKarpRKF45::G4CashKarpRKF45(G4EquationOfMotion *EqRhs,
   fLastFinalVector = new G4double[numStateVars] ;
   fLastDyDx = new G4double[numberOfVariables];
 
-  fMidVector = new G4double[numberOfVariables];
+  fMidVector = new G4double[numStateVars];
   fMidError =  new G4double[numberOfVariables];
   if( primary )
   { 
