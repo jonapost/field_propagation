@@ -39,10 +39,6 @@
 #include "G4ClassicalRK4.hh"
 
 
-#include <boost/array.hpp>
-#include <boost/numeric/odeint.hpp>
-
-using namespace boost::numeric::odeint;
 // ..........................................................................
 
 G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
@@ -68,7 +64,8 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
 
 
 // ..........................................................................
-
+#ifdef USE_BASE_DRIVER
+#undef G4MagInt_Driver
 G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
                               G4double                stepMinimum, 
                               G4MagIntegratorStepper* pItsStepper )
@@ -108,8 +105,8 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
 }
-
-
+#define G4MagInt_Driver BaseDriver
+#endif
 // ......................................................................
 
 G4ChordFinder::~G4ChordFinder()
@@ -172,23 +169,7 @@ G4ChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 
 // ......................................................................
 
-//#define BS
 
-#ifdef BS
-G4double
-G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
-                                    G4double      stepMax,
-                                    G4double      epsStep,
-                                    const G4ThreeVector /*latestSafetyOrigin*/,
-                                    G4double       /*latestSafetyRadius*/ )
-{
-    //does not use miss distance
-    fIntgrDriver->AccurateAdvance(yCurrent, stepMax, epsStep);
-    return stepMax;
-}
-#endif
-
-#ifndef BS
 G4double 
 G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                                     G4double      stepMax,
@@ -230,7 +211,6 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   }
   return stepPossible;
 }
-#endif
 
 // ............................................................................
 

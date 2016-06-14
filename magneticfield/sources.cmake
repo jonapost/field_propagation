@@ -102,6 +102,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	BSChordFinder.hh
 	BSChordFinder.icc
 	BaseDriver.hh
+	BSStepper.hh
     SOURCES
         TsitourasRK45.cc
         VernerRK78.cc
@@ -164,6 +165,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	BulirschStoerDriver.cc
 	BSChordFinder.cc
 	BaseDriver.cc
+	BSStepper.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

@@ -21,14 +21,24 @@
 #include <array>
 #include <functional>
 
+#include "G4MagIntegratorStepper.hh"
+
 typedef std::array<G4double,G4FieldTrack::ncompSVEC> state_type;
 
 class BaseDriver{
 public:
 
-    BaseDriver(G4EquationOfMotion* equation,
-                        G4int integratedComponents = 6,
-                        G4int verb = 1);
+    //constructor for BulirschStoer driver
+    BaseDriver(G4double hminimum,
+               G4EquationOfMotion* equation,
+               G4int numberOfComponents = 6,
+               G4int statisticsVerbosity = 1);
+
+    //constructor for G4MagInt_Driver
+    BaseDriver(G4double hminimum,
+               G4MagIntegratorStepper *pItsStepper,
+               G4int  numberOfComponents = 6,
+               G4int  statisticsVerbosity = 1);
 
     virtual ~BaseDriver();
 
@@ -55,18 +65,27 @@ public:
 
      virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] ) = 0;
 
-     G4double ComputeNewStepSize(double dyErr_relative,
+     virtual G4MagIntegratorStepper* GetStepper() = 0;
+
+     void SetVerboseLevel(G4int verb);
+
+     virtual G4double ComputeNewStepSize(double dyErr_relative,
                                  double lastStepLength );
+
+     G4double calcError(const state_type& y1, const state_type& y2, G4double hstep);
 
 
 //private:
 
+     G4double fMinimumStep;
+     G4MagIntegratorStepper* fStepper;
      G4EquationOfMotion* fequation;
-     G4int fverb;
      G4int fnvar;
+     G4int fverb;
 
-     std::function<void(const state_type&, state_type&, G4double)> system;
-     std::function<void(const state_type&, state_type&)> System;
+
+     std::function<void(const state_type& y, state_type& dydx, G4double curveLength)> system;
+     std::function<void(const state_type& y, state_type& dydx)> System;
 };
 
 

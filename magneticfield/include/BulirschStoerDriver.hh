@@ -13,11 +13,13 @@
 #define BulirschStoerDriver_HH
 
 #include "BaseDriver.hh"
+#include "BSStepper.hh"
 
 class BulirschStoerDriver: public BaseDriver{
 public:
 
-    BulirschStoerDriver(G4EquationOfMotion* equation,
+    BulirschStoerDriver(G4double hminimum,
+                        G4EquationOfMotion* equation,
                         G4int integratedComponents = 6,
                         G4int verb = 1);
 
@@ -46,6 +48,8 @@ public:
 
     virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] );
 
+    virtual G4MagIntegratorStepper* GetStepper();
+
 
 private:
 
@@ -60,6 +64,8 @@ private:
         // satisfying the accuracy criterion of:
         // yerr < eps * |y_end-y_start|
 
+     //this is a dummy stepper to glue things up
+     BSStepper* dummyStepper;
 };
 
 
