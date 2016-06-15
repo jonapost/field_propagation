@@ -14,7 +14,9 @@ BulirschStoerDriver::BulirschStoerDriver(G4double hminimum,
                                          G4int integratedComponents,
                                          G4int  verb):
     BaseDriver(hminimum,equation,integratedComponents,verb),
-    dummyStepper(new BSStepper(equation))
+    dummyStepper(new BSStepper(equation)),
+    mp(equation,integratedComponents)/*,
+    BulirschStoer(0,0,1,0,0)*/
 
 {
 }
@@ -267,12 +269,13 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
 */
 
     G4int nsteps = 2;
-    ModifiedMidpoint mp(nsteps,fnvar);
-    mp.do_step(system,yIn,dydxIn,curveLength,yOut2,hstep);
+    ModifiedMidpoint mp(fequation,fnvar,nsteps);
+    mp.do_step(yIn,dydxIn,curveLength,yOut2,hstep);
 
-    mp.do_step(system,yIn,dydxIn,curveLength,yOutMid,0.5*hstep);
-    system(yOutMid,dydxMid,curveLength+0.5*hstep);
-    mp.do_step(system,yOutMid,dydxMid,curveLength+0.5*hstep,yOut,0.5*hstep);
+    mp.do_step(yIn,dydxIn,curveLength,yOutMid,0.5*hstep);
+    fequation->RightHandSide(yOutMid.data(),dydxMid.data());
+    //system(yOutMid,dydxMid,curveLength+0.5*hstep);
+    mp.do_step(yOutMid,dydxMid,curveLength+0.5*hstep,yOut,0.5*hstep);
 
     missDist = G4LineSection::Distline(G4ThreeVector(yOutMid[0],yOutMid[1],yOutMid[2]),
                                        G4ThreeVector(yIn[0],yIn[1],yIn[2]),

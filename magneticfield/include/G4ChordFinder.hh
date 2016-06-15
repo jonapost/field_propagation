@@ -202,6 +202,9 @@ class G4ChordFinder
       // For Statistics
       // -- G4int   fNoTrials, fNoCalls;
       G4int   fTotalNoTrials_FNC,  fNoCalls_FNC, fmaxTrials_FNC; // fnoTimesMaxTrFNC; 
+
+      G4int fAccurateAdvanceCalls;
+      G4int fQuickAdvanceCalls;
 };
 
 // Inline function implementation:

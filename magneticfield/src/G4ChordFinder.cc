@@ -50,7 +50,8 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
     fDriversStepper(0),                    // Dependent objects 
     fAllocatedStepper(false),
     fEquation(0),      
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),
+    fQuickAdvanceCalls(0),fAccurateAdvanceCalls(0)
 {
   // Simple constructor -- it does not create equation
   fIntgrDriver= pIntegrationDriver;
@@ -77,7 +78,8 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
     fDriversStepper(0),                  //  Dependent objects
     fAllocatedStepper(false),
     fEquation(0), 
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)  // State - stats
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),  // State - stats
+    fQuickAdvanceCalls(0),fAccurateAdvanceCalls(0)
 {
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
@@ -203,6 +205,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
      //                           ***************
      good_advance = fIntgrDriver->AccurateAdvance(yCurrent, stepPossible,
                                                   epsStep, nextStep);
+     ++fAccurateAdvanceCalls;
      if ( ! good_advance )
      { 
        // In this case the driver could not do the full distance
@@ -256,6 +259,7 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
      //            ************
      fIntgrDriver->QuickAdvance( yCurrent, dydx, stepTrial, 
                                  dChordStep, dyErrPos);
+     ++fQuickAdvanceCalls;
      //            ************
      
      //  We check whether the criterion is met here.
@@ -664,6 +668,11 @@ G4ChordFinder::PrintStatistics()
     << "  fFractionLast "   << fFractionLast
     << "  fFractionNextEstimate " << fFractionNextEstimate
     << G4endl; 
+
+  G4cout
+    << " No QuickAdvanceCalls: "    << fQuickAdvanceCalls
+    << " No AccurateAdvanceCalls: " << fAccurateAdvanceCalls
+    << G4endl;
 }
 
 
