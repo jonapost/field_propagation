@@ -1,3 +1,16 @@
+//
+// class BulirschStoerDenseOut
+//
+// Class description:
+//
+// This is a copy of bulirsch_stoer_dense_out.hpp
+//
+// History:
+// - Created. D.Sorokin.
+// --------------------------------------------------------------------
+
+
+
 #ifndef BulirschStoerDenseOut_HH
 #define BulirschStoerDenseOut_HH
 
@@ -11,6 +24,7 @@ typedef std::vector<int> int_vector;
 typedef std::vector<state_vector_type> state_table_type;
 typedef std::vector<double> double_vector;
 typedef std::vector<std::vector<double>> double_matrix;
+typedef unsigned long long Int;
 
 class DefaultErrorChecker{
 public:
@@ -32,11 +46,28 @@ private:
     double m_eps_rel;
 };
 
+
+inline Int fact(Int val){
+    Int res = 1;
+    for (Int i = 2; i <= val; ++i){
+        res *= i;
+    }
+    return res;
+}
+
+inline double binomial_coefficient(Int n, Int k){
+    double res = fact(n);
+    res /= fact(n-k);
+    res /= fact(k);
+    return res;
+
+}
+
 enum controlled_step_result{
     fail,
     success
 };
-
+#if 0
 class BulirschStoerDenseOut{
 public:
 
@@ -121,11 +152,11 @@ public:
             m_midpoint.set_steps(m_interval_sequence[k]);
             if( k == 0 )
             {
-                m_midpoint.do_step( system , in , dxdt, out , dt , m_mp_states[k] , m_derivs[k]);
+                m_midpoint.do_step( system , in , dxdt, t ,out , dt , m_mp_states[k] , m_derivs[k]);
             }
             else
             {
-                m_midpoint.do_step( system , in , dxdt, m_table[k-1], dt , m_mp_states[k], m_derivs[k] );
+                m_midpoint.do_step( system , in , dxdt, t, m_table[k-1], dt , m_mp_states[k], m_derivs[k] );
                 extrapolate( k , m_table , m_coeff , out );
                 // get error estimate
                 for (int i = 0; i < fnvar; ++i){
@@ -211,7 +242,7 @@ public:
         {
 
             //calculate dxdt for next step and dense output
-            system( out , dxdt_new);
+            system( out , dxdt_new, t+dt);
 
             //prepare dense output
             double error = prepare_dense_output( m_k_final , in , dxdt , out , dxdt_new , dt );
@@ -260,7 +291,7 @@ public:
     {
         if( m_first )
         {
-            system( get_current_state() , get_current_deriv());
+            system(get_current_state(), get_current_deriv(), m_t);
         }
 
         controlled_step_result res = fail;
@@ -479,7 +510,7 @@ private:
                 {
                     for (int idx = 0; idx < fnvar; ++idx){
                         m_diffs[kappa][j_diffs][idx] =  m_diffs[kappa][j_diffs][idx] +
-                                                   m_derivs[j][i][idx] * sign * fac * boost::math::binomial_coefficient< double >( kappa , c );
+                                                   m_derivs[j][i][idx] * sign * fac * binomial_coefficient( kappa , c );
                     }
 
                 }
@@ -728,5 +759,5 @@ private:
      */
 
 
-
+#endif
 #endif // BOOST_NUMERIC_ODEINT_STEPPER_BULIRSCH_STOER_HPP_INCLUDED

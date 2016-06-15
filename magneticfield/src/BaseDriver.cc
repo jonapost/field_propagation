@@ -36,7 +36,7 @@ BaseDriver::~BaseDriver(){
 }
 
 
-G4double BaseDriver::ComputeNewStepSize(double errMaxNorm,
+G4double BaseDriver::ComputeNewStepSize(double /*errMaxNorm*/,
                                         double hstepCurrent ){
     return hstepCurrent;
 }

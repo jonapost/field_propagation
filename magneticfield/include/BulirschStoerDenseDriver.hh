@@ -14,6 +14,7 @@
 #define BulirschStoerDenseDriver_HH
 
 #include "BaseDriver.hh"
+#include "BSStepper.hh"
 
 
 #define private public
@@ -25,7 +26,8 @@
 
 class BulirschStoerDenseDriver: public BaseDriver{
 public:
-    BulirschStoerDenseDriver(G4EquationOfMotion* pequation,
+    BulirschStoerDenseDriver(G4double hminimum,
+                             G4EquationOfMotion* pequation,
                              G4int numberOfComponents = 6,
                              G4int statisticsVerbosity = 1);
 
@@ -51,6 +53,8 @@ public:
 
     virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] );
 
+    virtual G4MagIntegratorStepper* GetStepper();
+
 
 private:
     //epsilon for QuickAdvance
@@ -58,6 +62,7 @@ private:
     G4double tBegin,tEnd;
     boost::numeric::odeint::bulirsch_stoer_dense_out<state_type> theStepper;
     //BulirschStoerDenseOut theStepper;
+    BSStepper* dummyStepper;
 };
 
 

@@ -1,7 +1,6 @@
 #include "BulirschStoerDenseDriver.hh"
 #include "G4LineSection.hh"
 
-#include <boost/array.hpp>
 #include <boost/numeric/odeint.hpp>
 #include <functional>
 
@@ -15,20 +14,24 @@ void print(const state_type& state){
     G4cout<<G4endl;
 }
 
-BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4EquationOfMotion* pequation,
+BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4double hminimum, G4EquationOfMotion* equation,
                                                    G4int numberOfComponents,
                                                    G4int statisticsVerbosity):
-    BaseDriver(0,pequation,numberOfComponents,statisticsVerbosity),
+    BaseDriver(hminimum,equation,numberOfComponents,statisticsVerbosity),
     quickEps(1e50),
     tBegin(DBL_MAX),
     tEnd(DBL_MIN),
-    theStepper(0,0,1,0,0,true)
+    theStepper(numberOfComponents,0,0,true),
+    dummyStepper(new BSStepper(equation))
 
-{
+{           /*int nvar,
+            double eps_rel,
+            double max_dt = 0,
+            bool control_interpolation = false */
 }
 
 BulirschStoerDenseDriver::~BulirschStoerDenseDriver(){
-
+    delete dummyStepper;
 }
 
 G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
@@ -132,4 +135,8 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
 void BulirschStoerDenseDriver::GetDerivatives(const G4FieldTrack &/*track*/, G4double /*dydx*/[]){
     //no need to calculate dydx
     //it is calculated internaly
+}
+
+G4MagIntegratorStepper* BulirschStoerDenseDriver::GetStepper(){
+    return dummyStepper;
 }

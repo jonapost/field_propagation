@@ -15,6 +15,9 @@
 #include "BaseDriver.hh"
 #include "BSStepper.hh"
 
+#include "ModifiedMidpoint.hh"
+#include "boost/numeric/odeint.hpp"
+
 class BulirschStoerDriver: public BaseDriver{
 public:
 
@@ -66,6 +69,8 @@ private:
 
      //this is a dummy stepper to glue things up
      BSStepper* dummyStepper;
+     ModifiedMidpoint modifiedMidpoint;
+     boost::numeric::odeint::bulirsch_stoer<state_type> BulirschStoer;
 };
 
 
