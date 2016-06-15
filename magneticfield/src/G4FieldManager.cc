@@ -34,6 +34,11 @@
 #include "G4ChordFinder.hh"
 #include "G4FieldManagerStore.hh"
 
+#ifdef USE_BASE_DRIVER
+#include "BaseDriver.hh"
+#define G4MagInt_Driver BaseDriver
+#endif
+
 G4FieldManager::G4FieldManager(G4Field       *detectorField, 
 			       G4ChordFinder *pChordFinder, 
 			       G4bool        fieldChangesEnergy

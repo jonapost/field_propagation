@@ -18,7 +18,7 @@ void print(const state_type& state){
 BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4EquationOfMotion* pequation,
                                                    G4int numberOfComponents,
                                                    G4int statisticsVerbosity):
-    BaseDriver(pequation,numberOfComponents,statisticsVerbosity),
+    BaseDriver(0,pequation,numberOfComponents,statisticsVerbosity),
     quickEps(1e50),
     tBegin(DBL_MAX),
     tEnd(DBL_MIN),

@@ -59,6 +59,8 @@
 #include "G4DELPHIMagField.hh"
 #include "G4PropagatorInField.hh"
 
+#include "BulirschStoerDriver.hh"
+
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
   : _FileRead(0), debug(false), radius(19*cm), NSubLayer(0),
     disableSVT(false), disableDCH(false),
@@ -212,11 +214,10 @@ NTSTDetectorConstruction::Construct()
 
   pEquation = new G4Mag_UsualEqRhs( &field); 
  
-  // pStepper =   
-  //           new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
-  //           new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3 
+  // pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
+  // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
   // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
-   pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
+  // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4HelixMixedStepper( pEquation ); G4cout << "Stepper is " << "HelixMixed" << G4endl;
   // pStepper=  StepperFactory::CreateStepper( order ); 
 
@@ -227,11 +228,14 @@ NTSTDetectorConstruction::Construct()
     //   << " G4HelixMixedStepper " << G4endl;
 
   // globalFieldManager->CreateChordFinder( (G4MagneticField *)&field );
+/*
   fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field, 
 				    fMinChordStep,
-                                    pStepper );
+                    pStepper );*/
+  BulirschStoerDriver* BSDriver = new BulirschStoerDriver(fMinChordStep,pEquation);
+  fpChordFinder = new G4ChordFinder(BSDriver);
   fpChordFinder->SetVerbose(1); 
-  globalFieldManager->SetChordFinder( fpChordFinder );
+  globalFieldManager->SetChordFinder(fpChordFinder);
 
   //------------------------------------------------------ materials
 

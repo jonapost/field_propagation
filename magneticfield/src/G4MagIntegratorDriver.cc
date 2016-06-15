@@ -49,7 +49,6 @@
 
 #include <boost/array.hpp>
 #include <boost/numeric/odeint.hpp>
-typedef boost::array< double , 6 > state_type;
 using namespace boost::numeric::odeint;
 
 //  Stepsize can increase by no more than 5.0
@@ -78,8 +77,11 @@ const G4int  G4MagInt_Driver::fMaxStepBase = 100000;  // Was 5000, was 250
 G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum, 
                                   G4MagIntegratorStepper *pStepper,
                                   G4int                   numComponents,
-                                  G4int                   statisticsVerbose)
-  : fSmallestFraction( 1.0e-12 ), 
+                                  G4int                   statisticsVerbose):
+#ifdef USE_BASE_DRIVER
+    BaseDriver(hminimum,pStepper,numComponents,statisticsVerbose),
+#endif
+    fSmallestFraction( 1.0e-12 ),
     fNoIntegrationVariables(numComponents), 
     fMinNoVars(12), 
     fNoVars( std::max( fNoIntegrationVariables, fMinNoVars )),

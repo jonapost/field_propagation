@@ -45,6 +45,13 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
 
+
+
+#ifdef USE_BASE_DRIVER
+#include "BaseDriver.hh"
+#define G4MagInt_Driver BaseDriver
+#endif
+
 class G4MagneticField;  
 
 class G4ChordFinder
@@ -53,10 +60,12 @@ class G4ChordFinder
 
       G4ChordFinder( G4MagInt_Driver* pIntegrationDriver );
 
+
       G4ChordFinder( G4MagneticField* itsMagField,
                      G4double         stepMinimum = 1.0e-2, // * mm 
                      G4MagIntegratorStepper* pItsStepper = 0 );  
         // A constructor that creates defaults for all "children" classes.
+
       
       virtual ~G4ChordFinder();
 
@@ -198,5 +207,5 @@ class G4ChordFinder
 // Inline function implementation:
 
 #include "G4ChordFinder.icc"
-
+//#undef G4MagInt_Driver
 #endif  // G4CHORDFINDER_HH

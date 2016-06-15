@@ -135,17 +135,17 @@ void Comparator::Compare(const G4double stepLen, const G4int NSteps, const bool 
         G4cout<<"diffSteps# "<<diffSteps<<" maxDiff "<<maxDiff<<G4endl;
     }
 }
-
+#undef G4MagInt_Driver
 template <class refStepper>
 void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
 {
     refStepper refSt(equation);
     G4MagInt_Driver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
     G4ChordFinder refChordFinder(refDriver);
-    BulirschStoerDriver BSDriver(equation);
+    BulirschStoerDriver* BSDriver = new BulirschStoerDriver(hmin,equation);
     //BulirschStoerDenseDriver BSDriver(equation);
 
-    BSChordFinder testChordFinder(&BSDriver);
+    G4ChordFinder testChordFinder(BSDriver);
     //refChordFinder.SetDeltaChord(1*cm);
     //testChordFinder.SetDeltaChord(1*cm);
 
@@ -171,8 +171,8 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
         G4cout<<step<<"   "<<step2<<G4endl;
         refTrack->DumpToArray(y);
         outRef << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
-    }*/
-
+    }
+*/
 
     while (pathRest > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
