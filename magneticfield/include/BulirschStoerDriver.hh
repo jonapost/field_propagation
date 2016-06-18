@@ -12,13 +12,16 @@
 #ifndef BulirschStoerDriver_HH
 #define BulirschStoerDriver_HH
 
-#include "BaseDriver.hh"
+#include "G4VIntegrationDriver.hh"
 #include "BSStepper.hh"
 
 #include "ModifiedMidpoint.hh"
-#include "boost/numeric/odeint.hpp"
+//#include "boost/numeric/odeint.hpp"
+#include "BulirschStoer.hh"
 
-class BulirschStoerDriver: public BaseDriver{
+#include <functional>
+
+class BulirschStoerDriver: public G4VIntegrationDriver{
 public:
 
     BulirschStoerDriver(G4double hminimum,
@@ -70,7 +73,8 @@ private:
      //this is a dummy stepper to glue things up
      BSStepper* dummyStepper;
      ModifiedMidpoint modifiedMidpoint;
-     boost::numeric::odeint::bulirsch_stoer<state_type> BulirschStoer;
+     BulirschStoer bulirschStoer;
+     //boost::numeric::odeint::bulirsch_stoer<state_type> BulirschStoer;
 
 
 
@@ -86,6 +90,8 @@ private:
      G4double yCurrent[G4FieldTrack::ncompSVEC];
 
      state_type yInOut, dydxIn;
+
+     std::function<void(const state_type& y, state_type& dydx, G4double t)> system;
 
 };
 

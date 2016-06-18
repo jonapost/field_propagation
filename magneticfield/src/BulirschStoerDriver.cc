@@ -13,12 +13,15 @@ BulirschStoerDriver::BulirschStoerDriver(G4double hminimum,
                                          G4EquationOfMotion* equation,
                                          G4int integratedComponents,
                                          G4int  verb):
-    BaseDriver(hminimum,equation,integratedComponents,verb),
+    G4VIntegrationDriver(hminimum,equation,integratedComponents,verb),
     dummyStepper(new BSStepper(equation)),
     modifiedMidpoint(equation,integratedComponents),
-    BulirschStoer(0,0,1,0,0)
+    bulirschStoer(equation,integratedComponents,0,0)
 
 {
+    system = [this](const state_type& y, state_type& dydx, double /*t*/){
+        fequation->RightHandSide(y.data(),dydx.data());
+    };
 }
 
 BulirschStoerDriver::~BulirschStoerDriver(){
@@ -327,13 +330,17 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
     //G4cout<<"OneGoodStep "<<htry<<G4endl;
     //bulirsch_stoer<state_type> stepper(0,eps,1,0,htry);
 
-    BulirschStoer.reset();
-    BulirschStoer.set_max_dt(htry);
-    BulirschStoer.set_max_relative_error(eps);
+    bulirschStoer.reset();
+    bulirschStoer.set_max_dt(htry);
+    bulirschStoer.set_max_relative_error(eps);
 
     hnext = htry;
     hdid = 0;
+    bulirschStoer.try_step(y,dydx,hdid,yOut,hnext);
 
+    memcpy(y,yOut,sizeof(G4double)*fnvar);
+    curveLength += hdid;
+/*
     //copy input to std::array and set non-integrated variables 0
     memcpy(yInOut.data(),y,sizeof(G4double)*fnvar);
     memset(yInOut.data()+fnvar,0,sizeof(G4double)*(ncomp - fnvar));
@@ -342,12 +349,13 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
     memset(dydxIn.data()+fnvar,0,sizeof(G4double)*(ncomp - fnvar));
 
     //do Bulisrsch-Stoer step
-    BulirschStoer.try_step(system, yInOut, dydxIn, hdid, hnext);
+    bulirschStoer.try_step(system, yInOut, dydxIn, hdid, hnext);
 
     //copy integrated variables to output array
     memcpy(y,yInOut.data(),sizeof(G4double)*fnvar);
 
     curveLength += hdid;
+    */
 }
 
 G4MagIntegratorStepper* BulirschStoerDriver::GetStepper(){

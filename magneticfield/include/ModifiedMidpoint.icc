@@ -1,0 +1,6 @@
+inline void ModifiedMidpoint::set_steps(G4int steps)
+{   fsteps = steps; }
+
+
+inline G4int ModifiedMidpoint::steps() const
+{   return fsteps; }

@@ -17,17 +17,17 @@ void print(const state_type& state){
 BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4double hminimum, G4EquationOfMotion* equation,
                                                    G4int numberOfComponents,
                                                    G4int statisticsVerbosity):
-    BaseDriver(hminimum,equation,numberOfComponents,statisticsVerbosity),
+    G4VIntegrationDriver(hminimum,equation,numberOfComponents,statisticsVerbosity),
     quickEps(1e50),
     tBegin(DBL_MAX),
     tEnd(DBL_MIN),
     theStepper(numberOfComponents,0,0,true),
     dummyStepper(new BSStepper(equation))
 
-{           /*int nvar,
-            double eps_rel,
-            double max_dt = 0,
-            bool control_interpolation = false */
+{
+    system = [this](const state_type& y, state_type& dydx, double /*t*/){
+        fequation->RightHandSide(y.data(),dydx.data());
+    };
 }
 
 BulirschStoerDenseDriver::~BulirschStoerDenseDriver(){

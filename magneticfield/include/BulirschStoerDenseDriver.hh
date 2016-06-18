@@ -13,18 +13,18 @@
 #ifndef BulirschStoerDenseDriver_HH
 #define BulirschStoerDenseDriver_HH
 
-#include "BaseDriver.hh"
+#include "G4VIntegrationDriver.hh"
 #include "BSStepper.hh"
 
 
 #define private public
 //#include "BulirschStoerDenseOut.hh"
 #include "boost/numeric/odeint.hpp"
-#define private private
+#undef private
 
-#include "functional"
+#include <functional>
 
-class BulirschStoerDenseDriver: public BaseDriver{
+class BulirschStoerDenseDriver: public G4VIntegrationDriver{
 public:
     BulirschStoerDenseDriver(G4double hminimum,
                              G4EquationOfMotion* pequation,
@@ -63,6 +63,8 @@ private:
     boost::numeric::odeint::bulirsch_stoer_dense_out<state_type> theStepper;
     //BulirschStoerDenseOut theStepper;
     BSStepper* dummyStepper;
+
+    std::function<void(const state_type& y, state_type& dydx, G4double t)> system;
 };
 
 
