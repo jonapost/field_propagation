@@ -72,7 +72,20 @@ public:
      virtual G4double ComputeNewStepSize(double dyErr_relative,
                                  double lastStepLength );
 
-     G4double calcError(const state_type& y1, const state_type& y2, G4double hstep);
+     inline G4double calcError(const state_type& y1, const state_type& y2, G4double hstep){
+         G4double yErr[G4FieldTrack::ncompSVEC];
+         for (int i = 0; i < fnvar; ++i){
+             yErr[i] = y1[i] - y2[i];
+         }
+
+         G4double errPos2 = sqr(yErr[0]) + sqr(yErr[1]) + sqr(yErr[2]);
+         G4double errMom2 = sqr(yErr[3]) + sqr(yErr[4]) + sqr(yErr[5]);
+         G4double Mom2 = sqr(y1[3]) + sqr(y1[4]) + sqr(y1[5]);
+         errMom2 /= Mom2;
+         errPos2 /= (hstep*hstep);
+
+         return std::max(sqrt(errPos2), sqrt(errMom2)*hstep);
+     }
 
 
 //private:

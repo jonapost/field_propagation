@@ -35,7 +35,7 @@
 
 #include "G4CachedMagneticField.hh"
 #include <fstream>
-
+#undef G4MagInt_Driver
 enum mode{
     Default,
     Verbose,
@@ -135,15 +135,15 @@ void Comparator::Compare(const G4double stepLen, const G4int NSteps, const bool 
         G4cout<<"diffSteps# "<<diffSteps<<" maxDiff "<<maxDiff<<G4endl;
     }
 }
-#undef G4MagInt_Driver
+
 template <class refStepper>
 void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
 {
     refStepper refSt(equation);
     G4MagInt_Driver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
     G4ChordFinder refChordFinder(refDriver);
-    BulirschStoerDriver* BSDriver = new BulirschStoerDriver(hmin,equation);
-    //BulirschStoerDenseDriver BSDriver(equation);
+    //BulirschStoerDriver* BSDriver = new BulirschStoerDriver(hmin,equation);
+    BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(hmin,equation);
 
     G4ChordFinder testChordFinder(BSDriver);
     //refChordFinder.SetDeltaChord(1*cm);

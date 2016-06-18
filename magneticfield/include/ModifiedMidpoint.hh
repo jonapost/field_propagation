@@ -36,7 +36,7 @@ public :
     }
     ~ModifiedMidpoint(){
     }
-
+/*
     void do_step(const state_type& xIn, const state_type& dxdtIn, G4double t ,state_type& xOut, G4double dt){
 
         const G4double h = dt / fsteps;
@@ -49,7 +49,7 @@ public :
             x1[i] = xIn[i] + h*dxdtIn[i];
         }
 
-        Equation_Rhs->RightHandSide(x1.data(), dxdt.data()/*, th*/);
+        Equation_Rhs->RightHandSide(x1.data(), dxdt.data());//, th);
 
         x0 = xIn;
 
@@ -63,7 +63,43 @@ public :
             th += h;
             x0 = tmp;
 
-            Equation_Rhs->RightHandSide(x1.data() , dxdt.data()/*, th*/);
+            Equation_Rhs->RightHandSide(x1.data() , dxdt.data());//, th);
+        }
+
+
+        // last step
+        // xOut = 0.5*(x0 + x1 + h*dxdt)
+        for (unsigned int i = 0; i < fnvar; ++i){
+            xOut[i] = 0.5*(x0[i] + x1[i] + h*dxdt[i]);
+        }
+
+    }
+*/
+
+    void do_step(const G4double* xIn, const G4double* dxdtIn ,G4double* xOut, G4double dt){
+
+        const G4double h = dt / fsteps;
+        const G4double h2 = 2 * h;
+
+        // x1 = xIn + h*dxdt
+        for (unsigned int i = 0; i < fnvar; ++i){
+            x1[i] = xIn[i] + h*dxdtIn[i];
+        }
+
+        Equation_Rhs->RightHandSide(x1, dxdt);
+
+        memcpy(x0,xIn,sizeof(G4double)*fnvar);
+
+        // general step
+        //tmp = x1; x1 = x0 + h2*dxdt; x0 = tmp
+        for (unsigned int i = 1; i < fsteps; ++i){
+            memcpy(tmp,x1,sizeof(G4double)*fnvar);
+            for (unsigned int j = 0; j < fnvar; ++j){
+                x1[j] = x0[j] + h2*dxdt[j];
+            }
+            memcpy(x0,tmp,sizeof(G4double)*fnvar);
+
+            Equation_Rhs->RightHandSide(x1 , dxdt);
         }
 
 
@@ -88,11 +124,17 @@ private:
     G4EquationOfMotion* Equation_Rhs;
     unsigned int fnvar;
     unsigned int fsteps;
-
+/*
     state_type x0;
     state_type x1;
     state_type dxdt;
     state_type tmp;
+*/
+
+    G4double x0[G4FieldTrack::ncompSVEC];
+    G4double x1[G4FieldTrack::ncompSVEC];
+    G4double dxdt[G4FieldTrack::ncompSVEC];
+    G4double tmp[G4FieldTrack::ncompSVEC];
 
 };
 

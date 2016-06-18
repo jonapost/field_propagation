@@ -69,6 +69,11 @@ public:
         : m_eps_abs( eps_abs ) , m_eps_rel( eps_rel ) , m_a_x( a_x ) , m_a_dxdt( a_dxdt )
     { }
 
+    void set_max_relative_error(value_type eps_rel)
+    {
+        m_eps_rel = eps_rel;
+    }
+
 
     template< class State , class Deriv , class Err, class Time >
     value_type error( const State &x_old , const Deriv &dxdt_old , Err &x_err , Time dt ) const

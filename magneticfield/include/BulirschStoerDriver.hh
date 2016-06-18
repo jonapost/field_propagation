@@ -71,6 +71,22 @@ private:
      BSStepper* dummyStepper;
      ModifiedMidpoint modifiedMidpoint;
      boost::numeric::odeint::bulirsch_stoer<state_type> BulirschStoer;
+
+
+
+     G4double yIn[G4FieldTrack::ncompSVEC],
+              yMid[G4FieldTrack::ncompSVEC],
+              yOut[G4FieldTrack::ncompSVEC],
+              yOut2[G4FieldTrack::ncompSVEC],
+              yError[G4FieldTrack::ncompSVEC];
+
+     G4double dydxMid[G4FieldTrack::ncompSVEC];
+
+     G4double dydxCurrent[G4FieldTrack::ncompSVEC];
+     G4double yCurrent[G4FieldTrack::ncompSVEC];
+
+     state_type yInOut, dydxIn;
+
 };
 
 
