@@ -98,9 +98,11 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	BulirschStoerDenseDriver.hh
 	BulirschStoerDriver.hh
 	BulirschStoerDenseOut.hh
+	BulirschStoerDenseOut.icc
 	ModifiedMidpoint.hh
 	ModifiedMidpoint.icc
 	ModifiedMidpointDenseOut.hh
+	ModifiedMidpointDenseOut.icc
 	G4VIntegrationDriver.hh
 	BSStepper.hh
 	BulirschStoer.hh
@@ -170,6 +172,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	G4VIntegrationDriver.cc
 	BSStepper.cc
 	BulirschStoer.cc
+	BulirschStoerDenseOut.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

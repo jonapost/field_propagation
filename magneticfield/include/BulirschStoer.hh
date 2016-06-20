@@ -29,8 +29,13 @@ inline G4double check_error(const G4double* yOut, const G4double* yError, const 
     errMom2 /= Mom2;
     errPos2 /= (hstep*hstep);
 
-    return std::max(sqrt(errPos2), sqrt(errMom2)*hstep)/eps;
+    return std::max(sqrt(errPos2), sqrt(errMom2))/eps;
 }
+
+enum step_result{
+    success,
+    fail
+};
 
 
 class BulirschStoer {
@@ -98,6 +103,8 @@ private:
     G4double STEPFAC1 , STEPFAC2 , STEPFAC3 , STEPFAC4 , KFAC1 , KFAC2;
 
     G4double h_opt[m_k_max+1];
+
+    //Work per unit step
     G4double work[m_k_max+1];
 };
 

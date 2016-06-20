@@ -14,14 +14,14 @@ BulirschStoer::BulirschStoer(G4EquationOfMotion* equation,
 
 {
     /* initialize sequence of stage numbers and work */
-    for( unsigned short i = 0; i < m_k_max+1; i++ )
+    for(G4int i = 0; i < m_k_max+1; ++i)
     {
         m_interval_sequence[i] = 2 * (i+1);
-        if( i == 0 )
+        if(i == 0)
             m_cost[i] = m_interval_sequence[i];
         else
             m_cost[i] = m_cost[i-1] + m_interval_sequence[i];
-        for( size_t k = 0 ; k < i ; ++k  )
+        for(G4int k = 0; k < i; ++k)
         {
             const G4double r = static_cast< G4double >( m_interval_sequence[i] ) / static_cast< G4double >( m_interval_sequence[k] );
             m_coeff[i][k] = 1.0 / (r*r - 1.0); // coefficients for extrapolation
@@ -35,15 +35,8 @@ BulirschStoer::BulirschStoer(G4EquationOfMotion* equation,
         m_current_k_opt = max BOOST_PREVENT_MACRO_SUBSTITUTION( static_cast<value_type>( 1 ) , min BOOST_PREVENT_MACRO_SUBSTITUTION( static_cast<value_type>( m_k_max-1 ) , logfact ));
         */
     }
-
 }
 
-
-/*
- * Full version : try_step( sys , in , dxdt_in , t , out , dt )
- *
- * contains the actual implementation
-*/
 G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                                G4double& t , G4double* out , G4double& dt)
 {
@@ -52,20 +45,20 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
         // given step size is bigger then max_dt
         // set limit and return fail
         dt = m_max_dt;
-        return false;
+        return fail;
     }
 
-    if( dt != m_dt_last )
+    if(dt != m_dt_last)
     {
         reset(); // step size changed from outside -> reset
     }
 
-    bool reject( true );
+    bool reject =  true;
 
     G4double new_h = dt;
 
     /* m_current_k_opt is the estimated current optimal stage number */
-    for(G4int k = 0; k <= m_current_k_opt+1; k++)
+    for(G4int k = 0; k <= m_current_k_opt+1; ++k)
     {
         /* the stage counts are stored in m_interval_sequence */
         m_midpoint.set_steps(m_interval_sequence[k]);
@@ -81,9 +74,9 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
             // get error estimate
             for (G4int i = 0; i < fnvar; ++i){
                 m_err[i] = out[i] - m_table[0][i];
-        }
+            }
             const G4double error = check_error(out, m_err, dt, m_eps_rel);
-            h_opt[k] = calc_h_opt( dt , error , k );
+            h_opt[k] = calc_h_opt(dt, error, k);
             work[k] = static_cast<G4double>( m_cost[k] ) / h_opt[k];
 
             if( (k == m_current_k_opt-1) || m_first )
@@ -98,12 +91,12 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                         m_current_k_opt = std::min(m_k_max-1 , std::max( 2 , k+1 ) );
                         new_h = h_opt[k];
                         new_h *= static_cast<G4double>( m_cost[k+1] ) / static_cast<G4double>( m_cost[k] );
-                    }
-                    else
-                    {
+                     }
+                     else
+                     {
                         m_current_k_opt = std::min(m_k_max-1, std::max(2, k ) );
                         new_h = h_opt[k];
-                    }
+                     }
                     break;
                 }
                 else if( should_reject( error , k ) && !m_first )
@@ -129,6 +122,7 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                         m_current_k_opt = std::min(m_k_max-1, m_current_k_opt+1);
                         new_h = h_opt[k];
                         new_h *= static_cast<G4double>(m_cost[m_current_k_opt])/static_cast<G4double>(m_cost[k]);
+//                        new_h *= (m_cost[m_current_k_opt])/(m_cost[k]);
                         //were there a error!?
                     }
                     else
@@ -148,7 +142,7 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                 {   //convergence
                     reject = false;
                     if(work[k-2] < KFAC2*work[k-1])
-                        m_current_k_opt = std::max(2 , static_cast<int>(m_current_k_opt)-1);
+                        m_current_k_opt = std::max(2 , m_current_k_opt-1);
                     if((work[k] < KFAC2*work[m_current_k_opt]) && !m_last_step_rejected)
                         m_current_k_opt = std::min(m_k_max-1 , k);
                     new_h = h_opt[m_current_k_opt];
@@ -180,9 +174,9 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
     m_first = false;
 
     if(reject)
-        return false;
+        return fail;
     else
-        return true;
+        return success;
 }
 
 

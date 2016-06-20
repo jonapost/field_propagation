@@ -330,7 +330,7 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
     //G4cout<<"OneGoodStep "<<htry<<G4endl;
     //bulirsch_stoer<state_type> stepper(0,eps,1,0,htry);
 
-    bulirschStoer.reset();
+    //bulirschStoer.reset();
     bulirschStoer.set_max_dt(htry);
     bulirschStoer.set_max_relative_error(eps);
 
