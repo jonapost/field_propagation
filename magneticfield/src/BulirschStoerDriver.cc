@@ -12,19 +12,20 @@ using namespace boost::numeric::odeint;
 BulirschStoerDriver::BulirschStoerDriver(G4double hminimum,
                                          G4EquationOfMotion* equation,
                                          G4int integratedComponents,
-                                         G4int  verb):
+                                         G4int verb):
     G4VIntegrationDriver(hminimum,equation,integratedComponents,verb),
     dummyStepper(new BSStepper(equation)),
     modifiedMidpoint(equation,integratedComponents),
     bulirschStoer(equation,integratedComponents,0,0)
 
 {
-    system = [this](const state_type& y, state_type& dydx, double /*t*/){
-        fequation->RightHandSide(y.data(),dydx.data());
-    };
+//    system = [this](const state_type& y, state_type& dydx, double /*t*/){
+//        fequation->RightHandSide(y.data(),dydx.data());
+//    };
 }
 
-BulirschStoerDriver::~BulirschStoerDriver(){
+BulirschStoerDriver::~BulirschStoerDriver()
+{
     delete dummyStepper;
 }
 
@@ -32,8 +33,8 @@ BulirschStoerDriver::~BulirschStoerDriver(){
 G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
                          G4double hstep,
                          G4double eps,
-                         G4double hinitial){
-
+                         G4double hinitial)
+{
 
     G4int fNoTotalSteps = 0;
     G4int fMaxNoSteps = 10000;
@@ -86,7 +87,9 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
     //integration variables
     track.DumpToArray(yCurrent);
     //copy non-integration variables to out array
-    memcpy(yOut+fnvar,yCurrent+fnvar,sizeof(G4double)*(ncomp-fnvar));
+    memcpy(yOut+GetNumberOfVariables(),
+           yCurrent+GetNumberOfVariables(),
+           sizeof(G4double)*(ncomp-GetNumberOfVariables()));
 
     G4double startCurveLength = track.GetCurveLength();
     G4double curveLength = startCurveLength;
@@ -113,7 +116,7 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
     {
         StartPos = {yCurrent[0], yCurrent[1], yCurrent[2]};
 
-        fequation->RightHandSide(yCurrent, dydxCurrent);
+        GetEquationOfMotion()->RightHandSide(yCurrent, dydxCurrent);
 
         fNoTotalSteps++;
 
@@ -123,7 +126,7 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
                         "GeomField0003", FatalException,
                         "Integration Step became Zero!");
         }
-        else if(h > fMinimumStep){
+        else if(h > GetMinStep()){
             //step size if Ok
             OneGoodStep(yCurrent,dydxCurrent,curveLength,h,eps,hdid,hnext);
             lastStepSucceeded = (hdid == h);
@@ -184,10 +187,10 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
         else
         {
             // Check the proposed next stepsize
-            if(std::fabs(hnext) < fMinimumStep)
+            if(std::fabs(hnext) < GetMinStep())
             {
               // Make sure that the next step is at least Hmin.
-              h = fMinimumStep;
+              h = GetMinStep();
             }
             else
             {
@@ -213,7 +216,7 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
     succeeded = (curveLength >= endCurveLength);  // If it was a "forced" last step
 
     //copy integrated vars to output array
-    memcpy(yOut,yCurrent,sizeof(G4double)*fnvar);
+    memcpy(yOut,yCurrent,sizeof(G4double)*GetNumberOfVariables());
 
     // upload new state
     track.LoadFromArray(yOut, ncomp);
@@ -282,7 +285,7 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
 
     //do two steps by h/2
     modifiedMidpoint.do_step(yIn,dydx,yMid,0.5*hstep);
-    fequation->RightHandSide(yMid,dydxMid);
+    GetEquationOfMotion()->RightHandSide(yMid,dydxMid);
     modifiedMidpoint.do_step(yMid,dydxMid,yOut,0.5*hstep);
 
     //calc chord lenght
@@ -304,7 +307,9 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
 
 
     //copy non-integrated variables to output array
-    memcpy(yOut+fnvar,yIn+fnvar,sizeof(G4double)*(ncomp-fnvar));
+    memcpy(yOut+GetNumberOfVariables(),
+           yIn+GetNumberOfVariables(),
+           sizeof(G4double)*(ncomp-GetNumberOfVariables()));
 
     //set new state
     track.LoadFromArray(yOut,ncomp);
@@ -314,9 +319,10 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
     return true;
 }
 
-void BulirschStoerDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[] ){
+void BulirschStoerDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[] )
+{
     track.DumpToArray(yIn);
-    fequation->RightHandSide(yIn,dydx);
+    GetEquationOfMotion()->RightHandSide(yIn,dydx);
 }
 
 
@@ -326,7 +332,8 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
                                        G4double htry,
                                        G4double eps,
                                        G4double& hdid,
-                                       G4double& hnext){
+                                       G4double& hnext)
+{
     //G4cout<<"OneGoodStep "<<htry<<G4endl;
     //bulirsch_stoer<state_type> stepper(0,eps,1,0,htry);
 
@@ -338,7 +345,7 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
     hdid = 0;
     bulirschStoer.try_step(y,dydx,hdid,yOut,hnext);
 
-    memcpy(y,yOut,sizeof(G4double)*fnvar);
+    memcpy(y,yOut,sizeof(G4double)*GetNumberOfVariables());
     curveLength += hdid;
 /*
     //copy input to std::array and set non-integrated variables 0
@@ -358,6 +365,13 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[],
     */
 }
 
-G4MagIntegratorStepper* BulirschStoerDriver::GetStepper(){
+G4double BulirschStoerDriver::ComputeNewStepSize(double /*dyErr_relative*/,
+                                                 double lastStepLength )
+{
+    return lastStepLength;
+}
+
+G4MagIntegratorStepper* BulirschStoerDriver::GetStepper()
+{
     return dummyStepper;
 }

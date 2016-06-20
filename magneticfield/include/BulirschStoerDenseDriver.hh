@@ -22,7 +22,9 @@
 #include "boost/numeric/odeint.hpp"
 #undef private
 
+#include <array>
 #include <functional>
+typedef std::array<G4double,G4FieldTrack::ncompSVEC> state_type;
 
 class BulirschStoerDenseDriver: public G4VIntegrationDriver{
 public:
@@ -57,12 +59,13 @@ public:
 
 
 private:
+    BSStepper* dummyStepper;
     //epsilon for QuickAdvance
     const G4double quickEps;
     G4double tBegin,tEnd;
     boost::numeric::odeint::bulirsch_stoer_dense_out<state_type> theStepper;
     //BulirschStoerDenseOut theStepper;
-    BSStepper* dummyStepper;
+
 
     std::function<void(const state_type& y, state_type& dydx, G4double t)> system;
 };

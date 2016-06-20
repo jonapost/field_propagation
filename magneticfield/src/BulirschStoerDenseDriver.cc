@@ -18,15 +18,15 @@ BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4double hminimum, G4Equation
                                                    G4int numberOfComponents,
                                                    G4int statisticsVerbosity):
     G4VIntegrationDriver(hminimum,equation,numberOfComponents,statisticsVerbosity),
+    dummyStepper(new BSStepper(equation)),
     quickEps(1e50),
     tBegin(DBL_MAX),
     tEnd(DBL_MIN),
-    theStepper(numberOfComponents,0,0,true),
-    dummyStepper(new BSStepper(equation))
+    theStepper(numberOfComponents,0,0,true)
 
 {
     system = [this](const state_type& y, state_type& dydx, double /*t*/){
-        fequation->RightHandSide(y.data(),dydx.data());
+        GetEquationOfMotion()->RightHandSide(y.data(),dydx.data());
     };
 }
 

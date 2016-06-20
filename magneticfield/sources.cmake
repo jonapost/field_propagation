@@ -104,6 +104,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	ModifiedMidpointDenseOut.hh
 	ModifiedMidpointDenseOut.icc
 	G4VIntegrationDriver.hh
+	G4VIntegrationDriver.icc
 	BSStepper.hh
 	BulirschStoer.hh
 	BulirschStoer.icc

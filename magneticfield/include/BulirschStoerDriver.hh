@@ -54,6 +54,9 @@ public:
 
     virtual void GetDerivatives(const G4FieldTrack& track, G4double dydx[] );
 
+    virtual G4double ComputeNewStepSize(double dyErr_relative,
+                                        double lastStepLength );
+
     virtual G4MagIntegratorStepper* GetStepper();
 
 
@@ -89,9 +92,9 @@ private:
      G4double dydxCurrent[G4FieldTrack::ncompSVEC];
      G4double yCurrent[G4FieldTrack::ncompSVEC];
 
-     state_type yInOut, dydxIn;
+     //state_type yInOut, dydxIn;
 
-     std::function<void(const state_type& y, state_type& dydx, G4double t)> system;
+     //std::function<void(const state_type& y, state_type& dydx, G4double t)> system;
 
 };
 
