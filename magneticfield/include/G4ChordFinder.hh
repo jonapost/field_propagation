@@ -45,12 +45,10 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
 
+#include "G4Timer.hh"
 
+#include "G4VIntegrationDriver.hh"
 
-#ifdef USE_BASE_DRIVER
-#include "BaseDriver.hh"
-#define G4MagInt_Driver BaseDriver
-#endif
 
 class G4MagneticField;  
 
@@ -58,13 +56,14 @@ class G4ChordFinder
 { 
    public:  // with description
 
-      G4ChordFinder( G4MagInt_Driver* pIntegrationDriver );
+      G4ChordFinder( G4VIntegrationDriver* pIntegrationDriver );
 
 
       G4ChordFinder( G4MagneticField* itsMagField,
                      G4double         stepMinimum = 1.0e-2, // * mm 
                      G4MagIntegratorStepper* pItsStepper = 0 );  
-        // A constructor that creates defaults for all "children" classes.
+      // A constructor that creates defaults for all "children" classes.
+      // constructs G4MagInt_Driver
 
       
       virtual ~G4ChordFinder();
@@ -98,8 +97,8 @@ class G4ChordFinder
       inline G4double  GetDeltaChord() const;
       inline void      SetDeltaChord(G4double newval);
 
-      inline void SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver);
-      inline G4MagInt_Driver* GetIntegrationDriver();
+      inline void SetIntegrationDriver(G4VIntegrationDriver* IntegrationDriver);
+      inline G4VIntegrationDriver* GetIntegrationDriver();
         // Access and set Driver.
 
       inline void ResetStepEstimate();
@@ -189,7 +188,7 @@ class G4ChordFinder
 
       //  DEPENDENT Objects
       //  ---------------------
-      G4MagInt_Driver*        fIntgrDriver;
+      G4VIntegrationDriver*        fIntgrDriver;
       G4MagIntegratorStepper* fDriversStepper; 
       G4bool                  fAllocatedStepper;  // Bookkeeping of dependent object
       G4EquationOfMotion*     fEquation; 
@@ -202,10 +201,14 @@ class G4ChordFinder
       // For Statistics
       // -- G4int   fNoTrials, fNoCalls;
       G4int   fTotalNoTrials_FNC,  fNoCalls_FNC, fmaxTrials_FNC; // fnoTimesMaxTrFNC; 
+
+      G4int fQuickAdvanceCalls, fAccurateAdvanceCalls;
+      G4double fFindNextChordTime, fAccurateAdvanceTime;
+
+      G4Timer timer;
 };
 
 // Inline function implementation:
-
 #include "G4ChordFinder.icc"
-//#undef G4MagInt_Driver
+
 #endif  // G4CHORDFINDER_HH

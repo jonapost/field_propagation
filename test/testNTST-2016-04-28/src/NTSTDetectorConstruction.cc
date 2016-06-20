@@ -228,7 +228,7 @@ NTSTDetectorConstruction::Construct()
     //   << " G4HelixMixedStepper " << G4endl;
 
   // globalFieldManager->CreateChordFinder( (G4MagneticField *)&field );
-/*
+/*/
   fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field, 
 				    fMinChordStep,
                     pStepper );*/

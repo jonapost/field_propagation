@@ -78,9 +78,7 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
                                   G4MagIntegratorStepper *pStepper,
                                   G4int                   numComponents,
                                   G4int                   statisticsVerbose):
-#ifdef USE_BASE_DRIVER
-    BaseDriver(hminimum,pStepper,numComponents,statisticsVerbose),
-#endif
+    G4VIntegrationDriver(hminimum,pStepper,numComponents,statisticsVerbose),
     fSmallestFraction( 1.0e-12 ),
     fNoIntegrationVariables(numComponents), 
     fMinNoVars(12), 

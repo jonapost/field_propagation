@@ -41,7 +41,7 @@
 
 // ..........................................................................
 
-G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
+G4ChordFinder::G4ChordFinder(G4VIntegrationDriver* pIntegrationDriver)
   : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
     fDeltaChord( fDefaultDeltaChord ),    //   Internal parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 
@@ -50,7 +50,9 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
     fDriversStepper(0),                    // Dependent objects 
     fAllocatedStepper(false),
     fEquation(0),      
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),
+    fQuickAdvanceCalls(0),fAccurateAdvanceCalls(0),
+    fFindNextChordTime(0),fAccurateAdvanceTime(0)
 {
   // Simple constructor -- it does not create equation
   fIntgrDriver= pIntegrationDriver;
@@ -64,8 +66,7 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
 
 
 // ..........................................................................
-#ifdef USE_BASE_DRIVER
-#undef G4MagInt_Driver
+
 G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
                               G4double                stepMinimum, 
                               G4MagIntegratorStepper* pItsStepper )
@@ -77,7 +78,9 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
     fDriversStepper(0),                  //  Dependent objects
     fAllocatedStepper(false),
     fEquation(0), 
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)  // State - stats
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),  // State - stats
+    fQuickAdvanceCalls(0),fAccurateAdvanceCalls(0),
+    fFindNextChordTime(0),fAccurateAdvanceTime(0)
 {
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
@@ -105,8 +108,6 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
 }
-#define G4MagInt_Driver BaseDriver
-#endif
 // ......................................................................
 
 G4ChordFinder::~G4ChordFinder()
@@ -183,9 +184,15 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   G4double  startCurveLen= yCurrent.GetCurveLength();
   G4double nextStep;
   //            *************
+
+
+  timer.Start();
   stepPossible= FindNextChord(yCurrent, stepMax, yEnd, dyErr, epsStep,
                               &nextStep, latestSafetyOrigin, latestSafetyRadius
                              );
+  timer.Stop();
+  fFindNextChordTime += timer.GetUserElapsed();
+
   //            *************
 
   G4bool good_advance;
@@ -201,8 +208,13 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   {  
      // Advance more accurately to "end of chord"
      //                           ***************
+     timer.Start();
      good_advance = fIntgrDriver->AccurateAdvance(yCurrent, stepPossible,
                                                   epsStep, nextStep);
+     timer.Stop();
+     fAccurateAdvanceTime += timer.GetUserElapsed();
+
+     ++fAccurateAdvanceCalls;
      if ( ! good_advance )
      { 
        // In this case the driver could not do the full distance
@@ -256,6 +268,7 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
      //            ************
      fIntgrDriver->QuickAdvance( yCurrent, dydx, stepTrial, 
                                  dChordStep, dyErrPos);
+     ++fQuickAdvanceCalls;
      //            ************
      
      //  We check whether the criterion is met here.
@@ -664,6 +677,17 @@ G4ChordFinder::PrintStatistics()
     << "  fFractionLast "   << fFractionLast
     << "  fFractionNextEstimate " << fFractionNextEstimate
     << G4endl; 
+
+  G4cout
+    << " No QuickAdvanceCalls: "    << fQuickAdvanceCalls
+    << " No AccurateAdvanceCalls: " << fAccurateAdvanceCalls
+    << G4endl;
+
+  G4cout
+    << " user time: "
+    << " FindNextChord: "    << fFindNextChordTime<<" s "
+    << " AccurateAdvance: " << fAccurateAdvanceTime<<" s "
+    << G4endl;
 }
 
 

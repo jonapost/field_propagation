@@ -45,13 +45,9 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
-#include "BaseDriver.hh"
-#define USE_BASE_DRIVER
+#include "G4VIntegrationDriver.hh"
 
-class G4MagInt_Driver
-#ifdef USE_BASE_DRIVER
-        :public BaseDriver
-#endif
+class G4MagInt_Driver:public G4VIntegrationDriver
 {
    public:  // with description
 

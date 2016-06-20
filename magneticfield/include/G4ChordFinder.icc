@@ -31,13 +31,13 @@
 // --------------------------------------------------------------------
 
 inline 
-void G4ChordFinder::SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver)
+void G4ChordFinder::SetIntegrationDriver(G4VIntegrationDriver* IntegrationDriver)
 {
   fIntgrDriver=IntegrationDriver;
 }
 
 inline
-G4MagInt_Driver* G4ChordFinder::GetIntegrationDriver()
+G4VIntegrationDriver* G4ChordFinder::GetIntegrationDriver()
 {
   return fIntgrDriver;
 }
