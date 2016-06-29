@@ -39,6 +39,9 @@
 // - Moved into G4MagErrorStepper: W.Wander <wwc@mit.edu> - 12/09/97
 // -------------------------------------------------------------------
 
+#ifndef G4CLASSICALRK4_HH
+#define G4CLASSICALRK4_HH
+
 #include "G4MagErrorStepper.hh"
 
 class G4ClassicalRK4 : public G4MagErrorStepper 
@@ -90,3 +93,5 @@ class G4ClassicalRK4 : public G4MagErrorStepper
 
     G4double *dydxm, *dydxt, *yt; // scratch space - not state 
 };
+
+#endif
