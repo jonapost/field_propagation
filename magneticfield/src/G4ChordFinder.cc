@@ -195,6 +195,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
 
   //            *************
 
+  //G4cout<<"step possible: "<<stepPossible<<G4endl;
   G4bool good_advance;
 
   if ( dyErr < epsStep * stepPossible )
@@ -221,6 +222,7 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
        stepPossible= yCurrent.GetCurveLength()-startCurveLen;
      }
   }
+  //G4cout<<"accurate step possible: "<<stepPossible<<G4endl;
   return stepPossible;
 }
 

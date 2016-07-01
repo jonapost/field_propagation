@@ -16,10 +16,11 @@
 #include "BSStepper.hh"
 
 #include "ModifiedMidpoint.hh"
+#include "ModifiedMidpointDenseOut.hh"
 //#include "boost/numeric/odeint.hpp"
 #include "BulirschStoer.hh"
 
-#include <functional>
+//#include <functional>
 
 class BulirschStoerDriver: public G4VIntegrationDriver{
 public:
@@ -73,9 +74,12 @@ private:
         // satisfying the accuracy criterion of:
         // yerr < eps * |y_end-y_start|
 
+     void interpolate(G4double time, G4double out[]);
+
      //this is a dummy stepper to glue things up
      BSStepper* dummyStepper;
      ModifiedMidpoint modifiedMidpoint;
+     ModifiedMidpointDenseOut denseMidpoint;
      BulirschStoer bulirschStoer;
      //boost::numeric::odeint::bulirsch_stoer<state_type> BulirschStoer;
 
@@ -83,14 +87,25 @@ private:
 
      G4double yIn[G4FieldTrack::ncompSVEC],
               yMid[G4FieldTrack::ncompSVEC],
+              yMid2[G4FieldTrack::ncompSVEC],
               yOut[G4FieldTrack::ncompSVEC],
               yOut2[G4FieldTrack::ncompSVEC],
               yError[G4FieldTrack::ncompSVEC];
 
-     G4double dydxMid[G4FieldTrack::ncompSVEC];
 
      G4double dydxCurrent[G4FieldTrack::ncompSVEC];
      G4double yCurrent[G4FieldTrack::ncompSVEC];
+
+     G4double derivs[2][6][G4FieldTrack::ncompSVEC];
+
+     G4double diffs[4][2][G4FieldTrack::ncompSVEC];
+
+     G4double tBegin,tEnd;
+
+
+     //G4int interval_sequence[2];
+     //G4double coeff;
+
 
      //state_type yInOut, dydxIn;
 

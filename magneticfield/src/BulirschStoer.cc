@@ -30,15 +30,16 @@ BulirschStoer::BulirschStoer(G4EquationOfMotion* equation,
         // crude estimate of optimal order
 
         m_current_k_opt = 4;
-        /* no calculation because log10 might not exist for value_type!
-        const value_type logfact( -log10( max BOOST_PREVENT_MACRO_SUBSTITUTION( eps_rel , static_cast< value_type >(1.0E-12) ) ) * 0.6 + 0.5 );
-        m_current_k_opt = max BOOST_PREVENT_MACRO_SUBSTITUTION( static_cast<value_type>( 1 ) , min BOOST_PREVENT_MACRO_SUBSTITUTION( static_cast<value_type>( m_k_max-1 ) , logfact ));
-        */
+        // no calculation because log10 might not exist for value_type!
+
+        //const G4double logfact =  -log10( std::max(eps_rel , 1.0e-12 ) ) * 0.6 + 0.5;
+        //m_current_k_opt = std::max(1., std::min(static_cast<G4double>(m_k_max-1), logfact));
+
     }
 }
 
-G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
-                               G4double& t , G4double* out , G4double& dt)
+step_result BulirschStoer::try_step(const G4double in[] , const G4double dxdt[] ,
+                               G4double& t , G4double out[] , G4double& dt)
 {
     if(m_max_dt < dt)
     {
@@ -91,12 +92,12 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                         m_current_k_opt = std::min(m_k_max-1 , std::max( 2 , k+1 ) );
                         new_h = h_opt[k];
                         new_h *= static_cast<G4double>( m_cost[k+1] ) / static_cast<G4double>( m_cost[k] );
-                     }
-                     else
-                     {
-                        m_current_k_opt = std::min(m_k_max-1, std::max(2, k ) );
-                        new_h = h_opt[k];
-                     }
+                    }
+                    else
+                    {
+                       m_current_k_opt = std::min(m_k_max-1, std::max(2, k ) );
+                       new_h = h_opt[k];
+                    }
                     break;
                 }
                 else if( should_reject( error , k ) && !m_first )
@@ -122,7 +123,7 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                         m_current_k_opt = std::min(m_k_max-1, m_current_k_opt+1);
                         new_h = h_opt[k];
                         new_h *= static_cast<G4double>(m_cost[m_current_k_opt])/static_cast<G4double>(m_cost[k]);
-//                        new_h *= (m_cost[m_current_k_opt])/(m_cost[k]);
+                        //new_h *= (m_cost[m_current_k_opt])/(m_cost[k]);
                         //were there a error!?
                     }
                     else
@@ -142,9 +143,13 @@ G4bool BulirschStoer::try_step(const G4double* in , const G4double* dxdt ,
                 {   //convergence
                     reject = false;
                     if(work[k-2] < KFAC2*work[k-1])
+                    {
                         m_current_k_opt = std::max(2 , m_current_k_opt-1);
+                    }
                     if((work[k] < KFAC2*work[m_current_k_opt]) && !m_last_step_rejected)
+                    {
                         m_current_k_opt = std::min(m_k_max-1 , k);
+                    }
                     new_h = h_opt[m_current_k_opt];
                 }
                 else
@@ -187,7 +192,7 @@ void BulirschStoer::reset()
     m_last_step_rejected = false;
 }
 
-void BulirschStoer::extrapolate(size_t k , G4double* xest)
+void BulirschStoer::extrapolate(size_t k , G4double xest[])
 /* polynomial extrapolation, see http://www.nr.com/webnotes/nr3web21.pdf
  * uses the obtained intermediate results to extrapolate to dt->0
  */

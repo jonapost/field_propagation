@@ -21,7 +21,8 @@
 #include "G4Types.hh"
 #include "ModifiedMidpoint.hh"
 
-inline G4double check_error(const G4double* yOut, const G4double* yError, const G4double hstep, const G4double eps){
+inline G4double check_error(const G4double yOut[], const G4double yError[],
+                            const G4double hstep, const G4double eps){
 
     G4double errPos2 = sqr(yError[0]) + sqr(yError[1]) + sqr(yError[2]);
     G4double errMom2 = sqr(yError[3]) + sqr(yError[4]) + sqr(yError[5]);
@@ -29,7 +30,7 @@ inline G4double check_error(const G4double* yOut, const G4double* yError, const 
     errMom2 /= Mom2;
     errPos2 /= (hstep*hstep);
 
-    return std::max(sqrt(errPos2), sqrt(errMom2))/eps;
+    return std::sqrt(std::max(errPos2, errMom2)/(eps*eps));
 }
 
 enum step_result{
@@ -49,14 +50,14 @@ public:
     inline void set_max_relative_error(G4double eps_rel);
 
     //stepper method
-    G4bool try_step(const G4double* in , const G4double* dxdt , G4double& t , G4double* out , G4double& dt);
+    step_result try_step(const G4double in[] , const G4double dxdt[] , G4double& t , G4double out[] , G4double& dt);
 
     //Reset the internal state of the stepper
     void reset();
 
 
 private:
-    void extrapolate(size_t k , G4double* xest);
+    void extrapolate(size_t k , G4double xest[]);
     G4double calc_h_opt(G4double h , G4double error , size_t k ) const;
     //why is not used!!??
     G4bool set_k_opt(size_t k , G4double &dt );
@@ -74,6 +75,7 @@ private:
     //relative tolerance
     G4double m_eps_rel;
 
+    //modified midpoint algorithm
     ModifiedMidpoint m_midpoint;
 
     G4bool m_last_step_rejected;
@@ -81,6 +83,8 @@ private:
 
     G4double m_dt_last;
     G4double m_t_last;
+
+    //max allowed time step
     G4double m_max_dt;
 
     G4int m_current_k_opt;
@@ -92,6 +96,7 @@ private:
     // stores the successive interval counts
     G4int m_interval_sequence[m_k_max+1];
 
+    //Extrapolation coeffs (Neville’s algorithm)
     G4double m_coeff[m_k_max+1][m_k_max];
 
     // costs for interval count
@@ -102,6 +107,7 @@ private:
 
     G4double STEPFAC1 , STEPFAC2 , STEPFAC3 , STEPFAC4 , KFAC1 , KFAC2;
 
+    //oprimal step size
     G4double h_opt[m_k_max+1];
 
     //Work per unit step

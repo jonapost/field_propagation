@@ -37,7 +37,7 @@ public :
      */
     void do_step(const G4double xIn[], const G4double dxdtIn[],
                  G4double xOut[], G4double dt,
-                 G4double x_mp[], G4double* derivs[]);
+                 G4double x_mp[], G4double derivs[][G4FieldTrack::ncompSVEC]);
 
 
     void set_steps(G4int steps);
@@ -53,7 +53,6 @@ private:
 
     G4double x0[G4FieldTrack::ncompSVEC];
     G4double x1[G4FieldTrack::ncompSVEC];
-    G4double dxdt[G4FieldTrack::ncompSVEC];
     G4double tmp[G4FieldTrack::ncompSVEC];
 
 };
