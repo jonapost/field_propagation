@@ -103,8 +103,8 @@ private:
      G4double tBegin,tEnd;
 
 
-     //G4int interval_sequence[2];
-     //G4double coeff;
+     const G4int interval_sequence[2];
+     const G4double fcoeff;
 
 
      //state_type yInOut, dydxIn;

@@ -24,7 +24,9 @@ BulirschStoerDriver::BulirschStoerDriver(G4double hminimum,
     modifiedMidpoint(equation,integratedComponents),
     denseMidpoint(equation,integratedComponents),
     bulirschStoer(equation,integratedComponents,0,DBL_MAX),
-    tBegin(0),tEnd(0)
+    tBegin(0),tEnd(0),
+    interval_sequence{2,4},
+    fcoeff(1./(sqr(G4double(interval_sequence[1])/G4double(interval_sequence[0]))-1.))
 
 {
 //    system = [this](const state_type& y, state_type& dydx, double /*t*/){
@@ -265,6 +267,47 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track,
 
     return  true;*/
 }
+
+/*
+ * //version with G4ChashKarp for quick advance
+G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
+                                          const G4double dydx[],
+                                          G4double hstep,
+                                          G4double& missDist,
+                                          G4double& dyerr)
+{
+
+    track.DumpToArray(yIn);
+    const G4double curveLength = track.GetCurveLength();
+
+    G4CashKarpRKF45 cashKarp(GetEquationOfMotion());
+
+    cashKarp.Stepper(yIn,dydx,hstep,yOut,yError);
+    missDist = cashKarp.DistChord();
+
+
+    G4double errPos2 = sqr(yError[0]) + sqr(yError[1]) + sqr(yError[2]);
+    G4double errMom2 = sqr(yError[3]) + sqr(yError[4]) + sqr(yError[5]);
+    G4double Mom2 = sqr(yOut[3]) + sqr(yOut[4]) + sqr(yOut[5]);
+    errMom2 /= Mom2;
+
+    dyerr = std::sqrt(std::max(errPos2, errMom2*sqr(hstep)));
+
+
+    //copy non-integrated variables to output array
+    memcpy(yOut+GetNumberOfVariables(),
+           yIn+GetNumberOfVariables(),
+           sizeof(G4double)*(ncomp-GetNumberOfVariables()));
+
+    //set new state
+    track.LoadFromArray(yOut,ncomp);
+    track.SetCurveLength(curveLength + hstep);
+
+
+    return true;
+}
+*/
+
 //#define dense
 #ifndef dense
 G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
@@ -277,20 +320,21 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
     track.DumpToArray(yIn);
     const G4double curveLength = track.GetCurveLength();
 
+    /*
     G4int interval1 = 2, interval2 = 4;
     G4double coeff = 1./(sqr(static_cast<G4double>(interval2)/static_cast<G4double>(interval1))-1.);
+    */
 
-
-    denseMidpoint.set_steps(interval1);
+    denseMidpoint.set_steps(interval_sequence[0]);
     denseMidpoint.do_step(yIn, dydx, yOut, hstep, yMid, derivs[0]);
 
-    denseMidpoint.set_steps(interval2);
+    denseMidpoint.set_steps(interval_sequence[1]);
     denseMidpoint.do_step(yIn, dydx, yOut2, hstep, yMid2, derivs[1]);
 
     //extrapolation
     for (G4int i = 0; i < GetNumberOfVariables(); ++i){
-        yOut[i] = yOut2[i] + (yOut2[i] - yOut[i])*coeff;
-        yMid[i] = yMid2[i] + (yMid2[i] - yMid[i])*coeff;
+        yOut[i] = yOut2[i] + (yOut2[i] - yOut[i])*fcoeff;
+        yMid[i] = yMid2[i] + (yMid2[i] - yMid[i])*fcoeff;
     }
 
 
@@ -350,8 +394,8 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
         memcpy(yError,diffs[3][0],sizeof(G4double)*ncomp);
         //G4cout<<"interpolate! \n";
 
-
 /*
+
         G4int interval1 = 2, interval2 = 6;
         G4double coeff = 1./(sqr(static_cast<G4double>(interval2)/static_cast<G4double>(interval1))-1.);
 
@@ -387,11 +431,11 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track,
         {
             memcpy(yOut,tmpOut,sizeof(G4double)*GetNumberOfVariables());
             memcpy(yMid,tmpMid,sizeof(G4double)*GetNumberOfVariables());
-            G4cout<<"interpol is bad \n";
+            G4cout<<"interpol is bad, err: "<<err<<G4endl;
         }
         else
         {
-            G4cout<<"interpol is good \n";
+            //G4cout<<"interpol is good \n";
         }
 */
     }

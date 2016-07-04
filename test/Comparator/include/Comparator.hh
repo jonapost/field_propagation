@@ -32,6 +32,7 @@
 #include "BulirschStoerDenseDriver.hh"
 #include "BulirschStoerDriver.hh"
 
+#include "G4ClassicalRK4.hh"
 
 #include "G4CachedMagneticField.hh"
 #include <fstream>
@@ -49,7 +50,7 @@ public:
     ~Comparator();
 
     //main functions
-    void CrossCheck(const G4double* const testData, const G4double* const refData, G4int mode = Default);
+    void CrossCheck(const G4double testData[], const G4double refData[], G4int mode = Default);
     template <class testStepper, class refStepper>
     void Compare(const G4double stepLen, const G4int NSteps, const bool useDriver, const G4int verbosity);
 
@@ -139,11 +140,13 @@ void Comparator::Compare(const G4double stepLen, const G4int NSteps, const bool 
 template <class refStepper>
 void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
 {
+    G4ClassicalRK4 rk4(equation);
     refStepper refSt(equation);
-    G4MagInt_Driver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
+    G4VIntegrationDriver* refDriver = new G4MagInt_Driver(hmin,&refSt); //deleted by G4ChordFinder
     G4ChordFinder refChordFinder(refDriver);
-    //BulirschStoerDriver* BSDriver = new BulirschStoerDriver(hmin,equation);
-    BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(hmin,equation);
+    G4VIntegrationDriver* BSDriver = new BulirschStoerDriver(hmin,equation);
+    //G4VIntegrationDriver* BSDriver = new G4MagInt_Driver(hmin,&rk4);
+    //BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(hmin,equation);
 
     G4ChordFinder testChordFinder(BSDriver);
     //refChordFinder.SetDeltaChord(1*cm);
@@ -155,25 +158,31 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
 
     G4double pathRest = path;
     G4double step;
-    G4double y[N];
+    G4double yRef[N], yTest[N];
     std::ofstream outRef("outRef.txt");
     std::ofstream outBS("outBS.txt");
     G4CachedMagneticField* cachedField = static_cast<G4CachedMagneticField*>(field);
 
-    G4double eps = 1e-2;
-/*    G4double step2;
+    G4double eps = precision;
     G4double pathRest2 = pathRest;
-    while (std::min(pathRest,pathRest2) > hmin){
-        step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
-        step2 = testChordFinder.AdvanceChordLimited(*testTrack,pathRest2,eps,vec,latestSafetyRadius);
+    while (pathRest > hmin){
+        step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest2,eps,vec,latestSafetyRadius);
         pathRest -= step;
-        pathRest2 -= step2;
-        G4cout<<step<<"   "<<step2<<G4endl;
-        refTrack->DumpToArray(y);
-        outRef << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
-    }
-*/
+        G4double tempRest = step;
+        while(tempRest > hmin)
+        {
+          G4double h = refChordFinder.AdvanceChordLimited(*refTrack,tempRest,eps,vec,latestSafetyRadius);
+          tempRest -= h;
+        }
+        refTrack->DumpToArray(yRef);
+        testTrack->DumpToArray(yTest);
+        CrossCheck(yTest,yRef,Default);
 
+        outRef << yRef[0]<< "  "<<yRef[1]<< "  "<<yRef[2] << G4endl;
+        outBS << yTest[0]<< "  "<<yTest[1]<< "  "<<yTest[2] << G4endl;
+    }
+
+/*
     while (pathRest > hmin){
         step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
         pathRest -= step;
@@ -192,7 +201,7 @@ void Comparator::CompareWithBS(const G4double path, const G4int /*verb*/)
         testTrack->DumpToArray(y);
         outBS << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
     }
-    G4cout<<"BS calls: "<<cachedField->GetCountCalls()<<G4endl;
+    G4cout<<"BS calls: "<<cachedField->GetCountCalls()<<G4endl;*/
 }
 
 

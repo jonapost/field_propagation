@@ -52,6 +52,7 @@
 #include "G4ClassicalRK4.hh"
 #include "G4SimpleRunge.hh"
 #include "G4CashKarpRKF45.hh"
+#include "CashKarpRKF45.hh"
 #include "G4RKG3_Stepper.hh"
 #include "G4HelixMixedStepper.hh"
 #include "G4NystromRK4.hh"
@@ -60,6 +61,7 @@
 #include "G4PropagatorInField.hh"
 
 #include "BulirschStoerDriver.hh"
+#include "BulirschStoerDenseDriver.hh"
 
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
   : _FileRead(0), debug(false), radius(19*cm), NSubLayer(0),
@@ -218,8 +220,9 @@ NTSTDetectorConstruction::Construct()
   // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
   // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
+  // pStepper= new CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4HelixMixedStepper( pEquation ); G4cout << "Stepper is " << "HelixMixed" << G4endl;
-  // pStepper=  StepperFactory::CreateStepper( order ); 
+  // pStepper=  StepperFactory::CreateStepper( order );
 
   // pStepper= new G4NystromRK4( pEquation ); G4cout << "Stepper is " << "NystromRK4" << G4endl;
 
@@ -228,11 +231,13 @@ NTSTDetectorConstruction::Construct()
     //   << " G4HelixMixedStepper " << G4endl;
 
   // globalFieldManager->CreateChordFinder( (G4MagneticField *)&field );
-/*/
-  fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field, 
+
+  //pStepper = new BSStepper(pEquation);
+  /*fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field,
 				    fMinChordStep,
                     pStepper );*/
-  BulirschStoerDriver* BSDriver = new BulirschStoerDriver(fMinChordStep,pEquation);
+  //BulirschStoerDriver* BSDriver = new BulirschStoerDriver(fMinChordStep,pEquation);
+  BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
   fpChordFinder = new G4ChordFinder(BSDriver);
   fpChordFinder->SetVerbose(1); 
   globalFieldManager->SetChordFinder(fpChordFinder);
