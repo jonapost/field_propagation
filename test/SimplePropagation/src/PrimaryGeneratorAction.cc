@@ -1,0 +1,62 @@
+#include "PrimaryGeneratorAction.hh"
+
+#include "G4LogicalVolumeStore.hh"
+#include "G4LogicalVolume.hh"
+#include "G4Box.hh"
+#include "G4RunManager.hh"
+#include "G4ParticleGun.hh"
+#include "G4ParticleTable.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4SystemOfUnits.hh"
+#include "Randomize.hh"
+
+#include "G4Proton.hh"
+
+using namespace CLHEP;
+
+PrimaryGeneratorAction::PrimaryGeneratorAction()
+: G4VUserPrimaryGeneratorAction(),
+  fParticleGun(0)
+{
+  G4int n_particle = 1;
+  G4double energy = 1*MeV;
+  G4double BField = 1*tesla;
+
+  G4ParticleDefinition* particle = G4Proton::Definition();
+
+  fParticleGun  = new G4ParticleGun(n_particle);
+
+  fParticleGun->SetParticleDefinition(particle);
+
+
+
+
+  G4double mass = particle->GetPDGMass();
+  G4double charge = particle->GetPDGCharge();
+  G4double velocity = sqrt(2*energy/mass)*c_light;
+  G4ThreeVector momDir = G4ThreeVector(1,1,0).unit();
+  G4double vxz = velocity*sqrt(sqr(momDir.x()) + sqr(momDir.z()));
+  G4double radius = vxz*mass/(charge*BField*c_squared);
+
+  fParticleGun->SetParticleMomentumDirection(momDir);
+  fParticleGun->SetParticleEnergy(energy);
+  fParticleGun->SetParticlePosition(G4ThreeVector(0*cm,-641.9829897845146*mm -10*cm,-radius));
+
+}
+
+
+
+PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{
+  delete fParticleGun;
+}
+
+
+
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  fParticleGun->GeneratePrimaryVertex(anEvent);
+}
+
+
+
