@@ -34,10 +34,12 @@
 #include "G4ChordFinder.hh"
 #include "G4FieldManagerStore.hh"
 
-G4FieldManager::G4FieldManager(G4Field       *detectorField, 
-			       G4ChordFinder *pChordFinder, 
-			       G4bool        fieldChangesEnergy
-			      )
+#include "G4RKChordFinder.hh"
+
+G4FieldManager::G4FieldManager(G4Field       *detectorField,
+                   G4VChordFinder *pChordFinder,
+                   G4bool        fieldChangesEnergy
+                  )
    : fDetectorField(detectorField), 
      fChordFinder(pChordFinder), 
      fAllocatedChordFinder(false),
@@ -69,7 +71,7 @@ G4FieldManager::G4FieldManager(G4MagneticField *detectorField)
      fEpsilonMin( fEpsilonMinDefault ),
      fEpsilonMax( fEpsilonMaxDefault)
 {
-   fChordFinder= new G4ChordFinder( detectorField );
+   fChordFinder= new G4RKChordFinder( detectorField );
    fDelta_One_Step_Value= fDefault_Delta_One_Step_Value;
    fDelta_Intersection_Val= fDefault_Delta_Intersection_Val;
    // Add to store
@@ -80,7 +82,7 @@ G4FieldManager* G4FieldManager::Clone() const
 {
     G4Field* aField = 0;
     G4FieldManager* aFM = 0;
-    G4ChordFinder* aCF = 0;
+    G4VChordFinder* aCF = 0;
     try {
         if ( this->fDetectorField )
             aField = this->fDetectorField->Clone();
@@ -142,8 +144,8 @@ G4FieldManager::CreateChordFinder(G4MagneticField *detectorMagField)
 {
    if ( fAllocatedChordFinder )
       delete fChordFinder;
-   fChordFinder= new G4ChordFinder( detectorMagField );
-   fAllocatedChordFinder= true;
+   fChordFinder = new G4RKChordFinder( detectorMagField );
+   fAllocatedChordFinder = true;
 }
 
 G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField)

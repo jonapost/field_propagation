@@ -145,7 +145,7 @@ G4FieldManagerStore* G4FieldManagerStore::GetInstance()
 void
 G4FieldManagerStore::ClearAllChordFindersState()
 {
-  G4ChordFinder *pChordFnd;
+  G4VChordFinder *pChordFnd;
    
   for (iterator i=GetInstance()->begin(); i!=GetInstance()->end(); i++)
   {

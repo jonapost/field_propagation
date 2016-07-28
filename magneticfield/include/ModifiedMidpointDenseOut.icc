@@ -1,0 +1,6 @@
+inline void ModifiedMidpointDenseOut::set_steps(G4int steps)
+{   fsteps = steps; }
+
+
+inline G4int ModifiedMidpointDenseOut::steps() const
+{   return fsteps; }

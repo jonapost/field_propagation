@@ -74,17 +74,18 @@
 #define G4FIELDMANAGER_HH 1
 
 #include "globals.hh"
+#include "G4VChordFinder.hh"
 
 class G4Field;
 class G4MagneticField;
-class G4ChordFinder;
+
 class G4Track;  // Forward reference for parameter configuration
 
 class G4FieldManager
 {
   public:  // with description
      G4FieldManager(G4Field       *detectorField=0, 
-		    G4ChordFinder *pChordFinder=0, 
+            G4VChordFinder *pChordFinder=0,
 		    G4bool       b=true ); // fieldChangesEnergy is taken from field
           // General constructor for any field.
           // -> Must be set with field and chordfinder for use.
@@ -99,9 +100,9 @@ class G4FieldManager
         // Set, get and check the field object
 
      void            CreateChordFinder(G4MagneticField *detectorMagField);
-     inline void     SetChordFinder(G4ChordFinder *aChordFinder);
-     inline G4ChordFinder*  GetChordFinder();
-     inline const G4ChordFinder*  GetChordFinder() const;
+     inline void     SetChordFinder(G4VChordFinder *aChordFinder);
+     inline G4VChordFinder*  GetChordFinder();
+     inline const G4VChordFinder*  GetChordFinder() const;
         // Create, set or get the associated Chord Finder
 
      virtual void   ConfigureForTrack( const G4Track * ); 
@@ -152,7 +153,7 @@ class G4FieldManager
   private:
      // Dependent objects -- with state that depends on tracking
      G4Field*        fDetectorField;
-     G4ChordFinder*  fChordFinder;
+     G4VChordFinder*  fChordFinder;
 
      G4bool          fAllocatedChordFinder; // Did we used "new" to
 					    // create fChordFinder ?

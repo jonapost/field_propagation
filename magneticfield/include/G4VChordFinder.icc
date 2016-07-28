@@ -1,0 +1,108 @@
+inline G4double G4VChordFinder::InvParabolic(const G4double xa, const G4double ya,
+                                             const G4double xb, const G4double yb,
+                                             const G4double xc, const G4double yc )
+
+{
+    const G4double R = yb/yc,
+                   S = yb/ya,
+                   T = ya/yc;
+
+    const G4double Q = (T-1)*(R-1)*(S-1);
+    if (std::fabs(Q) <DBL_MIN ) return  DBL_MAX;
+    const G4double P = S*(T*(R-T)*(xc-xb) - (1-R)*(xb-xa));
+    return xb + P/Q;
+}
+
+inline G4EquationOfMotion* G4VChordFinder::GetEquationOfMotion()
+{return fIntDriver->GetEquationOfMotion();}
+
+inline void G4VChordFinder::SetEquationOfMotion(G4EquationOfMotion* newEquation)
+{fIntDriver->SetEquationOfMotion(newEquation);}
+
+inline void G4VChordFinder::SetIntegrationDriver(G4VIntegrationDriver* IntDriver)
+{fIntDriver = IntDriver;}
+
+inline G4VIntegrationDriver* G4VChordFinder::GetIntegrationDriver()
+{return fIntDriver;}
+
+inline G4double G4VChordFinder::GetDeltaChord() const
+{return fDeltaChord;}
+
+inline void G4VChordFinder::SetDeltaChord(G4double newDelta)
+{fDeltaChord = newDelta;}
+
+// Clear internal state (last step estimate)
+inline void G4VChordFinder::ResetStepEstimate()
+{fLastStepEstimate_Unconstrained = DBL_MAX;}
+
+inline G4int G4VChordFinder::GetNoCalls()
+{ return fNoCalls_FNC;}
+
+// Get statistics about number of calls & trials in FindNextChord
+// Total number of trials
+inline G4int G4VChordFinder::GetNoTrials()
+{return fTotalNoTrials_FNC;}
+
+// Maximum # of trials for one call
+inline G4int G4VChordFinder::GetNoMaxTrials()
+{return fmaxTrials_FNC;}
+
+
+// Set verbosity and return old value
+inline G4int G4VChordFinder::SetVerbose( G4int newvalue)
+{
+    G4int oldval= fStatsVerbose;
+    fStatsVerbose = newvalue;
+    return oldval;
+}
+
+inline G4int G4VChordFinder::GetVerbose() const
+{return fverb;}
+
+// Parameter for  performance ... change with great care
+inline void G4VChordFinder::SetFirstFraction(G4double newVal)
+{fFirstFraction = newVal;}
+
+//   Printing for monitoring ...
+inline G4double G4VChordFinder::GetFirstFraction()
+{return fFirstFraction;}  // Originally 0.999
+
+inline G4double G4VChordFinder::GetFractionLast()
+{return fFractionLast;} // Originally 1.000
+
+inline G4double G4VChordFinder::GetFractionNextEstimate()
+{return fFractionNextEstimate;} // Originally 0.980
+
+inline G4double G4VChordFinder::GetMultipleRadius()
+{return fMultipleRadius;} // No original value
+
+
+/* Accumulate the basic statistics
+ * other specialised ones must be kept by derived classes
+ * */
+inline void G4VChordFinder::AccumulateStatistics( G4int noTrials )
+{
+    // Statistics
+    fTotalNoTrials_FNC += noTrials;
+    fNoCalls_FNC++;
+    // if( noTrials >= fmaxTrials_FNC ){
+    if (noTrials > fmaxTrials_FNC ) {
+        fmaxTrials_FNC=noTrials;
+        // fnoTimesMaxTrFNC=0;
+    } else {
+        // fnoTimesMaxTrFNC++;
+    }
+        // }
+}
+
+
+inline G4bool G4VChordFinder::AcceptableMissDist(G4double dChordStep) const
+{return (dChordStep <= fDeltaChord);}
+
+inline G4double G4VChordFinder::GetLastStepEstimateUnc()
+{return fLastStepEstimate_Unconstrained;}
+
+inline void G4VChordFinder::SetLastStepEstimateUnc( G4double stepEst )
+{fLastStepEstimate_Unconstrained = stepEst;}
+
+

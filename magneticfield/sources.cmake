@@ -34,9 +34,9 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4CachedMagneticField.hh
         G4CashKarpRKF45.hh
         G4ChargeState.hh
-        G4ChordFinder.hh
-        G4ChordFinder.icc
-        G4ChordFinderSaf.hh
+        #G4ChordFinder.hh
+        #G4ChordFinder.icc
+        #G4ChordFinderSaf.hh
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
@@ -101,14 +101,31 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
+	ModifiedMidpointDenseOut.hh
+	ModifiedMidpointDenseOut.icc
+	BulirschStoerDenseOut.hh
+	BulirschStoerDenseOut.icc
+	ModifiedMidpoint.hh
+	ModifiedMidpoint.icc
+	BulirschStoer.hh
+	BulirschStoer.icc
+	BSStepper.hh
+	G4VIntegrationDriver.hh
+	G4VIntegrationDriver.icc
+	BulirschStoerDriver.hh
+	BulirschStoerDenseDriver.hh
+	G4VChordFinder.hh
+	G4VChordFinder.icc
+	G4RKChordFinder.hh
+	G4BSChordFinder.hh
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
         G4ChargeState.cc
-        G4ChordFinder.cc
-        G4ChordFinderSaf.cc
+        #G4ChordFinder.cc
+        #G4ChordFinderSaf.cc
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc
@@ -163,6 +180,17 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
+	ModifiedMidpointDenseOut.cc
+	BulirschStoerDenseOut.cc
+	ModifiedMidpoint.cc
+	BulirschStoer.cc
+	G4VIntegrationDriver.cc
+	BulirschStoerDriver.cc
+	BulirschStoerDenseDriver.cc
+	G4VChordFinder.cc
+	G4RKChordFinder.cc
+	G4BSChordFinder.cc
+	BSStepper.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES
