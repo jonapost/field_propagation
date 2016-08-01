@@ -129,8 +129,6 @@ G4MagInt_Driver::~G4MagInt_Driver()
 // #define  G4DEBUG_FIELD 1    
 
 // ---------------------------------------------------------
-//#define BS
-#ifndef BS
 G4bool
 G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
                                  G4double     hstep,
@@ -432,36 +430,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
 
   return succeeded;
 }  // end of AccurateAdvance ...........................
-#endif
 
-#ifdef BS
-G4bool
-G4MagInt_Driver::AccurateAdvance(G4FieldTrack& yCurrent,
-                                 G4double     hstep,
-                                 G4double     eps,
-                                 G4double /*hinitial*/ )
-{
-    G4double dydx[12];
-    G4double y[12];
-    yCurrent.DumpToArray(y);
-    G4double hdid = 0;
-    G4double hnext = hstep;
-    G4double hrest = hstep;
-    G4double curveLength = yCurrent.GetCurveLength();
-    do{
-        GetStepper()->ComputeRightHandSide(y,dydx);
-        OneGoodStep(y,dydx,curveLength,hnext,eps,hdid,hnext);
-        hrest -= hdid;
-        hnext = std::min(hrest, hnext);
-        //G4cout<<"hdid "<<hdid<<" hrest "<<hrest<<" hnext "<<hnext<<G4endl;
-    }while(hrest > eps*hstep);
-    //G4cout<<"driver: did step "<<stepInitial<<G4endl;
-    yCurrent.SetCurveLength(curveLength);
-    yCurrent.LoadFromArray(y,12);
-
-    return  true;
-}
-#endif
 
 // ---------------------------------------------------------
 

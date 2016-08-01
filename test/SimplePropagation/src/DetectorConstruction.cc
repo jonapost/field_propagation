@@ -21,6 +21,10 @@
 #include "G4PropagatorInField.hh"
 //#include "G4DormandPrinceRK78.hh"
 #include "G4SimpleLocator.hh"
+#include "G4BSChordFinder.hh"
+#include "G4RKChordFinder.hh"
+#include "G4MagIntegratorDriver.hh"
+#include "BulirschStoerDriver.hh"
 
 using namespace CLHEP;
 
@@ -62,6 +66,9 @@ void DetectorConstruction::ConstructField()
     globalFieldManager->SetMinimumEpsilonStep(globalFieldManager->GetMinimumEpsilonStep()/1e2);
     globalFieldManager->SetDeltaIntersection(globalFieldManager->GetDeltaIntersection()/1e2);
 
+    G4cout<<"DeltaOneStep: "<<globalFieldManager->GetDeltaOneStep()
+          <<"  DeltaIntersection: "<<globalFieldManager->GetDeltaIntersection()<<G4endl;
+
     globalPropagatorInField->SetMaxLoopCount( 10000 );
     G4cout
       << "PropagatorInField parameter(s) are: " << G4endl
@@ -88,9 +95,10 @@ void DetectorConstruction::ConstructField()
     //G4MagIntegratorStepper* pStepper = new G4CashKarpRKF45(pEquation);
     //G4MagIntegratorStepper* pStepper = new G4BogackiShampine45(pEquation);
     //G4MagIntegratorStepper* pStepper = new G4DormandPrinceRK78(pEquation);
-    //G4MagInt_Driver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
-    //fpChordFinder = new G4ChordFinder(pDriver);
-    fpChordFinder = new G4ChordFinder(fMinChordStep, pEquation);
+    //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
+    //G4VIntegrationDriver* pDriver = new BulirschStoerDriver(fMinChordStep, pEquation);
+    //fpChordFinder = new G4RKChordFinder(pDriver);
+    fpChordFinder = new G4BSChordFinder(fMinChordStep, pEquation);
     fpChordFinder->SetVerbose(1);
     G4cout<<"DeltaChord: "<<fpChordFinder->GetDeltaChord()<<G4endl;
     fpChordFinder->SetDeltaChord(fpChordFinder->GetDeltaChord());

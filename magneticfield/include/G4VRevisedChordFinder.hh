@@ -1,5 +1,5 @@
 //
-// class G4VChordFinder
+// class G4VRevisedChordFinder
 //
 // Class description:
 //
@@ -9,29 +9,28 @@
 // - Created: D. Sorokin
 // --------------------------------------------------------------------
 
-#ifndef G4VChordFinder_HH
-#define G4VChordFinder_HH
+#ifndef G4VRevisedChordFinder_HH
+#define G4VRevisedChordFinder_HH
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
 #include "G4Mag_EqRhs.hh"
 #include "G4EquationOfMotion.hh"
 #include "G4MagIntegratorStepper.hh"
-
 #include "G4VIntegrationDriver.hh"
 
 
-class G4VChordFinder
+class G4VRevisedChordFinder
 {
 public:
 
-    G4VChordFinder(G4VIntegrationDriver* pIntDriver, G4int statisticsVerbosity);
+    G4VRevisedChordFinder(G4VIntegrationDriver* pIntDriver, G4int statisticsVerbosity);
 
-    virtual ~G4VChordFinder();
+    virtual ~G4VRevisedChordFinder();
 
-    G4VChordFinder(const G4VChordFinder&);
+    G4VRevisedChordFinder(const G4VRevisedChordFinder&);
 
-    G4VChordFinder& operator = ( G4VChordFinder&);
+    G4VRevisedChordFinder& operator = ( G4VRevisedChordFinder&);
 
     /*  Uses ODE solver's driver to find the endpoint that satisfies
      *  the chord criterion: that d_chord < delta_chord
@@ -56,7 +55,7 @@ public:
     /*
      * Resets internal state of G4ChordFinder
      * this is needed for drivers with interpolation of
-     * adams methods
+     * Adams methods
      * */
     virtual void reset() = 0;
 
@@ -64,19 +63,16 @@ public:
     virtual G4bool DoStepForIntersection(G4FieldTrack&  track, G4double stepLen, G4double eps) = 0;
 
 
+    //inline function definition
     inline G4EquationOfMotion* GetEquationOfMotion();
     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
 
     inline void SetIntegrationDriver(G4VIntegrationDriver* IntDriver);
     inline G4VIntegrationDriver* GetIntegrationDriver();
 
-    //inline function definition
     inline G4double InvParabolic( const G4double xa, const G4double ya,
                                   const G4double xb, const G4double yb,
                                   const G4double xc, const G4double yc );
-
-
-
 
     inline G4double  GetDeltaChord() const;
 
@@ -129,17 +125,6 @@ public:
 
 
 
-    /* Does one step not larger than stepLen with accuracy eps
-     * returnes hdid
-     * */
-    //virtual G4double OneGoodStep(G4FieldTrack&  track, G4double stepLen, G4double eps) = 0;
-
-    /* Returns step size, which satisfied chord rule: chord < fDeltaChord
-     * Moves track
-     * */
-    //virtual G4double FindNextChord(G4FieldTrack& track, G4double stepMax) = 0;
-
-
     G4double NewStep( G4double stepTrialOld,
                       G4double dChordStep,     // Current dchord estimate
                       G4double& stepEstimate_Unconstrained );
@@ -154,12 +139,13 @@ public:
 
 private:
 
+     // Dependent object
      G4VIntegrationDriver* fIntDriver;
 
      // verbosity level
      G4int fverb;
 
-     // SET in G4VChordFinderRefined.cc = 0.25 mm
+     // SET in G4VRevisedChordFinderRefined.cc = 0.25 mm
      const G4double fDefaultDeltaChord;
 
      //  PARAMETERS
@@ -180,7 +166,7 @@ private:
      G4int   fTotalNoTrials_FNC,  fNoCalls_FNC, fmaxTrials_FNC; // fnoTimesMaxTrFNC;
 };
 
-//inline function definition
-#include "G4VChordFinder.icc"
+//include inline function definition
+#include "G4VRevisedChordFinder.icc"
 
 #endif

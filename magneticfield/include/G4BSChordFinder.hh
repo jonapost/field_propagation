@@ -3,7 +3,7 @@
 //
 // Class description:
 //
-// Specialisatoin of G4VChordFinder class
+// Specialisatoin of G4VRevisedChordFinder class
 // for Bulirsch-Stoer method with interpolation
 // (BulirschStoerDenseOut)
 //
@@ -21,9 +21,9 @@
 #include "G4MagIntegratorStepper.hh"
 
 #include "BulirschStoerDenseOut.hh"
-#include "G4VChordFinder.hh"
+#include "G4VRevisedChordFinder.hh"
 
-class G4BSChordFinder : public G4VChordFinder
+class G4BSChordFinder : public G4VRevisedChordFinder
 {
 public:
 
@@ -50,11 +50,8 @@ public:
                                          G4double stepLen,
                                          G4double eps) override final;
 
-    void SetEquationOfMotion(G4EquationOfMotion* newEquation)
-    {GetIntegrationDriver()->SetEquationOfMotion(newEquation);}
-
-    G4EquationOfMotion* GetEquationOfMotion()
-    {return GetIntegrationDriver()->GetEquationOfMotion();}
+    inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+    inline G4EquationOfMotion* GetEquationOfMotion();
 
 
 
@@ -84,15 +81,15 @@ private:
 
     //inline function definition
     G4int GetNumberOfVariables()
-    {return fIntgrDriver.GetNumberOfVariables();}
+    {return fDenseDriver.GetNumberOfVariables();}
 
 
 private:
-     BulirschStoerDenseOut fIntgrDriver;
+     BulirschStoerDenseOut fDenseDriver;
      G4double fMinimumStep;
      G4int fverb;
 
-     G4double tBegin,tEnd;
+     G4double clBegin,clEnd;
      G4double yIn[G4FieldTrack::ncompSVEC],
               yOut[G4FieldTrack::ncompSVEC],
               dydx[G4FieldTrack::ncompSVEC];
@@ -102,5 +99,7 @@ private:
 
      G4double eps_prev;
 };
+
+#include "G4BSChordFinder.icc"
 
 #endif

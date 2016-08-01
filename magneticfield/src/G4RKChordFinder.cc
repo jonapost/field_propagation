@@ -10,7 +10,7 @@
 
 G4RKChordFinder::G4RKChordFinder(G4VIntegrationDriver *pIntegrationDriver,
                                  G4int staticsticsVerbosity):
-    G4VChordFinder(pIntegrationDriver, staticsticsVerbosity),
+    G4VRevisedChordFinder(pIntegrationDriver, staticsticsVerbosity),
     fEquation(nullptr),
     fStepper(nullptr),
     fAllocatedStepper(false),
@@ -22,7 +22,7 @@ G4RKChordFinder::G4RKChordFinder(G4MagneticField *magField,
                                  G4double stepMinimum,
                                  G4MagIntegratorStepper *pItsStepper,
                                  G4int statisticsVerbosity):
-    G4VChordFinder(nullptr, statisticsVerbosity)
+    G4VRevisedChordFinder(nullptr, statisticsVerbosity)
 {
     fEquation = new G4Mag_UsualEqRhs(magField);
     fAllocatedEquation = true;
@@ -48,15 +48,16 @@ G4RKChordFinder::~G4RKChordFinder()
 }
 
 G4RKChordFinder::G4RKChordFinder(const G4RKChordFinder& other):
-    G4VChordFinder(nullptr, other.GetVerbose())
+    G4VRevisedChordFinder(nullptr, other.GetVerbose())
 {
-    G4cout<<"not implemented! \n";
-    exit(-1);
+    G4Exception("G4RKChordFinder::G4RKChordFinder()", "GeomField0003",
+                JustWarning, "Copy constructor is not implemented!");
 }
 
 const G4RKChordFinder& G4RKChordFinder::operator =(const G4RKChordFinder& /*other*/){
-    G4cout<<"operator = is not yet implemented! \n";
-    exit(-1);
+    G4Exception("G4RKChordFinder::operator =()", "GeomField0003",
+                JustWarning, "Assignment operator is not implemented!");
+    return *this;
 }
 
 void G4RKChordFinder::reset(){

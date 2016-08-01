@@ -1,20 +1,13 @@
-#include "G4VChordFinder.hh"
-
+#include <iomanip>
+#include "G4VRevisedChordFinder.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4LineSection.hh"
 
-#include <cstdio>
-#include <iomanip>
-
-#include "G4MagIntegratorDriver.hh"
-#include "G4ClassicalRK4.hh"
-
 //#define G4DEBUG_FIELD 1
-//#define DEBUG_PRINTS
 
 #define ncomp G4FieldTrack::ncompSVEC
 
-G4VChordFinder::G4VChordFinder(G4VIntegrationDriver *pIntDriver, G4int  statisticsVerbosity):
+G4VRevisedChordFinder::G4VRevisedChordFinder(G4VIntegrationDriver *pIntDriver, G4int  statisticsVerbosity):
     fIntDriver(pIntDriver),
     fverb(statisticsVerbosity),
     fDefaultDeltaChord( 0.25 * mm ),      // Parameters
@@ -30,14 +23,14 @@ G4VChordFinder::G4VChordFinder(G4VIntegrationDriver *pIntDriver, G4int  statisti
     SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);
 }
 
-G4VChordFinder::~G4VChordFinder()
+G4VRevisedChordFinder::~G4VRevisedChordFinder()
 {
     delete fIntDriver;
     if( fStatsVerbose ) { PrintStatistics(); }
 }
 
 
-void G4VChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
+void G4VRevisedChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 {
   // Use -1.0 as request for Default.
   if( fractLast == -1.0 )   fractLast = 1.0;   // 0.9;
@@ -62,7 +55,7 @@ void G4VChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractN
   }
   else
   {
-    G4cerr << "G4VChordFinder::SetFractions_Last_Next: Invalid "
+    G4cerr << "G4VRevisedChordFinder::SetFractions_Last_Next: Invalid "
            << " fraction Last = " << fractLast
            << " must be  0 <  fractionLast <= 1 " << G4endl;
   }
@@ -72,14 +65,14 @@ void G4VChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractN
   }
   else
   {
-    G4cerr << "G4VChordFinder:: SetFractions_Last_Next: Invalid "
+    G4cerr << "G4VRevisedChordFinder:: SetFractions_Last_Next: Invalid "
            << " fraction Next = " << fractNext
            << " must be  0 <  fractionNext < 1 " << G4endl;
   }
 }
 
 
-G4double G4VChordFinder::NewStep(G4double  stepTrialOld,
+G4double G4VRevisedChordFinder::NewStep(G4double  stepTrialOld,
                                 G4double  dChordStep, // Curr. dchord achieved
                                 G4double& stepEstimate_Unconstrained )
 {
@@ -165,7 +158,7 @@ G4double G4VChordFinder::NewStep(G4double  stepTrialOld,
 
 
 
-G4FieldTrack G4VChordFinder::ApproxCurvePointS( const G4FieldTrack&  CurveA_PointVelocity,
+G4FieldTrack G4VRevisedChordFinder::ApproxCurvePointS( const G4FieldTrack&  CurveA_PointVelocity,
                                   const G4FieldTrack&  CurveB_PointVelocity,
                                   const G4FieldTrack&  ApproxCurveV,
                                   const G4ThreeVector& CurrentE_Point,
@@ -256,7 +249,7 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointS( const G4FieldTrack&  CurveA_Poin
 #ifdef G4DEBUG_FIELD
     // Printing Brent and Linear Approximation
     //
-    G4cout << "G4VChordFinder::ApproxCurvePointS() - test-step ShF = "
+    G4cout << "G4VRevisedChordFinder::ApproxCurvePointS() - test-step ShF = "
            << test_step << "  EndPoint = " << EndPoint << G4endl;
 
     //  Test Track
@@ -266,8 +259,8 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointS( const G4FieldTrack&  CurveA_Poin
                                    CurveB_PointVelocity,
                                    CurrentE_Point, eps_step );
     G4cout.precision(14);
-    G4cout << "G4VChordFinder::BrentApprox = " << EndPoint  << G4endl;
-    G4cout << "G4VChordFinder::LinearApprox= " << TestTrack << G4endl;
+    G4cout << "G4VRevisedChordFinder::BrentApprox = " << EndPoint  << G4endl;
+    G4cout << "G4VRevisedChordFinder::LinearApprox= " << TestTrack << G4endl;
 #endif
   }
   return EndPoint;
@@ -275,20 +268,14 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointS( const G4FieldTrack&  CurveA_Poin
 
 
 
-G4FieldTrack G4VChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
+G4FieldTrack G4VRevisedChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
                                               const G4FieldTrack& trackPointB,
                                               const G4ThreeVector& pointE,
                                               G4double eps_step)
 {
-#ifdef GEBUG_PRINTS
-    G4cout<<"ApproxCurvePointV: "<<
-            "a: "<<trackPointA.GetPosition()<<
-            " cl: "<<trackPointA.GetCurveLength()<<
-            " b: "<<trackPointB.GetPosition()<<
-            " cl: "<<trackPointB.GetCurveLength()<<G4endl;
   // If r=|AE|/|AB|, and s=true path lenght (AB)
   // return the point that is r*s along the curve!
-#endif
+
   G4FieldTrack   trackPointE = trackPointA;
 
   G4ThreeVector  pointA = trackPointA.GetPosition();
@@ -307,7 +294,7 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
   if( curve_length < ABdist * (1. - integrationInaccuracyLimit) )
   {
 #ifdef G4DEBUG_FIELD
-    G4cerr << " Warning in G4VChordFinder::ApproxCurvePointV(): \n"
+    G4cerr << " Warning in G4VRevisedChordFinder::ApproxCurvePointV(): \n"
            << " The two points are further apart than the curve length \n"
            << " Dist = "         << ABdist
            << " curve length = " << curve_length
@@ -318,7 +305,7 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
         char message[] = "Unphysical curve length.\n "
                          "The size of the above difference exceeds allowed limits. \n "
                          "Aborting.";
-        G4Exception("G4VChordFinder::ApproxCurvePointV()", "GeomField0003",
+        G4Exception("G4VRevisedChordFinder::ApproxCurvePointV()", "GeomField0003",
                   FatalException, message);
     }
 #endif
@@ -335,7 +322,7 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
   else
   {
 #ifdef G4DEBUG_FIELD
-     G4cout << "Warning in G4VChordFinder::ApproxCurvePointV():"
+     G4cout << "Warning in G4VRevisedChordFinder::ApproxCurvePointV():"
                " A and B are the same point! \n"
                " Chord AB length = " << vectorAE.mag() << "\n\n";
 #endif
@@ -344,7 +331,7 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
   if(AE_fraction > 1.0 + perMillion)
   {
 #ifdef G4DEBUG_FIELD
-    G4cerr << " G4VChordFinder::ApproxCurvePointV() - Warning:"
+    G4cerr << " G4VRevisedChordFinder::ApproxCurvePointV() - Warning:"
            << " Anomalous condition:AE > AB or AE/AB <= 0 " << G4endl
            << "   AE_fraction = " <<  AE_fraction << G4endl
            << "   Chord AE length = " << vectorAE.mag() << G4endl
@@ -372,11 +359,11 @@ G4FieldTrack G4VChordFinder::ApproxCurvePointV(const G4FieldTrack& trackPointA,
 
 
 
-void G4VChordFinder::PrintStatistics()
+void G4VRevisedChordFinder::PrintStatistics()
 {
   // Print Statistics
 
-  G4cout << "G4VChordFinder statistics report: " << G4endl;
+  G4cout << "G4VRevisedChordFinder statistics report: " << G4endl;
   G4cout
     << "  No trials: " << fTotalNoTrials_FNC
     << "  No Calls: "  << fNoCalls_FNC
@@ -392,7 +379,7 @@ void G4VChordFinder::PrintStatistics()
 
 
 
-void G4VChordFinder::TestChordPrint( G4int    noTrials,
+void G4VRevisedChordFinder::TestChordPrint( G4int    noTrials,
                                     G4int    lastStepTrial,
                                     G4double dChordStep,
                                     G4double nextStepTrial )

@@ -3,7 +3,7 @@
 //
 // Class description:
 //
-// Specialisation of G4VChordFinder class for
+// Specialisation of G4VRevisedChordFinder class for
 // Runge-Kutta drivers (G4MagInt_Driver)
 //
 // History:
@@ -13,15 +13,9 @@
 #ifndef G4RKChordFinder_HH
 #define G4RKChordFinder_HH
 
-#include "G4Types.hh"
-#include "G4FieldTrack.hh"
-#include "G4Mag_EqRhs.hh"
-#include "G4EquationOfMotion.hh"
+#include "G4VRevisedChordFinder.hh"
 
-#include "G4MagIntegratorDriver.hh"
-#include "G4VChordFinder.hh"
-
-class G4RKChordFinder : public G4VChordFinder
+class G4RKChordFinder : public G4VRevisedChordFinder
 {
 public:
 
@@ -50,11 +44,8 @@ public:
                                          G4double stepLen,
                                          G4double eps) override final;
 
-    void SetEquationOfMotion(G4EquationOfMotion* newEquation)
-    {GetIntegrationDriver()->SetEquationOfMotion(newEquation);}
-
-    G4EquationOfMotion* GetEquationOfMotion()
-    {return GetIntegrationDriver()->GetEquationOfMotion();}
+    inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+    inline G4EquationOfMotion* GetEquationOfMotion();
 
 private:
 
@@ -73,5 +64,7 @@ private:
     G4bool fAllocatedStepper;
     G4bool fAllocatedEquation;
 };
+
+#include "G4RKChordFinder.icc"
 
 #endif

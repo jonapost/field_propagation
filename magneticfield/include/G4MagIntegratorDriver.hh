@@ -51,21 +51,21 @@ class G4MagInt_Driver:public G4VIntegrationDriver
 {
    public:  // with description
 
-     G4bool  AccurateAdvance(G4FieldTrack&  y_current,
+     virtual G4bool  AccurateAdvance(G4FieldTrack&  y_current,
                              G4double hstep,
                              G4double eps,            // Requested y_err/hstep
-                             G4double hinitial=0.0);  // Suggested 1st interval
+                             G4double hinitial=0.0) override final;  // Suggested 1st interval
        // Above drivers for integrator (Runge-Kutta) with stepsize control. 
        // Integrates ODE starting values y_current
        // from current s (s=s0) to s=s0+h with accuracy eps. 
        // On output ystart is replaced by value at end of interval. 
        // The concept is similar to the odeint routine from NRC p.721-722.
 
-     G4bool  QuickAdvance(      G4FieldTrack& y_val,      // INOUT
+     virtual G4bool  QuickAdvance(      G4FieldTrack& y_val,      // INOUT
                           const G4double     dydx[],  
                                 G4double     hstep,       // IN 
                                 G4double&    dchord_step,
-                                G4double&    dyerr )  ;
+                                G4double&    dyerr )  override final;
         // QuickAdvance just tries one Step - it does not ensure accuracy.
 
      G4bool  QuickAdvance(      G4FieldTrack& y_posvel,        // INOUT
@@ -83,7 +83,7 @@ class G4MagInt_Driver:public G4VIntegrationDriver
                       G4MagIntegratorStepper *pItsStepper,
                       G4int                   numberOfComponents=6,
                       G4int                   statisticsVerbosity=1);
-     ~G4MagInt_Driver();
+     virtual ~G4MagInt_Driver();
         // Constructor, destructor.
 
      inline G4double GetHmin() const;

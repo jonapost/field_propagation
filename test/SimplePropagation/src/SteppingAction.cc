@@ -74,11 +74,12 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
     //G4cout<<2*pi/omega*velocityVector.y()<<G4endl;
 
-    G4double error = sqrt((x_error2 + y_error2 + z_error2)/sqr(stepLength));
+    G4double error = sqrt((x_error2 + y_error2 + z_error2)/*/sqr(stepLength)*/);
     G4cout<<"hstep: "<<stepLength<<" error: "<<error<<G4endl;
+    /*
     if (error > 1e-5){
         G4cout<<"pre: "<<pre<<"\npost: "<<post<<"\ncalc: "<<calc<<G4endl;
-    }
+    }*/
 
 
     if (/*error > perMillion*/ false){

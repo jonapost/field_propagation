@@ -45,19 +45,19 @@ G4bool G4FieldManager::DoesFieldExist() const
 } 
 
 inline  
-void G4FieldManager::SetChordFinder(G4VChordFinder *aChordFinder)
+void G4FieldManager::SetChordFinder(G4VRevisedChordFinder *aChordFinder)
 {
      fChordFinder= aChordFinder;
 }
 
 inline  
-G4VChordFinder*  G4FieldManager::GetChordFinder()
+G4VRevisedChordFinder*  G4FieldManager::GetChordFinder()
 {  
      return fChordFinder;
 }
 
 inline  
-const G4VChordFinder*  G4FieldManager::GetChordFinder() const
+const G4VRevisedChordFinder*  G4FieldManager::GetChordFinder() const
 {
      return fChordFinder;
 }

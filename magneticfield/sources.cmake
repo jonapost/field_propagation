@@ -114,10 +114,12 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	G4VIntegrationDriver.icc
 	BulirschStoerDriver.hh
 	BulirschStoerDenseDriver.hh
-	G4VChordFinder.hh
-	G4VChordFinder.icc
+	G4VRevisedChordFinder.hh
+	G4VRevisedChordFinder.icc
 	G4RKChordFinder.hh
+	G4RKChordFinder.icc
 	G4BSChordFinder.hh
+	G4BSChordFinder.icc
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
@@ -187,7 +189,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	G4VIntegrationDriver.cc
 	BulirschStoerDriver.cc
 	BulirschStoerDenseDriver.cc
-	G4VChordFinder.cc
+	G4VRevisedChordFinder.cc
 	G4RKChordFinder.cc
 	G4BSChordFinder.cc
 	BSStepper.cc
