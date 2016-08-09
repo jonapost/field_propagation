@@ -65,6 +65,10 @@
 #include "G4RKChordFinder.hh"
 #include "G4BSChordFinder.hh"
 
+#include "G4MagIntegratorDriver.hh"
+
+#include "G4SimpleLocator.hh"
+
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
   : _FileRead(0), debug(false), radius(19*cm), NSubLayer(0),
     disableSVT(false), disableDCH(false),
@@ -191,10 +195,15 @@ NTSTDetectorConstruction::Construct()
 
   globalFieldManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
 
+
   G4PropagatorInField *
   globalPropagatorInField= G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
 
-  globalPropagatorInField->SetMaxLoopCount( 10000 ); 
+  G4Navigator* Navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+
+  globalPropagatorInField->SetIntersectionLocator(new G4SimpleLocator(Navigator));
+
+  globalPropagatorInField->SetMaxLoopCount( 10000 );
   G4cout 
     << "PropagatorInField parameter(s) are: " << G4endl
     << " SetMaxLoopCount=" << globalPropagatorInField->GetMaxLoopCount()
@@ -240,7 +249,8 @@ NTSTDetectorConstruction::Construct()
                     pStepper );*/
   //BulirschStoerDriver* BSDriver = new BulirschStoerDriver(fMinChordStep,pEquation);
   //BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
-  //fpChordFinder = new G4RKChordFinder(BSDriver);
+  //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
+  //fpChordFinder = new G4RKChordFinder(pDriver);
   fpChordFinder = new G4BSChordFinder(fMinChordStep, pEquation);
   fpChordFinder->SetVerbose(1); 
   globalFieldManager->SetChordFinder(fpChordFinder);
