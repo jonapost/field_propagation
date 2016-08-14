@@ -47,25 +47,22 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
 
+#define ncomp G4FieldTrack::ncompSVEC
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
 //
-const G4double G4MagInt_Driver::max_stepping_increase = 5.0; //Changed from 5.0 by [hackabot]
-const G4double G4MagInt_Driver::max_stepping_decrease = 0.1;  //Changed from 0.1 by [hackabot]
+const G4double G4MagInt_Driver::max_stepping_increase = 5.0;
+const G4double G4MagInt_Driver::max_stepping_decrease = 0.1;
 
 //  The (default) maximum number of steps is Base
 //  divided by the order of Stepper
 //
-const G4int  G4MagInt_Driver::fMaxStepBase = 100000;  // Was 5000, was 250
+const G4int  G4MagInt_Driver::fMaxStepBase = 250;  // Was 5000
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
 #endif
-
-//#ifndef G4DEBUG_FIELD
-//#define G4DEBUG_FIELD 1
-//#endif
 
 // ---------------------------------------------------------
 
@@ -75,31 +72,25 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
                                   G4MagIntegratorStepper *pStepper,
                                   G4int                   numComponents,
                                   G4int                   statisticsVerbose):
-    G4VIntegrationDriver(hminimum,pStepper,numComponents,statisticsVerbose),
+    G4VIntegrationDriver(hminimum, pStepper, numComponents, 0),
     fSmallestFraction( 1.0e-12 ),
-    fNoIntegrationVariables(numComponents), 
-    fMinNoVars(12), 
-    fNoVars( std::max( fNoIntegrationVariables, fMinNoVars )),
     fStatisticsVerboseLevel(statisticsVerbose),
     fNoTotalSteps(0),  fNoBadSteps(0), fNoSmallSteps(0),
     fNoInitialSmallSteps(0), 
     fDyerr_max(0.0), fDyerr_mx2(0.0), 
     fDyerrPos_smTot(0.0), fDyerrPos_lgTot(0.0), fDyerrVel_lgTot(0.0), 
-    fSumH_sm(0.0), fSumH_lg(0.0),
-    fVerboseLevel(0),
-	TotalNoStepperCalls(0)
+    fSumH_sm(0.0), fSumH_lg(0.0)
 {  
   // In order to accomodate "Laboratory Time", which is [7], fMinNoVars=8
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
 
   RenewStepperAndAdjust( pStepper );
-  fMinimumStep= hminimum;
-  fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();
+  fMaxNoSteps = fMaxStepBase / GetStepper()->IntegratorOrder();
 #ifdef G4DEBUG_FIELD
   fVerboseLevel=2;
 #endif
 
-  if( (fVerboseLevel > 0) || (fStatisticsVerboseLevel > 1) )
+  if( (GetVerboseLevel() > 0) || (fStatisticsVerboseLevel > 1) )
   {
     G4cout << "MagIntDriver version: Accur-Adv: "
            << "invE_nS, QuickAdv-2sqrt with Statistics "
@@ -129,6 +120,7 @@ G4MagInt_Driver::~G4MagInt_Driver()
 // #define  G4DEBUG_FIELD 1    
 
 // ---------------------------------------------------------
+
 G4bool
 G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
                                  G4double     hstep,
@@ -145,7 +137,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
   G4double x, hnext, hdid, h;
 
 #ifdef G4DEBUG_FIELD
-  static G4int dbg=10;
+  static G4int dbg=1;
   static G4int nStpPr=50;   // For debug printing of long integrations
   G4double ySubStepStart[G4FieldTrack::ncompSVEC];
   G4FieldTrack  yFldTrkStart(y_current);
@@ -160,7 +152,6 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
 
   G4int  noFullIntegr=0, noSmallIntegr = 0 ;
   static G4ThreadLocal G4int  noGoodSteps =0 ;  // Bad = chord > curve-len 
-  const  G4int  nvar= fNoVars;
 
   G4FieldTrack yStartFT(y_current);
 
@@ -206,12 +197,12 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
 
   x = x1;
 
-  for (i=0;i<nvar;i++)  { y[i] = ystart[i]; }
+  memcpy(y, ystart, sizeof(G4double)*ncomp);
+  memcpy(yEnd, ystart, sizeof(G4double)*ncomp);
 
-  G4bool lastStep= false;
-  nstp=1;
+  G4bool lastStep = false;
+  nstp = 1;
 
-    
   do
   {
     G4ThreeVector StartPos( y[0], y[1], y[2] );
@@ -223,15 +214,15 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
     yFldTrkStart.SetCurveLength(x);
 #endif
 
-      
-      pIntStepper->ComputeRightHandSide( y, dydx );
-
-      
+    // Old method - inline call to Equation of Motion
+    //   pIntStepper->RightHandSide( y, dydx );
+    // New method allows to cache field, or state (eg momentum magnitude)
+    GetStepper()->ComputeRightHandSide( y, dydx );
     fNoTotalSteps++;
 
     // Perform the Integration
     //      
-    if( h > fMinimumStep )
+    if(h > GetMinimumStep())
     { 
       OneGoodStep(y,dydx,x,h,eps,hdid,hnext) ;
       //--------------------------------------
@@ -247,8 +238,8 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
       G4FieldTrack yFldTrk( G4ThreeVector(0,0,0), 
                             G4ThreeVector(0,0,0), 0., 0., 0., 0. );
       G4double dchord_step, dyerr, dyerr_len;   // What to do with these ?
-      yFldTrk.LoadFromArray(y, fNoIntegrationVariables); 
-      yFldTrk.SetCurveLength( x );
+      yFldTrk.LoadFromArray(y, ncomp);
+      yFldTrk.SetCurveLength(x);
 
       QuickAdvance( yFldTrk, dydx, h, dchord_step, dyerr_len ); 
       //-----------------------------------------------------
@@ -347,7 +338,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
     else
     {
       // Check the proposed next stepsize
-      if(std::fabs(hnext) <= Hmin())
+      if(std::fabs(hnext) <= GetMinimumStep())
       {
 #ifdef  G4DEBUG_FIELD
         // If simply a very small interval is being integrated, do not warn
@@ -363,7 +354,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
         }
 #endif
         // Make sure that the next step is at least Hmin.
-        h = Hmin();
+        h = GetMinimumStep();
       }
       else
       {
@@ -399,13 +390,13 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
      // Have we reached the end ?
      // --> a better test might be x-x2 > an_epsilon
 
-  succeeded=  (x>=x2);  // If it was a "forced" last step
+  succeeded =  (x >= x2);  // If it was a "forced" last step
 
-  for (i=0;i<nvar;i++)  { yEnd[i] = y[i]; }
+  memcpy(yEnd, y, sizeof(G4double)*GetNumberOfVariables());
 
   // Put back the values.
-  y_current.LoadFromArray( yEnd, fNoIntegrationVariables );
-  y_current.SetCurveLength( x );
+  y_current.LoadFromArray(yEnd, ncomp);
+  y_current.SetCurveLength(x);
 
   if(nstp > fMaxNoSteps)
   {
@@ -431,7 +422,6 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
   return succeeded;
 }  // end of AccurateAdvance ...........................
 
-
 // ---------------------------------------------------------
 
 void
@@ -442,11 +432,11 @@ G4MagInt_Driver::WarnSmallStepSize( G4double hnext, G4double hstep,
   static G4ThreadLocal G4int noWarningsIssued =0;
   const  G4int maxNoWarnings =  10;   // Number of verbose warnings
   std::ostringstream message;
-  if( (noWarningsIssued < maxNoWarnings) || fVerboseLevel > 10 )
+  if( (noWarningsIssued < maxNoWarnings) || GetVerboseLevel() > 10 )
   {
     message << "The stepsize for the next iteration, " << hnext
             << ", is too small - in Step number " << nstp << "." << G4endl
-            << "The minimum for the driver is " << Hmin()  << G4endl
+            << "The minimum for the driver is " << GetMinimumStep()  << G4endl
             << "Requested integr. length was " << hstep << " ." << G4endl
             << "The size of this sub-step was " << h     << " ." << G4endl
             << "The integrations has already gone " << xDone;
@@ -457,7 +447,7 @@ G4MagInt_Driver::WarnSmallStepSize( G4double hnext, G4double hstep,
             << ", step-no: " << nstp << G4endl
             << ", this sub-step: " << h     
             << ",  req_tot_len: " << hstep 
-            << ", done: " << xDone << ", min: " << Hmin();
+            << ", done: " << xDone << ", min: " << GetMinimumStep();
   }
   G4Exception("G4MagInt_Driver::WarnSmallStepSize()", "GeomField1001",
               JustWarning, message);
@@ -518,7 +508,7 @@ G4MagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
 }
 
 // ---------------------------------------------------------
-#ifndef BS
+
 void
 G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
                              const G4double dydx[],
@@ -545,7 +535,8 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   G4double errmax_sq;
   G4double h, htemp, xnew ;
 
-  G4double yerr[G4FieldTrack::ncompSVEC], ytemp[G4FieldTrack::ncompSVEC];
+  G4double yerr[ncomp], ytemp[ncomp];
+  memset(yerr, 0, sizeof(G4double)*ncomp);
 
   h = htry ; // Set stepsize to the initial trial value
 
@@ -557,13 +548,9 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
 
   G4int iter;
 
-  static G4ThreadLocal G4int tot_no_trials=0;
-//-----------------------------------------------------------
-    //Made a change :
-    //max_trials = 100
-  const G4int max_trials=100000;
-    //[hackabot]
-//------------------------------------------------------------
+  static G4ThreadLocal G4int tot_no_trials=0; 
+  const G4int max_trials=100; 
+
   G4ThreeVector Spin(y[9],y[10],y[11]);
   G4double   spin_mag2 =Spin.mag2() ;
   G4bool     hasSpin= (spin_mag2 > 0.0); 
@@ -571,12 +558,10 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   for (iter=0; iter<max_trials ;iter++)
   {
     tot_no_trials++;
-    pIntStepper-> Stepper(y,dydx,h,ytemp,yerr); 
+    GetStepper()-> Stepper(y,dydx,h,ytemp,yerr);
     //            *******
-      TotalNoStepperCalls++;
-    G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
+    G4double eps_pos = eps_rel_max * std::max(h, GetMinimumStep());
     G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
-
 
     // Evaluate accuracy
     //
@@ -604,7 +589,6 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
       errspin_sq *= inv_eps_vel_sq;
       errmax_sq = std::max( errmax_sq, errspin_sq ); 
     }
-
 
     if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
 
@@ -645,45 +629,9 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
   }
   x += (hdid = h);
 
-  for(G4int k=0;k<fNoIntegrationVariables;k++) { y[k] = ytemp[k]; }
+  memcpy(y, ytemp, sizeof(G4double)*GetNumberOfVariables());
 
-  return;
 }   // end of  OneGoodStep .............................
-#endif
-
-#ifdef BS
-
-void
-G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
-                             const G4double dydx[],
-                                   G4double& curveLength,         // InOut
-                                   G4double htry,
-                                   G4double eps_rel_max,
-                                   G4double& hdid,      // Out
-                                   G4double& hnext )    // Out
-{
-    bulirsch_stoer<state_type> stepper(0,eps_rel_max,1,0);//(epsStep_Relative, epsStep_Relative);
-    hnext = htry;
-    hdid = 0;
-
-    const auto system = [this](const state_type & _y, state_type & _dydx, const double /*t*/){
-        // there is access out of range!
-        //solution: copy _y and _dydx to array of 8 elements
-        pIntStepper->RightHandSide(_y.data(),_dydx.data());
-    };
-    state_type yState, dydxState;
-    for (int i = 0; i < 6; ++i){
-        yState[i] = y[i];
-        dydxState[i] = dydx[i];
-    }
-    // System system , const StateIn &in , time_type &t , StateOut &out , time_type &dt
-    stepper.try_step(system, yState, dydxState, hdid, hnext);
-    for (int i = 0; i < 6; ++i){
-        y[i] = yState[i];
-    }
-    curveLength += hdid;
-}
-#endif
 
 //----------------------------------------------------------------------
 
@@ -729,16 +677,16 @@ G4bool  G4MagInt_Driver::QuickAdvance(
   s_start = y_posvel.GetCurveLength();
 
   // Do an Integration Step
-  pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
+  GetStepper()-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec);
   //            *******
 
   // Estimate curve-chord distance
-  dchord_step= pIntStepper-> DistChord();
+  dchord_step= GetStepper()-> DistChord();
   //                         *********
 
   // Put back the values.  yarrout ==> y_posvel
-  y_posvel.LoadFromArray( yarrout, fNoIntegrationVariables );
-  y_posvel.SetCurveLength( s_start + hstep );
+  y_posvel.LoadFromArray(yarrout, ncomp);
+  y_posvel.SetCurveLength(s_start + hstep);
 
 #ifdef  G4DEBUG_FIELD
   if(fVerboseLevel>2)
@@ -886,10 +834,10 @@ void G4MagInt_Driver::PrintStatus( const G4double*   StartArr,
                  G4ThreeVector(0,0,0), 0., 0., 0., 0. );
    G4FieldTrack  CurrentFT (StartFT);
 
-   StartFT.LoadFromArray( StartArr, fNoIntegrationVariables); 
-   StartFT.SetCurveLength( xstart);
-   CurrentFT.LoadFromArray( CurrentArr, fNoIntegrationVariables); 
-   CurrentFT.SetCurveLength( xcurrent );
+   StartFT.LoadFromArray(StartArr, ncomp);
+   StartFT.SetCurveLength(xstart);
+   CurrentFT.LoadFromArray(CurrentArr, ncomp);
+   CurrentFT.SetCurveLength(xcurrent);
 
    PrintStatus(StartFT, CurrentFT, requestStep, subStepNo ); 
 }
@@ -902,7 +850,7 @@ void G4MagInt_Driver::PrintStatus(
                   G4double             requestStep, 
                   G4int                subStepNo)
 {
-    G4int verboseLevel= fVerboseLevel;
+    G4int verboseLevel= GetVerboseLevel();
     static G4ThreadLocal G4int noPrecision= 5;
     G4int oldPrec= G4cout.precision(noPrecision);
     // G4cout.setf(ios_base::fixed,ios_base::floatfield);
@@ -1102,14 +1050,5 @@ void G4MagInt_Driver::SetSmallestFraction(G4double newFraction)
   }
 }
 
-
-
-
-
-
-
-//--------------------------------------------------------------------------------
-// New functions introduced for more debugging purposes :
-
-
-
+G4bool G4MagInt_Driver::isDense() const
+{return false;}

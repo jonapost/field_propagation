@@ -109,17 +109,16 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	ModifiedMidpoint.icc
 	BulirschStoer.hh
 	BulirschStoer.icc
-	BSStepper.hh
+	ModifiedMidpointStepper.hh
 	G4VIntegrationDriver.hh
 	G4VIntegrationDriver.icc
 	BulirschStoerDriver.hh
 	BulirschStoerDenseDriver.hh
-	G4VRevisedChordFinder.hh
-	G4VRevisedChordFinder.icc
-	G4RKChordFinder.hh
-	G4RKChordFinder.icc
-	G4BSChordFinder.hh
-	G4BSChordFinder.icc
+	G4BogackiShampine45DenseDriver.hh
+	G4RevisedChordFinder.hh
+	G4RevisedChordFinder.icc
+	BogackiShampine45.hh
+
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
@@ -189,10 +188,10 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
 	G4VIntegrationDriver.cc
 	BulirschStoerDriver.cc
 	BulirschStoerDenseDriver.cc
-	G4VRevisedChordFinder.cc
-	G4RKChordFinder.cc
-	G4BSChordFinder.cc
-	BSStepper.cc
+	G4RevisedChordFinder.cc
+	ModifiedMidpointStepper.cc
+	BogackiShampine45.cc
+	G4BogackiShampine45DenseDriver.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

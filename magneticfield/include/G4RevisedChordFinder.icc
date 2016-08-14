@@ -1,0 +1,120 @@
+inline G4double G4RevisedChordFinder::InvParabolic(const G4double xa, const G4double ya,
+                                             const G4double xb, const G4double yb,
+                                             const G4double xc, const G4double yc )
+
+{
+    const G4double R = yb/yc,
+                   S = yb/ya,
+                   T = ya/yc;
+
+    const G4double Q = (T-1)*(R-1)*(S-1);
+    if (std::fabs(Q) <DBL_MIN ) return  DBL_MAX;
+    const G4double P = S*(T*(R-T)*(xc-xb) - (1-R)*(xb-xa));
+    return xb + P/Q;
+}
+
+inline G4EquationOfMotion* G4RevisedChordFinder::GetEquationOfMotion()
+{return fpIntDriver->GetEquationOfMotion();}
+
+inline void G4RevisedChordFinder::SetEquationOfMotion(G4EquationOfMotion* newEquation)
+{fpIntDriver->SetEquationOfMotion(newEquation);}
+
+inline void G4RevisedChordFinder::SetIntegrationDriver(G4VIntegrationDriver* IntDriver)
+{fpIntDriver = IntDriver;}
+
+inline G4VIntegrationDriver* G4RevisedChordFinder::GetIntegrationDriver()
+{return fpIntDriver;}
+
+inline G4double G4RevisedChordFinder::GetDeltaChord() const
+{return fDeltaChord;}
+
+inline void G4RevisedChordFinder::SetDeltaChord(G4double newDelta)
+{fDeltaChord = newDelta;}
+
+// Clear internal state (last step estimate)
+inline void G4RevisedChordFinder::ResetStepEstimate()
+{fLastStepEstimate_Unconstrained = DBL_MAX;}
+
+inline G4int G4RevisedChordFinder::GetNoCalls()
+{ return fNoCalls_FNC;}
+
+// Get statistics about number of calls & trials in FindNextChord
+// Total number of trials
+inline G4int G4RevisedChordFinder::GetNoTrials()
+{return fTotalNoTrials_FNC;}
+
+// Maximum # of trials for one call
+inline G4int G4RevisedChordFinder::GetNoMaxTrials()
+{return fmaxTrials_FNC;}
+
+
+// Set verbosity and return old value
+inline G4int G4RevisedChordFinder::SetVerbose( G4int newvalue)
+{
+    G4int oldval= fStatsVerbose;
+    fStatsVerbose = newvalue;
+    return oldval;
+}
+
+inline G4int G4RevisedChordFinder::GetVerbose() const
+{return fVerboseLevel;}
+
+// Parameter for  performance ... change with great care
+inline void G4RevisedChordFinder::SetFirstFraction(G4double newVal)
+{fFirstFraction = newVal;}
+
+//   Printing for monitoring ...
+inline G4double G4RevisedChordFinder::GetFirstFraction()
+{return fFirstFraction;}  // Originally 0.999
+
+inline G4double G4RevisedChordFinder::GetFractionLast()
+{return fFractionLast;} // Originally 1.000
+
+inline G4double G4RevisedChordFinder::GetFractionNextEstimate()
+{return fFractionNextEstimate;} // Originally 0.980
+
+inline G4double G4RevisedChordFinder::GetMultipleRadius()
+{return fMultipleRadius;} // No original value
+
+
+/* Accumulate the basic statistics
+ * other specialised ones must be kept by derived classes
+ * */
+inline void G4RevisedChordFinder::AccumulateStatistics( G4int noTrials )
+{
+    // Statistics
+    fTotalNoTrials_FNC += noTrials;
+    fNoCalls_FNC++;
+    // if( noTrials >= fmaxTrials_FNC ){
+    if (noTrials > fmaxTrials_FNC ) {
+        fmaxTrials_FNC=noTrials;
+        // fnoTimesMaxTrFNC=0;
+    } else {
+        // fnoTimesMaxTrFNC++;
+    }
+        // }
+}
+
+
+inline G4bool G4RevisedChordFinder::AcceptableMissDist(G4double dChordStep) const
+{return (dChordStep <= fDeltaChord);}
+
+inline G4double G4RevisedChordFinder::GetLastStepEstimateUnc()
+{return fLastStepEstimate_Unconstrained;}
+
+inline void G4RevisedChordFinder::SetLastStepEstimateUnc( G4double stepEst )
+{fLastStepEstimate_Unconstrained = stepEst;}
+
+inline G4bool G4RevisedChordFinder::DoStepForIntersection(G4FieldTrack& track, G4double stepLen, G4double eps)
+{
+    if (fpIntDriver->isDense())
+    {
+        fpIntDriver->DoInterpolation(track, stepLen, eps);
+        return true;
+    }
+    else return fpIntDriver->AccurateAdvance(track, stepLen, eps);
+}
+
+//resets internal state of its driver
+inline void G4RevisedChordFinder::Reset()
+{fpIntDriver->Reset();}

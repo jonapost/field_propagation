@@ -3,34 +3,24 @@
 
 #include "G4SystemOfUnits.hh"
 
-//#include <boost/numeric/odeint.hpp>
-//#include <functional>
 
 #define ncomp G4FieldTrack::ncompSVEC
 
-/*
-void print(const G4double state[]){
-    for (G4int i = 0; i < 3; ++i){
-        G4cout<<state[i]<<"  ";
-    }
-    G4cout<<G4endl;
-}
-*/
 
 BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4double hminimum, G4EquationOfMotion* equation,
                                                    G4int numberOfComponents,
-                                                   G4int statisticsVerbosity):
-    G4VIntegrationDriver(hminimum,equation,numberOfComponents,statisticsVerbosity),
-    dummyStepper(new BSStepper(equation)),
+                                                   G4int VerboseLevel):
+    G4VIntegrationDriver(hminimum,equation,numberOfComponents,VerboseLevel),
     denseMidpoint(equation,numberOfComponents),
     bulirschStoer(equation,numberOfComponents,0,false),
-    tBegin(0),tEnd(0)
+    interval_sequence{2,4},
+    fcoeff(1./(sqr(G4double(interval_sequence[1])/G4double(interval_sequence[0]))-1.)),
+    eps_prev(0),fNextStepSize(DBL_MAX)
 {
 }
 
 BulirschStoerDenseDriver::~BulirschStoerDenseDriver()
 {
-    delete dummyStepper;
 }
 
 G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
@@ -40,27 +30,20 @@ G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
                                                  G4double& dyerr)
 {
 
-    // new step, reset interpolation interval
-    tBegin = tEnd = 0;
-
-
     track.DumpToArray(yIn);
     const G4double curveLength = track.GetCurveLength();
 
-    G4int interval1 = 2, interval2 = 4;
-    G4double coeff = 1./(sqr(static_cast<G4double>(interval2)/static_cast<G4double>(interval1))-1.);
 
-
-    denseMidpoint.set_steps(interval1);
+    denseMidpoint.set_steps(interval_sequence[0]);
     denseMidpoint.do_step(yIn, dydx, yOut, hstep, yMid, derivs[0]);
 
-    denseMidpoint.set_steps(interval2);
+    denseMidpoint.set_steps(interval_sequence[1]);
     denseMidpoint.do_step(yIn, dydx, yOut2, hstep, yMid2, derivs[1]);
 
     //extrapolation
     for (G4int i = 0; i < GetNumberOfVariables(); ++i){
-        yOut[i] = yOut2[i] + (yOut2[i] - yOut[i])*coeff;
-        yMid[i] = yMid2[i] + (yMid2[i] - yMid[i])*coeff;
+        yOut[i] = yOut2[i] + (yOut2[i] - yOut[i])*fcoeff;
+        yMid[i] = yMid2[i] + (yMid2[i] - yMid[i])*fcoeff;
     }
 
 
@@ -91,7 +74,6 @@ G4bool  BulirschStoerDenseDriver::QuickAdvance(G4FieldTrack& track,
     //set new state
     track.LoadFromArray(yOut,ncomp);
     track.SetCurveLength(curveLength + hstep);
-
 
     return true;
 }
@@ -188,7 +170,7 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
                         "GeomField0003", FatalException,
                         "Integration Step became Zero!");
         }
-        else if(h > GetMinStep()){
+        else if(h > GetMinimumStep()){
             //step size if Ok
             OneGoodStep(yCurrent,dydxCurrent,curveLength,h,eps,hdid,hnext);
             lastStepSucceeded = (hdid == h);
@@ -249,10 +231,10 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
         else
         {
             // Check the proposed next stepsize
-            if(std::fabs(hnext) < GetMinStep())
+            if(std::fabs(hnext) < GetMinimumStep())
             {
               // Make sure that the next step is at least Hmin.
-              h = GetMinStep();
+              h = GetMinimumStep();
             }
             else
             {
@@ -293,84 +275,86 @@ G4bool  BulirschStoerDenseDriver::AccurateAdvance(G4FieldTrack&  track,
     return succeeded;
 }
 
-void  BulirschStoerDenseDriver::OneGoodStep(G4double  y[],
-                  const G4double  dydx[],
-                  G4double& curveLength,
-                  G4double htry,
-                  G4double  eps,
-                  G4double& hdid,
-                  G4double& hnext)
+void  BulirschStoerDenseDriver::OneGoodStep(G4double  y[], const G4double  dydx[],
+                                            G4double& curveLength, G4double htry,
+                                            G4double  eps, G4double& hdid,
+                                            G4double& hnext)
 {
     hnext = htry;
-    hdid = 0;
+    G4double curveLengthBegin = curveLength;
 
     // set maximum allowed error
     bulirschStoer.set_max_relative_error(eps);
+    step_result res = step_result::fail;
 
-    if (curveLength >= tBegin && (curveLength+htry) <= tEnd)
+    while(res == step_result::fail)
     {
+        res = bulirschStoer.try_step(y, dydx, curveLength, yOut, hnext);
+    }
+    // copy integrated vars to output array
+    memcpy(y,yOut,sizeof(G4double)*GetNumberOfVariables());
+    hdid = curveLength - curveLengthBegin;
+}
 
-        bulirschStoer.do_interpolation(curveLength+htry,yOut);
-/*
-   //check interpolation accuracy
 
-        G4double clSaved = curveLength;
-        G4double tmp[12];
-        bulirschStoer.try_step(y,dydx, clSaved, tmp, hnext);
-        //G4cout<<"tBegin "<<tBegin<<"  "<<tEnd<<" hdid "<<clSaved - curveLength<<G4endl;
+G4double BulirschStoerDenseDriver::ComputeNewStepSize(G4double /*dyErr_relative*/, G4double lastStepLength)
+{
+    return lastStepLength;
+}
 
-        for (G4int i = 0; i < 6; ++i)
+
+void BulirschStoerDenseDriver::DoStep(G4FieldTrack& track, G4double hstep, G4double eps)
+{
+    track.DumpToArray(yCurrent);
+    GetEquationOfMotion()->RightHandSide(yCurrent, dydxCurrent);
+    interpolationInterval& interval = GetInterpolationInterval();
+    interval.first = interval.second = track.GetCurveLength();
+    G4double stepLen = std::min(fNextStepSize, hstep);
+    eps_prev = eps;
+    G4double hdid = 0;
+    OneGoodStep(yCurrent, dydxCurrent, interval.second, stepLen, eps, hdid, fNextStepSize);
+
+    //update track
+    track.LoadFromArray(yCurrent, ncomp);
+    track.SetCurveLength(interval.first);
+}
+
+void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hstep, G4double eps)
+{
+    track.DumpToArray(yCurrent);
+    G4double curveLength = track.GetCurveLength();
+    G4double clWant = curveLength + hstep;
+    interpolationInterval& interval = GetInterpolationInterval();
+    //little upperflow, allow.
+    if (clWant > interval.second)
+    {
+        G4double upperflow = (clWant - interval.second)/clWant;
+        if (upperflow < perMillion)
+            clWant = interval.second;
+    }
+
+    if (curveLength >= interval.first && clWant <= interval.second)
+    {
+        track.DumpToArray(yCurrent);
+        bulirschStoer.do_interpolation(clWant, yCurrent);
+        track.LoadFromArray(yCurrent, ncomp);
+        track.SetCurveLength(clWant);
+        if (eps != 0 && eps != eps_prev)
         {
-            tmp[i] -= yOut[i];
+            char buff[256];
+            sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g Interpolation is not accurate!",eps,eps_prev);
+            G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001",
+                        FatalException, buff);
         }
-        G4double err = check_error(yOut,tmp,htry,eps);
-        //if (err > 1)
-        //    G4cout<<"interp error "<<err<<G4endl;
-*/
-        curveLength += htry;
-        hdid = htry;
-
-        // copy integrated vars to output array
-        memcpy(y,yOut,sizeof(G4double)*GetNumberOfVariables());
     }
     else
     {
-        tBegin = curveLength;
-        // try step, changes curveLength & hnext
-        step_result res = bulirschStoer.try_step(y,dydx, curveLength, yOut, hnext);
-        if (res == step_result::success)
-        {
-            tEnd = curveLength;
-            hdid = tEnd - tBegin;
-
-            // copy integrated vars to output array
-            memcpy(y,yOut,sizeof(G4double)*GetNumberOfVariables());
-            G4double tmp[12];
-            bulirschStoer.do_interpolation(tEnd,tmp);
-            G4double error = sqr(tmp[0] - yOut[0]) + sqr(tmp[1] - yOut[1]) + sqr(tmp[2] - yOut[2]);
-            error /= sqr(hdid*eps);
-            if (error > 1)
-                G4cout<<"interpError: "<<error<<G4endl;
-        }
-        else
-        {
-            tBegin = tEnd = 0;
-        }
+        char buff[256];
+        sprintf(buff,"curveLength = %g is out of the interpolation interval (%g,%g)!",clWant,interval.first, interval.second);
+        G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001", FatalException, buff);
     }
-
-
-
-    //curveLength += hdid;
-
 }
 
-void BulirschStoerDenseDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[])
-{
-    track.DumpToArray(yIn);
-    GetEquationOfMotion()->RightHandSide(yIn,dydx);
-}
+G4bool BulirschStoerDenseDriver::isDense() const
+{return true;}
 
-G4MagIntegratorStepper* BulirschStoerDenseDriver::GetStepper()
-{
-    return dummyStepper;
-}

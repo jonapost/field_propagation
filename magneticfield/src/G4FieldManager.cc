@@ -31,22 +31,21 @@
 #include "G4FieldManager.hh"
 #include "G4Field.hh"
 #include "G4MagneticField.hh"
-#include "G4RKChordFinder.hh"
+#include "G4RevisedChordFinder.hh"
 #include "G4FieldManagerStore.hh"
 
 G4FieldManager::G4FieldManager(G4Field       *detectorField, 
-                   G4VRevisedChordFinder *pChordFinder,
-			       G4bool        fieldChangesEnergy
-			      )
-   : fDetectorField(detectorField), 
-     fChordFinder(pChordFinder), 
-     fAllocatedChordFinder(false),
-     fEpsilonMinDefault(5.0e-5), 
-     fEpsilonMaxDefault(0.001),
-     fDefault_Delta_One_Step_Value(0.01),    // mm
-     fDefault_Delta_Intersection_Val(0.001), // mm
-     fEpsilonMin( fEpsilonMinDefault ),
-     fEpsilonMax( fEpsilonMaxDefault)
+                   G4RevisedChordFinder *pChordFinder,
+                   G4bool        fieldChangesEnergy):
+    fDetectorField(detectorField),
+    fChordFinder(pChordFinder),
+    fAllocatedChordFinder(false),
+    fEpsilonMinDefault(5.0e-5),
+    fEpsilonMaxDefault(0.001),
+    fDefault_Delta_One_Step_Value(0.01),    // mm
+    fDefault_Delta_Intersection_Val(0.001), // mm
+    fEpsilonMin( fEpsilonMinDefault ),
+    fEpsilonMax( fEpsilonMaxDefault)
 { 
    fDelta_One_Step_Value= fDefault_Delta_One_Step_Value;
    fDelta_Intersection_Val= fDefault_Delta_Intersection_Val;
@@ -59,17 +58,17 @@ G4FieldManager::G4FieldManager(G4Field       *detectorField,
    G4FieldManagerStore::Register(this);
 }
 
-G4FieldManager::G4FieldManager(G4MagneticField *detectorField)
-   : fDetectorField(detectorField),
-     fChordFinder(new G4RKChordFinder( detectorField )),
-     fAllocatedChordFinder(true),
-     fEpsilonMinDefault(5.0e-5), 
-     fEpsilonMaxDefault(0.001),
-     fFieldChangesEnergy(false), 
-     fDefault_Delta_One_Step_Value(0.01),    // mm
-     fDefault_Delta_Intersection_Val(0.001), // mm
-     fEpsilonMin( fEpsilonMinDefault ),
-     fEpsilonMax( fEpsilonMaxDefault)
+G4FieldManager::G4FieldManager(G4MagneticField *detectorField):
+    fDetectorField(detectorField),
+    fChordFinder(new G4RevisedChordFinder( detectorField )),
+    fAllocatedChordFinder(true),
+    fEpsilonMinDefault(5.0e-5),
+    fEpsilonMaxDefault(0.001),
+    fFieldChangesEnergy(false),
+    fDefault_Delta_One_Step_Value(0.01),    // mm
+    fDefault_Delta_Intersection_Val(0.001), // mm
+    fEpsilonMin( fEpsilonMinDefault ),
+    fEpsilonMax( fEpsilonMaxDefault)
 
 {
    fDelta_One_Step_Value= fDefault_Delta_One_Step_Value;
@@ -82,7 +81,7 @@ G4FieldManager* G4FieldManager::Clone() const
 {
     G4Field* aField = nullptr;
     G4FieldManager* aFM = nullptr;
-    G4VRevisedChordFinder* aCF = nullptr;
+    G4RevisedChordFinder* aCF = nullptr;
     try {
         if ( this->fDetectorField )
             aField = this->fDetectorField->Clone();
@@ -144,7 +143,7 @@ G4FieldManager::CreateChordFinder(G4MagneticField *detectorMagField)
 {
    if ( fAllocatedChordFinder )
       delete fChordFinder;
-   fChordFinder = new G4RKChordFinder( detectorMagField );
+   fChordFinder = new G4RevisedChordFinder( detectorMagField );
    fChordFinder = nullptr;
    fAllocatedChordFinder= true;
 }

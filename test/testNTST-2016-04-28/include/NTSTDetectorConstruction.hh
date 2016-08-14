@@ -37,7 +37,7 @@
 #define NTSTDetectorConstruction_H 1
 #include "G4Transform3D.hh"
 #include "globals.hh"
-#include "G4VRevisedChordFinder.hh"
+#include "G4RevisedChordFinder.hh"
 
 class NTSTFileRead;
 class G4VPhysicalVolume;
@@ -79,7 +79,7 @@ private:
     G4bool disableDCH;
     
     NTSTField field;
-    G4VRevisedChordFinder *fpChordFinder;
+    G4RevisedChordFinder *fpChordFinder;
     G4double  fMinChordStep;   // Minimum Step for chord
 };
 

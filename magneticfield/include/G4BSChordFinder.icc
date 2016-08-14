@@ -1,5 +1,0 @@
-inline void G4BSChordFinder::SetEquationOfMotion(G4EquationOfMotion* newEquation)
-{GetIntegrationDriver()->SetEquationOfMotion(newEquation);}
-
-inline G4EquationOfMotion* G4BSChordFinder::GetEquationOfMotion()
-{return GetIntegrationDriver()->GetEquationOfMotion();}

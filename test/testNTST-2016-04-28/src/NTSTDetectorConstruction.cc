@@ -34,7 +34,6 @@
 #include "NTSTRotationMatrix.hh"
 #include "G4TransportationManager.hh"
 #include "G4FieldManager.hh"
-#include "G4VRevisedChordFinder.hh"
 #include "G4Material.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -59,11 +58,18 @@
 #include "G4DELPHIMagField.hh"
 #include "G4PropagatorInField.hh"
 
-#include "BulirschStoerDriver.hh"
-#include "BulirschStoerDenseDriver.hh"
+#include "G4MagIntegratorDriver.hh"
 
-#include "G4RKChordFinder.hh"
-#include "G4BSChordFinder.hh"
+#include "G4SimpleLocator.hh"
+
+#include "G4ClassicalRK4.hh"
+#include "G4CashKarpRKF45.hh"
+#include "ModifiedMidpointStepper.hh"
+#include "BogackiShampine45.hh"
+#include "BulirschStoerDriver.hh"
+
+#include "G4BogackiShampine45DenseDriver.hh"
+#include "BulirschStoerDenseDriver.hh"
 
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
   : _FileRead(0), debug(false), radius(19*cm), NSubLayer(0),
@@ -191,10 +197,15 @@ NTSTDetectorConstruction::Construct()
 
   globalFieldManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
 
+
   G4PropagatorInField *
   globalPropagatorInField= G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
 
-  globalPropagatorInField->SetMaxLoopCount( 10000 ); 
+  G4Navigator* Navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+
+  globalPropagatorInField->SetIntersectionLocator(new G4SimpleLocator(Navigator));
+
+  globalPropagatorInField->SetMaxLoopCount( 10000 );
   G4cout 
     << "PropagatorInField parameter(s) are: " << G4endl
     << " SetMaxLoopCount=" << globalPropagatorInField->GetMaxLoopCount()
@@ -218,11 +229,12 @@ NTSTDetectorConstruction::Construct()
 
   pEquation = new G4Mag_UsualEqRhs( &field); 
  
+  pStepper = new ModifiedMidpointStepper(pEquation);
+  // pStepper = new BogackiShampine45(pEquation);
   // pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
   // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
   // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
-  // pStepper= new CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4HelixMixedStepper( pEquation ); G4cout << "Stepper is " << "HelixMixed" << G4endl;
   // pStepper=  StepperFactory::CreateStepper( order );
 
@@ -238,10 +250,12 @@ NTSTDetectorConstruction::Construct()
   /*fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field,
 				    fMinChordStep,
                     pStepper );*/
-  //BulirschStoerDriver* BSDriver = new BulirschStoerDriver(fMinChordStep,pEquation);
-  //BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
-  //fpChordFinder = new G4RKChordFinder(BSDriver);
-  fpChordFinder = new G4BSChordFinder(fMinChordStep, pEquation);
+
+  //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
+  //G4VIntegrationDriver* pDriver = new BulirschStoerDriver(fMinChordStep, pEquation);
+  //G4VIntegrationDriver* pDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
+  G4VIntegrationDriver* pDriver = new G4BogackiShampine45DenseDriver(fMinChordStep, pEquation);
+  fpChordFinder = new G4RevisedChordFinder(pDriver);
   fpChordFinder->SetVerbose(1); 
   globalFieldManager->SetChordFinder(fpChordFinder);
 

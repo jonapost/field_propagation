@@ -1,5 +1,5 @@
 //
-// class G4VRevisedChordFinder
+// class G4RevisedChordFinder
 //
 // Class description:
 //
@@ -9,8 +9,8 @@
 // - Created: D. Sorokin
 // --------------------------------------------------------------------
 
-#ifndef G4VRevisedChordFinder_HH
-#define G4VRevisedChordFinder_HH
+#ifndef G4RevisedChordFinder_HH
+#define G4RevisedChordFinder_HH
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
@@ -20,50 +20,55 @@
 #include "G4VIntegrationDriver.hh"
 
 
-class G4VRevisedChordFinder
+class G4RevisedChordFinder
 {
 public:
 
-    G4VRevisedChordFinder(G4VIntegrationDriver* pIntDriver, G4int statisticsVerbosity);
+    G4RevisedChordFinder(G4VIntegrationDriver* pIntDriver, G4int VerboseLevel = 1);
 
-    virtual ~G4VRevisedChordFinder();
+    //Constructor that creates defaults for all "children" classes.
+    G4RevisedChordFinder(G4MagneticField* magField, G4double stepMinimum = 1.0e-2, // * mm
+                         G4MagIntegratorStepper* pItsStepper = nullptr,
+                         G4int VerboseLevel = 1);
 
-    G4VRevisedChordFinder(const G4VRevisedChordFinder&);
+    ~G4RevisedChordFinder();
 
-    G4VRevisedChordFinder& operator = ( G4VRevisedChordFinder&);
+    G4RevisedChordFinder(const G4RevisedChordFinder&);
+    G4RevisedChordFinder& operator = ( G4RevisedChordFinder&);
 
     /*  Uses ODE solver's driver to find the endpoint that satisfies
      *  the chord criterion: that d_chord < delta_chord
      *  returns Length of Step taken.
      * */
-    virtual G4double  AdvanceChordLimited(G4FieldTrack& trackCurrent, G4double stepLen, G4double eps) = 0;
+    G4double  AdvanceChordLimited(G4FieldTrack& trackCurrent, G4double stepLen, G4double eps);
+
+    G4double FindNextChord(const  G4FieldTrack& trackStart, G4double stepMax,
+                           G4FieldTrack& trackEnd, G4double& dyErrPos,
+                           G4double epsStep, G4double* pStepForAccuracy);
 
 
-    G4FieldTrack ApproxCurvePointS(const G4FieldTrack&  curveAPointVelocity,
-                                           const G4FieldTrack&  curveBPointVelocity,
-                                           const G4FieldTrack&  ApproxCurveV,
-                                           const G4ThreeVector& currentEPoint,
-                                           const G4ThreeVector& currentFPoint,
-                                           const G4ThreeVector& PointG,
-                                           G4bool first,  G4double epsStep);
+    G4FieldTrack ApproxCurvePointS(const G4FieldTrack&  curveAPointVelocity, const G4FieldTrack&  curveBPointVelocity,
+                                   const G4FieldTrack&  ApproxCurveV, const G4ThreeVector& currentEPoint,
+                                   const G4ThreeVector& currentFPoint, const G4ThreeVector& PointG,
+                                   G4bool first,  G4double epsStep);
 
-    G4FieldTrack ApproxCurvePointV(const G4FieldTrack& trackPointA,
-                                           const G4FieldTrack& trackPointB,
-                                           const G4ThreeVector& pointE,
-                                           G4double epsStep);
+    G4FieldTrack ApproxCurvePointV(const G4FieldTrack& trackPointA, const G4FieldTrack& trackPointB,
+                                   const G4ThreeVector& pointE, G4double epsStep);
+
+
+
+
+    //inline function definition
 
     /*
      * Resets internal state of G4ChordFinder
      * this is needed for drivers with interpolation of
      * Adams methods
      * */
-    virtual void reset() = 0;
+    inline void Reset();
 
-    //this function is called by ApproxCurvePointS, ApproxCurvePointV
-    virtual G4bool DoStepForIntersection(G4FieldTrack&  track, G4double stepLen, G4double eps) = 0;
+    inline G4bool DoStepForIntersection(G4FieldTrack& track, G4double stepLen, G4double eps);
 
-
-    //inline function definition
     inline G4EquationOfMotion* GetEquationOfMotion();
     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
 
@@ -140,10 +145,15 @@ public:
 private:
 
      // Dependent object
-     G4VIntegrationDriver* fIntDriver;
+     G4VIntegrationDriver* fpIntDriver;
+     G4MagIntegratorStepper* fpStepper;
+     G4EquationOfMotion* fpEquation;
 
-     // verbosity level
-     G4int fverb;
+     G4bool fAllocatedEquation;
+     G4bool fAllocatedStepper;
+
+     // Verbose level
+     G4int fVerboseLevel;
 
      // SET in G4VRevisedChordFinderRefined.cc = 0.25 mm
      const G4double fDefaultDeltaChord;
@@ -167,6 +177,6 @@ private:
 };
 
 //include inline function definition
-#include "G4VRevisedChordFinder.icc"
+#include "G4RevisedChordFinder.icc"
 
 #endif

@@ -1,8 +1,8 @@
-#include "BSStepper.hh"
+#include "ModifiedMidpointStepper.hh"
 #include "G4LineSection.hh"
 
 
-BSStepper::BSStepper(G4EquationOfMotion *Equation,
+ModifiedMidpointStepper::ModifiedMidpointStepper(G4EquationOfMotion *Equation,
                      G4int  numIntegrationVariables,
                      G4int  numStateVariables):
     G4MagIntegratorStepper(Equation,numIntegrationVariables,numStateVariables),
@@ -12,20 +12,17 @@ BSStepper::BSStepper(G4EquationOfMotion *Equation,
 {
 }
 
-BSStepper::~BSStepper()
+ModifiedMidpointStepper::~ModifiedMidpointStepper()
 {
 }
 
 
-void  BSStepper::Stepper(const G4double y[],
+void  ModifiedMidpointStepper::Stepper(const G4double y[],
                          const G4double dydx[],
                          G4double hstep,
                          G4double yout[],
                          G4double yError[])
 {
-    //G4cout<<"BSStepper::Stepper should never been called! \n";
-    //throw("wrong call!");
-
     memcpy(yIn,y,sizeof(G4double)*GetNumberOfVariables());
 
     denseMidpoint.set_steps(interval_sequence[0]);
@@ -43,19 +40,15 @@ void  BSStepper::Stepper(const G4double y[],
 
     //calc error
     for (G4int i = 0; i < GetNumberOfVariables(); ++i)
-    {
         yError[i] = yOut[0][i] - yOut[1][i];
-    }
+
 
     memcpy(yout,yOut[0],sizeof(G4double)*GetNumberOfVariables());
 }
 
 
-G4double  BSStepper::DistChord() const
+G4double  ModifiedMidpointStepper::DistChord() const
 {
-    //G4cout<<"BSStepper::DistChord should never been called! \n";
-    //throw("wrong call!");
-    //return -1;
     return  G4LineSection::Distline(G4ThreeVector(yMid[0][0],yMid[0][1],yMid[0][2]),
                                     G4ThreeVector(yIn[0],yIn[1],yIn[2]),
                                     G4ThreeVector(yOut[0][0],yOut[0][1],yOut[0][2]));
@@ -63,10 +56,7 @@ G4double  BSStepper::DistChord() const
 
 
 
-G4int BSStepper::IntegratorOrder() const
+G4int ModifiedMidpointStepper::IntegratorOrder() const
 {
-    //G4cout<<"BSStepper::IntegratorOrder should never been called! \n";
-    //throw("wrong call!");
-    //return -1;
     return 2;
 }

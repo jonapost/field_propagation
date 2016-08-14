@@ -1,26 +1,45 @@
 //setters
-inline void G4VIntegrationDriver::SetVerboseLevel(G4int newVerb)
-{  fverb = newVerb;  }
+inline void G4VIntegrationDriver::SetMinimumStep(G4double newStep)
+{fMinimumStep = newStep;}
 
-inline void G4VIntegrationDriver::SetMinStep(G4double newStep)
-{  fMinimumStep = newStep;  }
+inline void G4VIntegrationDriver::SetVerboseLevel(G4int VerboseLevel)
+{fVerboseLevel = VerboseLevel;}
 
-inline void G4VIntegrationDriver::SetEquationOfMotion(G4EquationOfMotion* newEquation)
-{fequation = newEquation;}
+inline void G4VIntegrationDriver::SetEquationOfMotion(G4EquationOfMotion* pEquation)
+{
+	if (fpStepper == nullptr) fpEquation = pEquation;
+	else fpStepper->SetEquationOfMotion(pEquation);
+}
+
+inline void G4VIntegrationDriver::SetStepper(G4MagIntegratorStepper* pStepper)
+{fpStepper = pStepper;}
 
 //getters
-//inline G4MagIntegratorStepper* G4VIntegrationDriver::GetStepper()
-//{  return fStepper;  }
+inline G4EquationOfMotion* G4VIntegrationDriver::GetEquationOfMotion() const
+{return fpStepper == nullptr ? fpEquation : fpStepper->GetEquationOfMotion();}
 
-inline G4EquationOfMotion* G4VIntegrationDriver::GetEquationOfMotion()
-{  return fequation;  }
+inline const G4MagIntegratorStepper* G4VIntegrationDriver::GetStepper() const
+{return fpStepper;}
 
-inline G4double G4VIntegrationDriver::GetMinStep() const
-{  return fMinimumStep;  }
+inline G4MagIntegratorStepper* G4VIntegrationDriver::GetStepper()
+{return fpStepper;}
+
+inline G4double G4VIntegrationDriver::GetMinimumStep() const
+{return fMinimumStep;}
 
 inline G4int G4VIntegrationDriver::GetNumberOfVariables() const
-{  return fnvar;  }
+{return fNoIntegrationVariables;}
 
 inline G4double G4VIntegrationDriver::GetVerboseLevel() const
-{  return fverb;  }
+{return fVerboseLevel;}
+
+inline void G4VIntegrationDriver::GetDerivatives(const G4FieldTrack& track, G4double dydx[]) const
+{
+	G4double y[G4FieldTrack::ncompSVEC];
+	track.DumpToArray(y);
+	GetEquationOfMotion()->RightHandSide(y, dydx);
+}
+
+inline interpolationInterval& G4VIntegrationDriver::GetInterpolationInterval()
+{return fInterpolationInterval;}
 

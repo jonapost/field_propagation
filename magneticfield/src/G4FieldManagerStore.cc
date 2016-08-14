@@ -36,7 +36,7 @@
 
 #include "G4Types.hh"
 #include "G4FieldManagerStore.hh"
-#include "G4VRevisedChordFinder.hh"
+#include "G4RevisedChordFinder.hh"
 
 // ***************************************************************************
 // Static class variables
@@ -145,7 +145,7 @@ G4FieldManagerStore* G4FieldManagerStore::GetInstance()
 void
 G4FieldManagerStore::ClearAllChordFindersState()
 {
-  G4VRevisedChordFinder *pChordFnd = nullptr;
+  G4RevisedChordFinder *pChordFnd = nullptr;
    
   for (iterator i=GetInstance()->begin(); i!=GetInstance()->end(); i++)
   {

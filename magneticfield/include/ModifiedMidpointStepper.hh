@@ -1,4 +1,4 @@
-// class BSStepper
+// class ModifiedMidpointStepper
 //
 // Class description:
 //
@@ -8,19 +8,19 @@
 // - created Dmitry Sorokin
 // --------------------------------------------------------------------
 
-#ifndef BSSTEPPER_HH
-#define BSSTEPPER_HH
+#ifndef ModifiedMidpointStepper_HH
+#define ModifiedMidpointStepper_HH
 #include "G4MagIntegratorStepper.hh"
 #include "ModifiedMidpointDenseOut.hh"
 #include "G4FieldTrack.hh"
 
-class BSStepper: public G4MagIntegratorStepper{
+class ModifiedMidpointStepper: public G4MagIntegratorStepper{
 public:
-    BSStepper(G4EquationOfMotion *Equation,
+    ModifiedMidpointStepper(G4EquationOfMotion *Equation,
               G4int  numIntegrationVariables = 6,
               G4int  numStateVariables = 12);
 
-   virtual ~BSStepper();
+   virtual ~ModifiedMidpointStepper();
 
 
    virtual  void  Stepper(const G4double y[],
