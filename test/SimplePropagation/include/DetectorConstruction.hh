@@ -4,7 +4,7 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 
-#include "G4VRevisedChordFinder.hh"
+#include "G4RevisedChordFinder.hh"
 #include "G4CachedMagneticField.hh"
 #include "G4UniformMagField.hh"
 
@@ -30,7 +30,7 @@ private:
 private:
     G4CachedMagneticField* fpField;
     G4UniformMagField* field;
-    G4VRevisedChordFinder* fpChordFinder;
+    G4RevisedChordFinder* fpChordFinder;
     G4double  fMinChordStep;   // Minimum Step for chord
 };
 

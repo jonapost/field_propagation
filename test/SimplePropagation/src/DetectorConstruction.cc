@@ -26,6 +26,10 @@
 #include "G4MagIntegratorDriver.hh"
 #include "BulirschStoerDriver.hh"
 
+#include "BulirschStoerDenseDriver.hh"
+#include "G4BogackiShampine45DenseDriver.hh"
+#include "G4RevisedChordFinder.hh"
+
 using namespace CLHEP;
 
 DetectorConstruction::DetectorConstruction():
@@ -96,9 +100,8 @@ void DetectorConstruction::ConstructField()
     //G4MagIntegratorStepper* pStepper = new G4BogackiShampine45(pEquation);
     //G4MagIntegratorStepper* pStepper = new G4DormandPrinceRK78(pEquation);
     //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
-    //G4VIntegrationDriver* pDriver = new BulirschStoerDriver(fMinChordStep, pEquation);
-    //fpChordFinder = new G4RKChordFinder(pDriver);
-    fpChordFinder = new G4BSChordFinder(fMinChordStep, pEquation);
+    G4VIntegrationDriver* pDriver = new BulirschStoerDenseDriver(fMinChordStep, pEquation);
+    fpChordFinder = new G4RevisedChordFinder(pDriver);
     fpChordFinder->SetVerbose(1);
     G4cout<<"DeltaChord: "<<fpChordFinder->GetDeltaChord()<<G4endl;
     fpChordFinder->SetDeltaChord(fpChordFinder->GetDeltaChord());

@@ -54,8 +54,8 @@ public:
 
     ~G4RevisedChordFinder();
 
-    G4RevisedChordFinder(const G4RevisedChordFinder&);
-    G4RevisedChordFinder& operator = ( G4RevisedChordFinder&);
+    G4RevisedChordFinder(const G4RevisedChordFinder&) = delete;
+    G4RevisedChordFinder& operator = ( G4RevisedChordFinder&) = delete;
 
     /*  Uses ODE solver's driver to find the endpoint that satisfies
      *  the chord criterion: that d_chord < delta_chord
