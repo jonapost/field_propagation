@@ -11,15 +11,17 @@
 
 G4RevisedChordFinder::G4RevisedChordFinder(G4VIntegrationDriver *pIntDriver, G4int  VerboseLevel):
     fpIntDriver(pIntDriver),
+    fpStepper(nullptr), fpEquation(nullptr),
+    fAllocatedStepper(false), fAllocatedEquation(false),
     fVerboseLevel(VerboseLevel),
-    fDefaultDeltaChord( 0.25 * mm ),      // Parameters
-    fDeltaChord( fDefaultDeltaChord ),    //   Internal parameters
+    fDefaultDeltaChord(0.25 * mm),      // Parameters
+    fDeltaChord(fDefaultDeltaChord),    //   Internal parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
     fMultipleRadius(15.0),
     fStatsVerbose(0),
     fLastStepEstimate_Unconstrained(DBL_MAX),          // Should move q, p to
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),
-    fpEquation(nullptr),fpStepper(nullptr)
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
+
 
 {
     // check the values and set the other parameters
@@ -27,22 +29,22 @@ G4RevisedChordFinder::G4RevisedChordFinder(G4VIntegrationDriver *pIntDriver, G4i
 }
 
 G4RevisedChordFinder::G4RevisedChordFinder(G4MagneticField* magField, G4double stepMinimum,
-                                           G4MagIntegratorStepper* pItsStepper,G4int VerboseLevel):
+                                           G4MagIntegratorStepper* pStepper, G4int VerboseLevel):
     fpIntDriver(nullptr),
+    fpStepper(nullptr), fpEquation(nullptr),
+    fAllocatedStepper(false), fAllocatedEquation(false),
     fVerboseLevel(VerboseLevel),
     fDefaultDeltaChord( 0.25 * mm ),      // Parameters
-    fDeltaChord( fDefaultDeltaChord ),    //   Internal parameters
+    fDeltaChord( fDefaultDeltaChord ),    // Internal parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
     fMultipleRadius(15.0),
     fStatsVerbose(0),
     fLastStepEstimate_Unconstrained(DBL_MAX),          // Should move q, p to
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),
-    fpEquation(nullptr),fpStepper(nullptr)
-
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
 {
        fpEquation = new G4Mag_UsualEqRhs(magField);
        fAllocatedEquation = true;
-       fpStepper = pItsStepper;
+       fpStepper = pStepper;
        if(fpStepper == nullptr)
        {
           fpStepper =  new G4ClassicalRK4(fpEquation);   // The old default
@@ -52,14 +54,15 @@ G4RevisedChordFinder::G4RevisedChordFinder(G4MagneticField* magField, G4double s
        {
           fAllocatedStepper = false;
        }
-       SetIntegrationDriver(new G4MagInt_Driver(stepMinimum, fpStepper, fpStepper->GetNumberOfVariables()));
-
+       SetIntegrationDriver(new G4MagInt_Driver(stepMinimum,
+                                                fpStepper,
+                                                fpStepper->GetNumberOfVariables()));
 }
 
 G4RevisedChordFinder::~G4RevisedChordFinder()
 {
-    delete fpEquation;
-    if (fAllocatedStepper) delete fpStepper;
+    if (fAllocatedEquation) delete fpEquation;
+    if (fAllocatedStepper)  delete fpStepper;
 
     delete fpIntDriver;
     if( fStatsVerbose ) { PrintStatistics(); }

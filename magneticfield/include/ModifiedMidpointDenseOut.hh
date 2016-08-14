@@ -1,17 +1,23 @@
+// Modified midpoint method (dense) implementation by Dmitry Sorokin
+// Implementation is based on modified_midpoint.hpp from boost
+// Stores derivatives and state at dt/2 in some external storage
+// for later usage in dense output calculation
+// This Stepper is for use in Bulirsch Stoer only.
 //
-// classes ModifiedMidpoint and ModifiedMidpointDenseOut
+// Supervision / code review: John Apostolakis
 //
-// Class description:
-//      Modified midpoint which stores derivatives and state at dt/2
-//      in some external storage for later usage in dense output calculation
-//      This Stepper is for use in Bulirsch Stoer only.
+// Sponsored by Google in Google Summer of Code 2016
 //
-//      This is a copy of modified_midpoint.hpp
 //
-// History:
-// - Created. D.Sorokin.
-// --------------------------------------------------------------------
-
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef ModifiedMidpointDenseOut_HH
 #define ModifiedMidpointDenseOut_HH

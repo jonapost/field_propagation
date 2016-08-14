@@ -1,16 +1,21 @@
-//
-// class BogackiShampine45
-//
-// Class description:
-//
-//  Implementation of the  BogackiShampine45 method
-//  based on method 2 from RKSUITE
+// class BogackiShampine45 implementation by Dmitry Sorokin
+// Implementation is based on method 2 from RKSUITE
 //
 //
-// History:
-// - Created. D.Sorokin.
-// --------------------------------------------------------------------
-
+// Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2016
+//
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef BogackiShampine45_HH
 #define BogackiShampine45_HH

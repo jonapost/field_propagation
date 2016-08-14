@@ -1,3 +1,24 @@
+// class G4BogackiShampine45DenseDriver implementation by Dmitry Sorokin
+// Implementaton of dense driver for Bogacki-Shampine45 algorithm
+//
+// Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2016
+//
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#ifndef G4BogackiShampine45DenseDriver_HH
+#define G4BogackiShampine45DenseDriver_HH
+
 #include "G4MagIntegratorDriver.hh"
 
 class G4BogackiShampine45DenseDriver : public G4MagInt_Driver
@@ -24,3 +45,5 @@ private:
              dydxCurrent[G4FieldTrack::ncompSVEC];
 
 };
+
+#endif

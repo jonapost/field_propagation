@@ -1,14 +1,24 @@
+// BulirschStoerDenseDriver implementation by Dmitry Sorokin
+// This driver class uses Bulirsch-Stoer (dense) method to integrate
+// the equation of motion
 //
-// class BulirschStoerDenseDriver
+// Driver with step size and order control as well as dense output.
+// Very good if high precision and dense output is required.
 //
-// Class description:
+// Supervision / code review: John Apostolakis
 //
-// This is a driver class. It uses Bulirsch-Stoer algorithm with
-// dense output to integrate ODE.
+// Sponsored by Google in Google Summer of Code 2016
 //
-// History:
-// - Created. D.Sorokin.
-// --------------------------------------------------------------------
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef BulirschStoerDenseDriver_HH
 #define BulirschStoerDenseDriver_HH

@@ -37,6 +37,7 @@
 // History:
 // - Created: J.Apostolakis, V.Grichine - 30.1.97
 // - Moved into G4MagErrorStepper: W.Wander <wwc@mit.edu> - 12/09/97
+// - Edinted: D.Sorokin add header guard
 // -------------------------------------------------------------------
 
 #ifndef G4ClassicalRK4_HH

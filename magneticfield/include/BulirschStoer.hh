@@ -1,21 +1,28 @@
+// BulirschStoer class implementation by Dmitry Sorokin
+// Implementation is based on bulirsch_stoer.hpp from boost
 //
-// class BulirschStoer
+// The Bulirsch-Stoer is a controlled driver that adjusts both step size
+// and order of the method. The algorithm uses the modified midpoint and
+// a polynomial extrapolation compute the solution.
 //
-// Class description:
 //
-//  The Bulirsch-Stoer is a controlled stepper that adjusts both step size
-//  and order of the method. The algorithm uses the modified midpoint and
-//  a polynomial extrapolation compute the solution.
+// Supervision / code review: John Apostolakis
 //
-//  This is a copy of boost bulirsch_stoer.hpp
+// Sponsored by Google in Google Summer of Code 2016
 //
-// History:
-// - Created. D.Sorokin.
-// --------------------------------------------------------------------
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef BULIRSCHSTOER_HH
-#define BULIRSCHSTOER_HH
+#ifndef BulirschStoer_HH
+#define BulirschStoer_HH
 
 #include "G4EquationOfMotion.hh"
 #include "G4Types.hh"
@@ -59,7 +66,7 @@ public:
 private:
     void extrapolate(size_t k , G4double xest[]);
     G4double calc_h_opt(G4double h , G4double error , size_t k ) const;
-    //why is not used!!??
+
     G4bool set_k_opt(size_t k , G4double &dt );
     G4bool in_convergence_window(G4int k ) const;
     G4bool should_reject(G4double error , G4int k) const;

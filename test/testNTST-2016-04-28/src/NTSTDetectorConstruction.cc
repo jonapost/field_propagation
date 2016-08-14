@@ -254,20 +254,12 @@ NTSTDetectorConstruction::Construct()
   /*fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field,
 				    fMinChordStep,
                     pStepper );*/
-<<<<<<< HEAD
 
   //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
   //G4VIntegrationDriver* pDriver = new BulirschStoerDriver(fMinChordStep, pEquation);
   //G4VIntegrationDriver* pDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
   G4VIntegrationDriver* pDriver = new G4BogackiShampine45DenseDriver(fMinChordStep, pEquation);
   fpChordFinder = new G4RevisedChordFinder(pDriver);
-=======
-  //BulirschStoerDriver* BSDriver = new BulirschStoerDriver(fMinChordStep,pEquation);
-  //BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
-  //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
-  //fpChordFinder = new G4RKChordFinder(pDriver);
-  fpChordFinder = new G4BSChordFinder(fMinChordStep, pEquation);
->>>>>>> 08c13c1b3c789233627e443455cdf6ea2bb0a41a
   fpChordFinder->SetVerbose(1); 
   globalFieldManager->SetChordFinder(fpChordFinder);
 

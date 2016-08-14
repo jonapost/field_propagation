@@ -1,13 +1,20 @@
+// class G4VIntegrationDriver implementation by Dmitry Sorokin
+// This is a base class for a driver algorithm.
 //
-// class G4VIntegrationDriver
+// Supervision / code review: John Apostolakis
 //
-// Class description:
+// Sponsored by Google in Google Summer of Code 2016
 //
-// It is a base driver class
 //
-// History:
-// - Created: D. Sorokin
-// --------------------------------------------------------------------
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef G4VIntegrationDriver_HH
 #define G4VIntegrationDriver_HH
@@ -41,30 +48,25 @@ public:
     G4VIntegrationDriver(const G4VIntegrationDriver&) = delete;
     G4VIntegrationDriver& operator=(const G4VIntegrationDriver&) = delete;
 
-
-    virtual G4bool  AccurateAdvance(G4FieldTrack&  track,
-                             G4double stepLen,
-                             G4double eps,
-                             G4double beginStep = 0) = 0;
-       // Integrates ODE starting values y_current
-       // from current s (s=s0) to s=s0+h with accuracy eps.
-       // On output ystart is replaced by value at end of interval.
+    virtual G4bool  AccurateAdvance(G4FieldTrack&  track, G4double stepLen,
+                                    G4double eps, G4double beginStep = 0) = 0;
+    // Integrates ODE starting values y_current
+    // from current s (s=s0) to s=s0+h with accuracy eps.
+    // On output ystart is replaced by value at end of interval.
 
 
-    virtual G4bool  QuickAdvance(      G4FieldTrack& y_val,
-                          const G4double     dydx[],
-                                G4double     hstep,
-                                G4double&    missDist,
-                                G4double&    dyerr )  = 0 ;
-     // QuickAdvance just tries one Step - it does not ensure accuracy.
+    virtual G4bool  QuickAdvance(G4FieldTrack& track, const G4double dydx[],
+                                 G4double hstep, G4double& missDist,
+                                 G4double& dyerr) = 0;
+    // QuickAdvance just tries one Step - it does not ensure accuracy.
 
     virtual void OneGoodStep(G4double  ystart[],  const G4double  dydx[],
                              G4double& x, G4double htry,
                              G4double  eps, G4double& hdid,
                              G4double& hnext) = 0;
-       // This takes one Step that is as large as possible while
-       // satisfying the accuracy criterion of:
-       // yerr < eps * |y_end-y_start|
+    // This takes one Step that is as large as possible while
+    // satisfying the accuracy criterion of:
+    // yerr < eps * |y_end-y_start|
 
     virtual G4double ComputeNewStepSize(G4double  errMaxNorm,    // normalised error
                                         G4double  hstepCurrent) = 0; // current step size
@@ -74,7 +76,9 @@ public:
     // current one.
 
     virtual G4bool isDense() const = 0;
+
     virtual void DoStep(G4FieldTrack& track, G4double hstep, G4double eps);
+    // Does one step with error control
     virtual void DoInterpolation(G4FieldTrack& track, G4double hstep, G4double eps = 0);
     virtual void Reset();
 

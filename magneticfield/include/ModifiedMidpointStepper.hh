@@ -1,15 +1,25 @@
-// class ModifiedMidpointStepper
+// ModifiedMidpointStepper implementation by Dmitry Sorokin
+// This stepper uses modified midpoint method to integrate
+// the equation of motion
 //
-// Class description:
+// Supervision / code review: John Apostolakis
 //
-// dummy class for BulirschStoer driver
+// Sponsored by Google in Google Summer of Code 2016
 //
-// History:
-// - created Dmitry Sorokin
-// --------------------------------------------------------------------
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef ModifiedMidpointStepper_HH
 #define ModifiedMidpointStepper_HH
+
 #include "G4MagIntegratorStepper.hh"
 #include "ModifiedMidpointDenseOut.hh"
 #include "G4FieldTrack.hh"
@@ -36,6 +46,7 @@ public:
    virtual G4int IntegratorOrder() const;
 
 private:
+
     ModifiedMidpointDenseOut denseMidpoint;
 
     const int interval_sequence[2];

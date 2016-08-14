@@ -4,8 +4,10 @@
 
 #define ncomp G4FieldTrack::ncompSVEC
 
-G4BogackiShampine45DenseDriver::G4BogackiShampine45DenseDriver(G4double hminimum, G4EquationOfMotion* pEquation,
-                                                               G4int numberOfComponents , G4int VerboseLevel):
+G4BogackiShampine45DenseDriver::G4BogackiShampine45DenseDriver(G4double hminimum,
+                                                               G4EquationOfMotion* pEquation,
+                                                               G4int numberOfComponents ,
+                                                               G4int VerboseLevel):
     G4MagInt_Driver (hminimum,
                      new BogackiShampine45(pEquation, numberOfComponents),
                      numberOfComponents,
@@ -63,7 +65,7 @@ void G4BogackiShampine45DenseDriver::DoInterpolation(G4FieldTrack& track, G4doub
         {
             char buff[256];
             sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g Interpolation is not accurate!",eps,eps_prev);
-            G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001",
+            G4Exception("G4BogackiShampine45DenseDriver::DoInterpolation()", "GeomField0001",
                         FatalException, buff);
         }
     }
@@ -71,7 +73,7 @@ void G4BogackiShampine45DenseDriver::DoInterpolation(G4FieldTrack& track, G4doub
     {
         char buff[256];
         sprintf(buff,"curveLength = %g is out of the interpolation interval (%g,%g)!",clWant, interval.first, interval.second);
-        G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001", FatalException, buff);
+        G4Exception("G4BogackiShampine45DenseDriver::DoInterpolation()", "GeomField0001", FatalException, buff);
     }
 }
 

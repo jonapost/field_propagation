@@ -1,16 +1,22 @@
+// modified midpoint method implementation by Dmitry Sorokin
+// Implementation is based on modified_midpoint.hpp from boost
+// Supervision / code review: John Apostolakis
 //
-// classes ModifiedMidpoint and ModifiedMidpointDenseOut
+// Sponsored by Google in Google Summer of Code 2016
 //
-// Class description:
 //
-// This is a copy of modified_midpoint.hpp
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
 //
-// History:
-// - Created. D.Sorokin.
-// --------------------------------------------------------------------
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
-#ifndef MODIFIEDMIDPOINT_HH
-#define MODIFIEDMIDPOINT_HH
+#ifndef ModifiedMidpoint_HH
+#define ModifiedMidpoint_HH
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"

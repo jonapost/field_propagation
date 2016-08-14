@@ -1,13 +1,21 @@
+// class BulirschStoerDriver implementation by Dmitry Sorokin
+// This driver class uses Bulirsch-Stoer method to integrate
+// the equation of motion
 //
-// class BulirschStoerDriver
+// Supervision / code review: John Apostolakis
 //
-// Class description:
+// Sponsored by Google in Google Summer of Code 2016
 //
-// This is a driver class. It uses Bulirsch-Stoer algorithm to integrate ODE.
 //
-// History:
-// - Created. D.Sorokin.
-// --------------------------------------------------------------------
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef BulirschStoerDriver_HH
 #define BulirschStoerDriver_HH

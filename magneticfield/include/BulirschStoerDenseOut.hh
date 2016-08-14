@@ -1,3 +1,25 @@
+// BulirschStoerDenseOut implementation by Dmitry Sorokin
+// Implementation is based on bulirsch_stoer_dense_out.hpp from boost
+//
+// Driver with step size and order control as well as dense output.
+// Very good if high precision and dense output is required.
+//
+// Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2016
+//
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
 
 #ifndef BulirschStoerDenseOut_HH
 #define BulirschStoerDenseOut_HH

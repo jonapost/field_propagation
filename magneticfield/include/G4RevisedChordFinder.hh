@@ -9,6 +9,27 @@
 // - Created: D. Sorokin
 // --------------------------------------------------------------------
 
+
+// class G4RevisedChordFinder implementation by Dmitry Sorokin
+// Coding is based on G4ChordFinder. Change FindNextChord() and
+// AdvanceChordLimited() to apply different algorithms for drivers
+// with and without interpolation
+//
+// Supervision / code review: John Apostolakis
+//
+// Sponsored by Google in Google Summer of Code 2016
+//
+//
+// This code is made available subject to the Geant4 license, a copy of
+//  which is available at http://www.geant4.org/geant4/license/
+//
+//  History
+// -----------------------------
+//  Created by Dmitry Sorokin 2016
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
 #ifndef G4RevisedChordFinder_HH
 #define G4RevisedChordFinder_HH
 
@@ -28,7 +49,7 @@ public:
 
     //Constructor that creates defaults for all "children" classes.
     G4RevisedChordFinder(G4MagneticField* magField, G4double stepMinimum = 1.0e-2, // * mm
-                         G4MagIntegratorStepper* pItsStepper = nullptr,
+                         G4MagIntegratorStepper* pStepper = nullptr,
                          G4int VerboseLevel = 1);
 
     ~G4RevisedChordFinder();
@@ -149,8 +170,8 @@ private:
      G4MagIntegratorStepper* fpStepper;
      G4EquationOfMotion* fpEquation;
 
-     G4bool fAllocatedEquation;
      G4bool fAllocatedStepper;
+     G4bool fAllocatedEquation;
 
      // Verbose level
      G4int fVerboseLevel;
