@@ -297,7 +297,8 @@ void  BulirschStoerDenseDriver::OneGoodStep(G4double  y[], const G4double  dydx[
 }
 
 
-G4double BulirschStoerDenseDriver::ComputeNewStepSize(G4double /*dyErr_relative*/, G4double lastStepLength)
+G4double BulirschStoerDenseDriver::ComputeNewStepSize(G4double /*dyErr_relative*/,
+                                                      G4double lastStepLength)
 {
     return lastStepLength;
 }
@@ -316,7 +317,7 @@ void BulirschStoerDenseDriver::DoStep(G4FieldTrack& track, G4double hstep, G4dou
 
     //update track
     track.LoadFromArray(yCurrent, ncomp);
-    track.SetCurveLength(interval.first);
+    track.SetCurveLength(interval.second);
 }
 
 void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hstep, G4double eps)
@@ -342,16 +343,19 @@ void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hst
         if (eps != 0 && eps != eps_prev)
         {
             char buff[256];
-            sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g Interpolation is not accurate!",eps,eps_prev);
-            G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001",
-                        FatalException, buff);
+            sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g "
+                         "Interpolation is not accurate!",eps,eps_prev);
+            G4Exception("BulirschStoerDenseDriver::DoInterpolation()",
+                        "GeomField0001",FatalException, buff);
         }
     }
     else
     {
         char buff[256];
-        sprintf(buff,"curveLength = %g is out of the interpolation interval (%g,%g)!",clWant,interval.first, interval.second);
-        G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001", FatalException, buff);
+        sprintf(buff,"curveLength = %g is out of the interpolation interval (%g,%g)!",
+                clWant,interval.first, interval.second);
+        G4Exception("BulirschStoerDenseDriver::DoInterpolation()",
+                    "GeomField0001", FatalException, buff);
     }
 }
 
