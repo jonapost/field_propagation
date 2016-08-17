@@ -95,8 +95,7 @@ public:
     // Do not limit the next step's size within a factor of the
     // current one.
 
-    virtual G4bool isDense() const;
-
+    virtual G4bool isDense() const override;
 
     inline G4double GetSafety() const;
     inline G4double GetPshrnk() const;
