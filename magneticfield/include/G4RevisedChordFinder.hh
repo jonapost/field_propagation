@@ -61,7 +61,11 @@ public:
      *  the chord criterion: that d_chord < delta_chord
      *  returns Length of Step taken.
      * */
-    G4double  AdvanceChordLimited(G4FieldTrack& trackCurrent, G4double stepLen, G4double eps);
+   G4double  AdvanceChordLimited(G4FieldTrack& trackCurrent,
+                                 G4double stepLen,
+                                 G4double eps,
+                                 const G4ThreeVector latestSafetyOrigin,
+                                 G4double lasestSafetyRadius);
 
     G4double FindNextChord(const  G4FieldTrack& trackStart, G4double stepMax,
                            G4FieldTrack& trackEnd, G4double& dyErrPos,
