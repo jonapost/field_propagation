@@ -133,7 +133,7 @@ G4MagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
   // interval. RightHandSide is the right-hand side of ODE system. 
   // The source is similar to odeint routine from NRC p.721-722 .
 
-  G4int nstp, i, no_warnings=0;
+  G4int nstp, no_warnings=0;
   G4double x, hnext, hdid, h;
 
 #ifdef G4DEBUG_FIELD
