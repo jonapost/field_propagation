@@ -76,7 +76,7 @@ private:
 
      G4double derivs[2][6][G4FieldTrack::ncompSVEC];
 
-     G4double diffs[4][2][G4FieldTrack::ncompSVEC];
+     // G4double diffs[4][2][G4FieldTrack::ncompSVEC];
 
 
      const G4int interval_sequence[2];

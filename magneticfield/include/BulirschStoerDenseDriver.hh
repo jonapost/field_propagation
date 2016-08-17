@@ -54,7 +54,7 @@ public:
 
 
     //dense output methods
-    virtual G4bool isDense() const;
+    virtual G4bool isDense() const override;
     virtual void DoStep(G4FieldTrack& track, G4double hstep, G4double eps) override final;
     virtual void DoInterpolation(G4FieldTrack& track, G4double hstep, G4double eps = 0) override final;
 
@@ -75,7 +75,7 @@ private:
     G4double yCurrent[G4FieldTrack::ncompSVEC];
 
     G4double derivs[2][6][G4FieldTrack::ncompSVEC];
-    G4double diffs[4][2][G4FieldTrack::ncompSVEC];
+    // G4double diffs[4][2][G4FieldTrack::ncompSVEC];
 
     const G4int interval_sequence[2];
     const G4double fcoeff;
