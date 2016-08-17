@@ -480,10 +480,12 @@ void G4RevisedChordFinder::TestChordPrint( G4int    noTrials,
      G4cout.precision(oldprec);
 }
 
-
 G4double G4RevisedChordFinder::AdvanceChordLimited(G4FieldTrack& trackCurrent,
-                                                   G4double  stepMax,
-                                                   G4double epsStep)
+                                                   G4double      stepMax,
+                                                   G4double      epsStep,
+                                                   const G4ThreeVector , // latestSafetyOrigin,
+                                                   G4double      // lasestSafetyRadius
+   )
 {
     if (!fpIntDriver->isDense())
     {
