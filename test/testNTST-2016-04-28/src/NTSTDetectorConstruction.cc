@@ -257,8 +257,8 @@ NTSTDetectorConstruction::Construct()
 
   //G4VIntegrationDriver* pDriver = new G4MagInt_Driver(fMinChordStep, pStepper);
   //G4VIntegrationDriver* pDriver = new BulirschStoerDriver(fMinChordStep, pEquation);
-  //G4VIntegrationDriver* pDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
-  G4VIntegrationDriver* pDriver = new G4BogackiShampine45DenseDriver(fMinChordStep, pEquation);
+  G4VIntegrationDriver* pDriver = new BulirschStoerDenseDriver(fMinChordStep,pEquation);
+  //G4VIntegrationDriver* pDriver = new G4BogackiShampine45DenseDriver(fMinChordStep, pEquation);
   fpChordFinder = new G4RevisedChordFinder(pDriver);
   fpChordFinder->SetVerbose(1); 
   globalFieldManager->SetChordFinder(fpChordFinder);

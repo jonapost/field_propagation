@@ -14,9 +14,8 @@
 
 using namespace CLHEP;
 
-PrimaryGeneratorAction::PrimaryGeneratorAction()
-: G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0)
+PrimaryGeneratorAction::PrimaryGeneratorAction():
+    G4VUserPrimaryGeneratorAction(),fParticleGun(nullptr)
 {
   G4int n_particle = 1;
   G4double energy = 1* MeV;
