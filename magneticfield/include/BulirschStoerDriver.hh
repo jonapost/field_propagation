@@ -25,6 +25,13 @@
 #include "ModifiedMidpointDenseOut.hh"
 #include "BulirschStoer.hh"
 
+#define USE_BOOST
+#ifdef USE_BOOST
+#include "boost/numeric/odeint.hpp"
+#include <array>
+typedef std::array<G4double, G4FieldTrack::ncompSVEC> state_type;
+#endif
+
 class BulirschStoerDriver: public G4VIntegrationDriver{
 public:
 
@@ -61,6 +68,9 @@ private:
      ModifiedMidpoint modifiedMidpoint;
      ModifiedMidpointDenseOut denseMidpoint;
      BulirschStoer bulirschStoer;
+#ifdef USE_BOOST
+     boost::numeric::odeint::bulirsch_stoer<state_type> boost_bulirsch_stoer;
+#endif
 
 
      G4double yIn[G4FieldTrack::ncompSVEC],

@@ -165,6 +165,8 @@ public:
 
 private:
 
+     void CheckInterpolation(std::ofstream &out, const G4FieldTrack& track, G4int nstep);
+
      // Dependent object
      G4VIntegrationDriver* fpIntDriver;
      G4MagIntegratorStepper* fpStepper;

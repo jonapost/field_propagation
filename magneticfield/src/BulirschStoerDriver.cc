@@ -12,6 +12,9 @@ BulirschStoerDriver::BulirschStoerDriver(G4double hminimum, G4EquationOfMotion* 
     modifiedMidpoint(equation,integratedComponents),
     denseMidpoint(equation,integratedComponents),
     bulirschStoer(equation,integratedComponents,0,DBL_MAX),
+#ifdef USE_BOOST
+    boost_bulirsch_stoer(0, 0, 1, 0, 0),
+#endif
     interval_sequence{2,4},
     fcoeff(1./(sqr(G4double(interval_sequence[1])/G4double(interval_sequence[0]))-1.))
 {
@@ -103,9 +106,9 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track, G4double hste
     do
     {
         G4ThreeVector StartPos(yCurrent[0], yCurrent[1], yCurrent[2]);
-
+#ifndef USE_BOOST
         GetEquationOfMotion()->RightHandSide(yCurrent, dydxCurrent);
-
+#endif
         fNoTotalSteps++;
 
         // Perform the Integration
@@ -120,6 +123,9 @@ G4bool  BulirschStoerDriver::AccurateAdvance(G4FieldTrack&  track, G4double hste
             lastStepSucceeded = (hdid == h);
         }
         else{
+#ifdef USE_BOOST
+            GetEquationOfMotion()->RightHandSide(yCurrent, dydxCurrent);
+#endif
             // for small steps call QuickAdvance for speed
 
             G4double dchord_step, dyerr, dyerr_len;   // What to do with these ?
@@ -272,7 +278,7 @@ G4bool  BulirschStoerDriver::QuickAdvance(G4FieldTrack& track, const G4double dy
     return true;
 }
 
-
+#ifndef USE_BOOST
 void  BulirschStoerDriver::OneGoodStep(G4double  y[], const G4double  dydx[],
                                        G4double& curveLength, G4double htry,
                                        G4double eps, G4double& hdid,
@@ -293,6 +299,34 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[], const G4double  dydx[],
     memcpy(y,yOut,sizeof(G4double)*GetNumberOfVariables());
     hdid = curveLength - curveLengthBegin;
 }
+#else
+void  BulirschStoerDriver::OneGoodStep(G4double  y[], const G4double  /*dydx*/[],
+                                       G4double& curveLength, G4double htry,
+                                       G4double eps, G4double& hdid,
+                                       G4double& hnext)
+{
+    hnext = htry;
+    G4double curveLengthBegin = curveLength;
+
+    // set maximum allowed error
+    boost_bulirsch_stoer.set_max_relative_error(eps);
+
+    boost::numeric::odeint::controlled_step_result res = boost::numeric::odeint::fail;
+    state_type xIn, xOut;
+    memcpy(xIn.data(), y, sizeof(G4double)*ncomp);
+    auto system = [this](const state_type& x, state_type& dxdt, G4double /*t*/){
+        this->GetEquationOfMotion()->RightHandSide(x.data(), dxdt.data());
+    };
+
+    while (res == boost::numeric::odeint::fail)
+    {
+        res = boost_bulirsch_stoer.try_step(system, xIn, curveLength, xOut, hnext);
+    }
+
+    memcpy(y,xOut.data(),sizeof(G4double)*GetNumberOfVariables());
+    hdid = curveLength - curveLengthBegin;
+}
+#endif
 
 G4double BulirschStoerDriver::ComputeNewStepSize(G4double /* errMaxNorm*/, G4double  hstepCurrent)
 {
