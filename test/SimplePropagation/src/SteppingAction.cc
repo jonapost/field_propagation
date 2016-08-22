@@ -12,7 +12,8 @@ using namespace CLHEP;
 
 
 SteppingAction::SteppingAction(): G4UserSteppingAction(),
-    fpField(nullptr),ncalls(0),fParticleGun(nullptr),time(0)
+    fpField(nullptr),ncalls(0),fParticleGun(nullptr),time(0),
+    out("/home/Dmitry/work/GSoC/field_propagation/test/SimplePropagation/log.txt")
 {
     G4RunManager* runManager = G4RunManager::GetRunManager();
 
@@ -27,7 +28,9 @@ SteppingAction::SteppingAction(): G4UserSteppingAction(),
 
 
 SteppingAction::~SteppingAction()
-{}
+{
+    out.close();
+}
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
@@ -119,11 +122,16 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     G4cout<<"hstep: "<<stepLength<<" pos_error: "
           <<pos_error<<" mom_error: "<<mom_error<<G4endl;
 
+
+
     //print number of calls to field
     G4int TotCalls = fpField->GetCountCalls();
     G4int StepCalls = TotCalls - ncalls;
     ncalls = TotCalls;
     G4cout<<"calls to field: "<<StepCalls<<G4endl;
+
+
+    out<<time*velocity<<"    "<<pos_error<<"    "<<mom_error<<"    "<<StepCalls<<G4endl;
   }
 
 

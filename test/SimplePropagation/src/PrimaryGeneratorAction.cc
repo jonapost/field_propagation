@@ -37,7 +37,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction():
 
   fParticleGun->SetParticleMomentumDirection(momDir);
   fParticleGun->SetParticleEnergy(energy);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0*cm,-641.9829897845146*mm -10*cm,-radius));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0*cm,-4.1*m,-radius));
 }
 
 

@@ -8,6 +8,8 @@
 #include "G4CachedMagneticField.hh"
 #include "G4ParticleGun.hh"
 
+#include <fstream>
+
 class G4LogicalVolume;
 
 /// Stepping action class
@@ -30,6 +32,8 @@ class SteppingAction : public G4UserSteppingAction
     G4ParticleGun* fParticleGun;
 
     G4double time;
+
+    std::ofstream out;
 };
 
 
