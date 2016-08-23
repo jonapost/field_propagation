@@ -15,7 +15,7 @@ Summary of Goals (GSoC 2016):
 * Implementation of the Bulirsch-Stoer integration method
 * Utilisation of dense output for field propagation
 
-Started from Geant4 Release 10.3 BETA magneticfieldeld directory
+Started from the interpol-v1 branch. 
 
 ##Test:
 /test directory
