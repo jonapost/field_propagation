@@ -116,7 +116,7 @@ private:
     G4bool m_first;
 
     G4double m_t;
-    G4double m_dt;
+    // G4double m_dt;
     G4double m_dt_last;
     G4double m_t_last;
 
@@ -149,7 +149,7 @@ private:
     G4double m_derivs[m_k_max+1][2+4*m_k_max][G4FieldTrack::ncompSVEC]; // table of function values
     G4double m_diffs[2*m_k_max+2][m_k_max+1][G4FieldTrack::ncompSVEC]; // table of function values
 
-    G4double STEPFAC1 , STEPFAC2 , STEPFAC3 , STEPFAC4 , KFAC1 , KFAC2;
+   G4double STEPFAC1 , STEPFAC2 , STEPFAC3 , STEPFAC4 , /*KFAC1 ,*/ KFAC2;
 };
 
 #endif

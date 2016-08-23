@@ -4,7 +4,7 @@ BulirschStoer::BulirschStoer(G4EquationOfMotion* equation,
                              G4int nvar,
                              G4double eps_rel,
                              G4double max_dt):
-    fequation(equation),
+    // fequation(equation),
     fnvar(nvar),
     m_eps_rel(eps_rel),
     m_midpoint(equation,nvar),

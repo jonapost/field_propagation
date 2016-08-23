@@ -15,7 +15,7 @@ BulirschStoerDenseDriver::BulirschStoerDenseDriver(G4double hminimum, G4Equation
     bulirschStoer(equation,numberOfComponents,0,false),
     interval_sequence{2,4},
     fcoeff(1./(sqr(G4double(interval_sequence[1])/G4double(interval_sequence[0]))-1.)),
-    eps_prev(0),fNextStepSize(DBL_MAX)
+    fEpsilonPrevious(0),fNextStepSize(DBL_MAX)
 {
 }
 
@@ -307,10 +307,10 @@ void BulirschStoerDenseDriver::DoStep(G4FieldTrack& track, G4double hstep, G4dou
 {
     track.DumpToArray(yCurrent);
     GetEquationOfMotion()->RightHandSide(yCurrent, dydxCurrent);
-    interpolationInterval& interval = GetInterpolationInterval();
+    G4InterpolationInterval& interval = GetInterpolationInterval();
     interval.first = interval.second = track.GetCurveLength();
     G4double stepLen = std::min(fNextStepSize, hstep);
-    eps_prev = eps;
+    fEpsilonPrevious = eps;
     G4double hdid = 0;
     OneGoodStep(yCurrent, dydxCurrent, interval.second, stepLen, eps, hdid, fNextStepSize);
 
@@ -324,7 +324,7 @@ void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hst
     track.DumpToArray(yCurrent);
     G4double curveLength = track.GetCurveLength();
     G4double clWant = curveLength + hstep;
-    interpolationInterval& interval = GetInterpolationInterval();
+    G4InterpolationInterval& interval = GetInterpolationInterval();
     //little upperflow, allow.
     if (clWant > interval.second)
     {
@@ -339,10 +339,10 @@ void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hst
         bulirschStoer.do_interpolation(clWant, yCurrent);
         track.LoadFromArray(yCurrent, ncomp);
         track.SetCurveLength(clWant);
-        if (eps != 0 && eps != eps_prev)
+        if (eps != 0 && eps != fEpsilonPrevious)
         {
             char buff[256];
-            sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g Interpolation is not accurate!",eps,eps_prev);
+            sprintf(buff,"Accuracy changed. eps: %g, fEpsilonPrevious: %g Interpolation is not accurate!",eps,fEpsilonPrevious);
             G4Exception("G4BS45ChordFinder::DoInterpolation()", "GeomField0001",
                         FatalException, buff);
         }

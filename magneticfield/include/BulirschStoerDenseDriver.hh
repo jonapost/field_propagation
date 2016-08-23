@@ -26,11 +26,13 @@
 #include "G4VIntegrationDriver.hh"
 #include "BulirschStoerDenseOut.hh"
 
-class BulirschStoerDenseDriver: public G4VIntegrationDriver{
-
-public:
-    BulirschStoerDenseDriver(G4double hminimum, G4EquationOfMotion* pequation,
-                             G4int numberOfComponents = 6, G4int VerboseLevel = 1);
+class BulirschStoerDenseDriver: public G4VIntegrationDriver
+{
+  public:
+    BulirschStoerDenseDriver(G4double            hminimum,
+                             G4EquationOfMotion* pequation,
+                             G4int           numberOfComponents = 6,
+                             G4int           VerboseLevel = 1);
 
     ~BulirschStoerDenseDriver();
 
@@ -81,7 +83,7 @@ private:
     const G4double fcoeff;
 
     //for interpolation
-    G4double eps_prev;
+    G4double fEpsilonPrevious;
     G4double fNextStepSize;
 
 };

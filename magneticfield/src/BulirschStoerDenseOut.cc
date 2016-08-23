@@ -10,7 +10,7 @@ BulirschStoerDenseOut::BulirschStoerDenseOut(G4EquationOfMotion* equation,
     m_midpoint(equation,nvar),
     m_control_interpolation(control_interpolation),
     m_last_step_rejected(false), m_first(true),
-    STEPFAC1(0.65), STEPFAC2(0.94), STEPFAC3(0.02), STEPFAC4(4.0), KFAC1(0.8), KFAC2(0.9)
+    STEPFAC1(0.65), STEPFAC2(0.94), STEPFAC3(0.02), STEPFAC4(4.0), /*KFAC1(0.8),*/ KFAC2(0.9)
 {
 
     for(G4int i = 0; i < m_k_max+1; ++i)
