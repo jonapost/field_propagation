@@ -25,7 +25,7 @@
 #include "G4EquationOfMotion.hh"
 #include "G4MagIntegratorStepper.hh"
 
-typedef std::pair<G4double, G4double> interpolationInterval;
+typedef std::pair<G4double, G4double> G4InterpolationInterval;
 
 
 class G4VIntegrationDriver{
@@ -87,26 +87,32 @@ public:
     inline void SetVerboseLevel(G4int VerboseLevel);
     inline void SetEquationOfMotion(G4EquationOfMotion* pEquation);
     inline void SetStepper(G4MagIntegratorStepper* pStepper);
-    inline void SetInterpolationInterval(const interpolationInterval& interval);
+    inline void SetInterpolationInterval(const G4InterpolationInterval& interval);
 
-    inline G4EquationOfMotion* GetEquationOfMotion() const;
+    inline G4EquationOfMotion*      GetEquationOfMotion() const;
+    inline G4MagIntegratorStepper*  GetStepper();
     inline const G4MagIntegratorStepper* GetStepper() const;
-    inline G4MagIntegratorStepper* GetStepper();
     inline G4double GetMinimumStep() const;
-    inline G4int GetNumberOfVariables() const;
+    inline G4int    GetNumberOfVariables() const;
     inline G4double GetVerboseLevel() const;
-    inline void GetDerivatives(const G4FieldTrack& track, G4double dydx[]) const;
-    inline interpolationInterval& GetInterpolationInterval();
 
-private:
+    inline G4InterpolationInterval& GetInterpolationInterval();
+    inline const G4InterpolationInterval& GetInterpolationInterval() const;
 
-     G4MagIntegratorStepper* fpStepper;
-     G4EquationOfMotion* fpEquation;
-     G4double fMinimumStep;
-     G4int fNoIntegrationVariables;
-     G4int fVerboseLevel;
+    inline void GetDerivatives(const G4FieldTrack& track, G4double dydx[]) const;   
 
-     interpolationInterval fInterpolationInterval;
+  private:
+     //  Dependent objects
+     G4MagIntegratorStepper* fpStepper;     
+     G4EquationOfMotion*     fpEquation;    //  Needed if RK stepper is not used ( fpStepper = 0 )
+
+     //  Invariants: Parameters
+     G4double                fMinimumStep;
+     G4int                   fNoIntegrationVariables;
+     G4int                   fVerboseLevel;
+
+     //  State
+     G4InterpolationInterval fInterpolationInterval;
 };
 
 #include "G4VIntegrationDriver.icc"

@@ -40,6 +40,6 @@ inline void G4VIntegrationDriver::GetDerivatives(const G4FieldTrack& track, G4do
 	GetEquationOfMotion()->RightHandSide(y, dydx);
 }
 
-inline interpolationInterval& G4VIntegrationDriver::GetInterpolationInterval()
+inline G4InterpolationInterval& G4VIntegrationDriver::GetInterpolationInterval()
 {return fInterpolationInterval;}
 
