@@ -74,7 +74,7 @@ private:
 private:
 
     //pointer to the system class
-    G4EquationOfMotion* fequation;
+    // G4EquationOfMotion* fequation;
 
     //number of vars to be integrated
     G4int fnvar;
@@ -89,16 +89,16 @@ private:
     G4bool m_first;
 
     G4double m_dt_last;
-    G4double m_t_last;
+    // G4double m_t_last;
 
     //max allowed time step
     G4double m_max_dt;
 
     G4int m_current_k_opt;
 
-    G4double m_xnew[G4FieldTrack::ncompSVEC];
+    // G4double m_xnew[G4FieldTrack::ncompSVEC];
     G4double m_err[G4FieldTrack::ncompSVEC];
-    G4double m_dxdt[G4FieldTrack::ncompSVEC];
+    // G4double m_dxdt[G4FieldTrack::ncompSVEC];
 
     // stores the successive interval counts
     G4int m_interval_sequence[m_k_max+1];
