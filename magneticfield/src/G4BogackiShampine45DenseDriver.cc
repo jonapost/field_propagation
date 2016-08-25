@@ -25,7 +25,7 @@ void G4BogackiShampine45DenseDriver::DoStep(G4FieldTrack& track, G4double hstep,
     //prepare
     track.DumpToArray(yCurrent);
     GetEquationOfMotion()->RightHandSide(yCurrent, dydxCurrent);
-    interpolationInterval& interval = GetInterpolationInterval();
+    G4InterpolationInterval& interval = GetInterpolationInterval();
     interval.first = interval.second = track.GetCurveLength();
     G4double stepLen = std::min(hstep, fNextStepSize);
     eps_prev = eps;
@@ -43,7 +43,7 @@ void G4BogackiShampine45DenseDriver::DoInterpolation(G4FieldTrack& track, G4doub
 {
     G4double curveLength = track.GetCurveLength();
     G4double clWant = curveLength + hstep;
-    interpolationInterval& interval = GetInterpolationInterval();
+    G4InterpolationInterval& interval = GetInterpolationInterval();
 
     //little upperflow, allow.
 
@@ -66,14 +66,15 @@ void G4BogackiShampine45DenseDriver::DoInterpolation(G4FieldTrack& track, G4doub
             char buff[256];
             sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g Interpolation is not accurate!",eps,eps_prev);
             G4Exception("G4BogackiShampine45DenseDriver::DoInterpolation()", "GeomField0001",
-                        FatalException, buff);
+                        JustWarning /*FatalException*/, buff);
         }
     }
     else
     {
         char buff[256];
         sprintf(buff,"curveLength = %g is out of the interpolation interval (%g,%g)!",clWant, interval.first, interval.second);
-        G4Exception("G4BogackiShampine45DenseDriver::DoInterpolation()", "GeomField0001", FatalException, buff);
+        G4Exception("G4BogackiShampine45DenseDriver::DoInterpolation()", "GeomField0001",
+                    JustWarning /*FatalException*/ , buff);
     }
 }
 
