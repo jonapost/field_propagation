@@ -40,15 +40,16 @@
 #include "G4MagIntegratorStepper.hh"
 #include "G4VIntegrationDriver.hh"
 
-
 class G4RevisedChordFinder
 {
 public:
-
+    G4RevisedChordFinder();  // Default, to set all key parameters easily
+   
     G4RevisedChordFinder(G4VIntegrationDriver* pIntDriver, G4int VerboseLevel = 1);
 
     //Constructor that creates defaults for all "children" classes.
-    G4RevisedChordFinder(G4MagneticField* magField, G4double stepMinimum = 1.0e-2, // * mm
+    G4RevisedChordFinder(G4MagneticField* magField,
+                         G4double stepMinimum = 1.0e-2, // * mm
                          G4MagIntegratorStepper* pStepper = nullptr,
                          G4int VerboseLevel = 1);
 
@@ -80,16 +81,10 @@ public:
     G4FieldTrack ApproxCurvePointV(const G4FieldTrack& trackPointA, const G4FieldTrack& trackPointB,
                                    const G4ThreeVector& pointE, G4double epsStep);
 
-
-
-
     //inline function definition
 
-    /*
-     * Resets internal state of G4ChordFinder
-     * this is needed for drivers with interpolation of
-     * Adams methods
-     * */
+    // Resets internal state of G4ChordFinder 
+    //   - this is needed for drivers with interpolation of Adams methods
     inline void Reset();
 
     inline G4bool DoStepForIntersection(G4FieldTrack& track, G4double stepLen, G4double eps);
@@ -126,20 +121,18 @@ public:
     inline G4double GetLastStepEstimateUnc();
     inline void     SetLastStepEstimateUnc( G4double stepEst );
 
-
     //   Printing for monitoring ...
-    inline   G4double GetFirstFraction();         // Originally 0.999
-    inline   G4double GetFractionLast();          // Originally 1.000
-    inline   G4double GetFractionNextEstimate();  // Originally 0.980
-    inline   G4double GetMultipleRadius();        // No original value
+    inline G4double GetFirstFraction();         // Originally 0.999
+    inline G4double GetFractionLast();          // Originally 1.000
+    inline G4double GetFractionNextEstimate();  // Originally 0.980
+    inline G4double GetMultipleRadius();        // No original value
 
-    inline G4bool AcceptableMissDist(G4double dChordStep) const;
+    inline G4bool   AcceptableMissDist(G4double dChordStep) const;
 
     /*Accumulate the basic statistics
      *other specialised ones must be kept by derived classes
      * */
     inline void AccumulateStatistics( G4int noTrials );
-
 
     // A report with the above -- and possibly other stats
     void PrintStatistics();
@@ -153,29 +146,23 @@ public:
                         G4double dChordStep,
                         G4double nextStepTrial );
 
-
-
     G4double NewStep( G4double stepTrialOld,
                       G4double dChordStep,     // Current dchord estimate
                       G4double& stepEstimate_Unconstrained );
-
 
     void PrintDchordTrial(G4int noTrials,
                           G4double  stepTrial,
                           G4double  oldStepTrial,
                           G4double  dChordStep);
 
-
-
 private:
 
-     // Dependent object
-     G4VIntegrationDriver* fpIntDriver;
-     G4MagIntegratorStepper* fpStepper;
-     G4EquationOfMotion* fpEquation;
-
-     G4bool fAllocatedStepper;
-     G4bool fAllocatedEquation;
+     //  DEPENDENT Objects
+     //  ---------------------   
+     G4VIntegrationDriver*   fpIntDriver;
+     // The following exist (are not null) only if it they were created in constructor   
+     G4MagIntegratorStepper* fpStepperAllocated;
+     G4EquationOfMotion*     fpEquationAllocated;
 
      // Verbose level
      G4int fVerboseLevel;
@@ -190,7 +177,6 @@ private:
      G4double  fFirstFraction, fFractionLast, fFractionNextEstimate;
      G4double  fMultipleRadius;
      G4int     fStatsVerbose;  // if > 0, print Statistics in destructor
-
 
      //  STATE information
      G4double    fLastStepEstimate_Unconstrained;

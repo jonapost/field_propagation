@@ -6,34 +6,20 @@
 #include "G4ClassicalRK4.hh"
 #include "G4Mag_UsualEqRhs.hh"
 
+// For use in changing default integration driver
+#include "BulirschStoerDriver.hh"
+#include "BulirschStoerDenseDriver.hh"
+#include "BogackiShampine45.hh"
+#include "G4BogackiShampine45.hh"
+
 //#define G4DEBUG_FIELD 1
 //#define ncomp G4FieldTrack::ncompSVEC
 
-G4RevisedChordFinder::G4RevisedChordFinder(G4VIntegrationDriver *pIntDriver, G4int  VerboseLevel):
-    fpIntDriver(pIntDriver),
-    fpStepper(nullptr), fpEquation(nullptr),
-    fAllocatedStepper(false), fAllocatedEquation(false),
-    fVerboseLevel(VerboseLevel),
-    fDefaultDeltaChord(0.25 * mm),      // Parameters
-    fDeltaChord(fDefaultDeltaChord),    //   Internal parameters
-    fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
-    fMultipleRadius(15.0),
-    fStatsVerbose(0),
-    fLastStepEstimate_Unconstrained(DBL_MAX),          // Should move q, p to
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
-
-
-{
-    // check the values and set the other parameters
-    SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);
-}
-
-G4RevisedChordFinder::G4RevisedChordFinder(G4MagneticField* magField, G4double stepMinimum,
-                                           G4MagIntegratorStepper* pStepper, G4int VerboseLevel):
+// Default constructor - to set all parameters to default values
+G4RevisedChordFinder::G4RevisedChordFinder():
     fpIntDriver(nullptr),
-    fpStepper(nullptr), fpEquation(nullptr),
-    fAllocatedStepper(false), fAllocatedEquation(false),
-    fVerboseLevel(VerboseLevel),
+    fpStepperAllocated(nullptr), fpEquationAllocated(nullptr),
+    fVerboseLevel(0),
     fDefaultDeltaChord( 0.25 * mm ),      // Parameters
     fDeltaChord( fDefaultDeltaChord ),    // Internal parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
@@ -42,27 +28,92 @@ G4RevisedChordFinder::G4RevisedChordFinder(G4MagneticField* magField, G4double s
     fLastStepEstimate_Unconstrained(DBL_MAX),          // Should move q, p to
     fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
 {
-       fpEquation = new G4Mag_UsualEqRhs(magField);
-       fAllocatedEquation = true;
-       fpStepper = pStepper;
-       if(fpStepper == nullptr)
-       {
-          fpStepper =  new G4ClassicalRK4(fpEquation);   // The old default
-          fAllocatedStepper = true;
-       }
-       else
-       {
-          fAllocatedStepper = false;
-       }
-       SetIntegrationDriver(new G4MagInt_Driver(stepMinimum,
-                                                fpStepper,
-                                                fpStepper->GetNumberOfVariables()));
+    G4cout << "G4Revised Chord Finder: Default constructor called." << G4endl;      
+}
+
+G4RevisedChordFinder::G4RevisedChordFinder(G4VIntegrationDriver *pIntDriver, G4int  VerboseLevel):
+    G4RevisedChordFinder()
+/*
+    fpStepperAllocated(nullptr), fpEquationAllocated(nullptr),
+    fVerboseLevel(VerboseLevel),
+    fDefaultDeltaChord(0.25 * mm),      // Parameters
+    fDeltaChord(fDefaultDeltaChord),    //   Internal parameters
+    fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
+    fMultipleRadius(15.0),
+    fStatsVerbose(0),
+    fLastStepEstimate_Unconstrained(DBL_MAX),          // Should move q, p to
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
+ */
+{
+    fpIntDriver= pIntDriver;
+    fVerboseLevel= VerboseLevel;
+
+    G4cout << "G4Revised Chord Finder: 2nd constructor used." << G4endl;
+    
+    // check the values and set the other parameters
+    SetFractions_Last_Next( fFractionLast, fFractionNextEstimate);
+}
+
+G4RevisedChordFinder::G4RevisedChordFinder(G4MagneticField* magField,
+                                           G4double stepMinimum,
+                                           G4MagIntegratorStepper* pStepper,
+                                           G4int VerboseLevel):
+    G4RevisedChordFinder()
+ /*    
+    fpIntDriver(nullptr),
+    fpStepperAllocated(nullptr), fpEquationAllocated(nullptr),
+    fVerboseLevel(VerboseLevel),
+    fDefaultDeltaChord( 0.25 * mm ),      // Parameters
+    fDeltaChord( fDefaultDeltaChord ),    // Internal parameters
+    fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98),
+    fMultipleRadius(15.0),
+    fStatsVerbose(0),
+    fLastStepEstimate_Unconstrained(DBL_MAX),          // Should move q, p to
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
+  */
+{
+   fVerboseLevel= VerboseLevel;
+   fpEquationAllocated = new G4Mag_UsualEqRhs(magField);
+    G4cout << "G4Revised Chord Finder: 3rd constructor used." << G4endl;   
+#if 1
+    // if( pStepper == nullptr )    
+   if( 1 )
+   {
+      // fpStepperAllocated =  new BogackiShampine45(fpEquationAllocated);   // The old default
+      // std::cout << "Using BogackiShampine45 (dense) with RK-Driver in G4RevisedChordFinder." << std::endl;
+      fpStepperAllocated =  new G4BogackiShampine45(fpEquationAllocated);   // The old default
+      std::cout << "Using G4BogackiShampine45 (non-dense?) with RK-Driver in G4RevisedChordFinder." << std::endl;            
+      // fpStepperAllocated =  new G4ClassicalRK4(fpEquationAllocated);   // The old default      
+      // std::cout << "Using G4ClassicalRK4 with RK-Driver in G4RevisedChordFinder." << std::endl;      
+      // SetIntegrationDriver( bsDriver );   
+      
+      pStepper = fpStepperAllocated;
+   }else{
+      G4cout << "G4Revised Chord Finder: 3rd constructor: using existing stepper - "
+             << pStepper << G4endl;
+   }
+   // Use the 'usual' Runge Kutta integrator - without dense output
+   SetIntegrationDriver(new G4MagInt_Driver(stepMinimum,
+                                            pStepper,
+                                            pStepper->GetNumberOfVariables() ) );
+#else
+   // Use the Bulirsch Stoer integration - with dense output
+   std::cout << "Using BulirschStoer *Dense* Driver in G4RevisedChordFinder." << std::endl;
+   G4VIntegrationDriver* denseDriver = new BulirschStoerDenseDriver(stepMinimum, fpEquationAllocated);
+   SetIntegrationDriver( denseDriver );
+   // std::cout << "Using BulirschStoerDriver in G4RevisedChordFinder." << std::endl;
+   // G4VIntegrationDriver* bsDriver = new BulirschStoerDriver(stepMinimum, fpEquationAllocated);
+   // SetIntegrationDriver( bsDriver );
+#endif
 }
 
 G4RevisedChordFinder::~G4RevisedChordFinder()
 {
-    if (fAllocatedEquation) delete fpEquation;
-    if (fAllocatedStepper)  delete fpStepper;
+    if ( fpStepperAllocated && fpIntDriver->GetStepper() == fpStepperAllocated )
+       fpIntDriver->SetStepper(nullptr);  // Avoid double deletion
+    delete fpStepperAllocated;
+    
+    delete fpEquationAllocated;
 
     delete fpIntDriver;
     if( fStatsVerbose ) { PrintStatistics(); }
@@ -529,7 +580,7 @@ G4double G4RevisedChordFinder::AdvanceChordLimited(G4FieldTrack& trackCurrent,
 
         // initialize interpolation. Do a big step.
         G4FieldTrack tmpTrack(trackCurrent);
-        interpolationInterval& interval = fpIntDriver->GetInterpolationInterval();
+        G4InterpolationInterval& interval = fpIntDriver->GetInterpolationInterval();
         if (curveLength < interval.first || (curveLength + GetIntegrationDriver()->GetMinimumStep()) > interval.second)
         {
             stepPossible = std::max(stepMax, GetIntegrationDriver()->GetMinimumStep());
