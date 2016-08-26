@@ -7,6 +7,7 @@
 #include "G4RevisedChordFinder.hh"
 #include "G4CachedMagneticField.hh"
 #include "G4UniformMagField.hh"
+#include "G4Material.hh"
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -26,6 +27,11 @@ public:
 
 private:
     void ConstructField();
+    void AddCube(const char* name,
+                 const G4ThreeVector &halfSize,
+                 const G4ThreeVector& pos,
+                 G4LogicalVolume *mother,
+                 G4Material *material);
 
 private:
     G4CachedMagneticField* fpField;

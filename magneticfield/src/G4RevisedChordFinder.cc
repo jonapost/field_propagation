@@ -5,6 +5,9 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4ClassicalRK4.hh"
 #include "G4Mag_UsualEqRhs.hh"
+#include "G4RandomTools.hh"
+#include <fstream>
+#include <sstream>
 
 // For use in changing default integration driver
 #include "BulirschStoerDriver.hh"
@@ -531,6 +534,35 @@ void G4RevisedChordFinder::TestChordPrint( G4int    noTrials,
      G4cout.precision(oldprec);
 }
 
+void G4RevisedChordFinder::CheckInterpolation(std::ofstream &out,
+                                              const G4FieldTrack& trackIn,
+                                              G4int nstep)
+{
+    out.precision(20);
+    G4FieldTrack track = trackIn;
+    const auto& interval = GetIntegrationDriver()->GetInterpolationInterval();
+    G4double hstep = interval.second - interval.first;
+    hstep /= nstep;
+    GetIntegrationDriver()->DoInterpolation(track, 0);
+    G4ThreeVector prev = track.GetPosition();
+    out << prev << G4endl;
+    for (G4int i = 0; i < nstep; ++i)
+    {
+
+        GetIntegrationDriver()->DoInterpolation(track, hstep);
+        G4ThreeVector next = track.GetPosition();
+        if ((next - prev).mag() < G4ThreeVector::getTolerance())
+        {
+            std::ostringstream ss;
+            ss << "A"<<prev<<" and B"<<next<<"are the same!"<<"hstep: "<<hstep<<G4endl;
+            G4Exception("G4RevisedChordFinder::CheckInterpolation","FieldGeom123",
+                        JustWarning, ss);
+        }
+        out << next << G4endl;
+        prev = next;
+    }
+}
+
 G4double G4RevisedChordFinder::AdvanceChordLimited(G4FieldTrack& trackCurrent,
                                                    G4double      stepMax,
                                                    G4double      epsStep,
@@ -580,16 +612,34 @@ G4double G4RevisedChordFinder::AdvanceChordLimited(G4FieldTrack& trackCurrent,
 
         // initialize interpolation. Do a big step.
         G4FieldTrack tmpTrack(trackCurrent);
-        G4InterpolationInterval& interval = fpIntDriver->GetInterpolationInterval();
+        const G4InterpolationInterval& interval = fpIntDriver->GetInterpolationInterval();
+
         if (curveLength < interval.first || (curveLength + GetIntegrationDriver()->GetMinimumStep()) > interval.second)
         {
             stepPossible = std::max(stepMax, GetIntegrationDriver()->GetMinimumStep());
             fpIntDriver->DoStep(tmpTrack, stepPossible, epsStep);
             //const G4double lineDist = (tmpTrack.GetPosition() - trackCurrent.GetPosition()).mag();
             //G4cout<<"lineDist: "<<lineDist<<" curveDist: "<<lastStepSize<<"\n\n\n";
-            //CheckInterpol(trackCurrent, 1000);
+
+            //std::ofstream out("/home/Dmitry/work/GSoC/field_propagation/test/pos_log.txt");
+            //CheckInterpolation(out, trackCurrent, 100);
             //++i;
             //G4cout<<"interval: "<<interval.first<<","<<interval.second<<"\n\n";
+            //out.close();
+
+            //std::ofstream randState("/home/Dmitry/work/GSoC/field_propagation/test/state.txt");
+            //G4Random::saveFullState(randState);
+            //randState.close();
+/*
+            tmpTrack.SetCurveLength(curveLength);
+            fpIntDriver->DoInterpolation(tmpTrack, 0);
+            static G4double maxMissDist = 0;
+            G4double missDist = (tmpTrack.GetPosition() - trackCurrent.GetPosition()).mag();
+            maxMissDist = std::max(maxMissDist, missDist);
+            G4double hstep = interval.second - interval.first;
+            G4cout<<"missDist: "<<missDist<<" hstep: "<<hstep<<G4endl;
+*/
+            //fpIntDriver->DoInterpolation(trackCurrent, 0);
         }
 
 

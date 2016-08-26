@@ -14,9 +14,8 @@
 
 using namespace CLHEP;
 
-PrimaryGeneratorAction::PrimaryGeneratorAction()
-: G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0)
+PrimaryGeneratorAction::PrimaryGeneratorAction():
+    G4VUserPrimaryGeneratorAction(),fParticleGun(nullptr)
 {
   G4int n_particle = 1;
   G4double energy = 1* MeV;
@@ -38,7 +37,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
   fParticleGun->SetParticleMomentumDirection(momDir);
   fParticleGun->SetParticleEnergy(energy);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0*cm,-641.9829897845146*mm -10*cm,-radius));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0*cm,-4.1*m,-radius));
 }
 
 

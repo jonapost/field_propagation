@@ -154,9 +154,10 @@ public:
                           G4double  stepTrial,
                           G4double  oldStepTrial,
                           G4double  dChordStep);
+private:
+    void CheckInterpolation(std::ofstream &out, const G4FieldTrack& track, G4int nstep);
 
 private:
-
      //  DEPENDENT Objects
      //  ---------------------   
      G4VIntegrationDriver*   fpIntDriver;

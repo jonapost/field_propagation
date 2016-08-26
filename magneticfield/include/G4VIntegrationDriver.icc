@@ -14,6 +14,9 @@ inline void G4VIntegrationDriver::SetEquationOfMotion(G4EquationOfMotion* pEquat
 inline void G4VIntegrationDriver::SetStepper(G4MagIntegratorStepper* pStepper)
 {fpStepper = pStepper;}
 
+inline void G4VIntegrationDriver::SetInterpolationInterval(const G4InterpolationInterval& interval)
+{fInterpolationInterval = interval;}
+
 //getters
 inline G4EquationOfMotion* G4VIntegrationDriver::GetEquationOfMotion() const
 {return fpStepper == nullptr ? fpEquation : fpStepper->GetEquationOfMotion();}
