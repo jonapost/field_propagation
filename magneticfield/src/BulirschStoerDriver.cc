@@ -308,9 +308,11 @@ void  BulirschStoerDriver::OneGoodStep(G4double  y[], const G4double  /*dydx*/[]
     hnext = htry;
     G4double curveLengthBegin = curveLength;
 
+#ifdef MODIFIED_BOOST    
     // set maximum allowed error
     boost_bulirsch_stoer.set_max_relative_error(eps);
-
+#endif
+    
     boost::numeric::odeint::controlled_step_result res = boost::numeric::odeint::fail;
     state_type xIn, xOut;
     memcpy(xIn.data(), y, sizeof(G4double)*ncomp);

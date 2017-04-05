@@ -70,7 +70,7 @@ class BulirschStoerDenseDriver: public G4VIntegrationDriver
 private:
 
     ModifiedMidpointDenseOut denseMidpoint;
-    BulirschStoerDenseOut bulirschStoer;
+    BulirschStoerDenseOut    bulirschStoer;
 #ifdef USE_BOOST
     boost::numeric::odeint::bulirsch_stoer_dense_out<state_type> boost_bulirsch_stoer;
 #endif

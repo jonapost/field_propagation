@@ -12,7 +12,7 @@ G4BogackiShampine45DenseDriver::G4BogackiShampine45DenseDriver(G4double hminimum
                      new BogackiShampine45(pEquation, numberOfComponents),
                      numberOfComponents,
                      VerboseLevel),
-   eps_prev(0),fNextStepSize(DBL_MAX)
+   fEpsilonPrevious(0),fNextStepSize(DBL_MAX)
 {
 }
 
@@ -28,7 +28,7 @@ void G4BogackiShampine45DenseDriver::DoStep(G4FieldTrack& track, G4double hstep,
     G4InterpolationInterval& interval = GetInterpolationInterval();
     interval.first = interval.second = track.GetCurveLength();
     G4double stepLen = std::min(hstep, fNextStepSize);
-    eps_prev = eps;
+    fEpsilonPrevious = eps;
     G4double hdid = 0;
 
     //do one step with error control
@@ -61,11 +61,11 @@ void G4BogackiShampine45DenseDriver::DoInterpolation(G4FieldTrack& track, G4doub
         stepper->Interpolate(clWant - interval.first, yCurrent);
         track.LoadFromArray(yCurrent, ncomp);
         track.SetCurveLength(clWant);
-        if (eps != 0 && eps != eps_prev)
+        if (eps != 0 && eps != fEpsilonPrevious)
         {
             char buff[256];
-            sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g %s",
-                    eps, eps_prev, "%g Interpolation is not accurate!" );
+            sprintf(buff,"Accuracy changed. eps: %g, fEpsilonPrevious: %g %s",
+                    eps, fEpsilonPrevious, "%g Interpolation is not accurate!" );
             G4Exception("G4BogackiShampine45DenseDriver::DoInterpolation()",
                         "GeomField0001", FatalException, buff);
         }

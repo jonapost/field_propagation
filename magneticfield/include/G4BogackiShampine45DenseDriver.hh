@@ -38,7 +38,7 @@ public:
 private:
 
     //for interpolation
-    G4double eps_prev;
+    G4double fEpsilonPrevious;
     G4double fNextStepSize;
 
     G4double yCurrent[G4FieldTrack::ncompSVEC],

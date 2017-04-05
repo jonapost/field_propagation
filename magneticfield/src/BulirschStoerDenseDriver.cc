@@ -285,7 +285,9 @@ void  BulirschStoerDenseDriver::OneGoodStep(G4double  y[], const G4double  dydx[
     G4double curveLengthBegin = curveLength;
 
     // set maximum allowed error
+#ifdef MODIFIED_BOOST        
     bulirschStoer.set_max_relative_error(eps);
+#endif    
     step_result res = step_result::fail;
 
     while(res == step_result::fail)
@@ -364,8 +366,10 @@ void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hst
 
 void BulirschStoerDenseDriver::DoStep(G4FieldTrack& track, G4double hstep, G4double eps)
 {
+#ifdef MODIFIED_BOOST   
     boost_bulirsch_stoer.set_relative_eps(eps);
-    eps_prev = eps;
+#endif    
+    fEpsilonPrevious = eps;
 
     state_type x0;
     track.DumpToArray(x0.data());
@@ -388,7 +392,7 @@ void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hst
 {
     const G4double curveLength = track.GetCurveLength();
     G4double clWant = curveLength + hstep;
-    interpolationInterval& interval = GetInterpolationInterval();
+    G4InterpolationInterval& interval = GetInterpolationInterval();
     //little upperflow, allow.
     if (clWant > interval.second)
     {
@@ -404,11 +408,11 @@ void BulirschStoerDenseDriver::DoInterpolation(G4FieldTrack& track, G4double hst
         boost_bulirsch_stoer.calc_state(clWant, x0);
         track.LoadFromArray(x0.data(), ncomp);
         track.SetCurveLength(clWant);
-        if (eps != 0 && eps != eps_prev)
+        if (eps != 0 && eps != fEpsilonPrevious)
         {
             char buff[256];
-            sprintf(buff,"Accuracy changed. eps: %g, eps_prev: %g "
-                         "Interpolation is not accurate!",eps,eps_prev);
+            sprintf(buff,"Accuracy changed. eps: %g, fEpsilonPrevious: %g "
+                         "Interpolation is not accurate!",eps,fEpsilonPrevious);
             G4Exception("BulirschStoerDenseDriver::DoInterpolation()",
                         "GeomField0001",FatalException, buff);
         }
