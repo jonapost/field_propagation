@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4EqMagElectricField.hh 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: G4EqMagElectricField.hh 68943 2013-04-12 00:27:43Z gum $
 //
 //
 // class G4EqMagElectricField

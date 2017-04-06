@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4EqEMFieldWithSpin.hh 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: G4EqEMFieldWithSpin.hh 68964 2013-04-12 01:40:14Z gum $
 //
 //
 // class G4EqEMFieldWithSpin

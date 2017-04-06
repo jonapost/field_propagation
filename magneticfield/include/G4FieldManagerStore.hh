@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManagerStore.hh 66872 2013-01-15 01:25:57Z japost $
+// $Id: G4FieldManagerStore.hh 66885 2013-01-16 17:37:13Z gunter $
 //
 // class G4FieldManagerStore
 //

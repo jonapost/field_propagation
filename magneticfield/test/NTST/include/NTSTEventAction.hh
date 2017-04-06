@@ -32,7 +32,7 @@
 // based on the Program) you indicate your acceptance of this statement,
 // and all its terms.
 //
-// $Id: NTSTEventAction.hh 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: NTSTEventAction.hh 97090 2016-05-24 16:50:38Z japost $
 //
 // 
 
@@ -74,7 +74,7 @@ private:
   double RmsVertices;
   double MeanTracks;
   double RmsTracks;
-  G4int    calorimeterCollID;                // Hits collection ID
+  // G4int    calorimeterCollID;                // Hits collection ID
   
   G4String drawFlag;                         // control the drawing of event
   NTSTEventActionMessenger*  eventMessenger;

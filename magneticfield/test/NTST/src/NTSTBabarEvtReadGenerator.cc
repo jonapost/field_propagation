@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: NTSTBabarEvtReadGenerator.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: NTSTBabarEvtReadGenerator.cc 96647 2016-04-28 13:08:17Z japost $
 //
 // -- Bogus -- BaBar Object-Oriented Geant-based Unified Simulation
 //
@@ -64,7 +64,7 @@
 NTSTBabarEvtReadGenerator::NTSTBabarEvtReadGenerator(const char* evfile)
   : fileName(evfile){
   inputFile.open(evfile);
-  if (inputFile == 0){
+  if ( !inputFile ){
     G4cerr << "NTSTBabarEvtReadGenerator:: cannot open file " << fileName << G4endl;
     abort();
   }

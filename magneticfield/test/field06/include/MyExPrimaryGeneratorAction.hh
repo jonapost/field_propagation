@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: MyExPrimaryGeneratorAction.hh 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: MyExPrimaryGeneratorAction.hh 66241 2012-12-13 18:34:42Z gunter $
 //
 
 #ifndef ExN01PrimaryGeneratorAction_h

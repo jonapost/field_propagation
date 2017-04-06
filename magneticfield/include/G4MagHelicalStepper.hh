@@ -25,7 +25,7 @@
 //
 //
 //
-// $Id: G4MagHelicalStepper.hh 93455 2015-10-22 15:21:45Z japost $
+// $Id: G4MagHelicalStepper.hh 93453 2015-10-22 15:16:34Z japost $
 //
 //
 //

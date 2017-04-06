@@ -1,4 +1,4 @@
-# $Id: run2a.mac 66356 2012-12-18 09:02:32Z gcosmo $
+# $Id: run2a.mac 97090 2016-05-24 16:50:38Z japost $
 #
 # Macro file for "exampleNTST.cc"
 # 
@@ -14,7 +14,7 @@
 #
 # construct the default geometry
 # 
-/run/useBgsTran 0
+# /run/useBgsTran 0
 /run/minEcut 1 MeV
 /run/looperCut 200 MeV
 /run/cut 1 mm

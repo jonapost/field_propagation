@@ -1,4 +1,4 @@
-# $Id: GNUmakefile 69699 2013-05-13 08:50:30Z gcosmo $
+# $Id: GNUmakefile 69605 2013-05-08 17:41:44Z japost $
 # ----------------------------------------------------------------
 # Makes test program in environment variable TESTTARGET.
 # ----------------------------------------------------------------

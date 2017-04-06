@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: testNTST.cc 66356 2012-12-18 09:02:32Z gcosmo $
+// $Id: testNTST.cc 96646 2016-04-28 13:06:33Z japost $
 // 
 // ----------------------------------------------------------------
 //      GEANT 4 - exampleNTST : BaBar SVT standalone simulation
@@ -39,7 +39,9 @@
 // #include "g4std/stdio.h"
 
 #ifdef G4VIS_USE
-#include "NTSTVisManager.hh"
+// #include "NTSTVisManager.hh"
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
 #endif
 
 #include "NTSTFileRead.hh"
@@ -108,7 +110,9 @@ int main(int argc,char** argv) {
 
 #ifdef G4VIS_USE
   // visualization manager
-  G4VisManager* visManager = new NTSTVisManager;
+  G4VisManager* visManager = new G4VisExecutive;  // NTSTVisManager;
+  // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
+  // G4VisManager* visManager = new G4VisExecutive("Quiet");  
   visManager->Initialize();
 #endif
     
