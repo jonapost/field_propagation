@@ -1,0 +1,5 @@
+.DS_Store
+CMakeLists.txt.user
+build/
+*.o
+.gitconfig

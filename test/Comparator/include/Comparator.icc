@@ -1,0 +1,162 @@
+#include "G4MagIntegratorDriver.hh"
+#include "StandardDriver.hh"
+#include "GustafssonDriver.hh"
+
+template <class TestStepper, class RefStepper>
+void Comparator::compare(
+        const G4double stepLen, const G4int nSteps, Mode mode)
+{
+    const int NCOMP = G4FieldTrack::ncompSVEC;
+
+    G4double yIn[NCOMP], yOut[NCOMP], yErr[NCOMP], dydx[NCOMP];
+    G4double yInRef[NCOMP], yOutRef[NCOMP], yErrRef[NCOMP], dydxRef[NCOMP];
+
+    TestStepper testStepper(fTestEquation.get());
+    RefStepper refStepper(fRefEquation.get());
+    fdiffSteps = 0;
+
+    for (G4int i = 0; i < nSteps; ++i) {
+        ftestTrack->DumpToArray(yIn);
+        frefTrack->DumpToArray(yInRef);
+
+        testStepper.RightHandSide(yIn, dydx);
+        testStepper.Stepper(yIn, dydx, stepLen, yOut, yErr);
+
+        refStepper.RightHandSide(yInRef, dydxRef);
+        refStepper.Stepper(yInRef, dydxRef, stepLen, yOutRef, yErrRef);
+
+        ftestTrack->LoadFromArray(yOut, fncomp);
+        frefTrack->LoadFromArray(yOutRef, fncomp);
+
+        crossCheck (yOut, yOutRef, mode);
+    }
+
+
+    if (mode == Mode::Silent){
+        G4cout<<"diffSteps# "<<fdiffSteps<<" maxDiff "<<fmaxDiff<<G4endl;
+    }
+}
+
+template <class TestDriver, class RefDriver, class Stepper>
+void Comparator::compareDriver(G4double length, Mode mode)
+{
+    const int NCOMP = G4FieldTrack::ncompSVEC;
+
+    G4double yTest[NCOMP], dydxTest[NCOMP];
+    G4double trackLength = 0, htry = length, epsRelMax = fprecision/length, hdid = 0, hnext  = 0;
+
+    G4double yRef[NCOMP], dydxRef[NCOMP];
+
+    Stepper testStepper(fTestEquation.get());
+    TestDriver testDriver(fhmin, &testStepper);
+
+    Stepper refStepper(fRefEquation.get());
+    RefDriver refDriver(fhmin, &refStepper);
+
+    fdiffSteps = 0;
+    while(length > 0) {
+        //prepare input array
+        ftestTrack->DumpToArray(yTest);
+        testDriver.GetStepper()->RightHandSide(yTest, dydxTest);
+
+        frefTrack->DumpToArray(yRef);
+        refDriver.GetStepper()->RightHandSide(yRef, dydxRef);
+
+        //do step using test driver
+        testDriver.OneGoodStep(yTest, dydxTest, trackLength, htry, epsRelMax, hdid, hnext);
+
+        //do the same step using ref driver to evaluate accuracy
+        refDriver.AccurateAdvance(*frefTrack, hdid, epsRelMax, htry);
+
+        length -= hdid;
+
+        //update htry
+        htry = std::min(length, hdid);
+
+        ftestTrack->LoadFromArray(yTest, NCOMP);
+        frefTrack->LoadFromArray(yRef, NCOMP);
+
+        //check results
+        crossCheck (yTest, yRef, mode);
+    }
+
+    //print statistics
+    G4cout <<"TestDriver: \n";
+    fTestField->ReportStatistics();
+    G4cout <<"RefDriver: \n";
+    fRefField->ReportStatistics();
+
+
+    if (mode == Mode::Silent){
+        G4cout<<"diffSteps# "<<fdiffSteps<<" maxDiff "<<fmaxDiff<<G4endl;
+    }
+}
+
+/*
+template <class refStepper>
+void Comparator::CompareWithBS(const G4double path, const G4int verb)
+{
+    refStepper refSt(equation_.get());
+    G4VIntegrationDriver* refDriver = new G4MagInt_Driver(hmin_, &refSt); //deleted by G4ChordFinder
+    G4ChordFinder refChordFinder(refDriver);
+    G4VIntegrationDriver* BSDriver = new BulirschStoerDriver(hmin,equation_.get());
+    //G4VIntegrationDriver* BSDriver = new G4MagInt_Driver(hmin,&rk4);
+    //BulirschStoerDenseDriver* BSDriver = new BulirschStoerDenseDriver(hmin,equation);
+
+    G4ChordFinder testChordFinder(BSDriver);
+    //refChordFinder.SetDeltaChord(1*cm);
+    //testChordFinder.SetDeltaChord(1*cm);
+
+    //unused variables for G4ChordFinder
+    const G4ThreeVector vec(0,0,0);
+    G4double latestSafetyRadius = 0;
+
+    G4double pathRest = path;
+    G4double step;
+    G4double yRef[ncomp_], yTest[ncomp_];
+    std::ofstream outRef("outRef.txt");
+    std::ofstream outBS("outBS.txt");
+    G4CachedMagneticField* cachedField = static_cast<G4CachedMagneticField*>(field);
+
+    G4double eps = precision;
+    G4double pathRest2 = pathRest;
+    while (pathRest > hmin){
+        step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest2,eps,vec,latestSafetyRadius);
+        pathRest -= step;
+        G4double tempRest = step;
+        while(tempRest > hmin)
+        {
+          G4double h = refChordFinder.AdvanceChordLimited(*refTrack,tempRest,eps,vec,latestSafetyRadius);
+          tempRest -= h;
+        }
+        refTrack->DumpToArray(yRef);
+        testTrack->DumpToArray(yTest);
+        CrossCheck(yTest,yRef,Default);
+
+        outRef << yRef[0]<< "  "<<yRef[1]<< "  "<<yRef[2] << G4endl;
+        outBS << yTest[0]<< "  "<<yTest[1]<< "  "<<yTest[2] << G4endl;
+    }
+
+
+    while (pathRest > hmin){
+        step = refChordFinder.AdvanceChordLimited(*refTrack,pathRest,eps,vec,latestSafetyRadius);
+        pathRest -= step;
+        refTrack->DumpToArray(y);
+        outRef << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
+    }
+    G4cout<<"ref calls: "<<cachedField->GetCountCalls()<<G4endl;
+    cachedField->ClearCounts();
+    //refChordFinder.PrintStatistics();
+
+
+    pathRest = path;
+    while (pathRest > hmin){
+        step = testChordFinder.AdvanceChordLimited(*testTrack,pathRest,eps,vec,latestSafetyRadius);
+        pathRest -= step;
+        testTrack->DumpToArray(y);
+        outBS << y[0]<< "  "<<y[1]<< "  "<<y[2] << G4endl;
+    }
+    G4cout<<"BS calls: "<<cachedField->GetCountCalls()<<G4endl;
+}
+
+*/
