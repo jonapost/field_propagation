@@ -1,43 +1,64 @@
-#include <Comparator.hh>
+#include "Comparator.hh"
+
+#include "G4MagneticField.hh"
+
 #include <cmath>
 #include <iomanip>
 #include <fstream>
-#include <G4MagneticField.hh>
+
 using namespace CLHEP;
 
-#define save2File
-
-Comparator::Comparator(G4DynamicParticle* pDynParticle, G4MagneticField* pfield):
-    testTrack(nullptr),
-    refTrack(nullptr),
-    field(pfield),
-    equation(nullptr),
-    dynParticle(pDynParticle),
-    pos(0,0,0),
-    hmin(1e-4),
-    precision(1e-4),
-    diffSteps(0),
-    maxDiff(0)
+Comparator::Comparator (std::unique_ptr<G4DynamicParticle>&& dynParticle,
+    std::shared_ptr<G4MagneticField> &&field):
+    ftestTrack(nullptr),
+    frefTrack(nullptr),
+    ffield(std::move(field)),
+    fequation(nullptr),
+    fdynParticle(std::move(dynParticle)),
+    fstartPosition(0,0,0),
+    fhmin(1e-4),
+    fprecision(1e-4),
+    fdiffSteps(0),
+    fmaxDiff(0),
+    ffout("out.txt")
 {
-    initTracks();
-    initEquation();
+    initialize();
 }
 
-Comparator::~Comparator(){
-    if (testTrack != nullptr) delete testTrack;
-    if (refTrack != nullptr) delete refTrack;
-    if (field != nullptr) delete field;
-    if (equation != nullptr) delete equation;
-    if (dynParticle != nullptr) delete dynParticle;
+Comparator::~Comparator()
+{
+    ffout.close();
 }
 
-void Comparator::CrossCheck(const G4double * const testData, const G4double * const refData, G4int mode){
-#ifdef save2File
-    static std::ofstream out("out.txt");
-    out << testData[0] <<"  "<< testData[1] <<"  "<< testData[2] << G4endl;
-#endif
+void Comparator::initialize()
+{
+    ftestTrack = std::make_unique<G4FieldTrack>(fstartPosition, 0,
+        fdynParticle->GetMomentumDirection(), fdynParticle->GetKineticEnergy(),
+            fdynParticle->GetMass(), fdynParticle->GetCharge(),
+                fdynParticle->GetPolarization());
+
+    frefTrack = std::make_unique<G4FieldTrack>(*ftestTrack);
+
+    fequation = std::make_shared<G4Mag_UsualEqRhs>(ffield.get());
+
+    const G4ChargeState chargeState(fdynParticle->GetCharge(),
+        fdynParticle->GetSpin(), fdynParticle->GetMagneticMoment());
+
+    fequation->SetChargeMomentumMass(chargeState,
+        fdynParticle->GetMomentum().mag(), fdynParticle->GetMass());
+}
+
+/*
+ * data[0..2] - position
+ * data[3..5] - momentum
+ *
+ * */
+
+void Comparator::crossCheck(const G4double* const testData,
+    const G4double* const refData, Mode mode)
+{
     G4double h2 = 0, epsh = 0, p2 = 0, epsp = 0;
-    for (G4int i = 0; i < 3; ++i){
+    for (G4int i = 0; i < 3; ++i) {
         epsh += sqr(testData[i] - refData[i]);
         h2 += sqr(refData[i]);
         p2 += sqr(refData[i+3]);
@@ -45,75 +66,56 @@ void Comparator::CrossCheck(const G4double * const testData, const G4double * co
     }
     epsh /= h2;
     epsp /= p2;
-    G4double eps = std::max(epsh,epsp)/(precision*precision);
-    if (mode == Default){
-        if (eps > 1)
+    G4double eps = std::max(epsh,epsp)/sqr(fprecision);
+
+    if (eps > 1) {
+        if (mode == Mode::Default) {
             G4cout << eps << G4endl;
-    }
-    else if (mode == Verbose){
-        if (eps > 1){
-            G4cout<<"("<<testData[0]<<","<<testData[1]<<","<<testData[2]<<")   "
-                  <<"("<<refData[0] <<","<<refData[1] <<","<<refData[2]<<")   "
-                  << G4endl;
+        } else if (mode == Mode::Verbose) {
+            G4cout << G4ThreeVector (testData[0], testData[1], testData[2]) << "  "
+                << G4ThreeVector (refData[0], refData[1], refData[2]) << G4endl;
+        } else if (mode == Mode::Silent) {
+            ++fdiffSteps;
+            fmaxDiff = std::max(fmaxDiff, eps);
         }
     }
-    else if (mode == Silent){
-        //accamulate statistics
-        if (eps > 1){
-            ++diffSteps;
-            maxDiff = std::max(maxDiff,eps);
-        }
+
+    if (mode == Mode::SaveTrack) {
+        ffout << testData[0] <<"  "<< testData[1] <<"  "<< testData[2] << G4endl;
     }
-    else{
-        G4cout<<"wrong mode <"<<mode<<"> \n";
+    if (mode == Mode::SaveError) {
+        ffout << eps << G4endl;
     }
 }
 
-void Comparator::initTracks(){
-
-    if (testTrack != nullptr) delete testTrack;
-    if (refTrack != nullptr) delete refTrack;
-
-    testTrack = new  G4FieldTrack(pos,
-                              0,
-                              dynParticle->GetMomentumDirection(),
-                              dynParticle->GetKineticEnergy(),
-                              dynParticle->GetMass(),
-                              dynParticle->GetCharge(),
-                              dynParticle->GetPolarization());
-    refTrack = new G4FieldTrack(*testTrack);
-}
-
-void Comparator::initEquation(){
-    if (equation != nullptr) delete equation;
-
-    equation = new G4Mag_UsualEqRhs(field);
-    const G4ChargeState chargeState(dynParticle->GetCharge(), dynParticle->GetSpin(), dynParticle->GetMagneticMoment());
-    equation->SetChargeMomentumMass(chargeState, dynParticle->GetMomentum().mag(), dynParticle->GetMass());
-}
-
-void Comparator::setParticle(G4DynamicParticle * pDynParticle){
-    if (pDynParticle != dynParticle){
-        delete dynParticle;
-        dynParticle = pDynParticle;
-        initTracks();
-        initEquation();
+void Comparator::setParticle(std::unique_ptr<G4DynamicParticle>&& dynParticle)
+{
+    if (fdynParticle != dynParticle) {
+        fdynParticle = std::move(dynParticle);
+        initialize();
     }
 }
 
-void Comparator::setField(G4MagneticField * pfield){
-    if (pfield != field){
-        delete field;
-        field = pfield;
-        initEquation();
+void Comparator::setField(std::shared_ptr<G4MagneticField> &&field)
+{
+    if (ffield != field) {
+        ffield = std::move(field);
+        initialize();
     }
 }
 
-void Comparator::setPostition(const G4ThreeVector &newPos){
-    pos = newPos;
-    initTracks();
+void Comparator::setStartPostition(const G4ThreeVector& position)
+{
+    fstartPosition = position;
+    initialize();
 }
 
-void Comparator::setMinDriverStep(const G4double newHmin){
-    hmin = newHmin;
+void Comparator::setMinDriverStep(const G4double hmin)
+{
+    fhmin = hmin;
+}
+
+void Comparator::setPrecision(const G4double precision)
+{
+    fprecision = precision;
 }

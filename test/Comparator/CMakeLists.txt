@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 set(pname Comparator)
 project(${pname})
 
-find_package(Boost REQUIRED)
-include_directories( ${Boost_INCLUDE_DIR} )
+#find_package(Boost REQUIRED)
+#include_directories( ${Boost_INCLUDE_DIR} )
 
 find_package(Geant4 REQUIRED)
 
@@ -28,4 +28,5 @@ COPYONLY)
 add_executable(${pname} main.cc ${sources} ${headers})
 target_link_libraries(${pname} ${Geant4_LIBRARIES})
 
-target_compile_features(${pname} PRIVATE cxx_range_for)
+set_property(TARGET ${pname} PROPERTY CXX_STANDARD 14)
+#target_compile_features(${pname} PRIVATE cxx_range_for)
