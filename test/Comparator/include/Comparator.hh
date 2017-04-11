@@ -40,8 +40,8 @@ public:
         SaveError
     };
 
-    Comparator(std::unique_ptr<G4DynamicParticle>&& dynParticle,
-        std::shared_ptr<G4MagneticField>&& field);
+    Comparator(std::unique_ptr<G4DynamicParticle> dynParticle,
+        std::shared_ptr<G4CachedMagneticField> field);
 
     ~Comparator();
 
@@ -49,20 +49,20 @@ public:
     void crossCheck(const G4double* const testData,
         const G4double* const refData, Mode mode = Mode::Default);
 
-    template <class testStepper, class refStepper>
+    template <class TestStepper, class RefStepper>
     void compare(
         const G4double stepLen, const G4int nSteps, Mode mode);
     
-    template <class testStepper, class refStepper>
-    void compareWithDriver(const G4double stepLen, const int nSteps, Mode mode);
+    template <class TestStepper, class RefStepper>
+    void compareWithDriver(G4double length, Mode mode);
 
     //compare with Bulirsch-Stoer driver
-    template <class refStepper>
+    template <class RefStepper>
     void CompareWithBS(const G4double path, const G4int verb);
 
     //setters
-    void setParticle (std::unique_ptr<G4DynamicParticle>&& dynParticle);
-    void setField (std::shared_ptr<G4MagneticField>&& field);
+    void setParticle (std::unique_ptr<G4DynamicParticle> dynParticle);
+    void setField (std::shared_ptr<G4CachedMagneticField> field);
     void setStartPostition (const G4ThreeVector& position);
     void setMinDriverStep (const G4double hmin);
     void setPrecision (const G4double precision);
@@ -73,8 +73,10 @@ private:
     std::unique_ptr<G4FieldTrack> ftestTrack;
     std::unique_ptr<G4FieldTrack> frefTrack;
 
-    std::shared_ptr<G4MagneticField> ffield;
-    std::shared_ptr<G4Mag_UsualEqRhs> fequation;
+    std::shared_ptr<G4CachedMagneticField> fTestField;
+    std::shared_ptr<G4CachedMagneticField> fRefField;
+    std::shared_ptr<G4Mag_UsualEqRhs> fTestEquation;
+    std::shared_ptr<G4Mag_UsualEqRhs> fRefEquation;
 
     std::unique_ptr<G4DynamicParticle> fdynParticle;
     G4ThreeVector fstartPosition;

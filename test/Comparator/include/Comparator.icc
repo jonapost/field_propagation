@@ -1,6 +1,8 @@
 #include "G4MagIntegratorDriver.hh"
+#include "StandardDriver.hh"
+#include "GustafssonDriver.hh"
 
-template <class testStepper, class refStepper>
+template <class TestStepper, class RefStepper>
 void Comparator::compare(
         const G4double stepLen, const G4int nSteps, Mode mode)
 {
@@ -9,19 +11,19 @@ void Comparator::compare(
     G4double yIn[NCOMP], yOut[NCOMP], yErr[NCOMP], dydx[NCOMP];
     G4double yInRef[NCOMP], yOutRef[NCOMP], yErrRef[NCOMP], dydxRef[NCOMP];
 
-    testStepper testSt(fequation.get());
-    refStepper refSt(fequation.get());
+    TestStepper testStepper(fTestEquation.get());
+    RefStepper refStepper(fRefEquation.get());
     fdiffSteps = 0;
 
     for (G4int i = 0; i < nSteps; ++i) {
         ftestTrack->DumpToArray(yIn);
         frefTrack->DumpToArray(yInRef);
 
-        testSt.RightHandSide(yIn, dydx);
-        testSt.Stepper(yIn, dydx, stepLen, yOut, yErr);
+        testStepper.RightHandSide(yIn, dydx);
+        testStepper.Stepper(yIn, dydx, stepLen, yOut, yErr);
 
-        refSt.RightHandSide(yInRef, dydxRef);
-        refSt.Stepper(yInRef, dydxRef, stepLen, yOutRef, yErrRef);
+        refStepper.RightHandSide(yInRef, dydxRef);
+        refStepper.Stepper(yInRef, dydxRef, stepLen, yOutRef, yErrRef);
 
         ftestTrack->LoadFromArray(yOut, fncomp);
         frefTrack->LoadFromArray(yOutRef, fncomp);
@@ -36,43 +38,52 @@ void Comparator::compare(
 }
 
 template <class TestStepper, class RefStepper>
-void Comparator::compareWithDriver(
-    const G4double stepLength, const int nSteps, Mode mode)
+void Comparator::compareWithDriver(G4double length, Mode mode)
 {
     const int NCOMP = G4FieldTrack::ncompSVEC;
 
     G4double y[NCOMP], dydx[NCOMP];
-    G4double trackLength = 0, htry = stepLength, epsRelMax = fprecision/stepLength, hdid = 0, hnext  = 0;
+    G4double trackLength = 0, htry = length, epsRelMax = fprecision/length, hdid = 0, hnext  = 0;
 
     G4double yRef[NCOMP];
 
-    //StandardDriver<TestStepper> testDriver(equation_);
+    //StandardDriver<TestStepper> testDriver(fhmin, fTestEquation);
+    GustafssonDriver<TestStepper> testDriver(fhmin, fTestEquation);
 
-    TestStepper testStepper(fequation.get());
-    G4MagInt_Driver testDriver(1e-4, &testStepper);
-
-    RefStepper refStepper(fequation.get());
-    G4MagInt_Driver refDriver(1e-4, &refStepper);
-
-    std::ofstream out("res.txt");
+    RefStepper refStepper(fRefEquation.get());
+    G4MagInt_Driver refDriver(fhmin, &refStepper);
 
     fdiffSteps = 0;
-    for (int i = 0; i < nSteps; ++i) {
+    while(length > 0) {
+        //prepare input array
         ftestTrack->DumpToArray(y);
-        testDriver.GetStepper()->RightHandSide(y, dydx);
+        testDriver.RightHandSide(y, dydx);
 
+        //do step using test driver
         testDriver.OneGoodStep(
             y, dydx, trackLength, htry, epsRelMax, hdid, hnext);
 
-        out << hdid << std::endl;
-
+        //do the same step using ref driver to evaluate accurace
         refDriver.AccurateAdvance(*frefTrack, hdid, epsRelMax, htry);
+
+        length -= hdid;
+
+        //update htry
+        htry = std::min(length, hdid);
 
         ftestTrack->LoadFromArray(y, NCOMP);
         frefTrack->DumpToArray(yRef);
 
+        //check results
         crossCheck (y, yRef, mode);
     }
+
+    //print statistics
+    G4cout <<"TestDriver: \n";
+    fTestField->ReportStatistics();
+    G4cout <<"RefDriver: \n";
+    fRefField->ReportStatistics();
+
 
     if (mode == Mode::Silent){
         G4cout<<"diffSteps# "<<fdiffSteps<<" maxDiff "<<fmaxDiff<<G4endl;

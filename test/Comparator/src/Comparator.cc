@@ -8,12 +8,14 @@
 
 using namespace CLHEP;
 
-Comparator::Comparator (std::unique_ptr<G4DynamicParticle>&& dynParticle,
-    std::shared_ptr<G4MagneticField> &&field):
+Comparator::Comparator (std::unique_ptr<G4DynamicParticle> dynParticle,
+    std::shared_ptr<G4CachedMagneticField> field):
     ftestTrack(nullptr),
     frefTrack(nullptr),
-    ffield(std::move(field)),
-    fequation(nullptr),
+    fTestField(field),
+    fRefField(std::make_shared<G4CachedMagneticField>(*fTestField)),
+    fTestEquation(nullptr),
+    fRefEquation(nullptr),
     fdynParticle(std::move(dynParticle)),
     fstartPosition(0,0,0),
     fhmin(1e-4),
@@ -39,12 +41,16 @@ void Comparator::initialize()
 
     frefTrack = std::make_unique<G4FieldTrack>(*ftestTrack);
 
-    fequation = std::make_shared<G4Mag_UsualEqRhs>(ffield.get());
+    fTestEquation = std::make_shared<G4Mag_UsualEqRhs>(fTestField.get());
+    fRefEquation = std::make_shared<G4Mag_UsualEqRhs>(fRefField.get());
 
     const G4ChargeState chargeState(fdynParticle->GetCharge(),
         fdynParticle->GetSpin(), fdynParticle->GetMagneticMoment());
 
-    fequation->SetChargeMomentumMass(chargeState,
+    fTestEquation->SetChargeMomentumMass(chargeState,
+        fdynParticle->GetMomentum().mag(), fdynParticle->GetMass());
+
+    fRefEquation->SetChargeMomentumMass(chargeState,
         fdynParticle->GetMomentum().mag(), fdynParticle->GetMass());
 }
 
@@ -88,7 +94,7 @@ void Comparator::crossCheck(const G4double* const testData,
     }
 }
 
-void Comparator::setParticle(std::unique_ptr<G4DynamicParticle>&& dynParticle)
+void Comparator::setParticle(std::unique_ptr<G4DynamicParticle> dynParticle)
 {
     if (fdynParticle != dynParticle) {
         fdynParticle = std::move(dynParticle);
@@ -96,10 +102,11 @@ void Comparator::setParticle(std::unique_ptr<G4DynamicParticle>&& dynParticle)
     }
 }
 
-void Comparator::setField(std::shared_ptr<G4MagneticField> &&field)
+void Comparator::setField(std::shared_ptr<G4CachedMagneticField> field)
 {
-    if (ffield != field) {
-        ffield = std::move(field);
+    if (fTestField != field) {
+        fTestField = field;
+        fRefField = std::make_shared<G4CachedMagneticField>(*fTestField);
         initialize();
     }
 }

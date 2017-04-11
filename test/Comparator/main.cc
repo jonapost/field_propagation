@@ -55,12 +55,10 @@ int main()
     //comparator.compare<G4ExactHelixStepper, G4ExactHelixStepper>(
     //   100*cm, 10000, Comparator::Mode::SaveError);
 
-    comparator.compareWithDriver<G4ClassicalRK4, G4DormandPrinceRK78>(
-       100*cm, 10000, Comparator::Mode::SaveError);
+    comparator.compareWithDriver<G4DormandPrince745, G4DormandPrince745>(
+       10000*cm,Comparator::Mode::SaveTrack);
 
     //comparator.CompareWithBS<G4CashKarpRKF45>(1000*m, Comparator::Mode::Verbose);
-
-    magneticField->ReportStatistics();
 
     return 0;
 }
