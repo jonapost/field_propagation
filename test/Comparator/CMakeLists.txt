@@ -19,10 +19,18 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 #copy plot.py to bin dir 
-configure_file(
-	${PROJECT_SOURCE_DIR}/plot.py
-    ${PROJECT_BINARY_DIR}/plot.py
-COPYONLY)
+set(PLOT_SCRIPTS
+    plot1d.py
+    plot3d.py
+    )
+      
+foreach(_script ${PLOT_SCRIPTS})
+    configure_file(
+        ${PROJECT_SOURCE_DIR}/${_script}
+        ${PROJECT_BINARY_DIR}/${_script}
+        COPYONLY
+        )
+endforeach()
 
 # Add the executable, and link it to the Geant4 libraries
 add_executable(${pname} main.cc ${sources} ${headers})
