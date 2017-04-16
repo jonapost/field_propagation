@@ -17,11 +17,11 @@
 #include "G4DoLoMcPriRK34.hh"
 
 //4th order explicit RK methods
-#include "G4ClassicalRK4.hh"
+//#include "G4ClassicalRK4.hh"
 #include "G4ConstRK4.hh"
 #include "G4CashKarpRKF45.hh"
 #include "G4TsitourasRK45.hh"
-#include "G4DormandPrince745.hh"
+#include "DormandPrince745.hh"
 #include "G4BogackiShampine45.hh"
 
 //5th order explicit RK methods
@@ -44,11 +44,10 @@ int main()
 {
     auto dynParticle =
         std::make_unique<G4DynamicParticle>(
-            G4Proton::Definition(), G4ThreeVector(1, 0.01, 0.01), 1*GeV);
+            G4Proton::Definition(), G4ThreeVector(1, 0.1, 0.9), 1*GeV);
 
-    G4cout << "cat " << G4endl;
-    auto field = std::make_unique<G4UniformMagField>(G4ThreeVector(0, 0, 1*tesla));
-    //auto field = std::make_unique<G4QuadrupoleMagField>(0.1 * tesla / meter);
+    //auto field = std::make_unique<G4UniformMagField>(G4ThreeVector(0, 0, 100*tesla));
+    auto field = std::make_unique<G4QuadrupoleMagField>(100 * tesla / meter);
     auto magneticField = std::make_shared<G4CachedMagneticField>(field.get(), 0);
 
     Comparator comparator(std::move(dynParticle), magneticField);
@@ -58,10 +57,9 @@ int main()
 
     comparator.setPrecision(1);
 
-    comparator.compareDriver<StandardDriver, G4MagInt_Driver, G4ClassicalRK4>(
-       10000*cm,Comparator::Mode::SaveTrack);
+    comparator.compareDriver<GustafssonDriver, G4MagInt_Driver, G4ClassicalRK4>(
+       10000*cm, Comparator::Mode::SaveTrack);
 
     //comparator.CompareWithBS<G4CashKarpRKF45>(1000*m, Comparator::Mode::Verbose);
-
     return 0;
 }

@@ -6,7 +6,7 @@ template <class TestStepper, class RefStepper>
 void Comparator::compare(
         const G4double stepLen, const G4int nSteps, Mode mode)
 {
-    const int NCOMP = G4FieldTrack::ncompSVEC;
+    static const int NCOMP = G4FieldTrack::ncompSVEC;
 
     G4double yIn[NCOMP], yOut[NCOMP], yErr[NCOMP], dydx[NCOMP];
     G4double yInRef[NCOMP], yOutRef[NCOMP], yErrRef[NCOMP], dydxRef[NCOMP];
@@ -25,8 +25,8 @@ void Comparator::compare(
         refStepper.RightHandSide(yInRef, dydxRef);
         refStepper.Stepper(yInRef, dydxRef, stepLen, yOutRef, yErrRef);
 
-        ftestTrack->LoadFromArray(yOut, fncomp);
-        frefTrack->LoadFromArray(yOutRef, fncomp);
+        ftestTrack->LoadFromArray(yOut, NCOMP);
+        frefTrack->LoadFromArray(yOutRef, NCOMP);
 
         crossCheck (yOut, yOutRef, mode);
     }
@@ -40,7 +40,7 @@ void Comparator::compare(
 template <class TestDriver, class RefDriver, class Stepper>
 void Comparator::compareDriver(G4double length, Mode mode)
 {
-    const int NCOMP = G4FieldTrack::ncompSVEC;
+    static const int NCOMP = G4FieldTrack::ncompSVEC;
 
     G4double yTest[NCOMP], dydxTest[NCOMP];
     G4double trackLength = 0, htry = length, epsRelMax = fprecision/length, hdid = 0, hnext  = 0;
@@ -53,8 +53,11 @@ void Comparator::compareDriver(G4double length, Mode mode)
     Stepper refStepper(fRefEquation.get());
     RefDriver refDriver(fhmin, &refStepper);
 
+    std::ofstream out("steps.txt");
+
     fdiffSteps = 0;
     while(length > 0) {
+        //G4cout << length << G4endl;
         //prepare input array
         ftestTrack->DumpToArray(yTest);
         testDriver.GetStepper()->RightHandSide(yTest, dydxTest);
@@ -67,6 +70,9 @@ void Comparator::compareDriver(G4double length, Mode mode)
 
         //do the same step using ref driver to evaluate accuracy
         refDriver.AccurateAdvance(*frefTrack, hdid, epsRelMax, htry);
+
+        out << hdid << G4endl;
+        //G4cout << hdid << G4endl;
 
         length -= hdid;
 

@@ -87,8 +87,6 @@ private:
     G4double fmaxDiff;
 
     std::ofstream ffout;
-
-    static const G4int fncomp = G4FieldTrack::ncompSVEC;
 };
 
 

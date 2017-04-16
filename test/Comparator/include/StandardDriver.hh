@@ -1,10 +1,7 @@
 #ifndef STANDARDDRIVER_HH
 #define STANDARDDRIVER_HH
 
-#include "G4Types.hh"
 #include "G4MagIntegratorStepper.hh"
-
-#include <memory>
 
 class StandardDriver {
 public:
@@ -14,7 +11,7 @@ public:
                      const G4double dydx[],
                      G4double& trackLength,
                      G4double htry,
-                     G4double epsRelMax,
+                     G4double errorTolerance,
                      G4double& hdid,
                      G4double& hnext);
 
@@ -30,8 +27,13 @@ public:
         {fmaxStepIncrease = maxStepIncrease;}
 
 private:
+    G4double shrinkStep(G4double error, G4double hstep);
+    G4double growStep(G4double error, G4double hstep);
+
     G4MagIntegratorStepper* fstepper;
+
     G4int ftrials;
+    G4int fmaxtrials;
     G4double fsafety;
     G4double fminimumStep;
     G4double fpShrink;
