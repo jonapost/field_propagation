@@ -44,10 +44,10 @@ int main()
 {
     auto dynParticle =
         std::make_unique<G4DynamicParticle>(
-            G4Proton::Definition(), G4ThreeVector(1, 0.1, 0.9), 1*GeV);
+            G4Proton::Definition(), G4ThreeVector(1, 1, 1).unit(), 0.1*GeV);
 
-    //auto field = std::make_unique<G4UniformMagField>(G4ThreeVector(0, 0, 100*tesla));
-    auto field = std::make_unique<G4QuadrupoleMagField>(100 * tesla / meter);
+    //auto field = std::make_unique<G4UniformMagField>(G4ThreeVector(0, 0, 1*tesla));
+    auto field = std::make_unique<G4QuadrupoleMagField>(1 * tesla / meter);
     auto magneticField = std::make_shared<G4CachedMagneticField>(field.get(), 0);
 
     Comparator comparator(std::move(dynParticle), magneticField);
@@ -57,8 +57,8 @@ int main()
 
     comparator.setPrecision(1);
 
-    comparator.compareDriver<GustafssonDriver, G4MagInt_Driver, G4ClassicalRK4>(
-       10000*cm, Comparator::Mode::SaveTrack);
+    comparator.compareDriver<GustafssonDriver, IntegratorDriver, DormandPrince745>(
+       2000*cm, Comparator::Mode::SaveTrack);
 
     //comparator.CompareWithBS<G4CashKarpRKF45>(1000*m, Comparator::Mode::Verbose);
     return 0;

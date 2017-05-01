@@ -3,3 +3,4 @@ CMakeLists.txt.user
 build/
 *.o
 .gitconfig
+*.png

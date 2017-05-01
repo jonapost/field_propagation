@@ -80,7 +80,7 @@ void Comparator::compareDriver(G4double length, Mode mode)
         htry = std::min(length, hdid);
 
         ftestTrack->LoadFromArray(yTest, NCOMP);
-        frefTrack->LoadFromArray(yRef, NCOMP);
+        frefTrack->DumpToArray(yRef);
 
         //check results
         crossCheck (yTest, yRef, mode);
