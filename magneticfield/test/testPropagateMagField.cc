@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 97025 2016-05-20 11:00:44Z japost $
+// $Id: testPropagateMagField.cc 97106 2016-05-25 14:28:00Z japost $
 //
 //  
 //
@@ -242,6 +242,7 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4BogackiShampine23.hh"
 #include "G4BogackiShampine45.hh"
 #include "DormandPrince745.hh"
+#include "TsitourasRK45.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4CashKarpRKF45.hh"
 #include "G4RKG3_Stepper.hh"
@@ -284,9 +285,9 @@ G4FieldManager* SetupField(G4int type)
       case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
       case 12: pStepper = new G4ConstRK4( fEquation ); break;
       case 13: pStepper = new G4NystromRK4( fEquation ); break; 
-
       case 23: pStepper = new G4BogackiShampine23( fEquation ); break;
-      case 45: pStepper = new G4BogackiShampine45( fEquation ); break; 
+      case 45: pStepper = new G4BogackiShampine45( fEquation ); break;
+      case 145: pStepper = new      TsitourasRK45( fEquation ); break;
       case 745: pStepper = new DormandPrince745( fEquation ); break; 
       default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
@@ -480,8 +481,23 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 	      EndUnitMomentum.mag2() - 1.0 << G4endl;
 
 	  G4ThreeVector MoveVec = EndPosition - Position;
-	  assert( MoveVec.mag() < physStep*(1.+1.e-9) );
 
+	  // assert( MoveVec.mag() < physStep*(1.+1.e-9) );          
+
+          double move= MoveVec.mag();
+          double displaceRatio = 0.0;
+          if( physStep > 0. ) {
+             displaceRatio = move / physStep - 1.0;
+          }
+          if( displaceRatio > 1.0e-9 ) {
+             G4cerr.precision(8); 
+             G4cerr << " Move displaced " << move << " - further than step= "
+                    << physStep << " by " << move - physStep << ", "
+                    << " a fraction of " << displaceRatio << G4endl;
+          }
+          G4double maxEpsilon = pMagFieldPropagator -> GetMaximumEpsilonStep();
+          assert( displaceRatio < maxEpsilon ); // Revised check condition 
+             
 	  // G4cout << " testPropagatorInField: After stepI " << istep  << " : " << G4endl;
 	  report_endPV(Position, UnitMomentum, step_len, physStep, safety,
 		       EndPosition, EndUnitMomentum, istep, located );

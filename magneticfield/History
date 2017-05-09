@@ -1,4 +1,4 @@
-$Id: History 97090 2016-05-24 16:50:38Z japost $
+$Id: History 97109 2016-05-25 16:42:43Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,16 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+May 25, 2016 J.Apostolakis             - field-V10-02-08
+--------------------------
+- Revised testPropagateMagField, to reduce error severity for over-long
+    steps.  An error message is still written if move > (1.+1.0e-9) * step,
+    but test does not stop.
+
+- G4HelixMixedStepper: Fixes & added new (5th order) stepper choices.
+    Included (G4)Bogacki-Shampine 23/45 ,  DormandPrince745,
+    and newest TsitourasRK45.
+
 May 24, 2016 J.Apostolakis             - field-V10-02-06, 07
 --------------------------
 - Added TsitourasRK45 stepper.
