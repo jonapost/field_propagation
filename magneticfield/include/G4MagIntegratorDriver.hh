@@ -103,6 +103,8 @@ class G4MagInt_Driver
         //     using the current Stepper's order, 
         // ii) sets the safety
         // ii) calculates "errcon" according to the above values.
+     G4double shrinkStep(G4double error, G4double hstep);
+     G4double growStep(G4double error, G4double hstep);
 
      inline void SetSafety(G4double valS);
      inline void SetPshrnk(G4double valPs);
@@ -221,6 +223,7 @@ class G4MagInt_Driver
      G4int   fMaxNoSteps;
      static const G4int  fMaxStepBase;  
 
+     G4double ferrorPrev;
      G4double safety;
      G4double pshrnk;   //  exponent for shrinking
      G4double pgrow;    //  exponent for growth
