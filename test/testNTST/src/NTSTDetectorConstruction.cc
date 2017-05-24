@@ -64,6 +64,7 @@
 
 #include "G4ClassicalRK4.hh"
 #include "G4CashKarpRKF45.hh"
+#include "DormandPrince745.hh"
 
 #include "G4MagIntegratorDriver.hh"
 
@@ -227,7 +228,8 @@ NTSTDetectorConstruction::Construct()
 
   pEquation = new G4Mag_UsualEqRhs( &field); 
  
-   pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
+   //pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
+   pStepper = new DormandPrince745( pEquation );
   // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
   // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;

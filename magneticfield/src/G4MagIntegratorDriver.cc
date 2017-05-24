@@ -46,6 +46,7 @@
 #include "G4GeometryTolerance.hh"
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
+#include "DriverUtils.hh"
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
@@ -80,7 +81,9 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
     fDyerr_max(0.0), fDyerr_mx2(0.0), 
     fDyerrPos_smTot(0.0), fDyerrPos_lgTot(0.0), fDyerrVel_lgTot(0.0), 
     fSumH_sm(0.0), fSumH_lg(0.0),
+    ferrorPrev(-1),
     fVerboseLevel(0)
+
 {  
   // In order to accomodate "Laboratory Time", which is [7], fMinNoVars=8
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
@@ -512,15 +515,61 @@ G4MagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
 }
 
 // ---------------------------------------------------------
+static const int NCOMP = G4FieldTrack::ncompSVEC;
 
-void
-G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
-                             const G4double dydx[],
-                                   G4double& x,         // InOut
-                                   G4double htry,
-                                   G4double eps_rel_max,
-                                   G4double& hdid,      // Out
-                                   G4double& hnext )    // Out
+//#define Gustaffson
+#define STANDARD
+
+#ifdef STANDARD
+G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
+{
+    G4double htemp = GetSafety() * hstep * std::pow(error, GetPshrnk());
+    return std::max(htemp, 0.1 * hstep);
+}
+
+G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
+{
+    G4double hnext;
+    if (error > errcon)
+    {
+        hnext = GetSafety() * hstep * std::pow(error, GetPgrow());
+    } else {
+        hnext = max_stepping_increase * hstep;
+    }
+    return hnext;
+}
+#endif
+
+#ifdef Gustaffson
+static const G4double KI(/*0.3 / fstepper->IntegratorOrder()*/0.08);
+static const G4double KP(/*0.4 / fstepper->IntegratorOrder()*/0.10);
+
+G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
+{
+    G4double htemp;
+    if (ferrorPrev == -1) {
+        htemp = safety * hstep * std::pow(error, pgrow);
+    } else {
+        htemp = safety * hstep * std::pow(error, -KI) *
+                std::pow(ferrorPrev / error, KP);
+    }
+    ferrorPrev = error;
+
+    return std::max(htemp, 0.1 * hstep);
+}
+
+G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
+{
+    G4double hnext;
+    if (error > errcon && ferrorPrev > 0) {
+
+        hnext = hstep * std::pow(error, -KI) * std::pow(ferrorPrev / error, KP);
+    } else {
+        hnext = max_stepping_increase * hstep;
+    }
+    return hnext;
+}
+#endif
 
 // Driver for one Runge-Kutta Step with monitoring of local truncation error
 // to ensure accuracy and adjust stepsize. Input are dependent variable
@@ -528,116 +577,65 @@ G4MagInt_Driver::OneGoodStep(      G4double y[],        // InOut
 // starting value of the independent variable x . Also input are stepsize
 // to be attempted htry, and the required accuracy eps. On output y and x
 // are replaced by their new values, hdid is the stepsize that was actually
-// accomplished, and hnext is the estimated next stepsize. 
+// accomplished, and hnext is the estimated next stepsize.
 // This is similar to the function rkqs from the book:
 // Numerical Recipes in C: The Art of Scientific Computing (NRC), Second
 // Edition, by William H. Press, Saul A. Teukolsky, William T.
 // Vetterling, and Brian P. Flannery (Cambridge University Press 1992),
 // 16.2 Adaptive StepSize Control for Runge-Kutta, p. 719
 
+void G4MagInt_Driver::OneGoodStep(G4double y[],        // InOut
+                                   const G4double dydx[],
+                                   G4double& trackLength,         // InOut
+                                   G4double htry,
+                                   G4double eps_rel_max,
+                                   G4double& hdid,      // Out
+                                   G4double& hnext )    // Out
+
+
+
 {
-  G4double errmax_sq;
-  G4double h, htemp, xnew ;
+    G4double yerr[NCOMP], ytemp[NCOMP];
 
-  G4double yerr[G4FieldTrack::ncompSVEC], ytemp[G4FieldTrack::ncompSVEC];
-
-  h = htry ; // Set stepsize to the initial trial value
-
-  G4double inv_eps_vel_sq = 1.0 / (eps_rel_max*eps_rel_max);
-
-  G4double errpos_sq=0.0;    // square of displacement error
-  G4double errvel_sq=0.0;    // square of momentum vector difference
-  G4double errspin_sq=0.0;   // square of spin vector difference
-
-  G4int iter;
-
-  static G4ThreadLocal G4int tot_no_trials=0; 
-  const G4int max_trials=100; 
-
-  G4ThreeVector Spin(y[9],y[10],y[11]);
-  G4double   spin_mag2 =Spin.mag2() ;
-  G4bool     hasSpin= (spin_mag2 > 0.0); 
-
-  for (iter=0; iter<max_trials ;iter++)
-  {
-    tot_no_trials++;
-    pIntStepper-> Stepper(y,dydx,h,ytemp,yerr); 
-    //            *******
-    G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep); 
-    G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos); 
-
-    // Evaluate accuracy
-    //
-    errpos_sq =  sqr(yerr[0]) + sqr(yerr[1]) + sqr(yerr[2]) ;
-    errpos_sq *= inv_eps_pos_sq; // Scale relative to required tolerance
-
-    // Accuracy for momentum
-    G4double magvel_sq=  sqr(y[3]) + sqr(y[4]) + sqr(y[5]) ;
-    G4double sumerr_sq =  sqr(yerr[3]) + sqr(yerr[4]) + sqr(yerr[5]) ; 
-    if( magvel_sq > 0.0 ) { 
-       errvel_sq = sumerr_sq / magvel_sq; 
-    }else{
-       G4cerr << "** G4MagIntegrationDriver: found case of zero momentum." 
-              << " iteration=  " << iter << " h= " << h << G4endl; 
-       errvel_sq = sumerr_sq; 
-    }
-    errvel_sq *= inv_eps_vel_sq;
-    errmax_sq = std::max( errpos_sq, errvel_sq ); // Square of maximum error
-
-    if( hasSpin )
-    { 
-      // Accuracy for spin
-      errspin_sq =  ( sqr(yerr[9]) + sqr(yerr[10]) + sqr(yerr[11]) )
-                    /  spin_mag2; // ( sqr(y[9]) + sqr(y[10]) + sqr(y[11]) );
-      errspin_sq *= inv_eps_vel_sq;
-      errmax_sq = std::max( errmax_sq, errspin_sq ); 
-    }
-
-    if ( errmax_sq <= 1.0 )  { break; } // Step succeeded. 
-
-    // Step failed; compute the size of retrial Step.
-    htemp = GetSafety()*h* std::pow( errmax_sq, 0.5*GetPshrnk() );
-
-    if (htemp >= 0.1*h)  { h = htemp; }  // Truncation error too large,
-    else  { h = 0.1*h; }                 // reduce stepsize, but no more
-                                         // than a factor of 10
-    xnew = x + h;
-    if(xnew == x)
+    static G4ThreadLocal G4int tot_no_trials = 0;
+    const G4int maxTrials = 100;
+    // Set stepsize to the initial trial value
+    G4double hstep = htry;
+    G4double error;
+    for (G4int iter = 0; iter < maxTrials; ++iter)
     {
-      G4cerr << "G4MagIntegratorDriver::OneGoodStep:" << G4endl
-             << "  Stepsize underflow in Stepper " << G4endl ;
-      G4cerr << "  Step's start x=" << x << " and end x= " << xnew 
-             << " are equal !! " << G4endl
-             <<"  Due to step-size= " << h 
-             << " . Note that input step was " << htry << G4endl;
-      break;
+        ++tot_no_trials;
+        hstep = std::max(hstep, fMinimumStep);
+        pIntStepper-> Stepper(y, dydx, hstep, ytemp, yerr);
+
+        error = relativeError(y, yerr, hstep) / eps_rel_max;
+
+         // Step succeeded.
+        if (error <= 1.0) {
+            break;
+        }
+
+        // Step failed; compute the size of retrial Step.
+        hstep = shrinkStep(error, hstep);
     }
-  }
 
 #ifdef G4FLD_STATS
-  // Sum of squares of position error // and momentum dir (underestimated)
-  fSumH_lg += h; 
-  fDyerrPos_lgTot += errpos_sq;
-  fDyerrVel_lgTot += errvel_sq * h * h; 
+    // Sum of squares of position error // and momentum dir (underestimated)
+    fSumH_lg += hstep;
+    fDyerrPos_lgTot += sqr(error); //TODO make DriverUtils member to update fDyerrPos...?
+    fDyerrVel_lgTot += sqr(error) * sqr(hstep);
 #endif
 
-  // Compute size of next Step
-  if (errmax_sq > errcon*errcon)
-  { 
-    hnext = GetSafety()*h*std::pow(errmax_sq, 0.5*GetPgrow());
-  }
-  else
-  {
-    hnext = max_stepping_increase*h ; // No more than a factor of 5 increase
-  }
-  x += (hdid = h);
+    // Compute size of next Step
+    hnext = growStep(error, hstep);
+    trackLength += (hdid = hstep);
 
-  for(G4int k=0;k<fNoIntegrationVariables;k++) { y[k] = ytemp[k]; }
+    for(G4int k = 0; k < fNoIntegrationVariables; ++k)
+    {
+        y[k] = ytemp[k];
+    }
+}
 
-  return;
-}   // end of  OneGoodStep .............................
-
-//----------------------------------------------------------------------
 
 // QuickAdvance just tries one Step - it does not ensure accuracy
 //
