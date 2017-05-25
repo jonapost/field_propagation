@@ -103,8 +103,6 @@ class G4MagInt_Driver
         //     using the current Stepper's order, 
         // ii) sets the safety
         // ii) calculates "errcon" according to the above values.
-     G4double shrinkStep(G4double error, G4double hstep);
-     G4double growStep(G4double error, G4double hstep);
 
      inline void SetSafety(G4double valS);
      inline void SetPshrnk(G4double valPs);
@@ -204,6 +202,14 @@ class G4MagInt_Driver
      G4MagInt_Driver(const G4MagInt_Driver&);
      G4MagInt_Driver& operator=(const G4MagInt_Driver&);
         // Private copy constructor and assignment operator.
+
+     G4double shrinkStep(G4double error, G4double hstep);
+     G4double growStep(G4double error, G4double hstep);
+
+     G4double relativeError(const G4double y[],
+                            const G4double yerr[],
+                            const G4double hstep,
+                            const G4double errorTolerance);
 
    private:
 

@@ -46,7 +46,6 @@
 #include "G4GeometryTolerance.hh"
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
-#include "DriverUtils.hh"
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
@@ -59,9 +58,25 @@ const G4double G4MagInt_Driver::max_stepping_decrease = 0.1;
 //
 const G4int  G4MagInt_Driver::fMaxStepBase = 250;  // Was 5000
 
+static const int NCOMP = G4FieldTrack::ncompSVEC;
+
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
 #endif
+
+namespace {
+    enum class Type {
+        Position = 0,
+        Momentum = 3,
+        Spin = 9
+    };
+
+    G4double extractValue2(const G4double array[], const Type& type)
+    {
+        const size_t begin = static_cast<size_t>(type);
+        return sqr(array[begin]) + sqr(array[begin+1]) + sqr(array[begin+2]);
+    }
+} //namespace
 
 // ---------------------------------------------------------
 
@@ -513,7 +528,50 @@ G4MagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
 }
 
 // ---------------------------------------------------------
-static const int NCOMP = G4FieldTrack::ncompSVEC;
+
+
+G4double G4MagInt_Driver::relativeError(const G4double y[],
+                                        const G4double yerr[],
+                                        const G4double hstep,
+                                        const G4double errorTolerance)
+{
+    const G4double errorTolerance2 = sqr(errorTolerance);
+    const G4double hstep2 = sqr(hstep);
+
+    // square of displacement error
+    G4double positionError2 =  extractValue2(yerr, Type::Position);
+    positionError2 /= hstep2 * errorTolerance2;
+
+    // square of momentum vector difference
+    const G4double momentum2 = extractValue2(y, Type::Momentum);
+    G4double momentumError2 = 0;
+    if (momentum2 > 0) {
+        momentumError2 = extractValue2(yerr, Type::Momentum);
+        momentumError2 /= momentum2 * errorTolerance2;
+    } else {
+        G4Exception("G4MagInt_Driver::relativeError()", "GeomField0003",
+                    JustWarning, "momentum is zero");
+    }
+
+    // square of spin vector difference
+    const G4double spin2 = extractValue2(y, Type::Spin);
+    G4double spinError2 = 0;
+    if (spin2 > 0) {
+        spinError2 = extractValue2(yerr, Type::Spin);
+        spinError2 /= spin2 * errorTolerance2;
+    }
+
+#ifdef G4FLD_STATS
+    // Sum of squares of position error and momentum dir (underestimated)
+    fSumH_lg += hstep;
+    fDyerrPos_lgTot += positionError2;
+    fDyerrVel_lgTot += momentumError2 * hstep2;
+#endif
+
+    // Square of maximum error
+    return sqrt(std::max({positionError2, momentumError2, spinError2}));
+}
+
 
 //#define Gustaffson
 #define STANDARD
@@ -528,8 +586,7 @@ G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
 G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
 {
     G4double hnext;
-    if (error > errcon)
-    {
+    if (error > errcon) {
         hnext = GetSafety() * hstep * std::pow(error, GetPgrow());
     } else {
         hnext = max_stepping_increase * hstep;
@@ -582,13 +639,13 @@ G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
 // Vetterling, and Brian P. Flannery (Cambridge University Press 1992),
 // 16.2 Adaptive StepSize Control for Runge-Kutta, p. 719
 
-void G4MagInt_Driver::OneGoodStep(G4double y[],        // InOut
+void G4MagInt_Driver::OneGoodStep(G4double y[],             // InOut
                                    const G4double dydx[],
-                                   G4double& trackLength,         // InOut
+                                   G4double& trackLength,   // InOut
                                    G4double htry,
                                    G4double eps_rel_max,
-                                   G4double& hdid,      // Out
-                                   G4double& hnext )    // Out
+                                   G4double& hdid,          // Out
+                                   G4double& hnext )        // Out
 
 
 
@@ -600,36 +657,27 @@ void G4MagInt_Driver::OneGoodStep(G4double y[],        // InOut
     // Set stepsize to the initial trial value
     G4double hstep = htry;
     G4double error;
-    for (G4int iter = 0; iter < maxTrials; ++iter)
-    {
+    for (G4int iter = 0; iter < maxTrials; ++iter) {
         ++tot_no_trials;
         hstep = std::max(hstep, fMinimumStep);
         pIntStepper-> Stepper(y, dydx, hstep, ytemp, yerr);
 
-        error = relativeError(y, yerr, hstep) / eps_rel_max;
+        error = relativeError(y, yerr, hstep, eps_rel_max);
 
-         // Step succeeded.
+         // Step succeeded
         if (error <= 1.0) {
             break;
         }
 
-        // Step failed; compute the size of retrial Step.
+        // Step failed, compute the size of retrial step
         hstep = shrinkStep(error, hstep);
     }
 
-#ifdef G4FLD_STATS
-    // Sum of squares of position error // and momentum dir (underestimated)
-    fSumH_lg += hstep;
-    fDyerrPos_lgTot += sqr(error); //TODO make DriverUtils member to update fDyerrPos...?
-    fDyerrVel_lgTot += sqr(error) * sqr(hstep);
-#endif
-
-    // Compute size of next Step
+    // Compute size of next step
     hnext = growStep(error, hstep);
     trackLength += (hdid = hstep);
 
-    for(G4int k = 0; k < fNoIntegrationVariables; ++k)
-    {
+    for(G4int k = 0; k < fNoIntegrationVariables; ++k) {
         y[k] = ytemp[k];
     }
 }

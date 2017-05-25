@@ -29,7 +29,6 @@ include_directories(${CMAKE_SOURCE_DIR}/source/global/management/include)
 include(Geant4MacroDefineModule)
 GEANT4_DEFINE_MODULE(NAME G4magneticfield
     HEADERS
-        DriverUtils.hh
         G4BogackiShampine23.hh
         G4BogackiShampine45.hh
         G4CachedMagneticField.hh
@@ -94,7 +93,6 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformGravityField.hh
         G4UniformMagField.hh
     SOURCES
-        DriverUtils.cc
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
         G4CachedMagneticField.cc
