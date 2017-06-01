@@ -65,17 +65,19 @@ static const int NCOMP = G4FieldTrack::ncompSVEC;
 #endif
 
 namespace {
-    enum class Type {
-        Position = 0,
-        Momentum = 3,
-        Spin = 9
-    };
 
-    G4double extractValue2(const G4double array[], const Type& type)
-    {
-        const size_t begin = static_cast<size_t>(type);
-        return sqr(array[begin]) + sqr(array[begin+1]) + sqr(array[begin+2]);
-    }
+enum class Type {
+    Position = 0,
+    Momentum = 3,
+    Spin = 9
+};
+
+G4double extractValue2(const G4double array[], const Type& type)
+{
+    const size_t begin = static_cast<size_t>(type);
+    return sqr(array[begin]) + sqr(array[begin+1]) + sqr(array[begin+2]);
+}
+
 } //namespace
 
 // ---------------------------------------------------------
@@ -642,15 +644,12 @@ G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
 // 16.2 Adaptive StepSize Control for Runge-Kutta, p. 719
 
 void G4MagInt_Driver::OneGoodStep(G4double y[],             // InOut
-                                   const G4double dydx[],
-                                   G4double& trackLength,   // InOut
-                                   G4double htry,
-                                   G4double eps_rel_max,
-                                   G4double& hdid,          // Out
-                                   G4double& hnext )        // Out
-
-
-
+                                  const G4double dydx[],
+                                  G4double& trackLength,   // InOut
+                                  G4double htry,
+                                  G4double eps_rel_max,
+                                  G4double& hdid,          // Out
+                                  G4double& hnext )        // Out
 {
     G4double yerr[NCOMP], ytemp[NCOMP];
 
