@@ -1,0 +1,178 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// $Id: FSALMagIntegratorDriver.icc 97126 2016-05-26 00:17:31Z japost $
+//
+// --------------------------------------------------------------------
+
+inline
+G4double FSALMagInt_Driver::GetHmin() const
+{
+      return fMinimumStep;
+} 
+
+inline
+G4double FSALMagInt_Driver::Hmin() const
+{
+      return fMinimumStep;
+}
+
+inline
+G4double FSALMagInt_Driver::GetSafety() const
+{
+      return safety;
+}
+
+inline
+G4double FSALMagInt_Driver::GetPshrnk() const
+{
+      return pshrnk;
+} 
+
+inline
+G4double FSALMagInt_Driver::GetPgrow() const
+{
+      return pgrow;
+}
+ 
+inline
+G4double FSALMagInt_Driver::GetErrcon() const
+{
+      return errcon;
+}
+
+inline
+void FSALMagInt_Driver::SetHmin(G4double newval)
+{
+      fMinimumStep = newval;
+} 
+
+inline
+G4double FSALMagInt_Driver::ComputeAndSetErrcon()
+{
+      errcon = std::pow(max_stepping_increase/GetSafety(),1.0/GetPgrow());
+      return errcon;
+} 
+
+inline
+void FSALMagInt_Driver::ReSetParameters(G4double new_safety)
+{
+      safety = new_safety;
+      pshrnk = -1.0 / pIntStepper->IntegratorOrder();
+      pgrow  = -1.0 / (1.0 + pIntStepper->IntegratorOrder());
+      ComputeAndSetErrcon();
+}
+
+inline
+void FSALMagInt_Driver::SetSafety(G4double val)
+{ 
+      safety=val;
+      ComputeAndSetErrcon();
+}
+
+inline
+void FSALMagInt_Driver::SetPgrow(G4double  val)
+{ 
+      pgrow=val;
+      ComputeAndSetErrcon(); 
+}
+
+inline
+void FSALMagInt_Driver::SetErrcon(G4double val)
+{ 
+      errcon=val;
+}
+
+inline
+void FSALMagInt_Driver::RenewStepperAndAdjust(FSALMagIntegratorStepper *pItsStepper)
+{  
+      pIntStepper = pItsStepper; 
+      ReSetParameters();
+}
+
+inline
+const FSALMagIntegratorStepper* FSALMagInt_Driver::GetStepper() const
+{
+  return pIntStepper;
+}
+
+inline
+FSALMagIntegratorStepper* FSALMagInt_Driver::GetStepper()
+{
+  return pIntStepper;
+}
+
+inline
+G4int FSALMagInt_Driver::GetMaxNoSteps() const
+{
+  return fMaxNoSteps;
+}
+
+inline
+void FSALMagInt_Driver::SetMaxNoSteps(G4int val)
+{
+  fMaxNoSteps= val;
+}
+
+inline
+void FSALMagInt_Driver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
+                                           G4double     dydx[])  // OUTput
+{ 
+  G4double  tmpValArr[G4FieldTrack::ncompSVEC];
+  y_curr.DumpToArray( tmpValArr  );
+  pIntStepper -> RightHandSide( tmpValArr , dydx );
+}
+
+inline
+G4double FSALMagInt_Driver::GetVerboseLevel() const
+{
+      return fVerboseLevel;
+} 
+
+inline 
+void FSALMagInt_Driver::SetVerboseLevel(G4int newLevel)
+{
+      fVerboseLevel= newLevel;
+}
+
+inline
+G4double FSALMagInt_Driver::GetSmallestFraction() const
+{
+      return fSmallestFraction; 
+}
+
+inline
+G4int FSALMagInt_Driver::GetNoTotalSteps() const
+{
+    return fNoTotalSteps;
+}
+
+inline
+G4int FSALMagInt_Driver::GetTotalNoStepperCalls() const
+{
+    return TotalNoStepperCalls;
+}
+
