@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4MagIntegratorStepper.hh 66241 2012-12-13 18:34:42Z gunter $
+// $Id: G4MagIntegratorStepper.hh 97120 2016-05-25 23:24:37Z japost $
 //
 //
 // class G4MagIntegratorStepper
@@ -105,6 +105,11 @@ class G4MagIntegratorStepper
        // this function allows for access to them.
      inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
 
+     inline unsigned long GetfNoRHSCalls(){ return fNoRHSCalls; }
+     // void IncrementRHSCalls() { fNoRHSCalls++; }
+     inline void ResetfNORHSCalls(){ fNoRHSCalls = 0; }
+       // Count number of calls to RHS method(s)
+   
   private:
   
      G4MagIntegratorStepper(const G4MagIntegratorStepper&);
@@ -117,6 +122,9 @@ class G4MagIntegratorStepper
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack
      // const G4int  fNumberOfVariables;
+
+     // Counter for calls to RHS method
+     mutable unsigned long fNoRHSCalls;   
 };
 
 #include  "G4MagIntegratorStepper.icc"

@@ -11,7 +11,7 @@
 #
 # Generated on : 29/9/2010
 #
-# $Id: sources.cmake 97090 2016-05-24 16:50:38Z japost $
+# $Id: sources.cmake 97119 2016-05-25 23:21:25Z japost $
 #
 #------------------------------------------------------------------------------
 
@@ -40,7 +40,10 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
+        DoLoMcPriRK34.hh
         DormandPrince745.hh
+        DormandPrinceRK56.hh
+        DormandPrinceRK78.hh
         G4ElectricField.hh
         G4ElectroMagneticField.hh
         G4EqEMFieldWithEDM.hh
@@ -103,7 +106,10 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc
+        DoLoMcPriRK34.cc
         DormandPrince745.cc
+        DormandPrinceRK56.cc
+        DormandPrinceRK78.cc
         G4ElectricField.cc
         G4ElectroMagneticField.cc
         G4EqEMFieldWithEDM.cc
@@ -143,7 +149,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4SimpleHeum.cc
         G4SimpleRunge.cc
         G4TrialsCounter.cc
-        TsitourasRK45.cc	
+        TsitourasRK45.cc
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
