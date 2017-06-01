@@ -1,18 +1,33 @@
-
-//  DormandPrince7 - 5(4) non-FSAL implementation by Somnath Banerjee
-//  Supervision / code review: John Apostolakis
 //
-// Sponsored by Google in Google Summer of Code 2015.
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
 //
-// First version: 25 May 2015
+// $Id: DormandPrince745.cc 97110 2016-05-25 18:28:45Z japost $
 //
-// This code is made available subject to the Geant4 license, a copy of
-// which is available at
-//   http://geant4.org/license
+// Class description:
 //
-//  DormandPrince745.cc
-//  Geant4
-//
+//  DormandPrince7 - 5(4) non-FSAL
 //
 //    This is the source file of DormandPrince745 class containing the
 //    definition of the stepper() method that evaluates one step in
@@ -37,7 +52,17 @@
 //    ------------------------------------------------------------------------
 //          35/384       0        500/1113    125/192  −2187/6784    11/84   0
 //          5179/57600   0       7571/16695  393/640  −92097/339200 187/2100 1/40
-
+//
+//
+//    Implementation by Somnath Banerjee - GSoC 2015
+//       Work supported by Google as part of Google Summer of Code 2015.
+//    Supervision / code review: John Apostolakis
+//
+//  First version: 25 May 2015 - Somnath Banerjee
+//
+//  Note: Current version includes 3 versions of 'DistChord' method.
+//        Default is hard-coded interpolation.
+//
 #include "DormandPrince745.hh"
 #include "G4LineSection.hh"
 #include <cmath>
@@ -245,22 +270,9 @@ void DormandPrince745::Stepper(const G4double yInput[],
     
     fLastStepLength = Step;
     
-//    if(fAuxStepper)
-//        delete fAuxStepper;
-//    
-//    *fAuxStepper = *this;
-    
     return ;
 }
 
-//The original DistChord() function for the class
-G4double  DormandPrince745::DistChord3() const
-{
-    // Do half a step using StepNoErr    
-    fAuxStepper->Stepper( fLastInitialVector, fInitialDyDx, 0.5 * fLastStepLength,
-                          fAuxStepper->fMidVector,  fAuxStepper->fMidError) ;
-    return DistLine( fLastInitialVector, fAuxStepper->fMidVector, fLastFinalVector);
-}
 
 // Calculate DistChord given start, mid and end-point of step
 G4double DormandPrince745::DistLine( G4double yStart[], G4double yMid[], G4double yEnd[] ) const
@@ -289,10 +301,7 @@ G4double DormandPrince745::DistLine( G4double yStart[], G4double yMid[], G4doubl
 // (New) DistChord function using interpolation
 G4double DormandPrince745::DistChord2() const
 {
-    // Store last initial and final points (they will be overwritten in self-Stepper call!)
-    
-    //Getting copying the values of stages from the original stepper
-    // into the Aux Stepper
+    // Copy the values of stages from this (original) into the Aux Stepper
     *fAuxStepper = *this;
 
     //Preparing for the interpolation
@@ -316,7 +325,7 @@ G4double DormandPrince745::DistChord() const
     hf7 = 183.0/10000.0 ;
 
     for(int i=0; i<3; i++){
-                fMidVector[i] = fLastInitialVector[i] + fLastStepLength*(
+       fMidVector[i] = fLastInitialVector[i] + fLastStepLength*(
                     hf1*fInitialDyDx[i] + hf2*ak2[i] + hf3*ak3[i] + hf4*ak4[i] +
                     hf5*ak5[i] + hf6*ak6[i] + hf7*ak7[i] );
     }
@@ -325,6 +334,15 @@ G4double DormandPrince745::DistChord() const
     //  distance of Chord
 
     return DistLine( fLastInitialVector, fMidVector, fLastFinalVector);
+}
+
+//The original DistChord() function for the class
+G4double  DormandPrince745::DistChord3() const
+{
+    // Do half a step using StepNoErr    
+    fAuxStepper->Stepper( fLastInitialVector, fInitialDyDx, 0.5 * fLastStepLength,
+                          fAuxStepper->fMidVector,  fAuxStepper->fMidError) ;
+    return DistLine( fLastInitialVector, fAuxStepper->fMidVector, fLastFinalVector);
 }
 
 // The lower (4th) order interpolant given by Dormand and prince
@@ -339,7 +357,6 @@ void DormandPrince745::SetupInterpolation_low() // const G4double *yInput, const
 {
     //Nothing to be done
 }
-
 
 void DormandPrince745::Interpolate_low( /* const G4double yInput[],
                                                 const G4double dydx[], 

@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 97106 2016-05-25 14:28:00Z japost $
+// $Id: testPropagateMagField.cc 97115 2016-05-25 23:00:59Z japost $
 //
 //  
 //
@@ -242,6 +242,9 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4BogackiShampine23.hh"
 #include "G4BogackiShampine45.hh"
 #include "DormandPrince745.hh"
+#include "DormandPrinceRK56.hh"
+#include "DormandPrinceRK78.hh"
+#include "DoLoMcPriRK34.hh"
 #include "TsitourasRK45.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4CashKarpRKF45.hh"
@@ -284,11 +287,14 @@ G4FieldManager* SetupField(G4int type)
       case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
       case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
       case 12: pStepper = new G4ConstRK4( fEquation ); break;
-      case 13: pStepper = new G4NystromRK4( fEquation ); break; 
+      case 13: pStepper = new G4NystromRK4( fEquation ); break;
       case 23: pStepper = new G4BogackiShampine23( fEquation ); break;
+      case 34: pStepper = new DoLoMcPriRK34( fEquation ); break;         
       case 45: pStepper = new G4BogackiShampine45( fEquation ); break;
       case 145: pStepper = new      TsitourasRK45( fEquation ); break;
-      case 745: pStepper = new DormandPrince745( fEquation ); break; 
+      case 745: pStepper = new DormandPrince745( fEquation ); break;
+      case 56: pStepper = new DormandPrinceRK56( fEquation ); break;
+      case 78: pStepper = new DormandPrinceRK78( fEquation ); break;         
       default: 
           pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
           G4ExceptionDescription ErrorMsg;

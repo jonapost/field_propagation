@@ -1,4 +1,32 @@
-//  An implementation of the 5th order embedded RK method from the paper
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// $Id: DormandPrince745.hh 97110 2016-05-25 18:28:45Z japost $
+//
+//  Class desription: 
+//    An implementation of the 5th order embedded RK method from the paper
 //    J. R. Dormand and P. J. Prince, “A family of embedded Runge-Kutta formulae,”
 //	    Journal of computational and applied …, vol. 6, no. 1, pp. 19–26, 1980.
 //
@@ -9,17 +37,12 @@
 //
 // Work supported by the Google Summer of Code 2015.
 //
-// First version: 25 May 2015
-//
-// This code is made available subject to the Geant4 license, a copy of
-// which is available at
-//   http://geant4.org/license
-//
 //  History
 // ------------------------------------------
 //  Created   : 25 May 2015.             - Somnath
-//  Revisions : 
+//   Revisions : 
 //   * 29 June 2015:  Added interpolate() method(s) - Somnath
+//   *     May 2016:  Cleanup and first comming in G4 - John Apostolakis
 
 #ifndef Dormand_Prince_745
 #define Dormand_Prince_745
