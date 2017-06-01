@@ -57,7 +57,7 @@ int main()
 
     comparator.setPrecision(1);
 
-    comparator.compareDriver<GustafssonDriver, IntegratorDriver, DormandPrince745>(
+    comparator.compareDriver<GustafssonDriver, G4MagInt_Driver, DormandPrince745>(
        2000*cm, Comparator::Mode::SaveTrack);
 
     //comparator.CompareWithBS<G4CashKarpRKF45>(1000*m, Comparator::Mode::Verbose);
