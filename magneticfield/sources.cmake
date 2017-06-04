@@ -101,6 +101,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
+        RK547FEq1.hh
+        Utils.hh
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
@@ -163,6 +165,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
+        RK547FEq1.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

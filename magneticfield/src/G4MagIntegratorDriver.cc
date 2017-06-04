@@ -46,6 +46,7 @@
 #include "G4GeometryTolerance.hh"
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
+#include "Utils.hh"
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
@@ -63,22 +64,6 @@ static const int NCOMP = G4FieldTrack::ncompSVEC;
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
 #endif
-
-namespace {
-
-enum class Type {
-    Position = 0,
-    Momentum = 3,
-    Spin = 9
-};
-
-G4double extractValue2(const G4double array[], const Type& type)
-{
-    const size_t begin = static_cast<size_t>(type);
-    return sqr(array[begin]) + sqr(array[begin+1]) + sqr(array[begin+2]);
-}
-
-} //namespace
 
 // ---------------------------------------------------------
 

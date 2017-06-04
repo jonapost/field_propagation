@@ -70,6 +70,8 @@
 
 #include "G4SimpleLocator.hh"
 
+#include "RK547FEq1.hh"
+
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
   : _FileRead(0), debug(false), radius(19*cm), NSubLayer(0),
     disableSVT(false), disableDCH(false),
@@ -228,8 +230,9 @@ NTSTDetectorConstruction::Construct()
 
   pEquation = new G4Mag_UsualEqRhs( &field); 
  
+   pStepper = new RK547FEq1( pEquation);
    //pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
-   pStepper = new DormandPrince745( pEquation );
+  // pStepper = new DormandPrince745( pEquation );
   // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
   // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
   // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
