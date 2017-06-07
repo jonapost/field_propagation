@@ -265,7 +265,7 @@ NTSTDetectorConstruction::Construct()
   G4LogicalVolume* experimentalHall_log
     = new G4LogicalVolume(experimentalHall_box,Ar,"expHall_log",0,0,0);
 
-  experimentalHall_log->SetVisAttributes(G4VisAttributes::Invisible);
+  experimentalHall_log->SetVisAttributes(G4VisAttributes::GetInvisible());
   
   G4VPhysicalVolume* experimentalHall_phys
     = new G4PVPlacement(0,G4ThreeVector(),"expHall",
@@ -304,7 +304,7 @@ NTSTDetectorConstruction::Construct()
     G4LogicalVolume* Svt_log
       = new G4LogicalVolume(Svt_tube,Ar,"Svt_log",0,0,0);
 
-    Svt_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    Svt_log -> SetVisAttributes(G4VisAttributes::GetInvisible());
       
     // G4VPhysicalVolume* Svt_phys =
       new G4PVPlacement(0,
@@ -447,7 +447,7 @@ NTSTDetectorConstruction::Construct()
     G4LogicalVolume* Dch_log
       = new G4LogicalVolume(Dch_tube,Ar,"Dch_log",0,0,0);
       
-    Dch_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    Dch_log -> SetVisAttributes(G4VisAttributes::GetInvisible());
       
     // G4VPhysicalVolume* Dch_phys =
       new G4PVPlacement(0,

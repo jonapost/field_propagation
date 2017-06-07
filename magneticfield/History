@@ -1,4 +1,4 @@
-$Id: History 101366 2016-11-15 15:44:48Z japost $
+$Id: History 103227 2017-03-22 14:51:39Z gcosmo $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,16 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+Mar  22, 2017 G.Cosmo                   - field-V10-03-01
+---------------------
+- Revert change made in previous tag and add simple accessor to return
+  singleton pointer.
+
+Mar  17, 2017 G.Cosmo                   - field-V10-03-00
+---------------------
+- Define G4FieldManagerStore as normal singleton and corrected destructor.
+
 Oct   7, 2016 J.Apostolakis             - field-V10-02-24, 25
 ---------------------------
 - Checked loops for termination for infinite loops and annotated 

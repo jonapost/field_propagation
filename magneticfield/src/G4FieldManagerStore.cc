@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManagerStore.cc 68216 2013-03-19 13:23:50Z gcosmo $
+// $Id: G4FieldManagerStore.cc 103227 2017-03-22 14:51:39Z gcosmo $
 //
 // G4FieldManagerStore
 //
@@ -63,7 +63,7 @@ G4FieldManagerStore::G4FieldManagerStore()
 G4FieldManagerStore::~G4FieldManagerStore()
 {
   Clean();
-  if (fgInstance)  { delete fgInstance; fgInstance=0; }
+  fgInstance = 0;
 }
 
 // ***************************************************************************
@@ -135,6 +135,15 @@ G4FieldManagerStore* G4FieldManagerStore::GetInstance()
   {
     fgInstance = new G4FieldManagerStore;
   }
+  return fgInstance;
+}
+
+// ***************************************************************************
+// Return ptr to Store
+// ***************************************************************************
+//
+G4FieldManagerStore* G4FieldManagerStore::GetInstanceIfExist()
+{
   return fgInstance;
 }
 
