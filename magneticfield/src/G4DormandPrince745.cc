@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4DormandPrince745.cc 97572 2016-06-03 21:52:00Z japost $
+// $Id: G4DormandPrince745.cc 98878 2016-08-16 16:43:53Z japost $
 //
 // Class description:
 //
@@ -71,7 +71,8 @@
 G4DormandPrince745::G4DormandPrince745(G4EquationOfMotion *EqRhs,
                                    G4int noIntegrationVariables,
                                    G4bool primary)
-: G4MagIntegratorStepper(EqRhs, noIntegrationVariables)
+: G4MagIntegratorStepper(EqRhs, noIntegrationVariables),
+  fAuxStepper(0)  
 {
     const G4int numberOfVariables = // noIntegrationVariables;
       std::max( noIntegrationVariables,
