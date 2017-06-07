@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.hh 69599 2013-05-08 16:42:49Z japost $
+// $Id: G4MagIntegratorDriver.hh 104203 2017-05-17 17:35:02Z japost $
 //
 //
 // class G4MagInt_Driver
@@ -240,7 +240,8 @@ class G4MagInt_Driver
      // ---------------------------------------------------------------
      //  STATE
 
-     G4int  fNoTotalSteps, fNoBadSteps, fNoSmallSteps, fNoInitialSmallSteps; 
+     unsigned long fNoTotalSteps, fNoBadSteps, fNoSmallSteps, fNoInitialSmallSteps;
+     unsigned long fNoCalls; 
      G4double fDyerr_max, fDyerr_mx2;
      G4double fDyerrPos_smTot, fDyerrPos_lgTot, fDyerrVel_lgTot; 
      G4double fSumH_sm, fSumH_lg; 

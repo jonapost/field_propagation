@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManager.cc 104126 2017-05-11 14:16:54Z japost $
+// $Id: G4FieldManager.cc 104201 2017-05-17 17:32:01Z japost $
 //
 // -------------------------------------------------------------------
 
@@ -169,7 +169,7 @@ G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
    //
    if( fChordFinder )
    {
-     failMode= std::min( failMode, 1) ; // If a chord finder exists, warn in case of error!
+     failMode= std::max( failMode, 1) ; // If a chord finder exists, warn in case of error!
       
      driver= fChordFinder->GetIntegrationDriver();
      if( driver ){

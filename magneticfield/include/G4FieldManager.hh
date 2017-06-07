@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManager.hh 104126 2017-05-11 14:16:54Z japost $
+// $Id: G4FieldManager.hh 104202 2017-05-17 17:33:18Z japost $
 //
 //  
 // class G4FieldManager
@@ -94,7 +94,7 @@ class G4FieldManager
           //   - assumes pure magnetic field (so Energy constant)
      virtual ~G4FieldManager();
 
-   G4bool   SetDetectorField(G4Field *detectorField, int failMode= 1);  // =1 is for Debugging ## Was =0 
+   G4bool   SetDetectorField(G4Field *detectorField, int failMode= 0);  // =1 is for Debugging ## Was =0 
         // Pushes the field to the equation.
         //   ( New behaviour June 2015 - to avoid the simplest user confusion. )   
         // Failure to push the field ( due to absence of a chord finder, driver,

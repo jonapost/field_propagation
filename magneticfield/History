@@ -1,4 +1,4 @@
-$Id: History 104126 2017-05-11 14:16:54Z japost $
+$Id: History 104209 2017-05-17 19:09:12Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,14 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+May 17, 2017 J.Apostolakis             - field-V10-03-03
+--------------------------
+G4FieldManager::SetDetectorField
+  Fixed default of 'fail mode' parameter in 
+     to 0 (silent) - not 1 which was used for debugging.
+  In case of existing G4ChordFinder, use 'max' (1, failMode) not min.
+
+
 May 11, 2017 J.Apostolakis             - field-V10-03-02
 -------------------------- 
 Reintroduced changes of field-V10-01-05, 06 and 07  to address
@@ -52,14 +60,14 @@ Original functionality change (copied from field-V10-01-05, & -07) :
    or by using the new method for an existing field:
       ChangeDetectorField(G4Field *detectorField)    
 
+--------------------------
+
+  OLD: Co-works and requires new tag in geometry/navigation: geomnav-V10-01-24.
+
 Mar  22, 2017 G.Cosmo                   - field-V10-03-01
 ---------------------
 - Revert change made in previous tag and add simple accessor to return
   singleton pointer.
-
-  Note: G4FieldManagerStore must be per-thread: it holds the FieldManager
-   pointers for a thread, which must be called to refresh the state
-   at the start of each track.  ( J.A. )
 
 Mar  17, 2017 G.Cosmo                   - field-V10-03-00
 ---------------------
