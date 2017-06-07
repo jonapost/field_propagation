@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4HelixExplicitEuler.cc 66241 2012-12-13 18:34:42Z gunter $
+// $Id: G4HelixExplicitEuler.cc 97572 2016-06-03 21:52:00Z japost $
 //
 //
 //  Helix Explicit Euler: x_1 = x_0 + helix(h)
@@ -55,7 +55,7 @@ void G4HelixExplicitEuler::Stepper(  const G4double  yInput[7],
   
   const G4int nvar = 6 ;
   G4int i;
-  G4double      yTemp[7], yIn[7] ;
+  G4double      yTemp[8], yIn[8] ;
   G4ThreeVector  Bfld_midpoint;
   //  Saving yInput because yInput and yOut can be aliases for same array
         for(i=0;i<nvar;i++) yIn[i]=yInput[i];

@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4DormandPrince745.cc 97285 2016-05-31 19:52:18Z japost $
+// $Id: G4DormandPrince745.cc 97572 2016-06-03 21:52:00Z japost $
 //
 // Class description:
 //
@@ -73,11 +73,14 @@ G4DormandPrince745::G4DormandPrince745(G4EquationOfMotion *EqRhs,
                                    G4bool primary)
 : G4MagIntegratorStepper(EqRhs, noIntegrationVariables)
 {
-    const G4int numberOfVariables = noIntegrationVariables;
+    const G4int numberOfVariables = // noIntegrationVariables;
+      std::max( noIntegrationVariables,
+               ( ( (noIntegrationVariables-1)/4 + 1 ) * 4 ) );
+    // For better alignment with cache-line
     
     //New Chunk of memory being created for use by the stepper
     
-    //aki - for storing intermediate RHS
+    //ak_i - for storing intermediate RHS
     ak2 = new G4double[numberOfVariables];
     ak3 = new G4double[numberOfVariables];
     ak4 = new G4double[numberOfVariables];
@@ -87,6 +90,22 @@ G4DormandPrince745::G4DormandPrince745(G4EquationOfMotion *EqRhs,
     // Also always allocate arrays for interpolation stages
     ak8 = new G4double[numberOfVariables];
     ak9 = new G4double[numberOfVariables];
+
+    // Must ensure space for extra 'state' variables exists - i.e. yIn[7]
+    const G4int numStateVars =
+       std::max(noIntegrationVariables,
+                std::max( GetNumberOfStateVariables(), 8)
+               );
+    yTemp = new G4double[numStateVars];
+    yIn   = new G4double[numStateVars];
+    
+    fLastInitialVector = new G4double[numStateVars] ;
+    fLastFinalVector = new G4double[numStateVars] ;
+
+    // fLastDyDx  = new G4double[numberOfVariables];
+    
+    fMidVector = new G4double[numStateVars];
+    fMidError =  new G4double[numStateVars];
     
     yTemp = new G4double[numberOfVariables] ;
     yIn =   new G4double[numberOfVariables] ;

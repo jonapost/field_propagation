@@ -48,23 +48,25 @@ G4DormandPrinceRK78::G4DormandPrinceRK78(G4EquationOfMotion *EqRhs,
     ak11 = new G4double[numberOfVariables];
     ak12 = new G4double[numberOfVariables];
     ak13 = new G4double[numberOfVariables];
+
+    const G4int numStateVars = std::max(noIntegrationVariables, 8);
+    yTemp = new G4double[numStateVars];
+    yIn = new G4double[numStateVars] ;
     
-    yTemp = new G4double[numberOfVariables];
-    yIn = new G4double[numberOfVariables] ;
+    fLastInitialVector = new G4double[numStateVars] ;
+    fLastFinalVector = new G4double[numStateVars] ;
+
+    fLastDyDx = new G4double[numStateVars];
     
-    fLastInitialVector = new G4double[numberOfVariables] ;
-    fLastFinalVector = new G4double[numberOfVariables] ;
-    fLastDyDx = new G4double[numberOfVariables];
-    
-    fMidVector = new G4double[numberOfVariables];
-    fMidError =  new G4double[numberOfVariables];
+    fMidVector = new G4double[numStateVars];
+    fMidError =  new G4double[numStateVars];
+
     if( primary )
     {
         fAuxStepper = new G4DormandPrinceRK78(EqRhs, numberOfVariables,
                                             !primary);
     }
 }
-
 
 //Destructor
 G4DormandPrinceRK78::~G4DormandPrinceRK78(){

@@ -75,20 +75,25 @@ G4BogackiShampine45::G4BogackiShampine45(G4EquationOfMotion *EqRhs,
     ak10 = new G4double[numberOfVariables];
     ak11 = new G4double[numberOfVariables];    
 
-    yTemp = new G4double[numberOfVariables];
-    yIn = new G4double[numberOfVariables] ;
-
     for (int i = 0; i < 6; i++) {
         p[i]= new G4double[numberOfVariables];
     }
-        
-    fLastInitialVector = new G4double[numberOfVariables] ;
-    fLastFinalVector = new G4double[numberOfVariables] ;
-    fLastDyDx = new G4double[numberOfVariables];
 
-    fMidVector = new G4double[numberOfVariables];
-    fMidError =  new G4double[numberOfVariables];
+    assert ( GetNumberOfStateVariables() >= 8 );    
+    const G4int numStateVars = std::max(noIntegrationVariables,
+                                        GetNumberOfStateVariables() );  
 
+    // Must ensure space extra 'state' variables exists - i.e. yIn[7]
+    yTemp = new G4double[numStateVars];
+    yIn = new G4double[numStateVars] ;
+    
+    fLastInitialVector = new G4double[numStateVars] ;
+    fLastFinalVector = new G4double[numStateVars] ;
+    fLastDyDx = new G4double[numberOfVariables];  // Only derivatives
+
+    fMidVector = new G4double[numberOfVariables];  // new G4double[numStateVars];
+    fMidError =  new G4double[numberOfVariables];  // new G4double[numStateVars];
+    
     if( ! fPreparedConstants )
        PrepareConstants();
     

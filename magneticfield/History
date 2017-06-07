@@ -1,4 +1,4 @@
-$Id: History 97371 2016-06-01 20:32:18Z japost $
+$Id: History 97572 2016-06-03 21:52:00Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,19 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+June 1, 2016 J.Apostolakis              - field-V10-02-19, 18, 17
+--------------------------
+- Fix in multiple steppers for the size of two C-arrays which hold
+  intermediate values;  they must be at least 8 and at least
+  'fNumberOfStateVariables' long.  
+  Changed: G4CashKarp, 
+           G4BogackiShampine 23 & 34
+           G4DormandPrince 745, RK56 & RK78
+	   G4DoLoMcPriRK34
+           G4FSALBogackiShampine45, G4FSALDormandPrince745
+- Made G4CashKarp the default stepper in G4ChordFinder.
+- Deleted trial class G4NewChordFinder.
 
 June 1, 2016 J.Apostolakis              - field-V10-02-16
 --------------------------

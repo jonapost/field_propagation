@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 97333 2016-06-01 15:33:03Z japost $
+// $Id: testPropagateMagField.cc 97572 2016-06-03 21:52:00Z japost $
 //
 //  
 //
@@ -239,6 +239,7 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4SimpleRunge.hh"
 #include "G4SimpleHeum.hh"
 #include "G4ClassicalRK4.hh"
+
 #include "G4BogackiShampine23.hh"
 #include "G4BogackiShampine45.hh"
 #include "G4DormandPrince745.hh"
@@ -265,7 +266,7 @@ G4String   fieldNameQuad("Cached Quadropole field, 20T/meter, cache=1cm");
 
 G4CachedMagneticField *pMyMagField;
 
-static int FieldChoice= 0;
+static int FieldChoice= 1;
 
 void SetFieldType( int ft )
 {
@@ -369,14 +370,20 @@ G4PropagatorInField*  SetupPropagator( G4int StepperType, G4int LocatorType = 1 
       G4TransportationManager::GetTransportationManager()->
        GetPropagatorInField ();
 
+     /***
     G4double epsilon = 1.0e-4;
     G4double minEpsilon = epsilon;
     G4double maxEpsilon = epsilon;
     
-    // Let us test the new Minimum Epsilon Step functionality
+    // Let us test the Minimum Epsilon Step functionality
     thePropagator -> SetMinimumEpsilonStep( minEpsilon ) ; 
     thePropagator -> SetMaximumEpsilonStep( maxEpsilon ) ;
-
+      ***/
+    G4cout << " Found values for Min Eps = "
+           << thePropagator->GetMinimumEpsilonStep()
+           << " and Max Eps = " << thePropagator->GetMaximumEpsilonStep()
+           << G4endl; 
+       
     G4Navigator *theNavigator= G4TransportationManager::GetTransportationManager()->
        GetNavigatorForTracking();
     // Test the options for Locator
@@ -687,7 +694,8 @@ int main(int argc, char **argv)
 
     stepperType = 8 ;  // Default stepper - Cash Karp RKF 45
     int    locatorType= 1;
-                               
+    int    fieldType= 1;  // Default field type:  Quadrupole (1)  or Constant (0)
+
     G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
     if( argc >= 2 ){
@@ -708,20 +716,30 @@ int main(int argc, char **argv)
       if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
     }
 
-    G4cout << " Testing with stepper number    " << stepperType << G4endl;
-    G4cout << "             " ;    
-    G4cout << " Using 'locator'-type = " << locatorType << G4endl;
-    G4cout << "        Key: 0 = simple, 1 = Multi, 2= Brent" << G4endl;
-    G4cout << "             " ;
-    G4cout << " voxel optimisation      " ; 
-    // if (optimiseVoxels)   G4cout << "On"; 
-    // else                  G4cout << "Off"; 
-    G4cout << (optimiseVoxels ? "On" : "Off")  << G4endl;
-    G4cout << "             " ; 
-    G4cout << " Propagator safety optim " ; 
-    // const char* OnOff= (optimisePiFwithSafety ? "on" : "off") ; 
-    // G4cout << OnOff << G4endl;
-    G4cout << (optimisePiFwithSafety ? "On" : "Off")  << G4endl;
+    if( argc >=5 ){
+      optimSaf= atoi(argv[4]);
+      if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
+    }
+
+    if( argc >=6 ){
+      G4int fieldTypeIn= atoi(argv[5]);
+      if( fieldTypeIn < 0 || fieldTypeIn > 1 ){
+         G4cerr << "Warning: Invalid field type input= " << fieldTypeIn << G4endl;
+         G4cerr << "          Keeping default value =  " << fieldType << G4endl;
+      }else{
+         fieldType = fieldTypeIn;
+      }
+      SetFieldType(fieldType);      
+    }
+    
+    
+    G4cout << " Testing with stepper number   = " << stepperType << G4endl;
+    G4cout << "       Using 'locator'-type    = " << locatorType; 
+    G4cout << "        ( Key: 0 = simple, 1 = Multi, 2= Brent ) " << G4endl;
+    G4cout << "       voxel optimisation      : "
+           << (optimiseVoxels ? "On" : "Off")  << G4endl;
+    G4cout << "       Propagator safety optim : " 
+           << (optimisePiFwithSafety ? "On" : "Off")  << G4endl;
 
     // Create the geometry & field 
     myTopNode=BuildGeometry();	// Build the geometry

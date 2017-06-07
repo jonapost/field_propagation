@@ -40,16 +40,18 @@ G4DormandPrinceRK56::G4DormandPrinceRK56(G4EquationOfMotion *EqRhs,
     ak7 = new G4double[numberOfVariables];
     ak8 = new G4double[numberOfVariables];
     ak9 = new G4double[numberOfVariables];
+
+    const G4int numStateVars = std::max(noIntegrationVariables, 8);
+    yTemp = new G4double[numStateVars];
+    yIn = new G4double[numStateVars] ;
     
-    yTemp = new G4double[numberOfVariables];
-    yIn = new G4double[numberOfVariables] ;
+    fLastInitialVector = new G4double[numStateVars] ;
+    fLastFinalVector = new G4double[numStateVars] ;
+
+    fLastDyDx = new G4double[numStateVars];
     
-    fLastInitialVector = new G4double[numberOfVariables] ;
-    fLastFinalVector = new G4double[numberOfVariables] ;
-    fLastDyDx = new G4double[numberOfVariables];
-    
-    fMidVector = new G4double[numberOfVariables];
-    fMidError =  new G4double[numberOfVariables];
+    fMidVector = new G4double[numStateVars];
+    fMidError =  new G4double[numStateVars];
 
     if( primary )
     {

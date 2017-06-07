@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateSpin.cc 82240 2014-06-12 13:30:16Z japost $
+// $Id: testPropagateSpin.cc 97572 2016-06-03 21:52:00Z japost $
 //
 //  
 //
@@ -220,22 +220,28 @@ G4VPhysicalVolume* BuildGeometry()
     return worldPhys;
 }
 
+#include "G4Mag_SpinEqRhs.hh"
+
 #include "G4ChordFinder.hh"
 #include "G4PropagatorInField.hh"
 #include "G4MagneticField.hh"
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
-#include "G4HelixExplicitEuler.hh"
-#include "G4HelixSimpleRunge.hh"
-#include "G4HelixImplicitEuler.hh"
+
 #include "G4ExplicitEuler.hh"
 #include "G4ImplicitEuler.hh"
 #include "G4SimpleRunge.hh"
 #include "G4SimpleHeum.hh"
 #include "G4ClassicalRK4.hh"
-#include "G4Mag_SpinEqRhs.hh"
 #include "G4CashKarpRKF45.hh"
-#include "G4RKG3_Stepper.hh"
+
+#include "G4BogackiShampine23.hh"
+#include "G4BogackiShampine45.hh"
+#include "G4DormandPrince745.hh"
+#include "G4DormandPrinceRK56.hh"
+#include "G4DormandPrinceRK78.hh"
+#include "G4DoLoMcPriRK34.hh"
+#include "G4TsitourasRK45.hh"
 
 G4UniformMagField myMagField(10.*tesla, 0., 0.); 
 
@@ -258,6 +264,15 @@ G4FieldManager* SetupField(G4int type)
       case 3: pStepper = new G4SimpleHeum( fEquation, ncompspin ); break;
       case 4: pStepper = new G4ClassicalRK4( fEquation, ncompspin ); break;
       case 8: pStepper = new G4CashKarpRKF45( fEquation, ncompspin ); break;
+
+      case 23: pStepper = new G4BogackiShampine23( fEquation, ncompspin ); break;
+      case 34: pStepper = new G4DoLoMcPriRK34( fEquation, ncompspin ); break;         
+      case 45: pStepper = new G4BogackiShampine45( fEquation, ncompspin ); break;
+      case 145: pStepper = new    G4TsitourasRK45( fEquation, ncompspin ); break;
+      case 745: pStepper = new G4DormandPrince745( fEquation, ncompspin ); break;
+      case 56: pStepper = new G4DormandPrinceRK56( fEquation, ncompspin ); break;
+      case 78: pStepper = new G4DormandPrinceRK78( fEquation, ncompspin ); break;         
+         
       default: pStepper = new G4ClassicalRK4( fEquation, ncompspin ); break;
     }
     

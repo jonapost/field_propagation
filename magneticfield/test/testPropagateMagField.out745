@@ -1,0 +1,430 @@
+ Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety
+ Testing with stepper number   = 745
+       Using 'locator'-type    = 1        ( Key: 0 = simple, 1 = Multi, 2= Brent ) 
+       voxel optimisation      : On
+       Propagator safety optim : On
+ Created Equation for Magnetic field.
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 5e-05 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+ Using default values for  Min Eps = 5e-05 and  MaxEps = 0.001
+ Test with no voxels
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 5e-05 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5        50        World 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5      47.5        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10      42.5        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20      32.5        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40        50        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80        50        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160   31.1092        World 
+    7         0   220.711   224.963         0  0.532914  -0.84617         0      -1.3       320       320        50        World 
+    8         0   507.206   184.824         0 -0.669994  0.742366         0       1.6       640       640   30.0043        World 
+    9         0   104.822    82.806         0  0.900726  0.434389         0     -0.31      1280      1280   33.5953        World 
+   10         0  -245.636   205.558         0  -0.23328  -0.97241         0      -1.4      2560      2560    17.813        World 
+   11         0  -531.824   905.128         0 -0.743599  0.668626         0       1.6      5120      5120   30.5545        World 
+   12         0   183.161   1807.39         0 -0.402978   0.91521         0      0.25     10240     10240   585.852        World 
+   13         0   72.8668    4960.2         0 -0.369873  0.929082  -1.1e-16     0.014   43.1427     20480   39.8016        World 
+ Cached field: 
+   Number of calls:        13927
+   Number of evaluations : 2424
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5   49.6167        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10   44.6167        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   34.6167        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   47.0507        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   44.1202        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   38.2747        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   26.7106        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   201.023        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   318.965        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   186.407        World 
+   12     540.5       550   508.618 -0.0298007 -0.576481  0.816567  -1.1e-16    0.0093   50.9638     10240         0    Target 4a 
+   13   539.329   520.279       550   0.33992 -0.740486  0.579771   1.1e-16     -0.24   16814.6     20480         0        World 
+ Cached field: 
+   Number of calls:        21583
+   Number of evaluations : 4804
+Set Driver verbosity to -1
+ Test with full voxels
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 5e-05 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5         0        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10         0        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20         0        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40         0        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80         0        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160         0        World 
+    7         0   220.711   224.963         0  0.532914  -0.84617         0      -1.3       320       320         0        World 
+    8         0   507.206   184.824         0 -0.669994  0.742366         0       1.6       640       640         0        World 
+    9         0   104.822    82.806         0  0.900726  0.434389         0     -0.31      1280      1280         0        World 
+   10         0  -245.636   205.558         0  -0.23328  -0.97241         0      -1.4      2560      2560         0        World 
+   11         0  -531.824   905.128         0 -0.743599  0.668626         0       1.6      5120      5120         0        World 
+   12         0   183.161   1807.39         0 -0.402978   0.91521         0      0.25     10240     10240   21.6768        World 
+   13         0   72.8668    4960.2         0 -0.369873  0.929082  -1.1e-16     0.014   43.1427     20480   39.8016        World 
+ Cached field: 
+   Number of calls:        35510
+   Number of evaluations : 7228
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5  0.383309        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10  0.749924        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   1.48313        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   2.94932        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   5.87978        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   11.7253        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   23.2894        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   82.6402        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   100.201        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   29.9041        World 
+   12     540.5       550   508.618 -0.0298007 -0.576481  0.816567  -1.1e-16    0.0093   50.9638     10240         0    Target 4a 
+   13   539.329   520.279       550   0.33992 -0.740486  0.579771   1.1e-16     -0.24   16814.6     20480         0        World 
+ Cached field: 
+   Number of calls:        43166
+   Number of evaluations : 9608
+
+----------------------------------------------------------
+Test with more accurate parameters ( voxels on )
+ Setting values for Min Eps = 1e-05 and MaxEps = 1e-05
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 1e-05 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5         0        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10         0        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20         0        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40         0        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80         0        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160         0        World 
+    7         0   220.711   224.963         0  0.532674  -0.84632  -1.1e-16      -1.3       320       320         0        World 
+    8         0    507.17   184.639         0 -0.670233  0.742151   1.1e-16       1.6       640       640         0        World 
+    9         0   104.728   82.5805         0  0.899939  0.436016  -1.1e-16     -0.31      1280      1280         0        World 
+   10         0  -245.643   205.242         0 -0.171978 -0.985101   1.1e-16      -1.4      2560      2560         0        World 
+   11         0  -533.385   883.715         0 -0.679984  0.733227  -1.1e-16       1.7      5120      5120         0        World 
+   12         0    149.52   1779.87         0 -0.349592  0.936902   1.1e-16       0.2     10240     10240         0        World 
+   13         0  -19.7054   4892.52         0 -0.404449   0.91456         0    -0.022   115.815     20480     96.53        World 
+ Cached field: 
+   Number of calls:        59377
+   Number of evaluations : 12534
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5  0.383309        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10  0.749924        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   1.48313        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   2.94932        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   5.87978        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   11.7253        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   23.2894        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   82.6402        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   100.201        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   29.9041        World 
+   12     540.5       550   508.618 -0.0298007 -0.576481  0.816567  -1.1e-16    0.0093   50.9638     10240         0    Target 4a 
+   13   539.329   520.279       550   0.33992 -0.740486  0.579771   1.1e-16     -0.24   16814.6     20480         0        World 
+ Cached field: 
+   Number of calls:        67033
+   Number of evaluations : 14914
+Test with more accurate parameters ( voxels on )
+Test with more accurate parameters 
+ Setting values for Min Eps = 1e-06 ( intended = 1e-06 )  and MaxEps = 0.001 ( intended = 1e-06 ). 
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 1e-06 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5         0        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10         0        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20         0        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40         0        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80         0        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160         0        World 
+    7         0   220.711   224.963         0  0.532674  -0.84632  -1.1e-16      -1.3       320       320         0        World 
+    8         0    507.17   184.639         0 -0.670233  0.742151   1.1e-16       1.6       640       640         0        World 
+    9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
+   10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
+   11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
+   12         0   30.1357   1663.58         0  0.761006 -0.648745         0      -1.5     10240     10240         0        World 
+   13         0  -489.015   3815.94         0  0.451803  0.892118         0       1.5   3925.56     20480   243.304        World 
+ Cached field: 
+   Number of calls:        132641
+   Number of evaluations : 20743
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5  0.383309        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10  0.749924        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   1.48313        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   2.94932        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   5.87978        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   11.7253        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   23.2894        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   82.6402        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   100.201        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   29.9041        World 
+   12     540.5       550   508.618 -0.0298007 -0.576481  0.816567  -1.1e-16    0.0093   50.9638     10240         0    Target 4a 
+   13   539.329   520.279       550  0.340958 -0.728842  0.593748         0     -0.22     16801     20480         0        World 
+ Cached field: 
+   Number of calls:        141403
+   Number of evaluations : 23465
+Test with more accurate parameters ( voxels on )
+Test with more accurate parameters 
+ Setting values for Min Eps = 1e-07 ( intended = 1e-07 )  and MaxEps = 0.001 ( intended = 1e-07 ). 
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 1e-07 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5         0        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10         0        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20         0        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40         0        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80         0        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160         0        World 
+    7         0   220.711   224.963         0  0.532674  -0.84632  -1.1e-16      -1.3       320       320         0        World 
+    8         0    507.17   184.639         0 -0.670233  0.742151   1.1e-16       1.6       640       640         0        World 
+    9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
+   10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
+   11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240         0        World 
+   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   235.819        World 
+ Cached field: 
+   Number of calls:        212209
+   Number of evaluations : 29369
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5  0.383309        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10  0.749924        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   1.48313        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   2.94932        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   5.87978        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   11.7253        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   23.2894        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   82.6402        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   100.201        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   29.9041        World 
+   12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
+   13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
+ Cached field: 
+   Number of calls:        224836
+   Number of evaluations : 32985
+Test with more accurate parameters ( voxels on )
+Test with more accurate parameters 
+ Setting values for Min Eps = 1e-08 ( intended = 1e-08 )  and MaxEps = 0.001 ( intended = 1e-08 ). 
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 1e-08 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5         0        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10         0        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20         0        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40         0        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80         0        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160         0        World 
+    7         0   220.711   224.963         0  0.532674  -0.84632  -1.1e-16      -1.3       320       320         0        World 
+    8         0    507.17   184.639         0 -0.670233  0.742151   1.1e-16       1.6       640       640         0        World 
+    9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
+   10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
+   11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240         0        World 
+   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   235.819        World 
+ Cached field: 
+   Number of calls:        295642
+   Number of evaluations : 38889
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5  0.383309        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10  0.749924        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   1.48313        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   2.94932        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   5.87978        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   11.7253        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   23.2894        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   82.6402        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   100.201        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   29.9041        World 
+   12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
+   13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
+ Cached field: 
+   Number of calls:        308269
+   Number of evaluations : 42505
+Test with more accurate parameters ( voxels on )
+Test with more accurate parameters 
+ Setting values for Min Eps = 1e-09 ( intended = 1e-09 )  and MaxEps = 0.001 ( intended = 1e-09 ). 
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 1e-09 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5         0        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10         0        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20         0        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40         0        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80         0        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160         0        World 
+    7         0   220.711   224.963         0  0.532674  -0.84632  -1.1e-16      -1.3       320       320         0        World 
+    8         0    507.17   184.639         0 -0.670233  0.742151   1.1e-16       1.6       640       640         0        World 
+    9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
+   10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
+   11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240         0        World 
+   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   235.819        World 
+ Cached field: 
+   Number of calls:        379075
+   Number of evaluations : 48409
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5  0.383309        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10  0.749924        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   1.48313        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   2.94932        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   5.87978        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   11.7253        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   23.2894        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   82.6402        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   100.201        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   29.9041        World 
+   12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
+   13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
+ Cached field: 
+   Number of calls:        391702
+   Number of evaluations : 52025
+ Now test with optimisation off
+ Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
+ Found values for Min Eps = 1e-09 and Max Eps = 0.001
+Over-riding  PropagatorInField to use Multi Locator. ( In the unit test code. ) 
+
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0,0,0)
+ and UnitVelocity (0,0.6,0.8)
+ Momentum in GeV/c is 0.469136 = 469.136 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0         0         0         0         0       0.6       0.8  -1.1e-16  -1.1e-16       2.5       2.5         0 Big Target 2 
+    1         0       1.5         2         0       0.6       0.8   1.1e-16   1.1e-16         5         5        50        World 
+    2         0       4.5         6         0  0.600585  0.799561         0  -0.00044        10        10        50        World 
+    3         0   10.5027   13.9981         0  0.603775  0.797155         0   -0.0024        20        20        50        World 
+    4         0   22.5411   29.9692         0  0.617323   0.78671  -1.1e-16     -0.01        40        40        50        World 
+    5         0   46.9265   61.6767         0  0.673051  0.739596         0    -0.047        80        80        50        World 
+    6         0   98.2857   122.992         0  0.869995   0.49306   1.1e-16     -0.25       160       160        50        World 
+    7         0   220.711   224.963         0  0.532674  -0.84632  -1.1e-16      -1.3       320       320        50        World 
+    8         0    507.17   184.639         0 -0.670233  0.742151   1.1e-16       1.6       640       640        50        World 
+    9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280        50        World 
+   10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560        50        World 
+   11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120   239.327        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240   1113.58        World 
+   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   1174.37        World 
+ Cached field: 
+   Number of calls:        462508
+   Number of evaluations : 57929
+
+Test PropagateMagField: ***********************
+ Starting New Particle with Position (0.2,0.3,0.4)
+ and UnitVelocity (0.0733236,0.586588,0.806559)
+ Momentum in GeV/c is 9.85186 = 9851.86 MeV
+Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Delta(N_z)    StepLen   PhsStep    Safety         NextVolume 
+    0       0.2       0.3       0.4 0.0733233  0.586589  0.806559   1.1e-16  -2.5e-07       2.5       2.5         0 Big Target 2 
+    1  0.383309   1.76647    2.4164 0.0733228   0.58659  0.806558         0  -4.9e-07         5         5   49.6167        World 
+    2  0.749924   4.69942   6.44919 0.0733184  0.586619  0.806538         0  -2.1e-05        10        10   49.2501        World 
+    3   1.48313   10.5654   14.5147 0.0732977  0.586771  0.806429         0  -0.00011        20        20   48.5169        World 
+    4   2.94932   22.2991   30.6445  0.073214  0.587416  0.805967         0  -0.00046        40        40   47.0507        World 
+    5   5.87978   45.7811   62.8937 0.0728748  0.590086  0.804045         0   -0.0019        80        80   44.1202        World 
+    6   11.7253   92.8652   127.306 0.0715173  0.600957  0.796075  -1.1e-16    -0.008       160       160   38.2747        World 
+    7   23.2894   188.044   255.395 0.0662958  0.644254  0.761933         0    -0.034       320       320   26.7106        World 
+    8   45.4242   386.516    505.38 0.0490541  0.804788  0.591532         0     -0.17       640       640   4.57577        World 
+    9   82.6402    845.84   947.357 0.0395525  0.887999 -0.458142   1.1e-16        -1      1280      1280   397.357        World 
+   10   130.315   2044.37   1140.37  0.155396 -0.850661  0.502222         0      0.96      2560      2560   1494.37        World 
+   11   479.382   1113.85  -29.9041 -0.0162001 -0.589993  0.807246         0      0.31   788.467      5120   563.853        World 
+   12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
+   13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
+ Cached field: 
+   Number of calls:        475135
+   Number of evaluations : 61545

@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testProElectroMagField.cc 92913 2015-09-21 14:59:56Z japost $
+// $Id: testProElectroMagField.cc 97572 2016-06-03 21:52:00Z japost $
 //
 //  
 //
@@ -211,6 +211,10 @@ G4VPhysicalVolume* BuildGeometry()
     return worldPhys;
 }
 
+//  Equation of motion 
+// #include "G4Mag_UsualEqRhs.hh"
+#include "G4EqMagElectricField.hh"
+
 #include "G4ChordFinder.hh"
 #include "G4PropagatorInField.hh"
 #include "G4MagneticField.hh"
@@ -224,10 +228,17 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4SimpleRunge.hh"
 #include "G4SimpleHeum.hh"
 #include "G4ClassicalRK4.hh"
-#include "G4Mag_UsualEqRhs.hh"
-#include "G4EqMagElectricField.hh"
+
 #include "G4CashKarpRKF45.hh"
 #include "G4RKG3_Stepper.hh"
+
+#include "G4BogackiShampine23.hh"
+#include "G4BogackiShampine45.hh"
+#include "G4DormandPrince745.hh"
+#include "G4DormandPrinceRK56.hh"
+#include "G4DormandPrinceRK78.hh"
+#include "G4DoLoMcPriRK34.hh"
+#include "G4TsitourasRK45.hh"
 
 // G4UniformMagField myMagField(10.*tesla, 0., 0.); 
 
@@ -239,8 +250,6 @@ G4FieldManager* SetupField(G4int type)
 {
     G4FieldManager   *pFieldMgr;
     G4ChordFinder    *pChordFinder;
-
-    //    G4Mag_UsualEqRhs *fEquation = new G4Mag_UsualEqRhs(&myMagField); 
 
     // G4EqMagElectricField *
     fEquation = new G4EqMagElectricField(&myElectricField);
@@ -257,6 +266,14 @@ G4FieldManager* SetupField(G4int type)
       case 3: pStepper = new G4SimpleHeum( fEquation, nvar  ); break;
       case 4: pStepper = new G4ClassicalRK4( fEquation, nvar  ); break;
       case 8: pStepper = new G4CashKarpRKF45( fEquation, nvar  );    break;
+      case 23: pStepper = new G4BogackiShampine23( fEquation, nvar ); break;
+      case 34: pStepper = new G4DoLoMcPriRK34( fEquation, nvar ); break;         
+      case 45: pStepper = new G4BogackiShampine45( fEquation, nvar ); break;
+      case 145: pStepper = new    G4TsitourasRK45( fEquation, nvar ); break;
+      case 745: pStepper = new G4DormandPrince745( fEquation, nvar ); break;
+      case 56: pStepper = new G4DormandPrinceRK56( fEquation, nvar ); break;
+      case 78: pStepper = new G4DormandPrinceRK78( fEquation, nvar ); break;
+         
 	// --- case 9: pStepper = new G4RKG3_Stepper( fEquation, nvar  );    break;
       default: pStepper = 0;
 	G4cout << "Chosen stepper " << type << " does not exist. " << G4endl;

@@ -115,9 +115,10 @@ void G4HelixMixedStepper::Stepper(  const G4double  yInput[7],
   else
   {
     fNumCallsHelix++;
-    const G4int    nvar = 6 ;
+    const G4int    nvar    = 6 ;
+    const G4int    nvarMax = 8 ;    
     G4int          i;
-    G4double       yTemp[7], yIn[7], yTemp2[7];
+    G4double       yTemp[nvarMax], yIn[nvarMax], yTemp2[nvarMax];
     G4ThreeVector  Bfld_midpoint;
 
     //  Saving yInput because yInput and yOut can be aliases for same array

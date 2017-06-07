@@ -11,7 +11,7 @@
 #
 # Generated on : 29/9/2010
 #
-# $Id: sources.cmake 97285 2016-05-31 19:52:18Z japost $
+# $Id: sources.cmake 97572 2016-06-03 21:52:00Z japost $
 #
 #------------------------------------------------------------------------------
 
@@ -90,8 +90,6 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4MonopoleEq.hh
         G4MagneticField.hh
         G4NystromRK4.hh
-        G4NewChordFinder.hh
-        G4NewChordFinder.icc
         G4QuadrupoleMagField.hh
         G4RepleteEofM.hh
         G4RKG3_Stepper.hh
@@ -154,7 +152,6 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4Mag_UsualEqRhs.cc
         G4MagneticField.cc
         G4MonopoleEq.cc
-        G4NewChordFinder.cc
         G4NystromRK4.cc
         G4QuadrupoleMagField.cc
         G4RepleteEofM.cc

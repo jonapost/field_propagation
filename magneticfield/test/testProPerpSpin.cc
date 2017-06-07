@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testProPerpSpin.cc 85845 2014-11-05 15:43:58Z gcosmo $
+// $Id: testProPerpSpin.cc 97572 2016-06-03 21:52:00Z japost $
 //
 //  
 //
@@ -222,31 +222,42 @@ G4VPhysicalVolume* BuildGeometry()
     return worldPhys;
 }
 
+#include "G4Mag_SpinEqRhs.hh"
+
 #include "G4ChordFinder.hh"
 #include "G4PropagatorInField.hh"
 #include "G4MagneticField.hh"
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
-#include "G4HelixExplicitEuler.hh"
-#include "G4HelixSimpleRunge.hh"
-#include "G4HelixImplicitEuler.hh"
+
 #include "G4ExplicitEuler.hh"
 #include "G4ImplicitEuler.hh"
 #include "G4SimpleRunge.hh"
 #include "G4SimpleHeum.hh"
 #include "G4ClassicalRK4.hh"
-#include "G4Mag_SpinEqRhs.hh"
+
 #include "G4CashKarpRKF45.hh"
-#include "G4RKG3_Stepper.hh"
+// #include "G4RKG3_Stepper.hh"
+
+#include "G4BogackiShampine23.hh"
+#include "G4BogackiShampine45.hh"
+#include "G4DormandPrince745.hh"
+#include "G4DormandPrinceRK56.hh"
+#include "G4DormandPrinceRK78.hh"
+#include "G4DoLoMcPriRK34.hh"
+#include "G4TsitourasRK45.hh"
 
 G4UniformMagField myMagField(10.*tesla, 0., 0.); 
-
+G4Mag_SpinEqRhs *gEquation = new G4Mag_SpinEqRhs(&myMagField);
 
 G4FieldManager* SetupField(G4int type)
 {
     G4FieldManager   *pFieldMgr;
     G4ChordFinder    *pChordFinder;
-    G4Mag_SpinEqRhs *fEquation = new G4Mag_SpinEqRhs(&myMagField); 
+
+    auto fEquation = new G4Mag_SpinEqRhs(&myMagField);
+    gEquation = fEquation;
+    
     G4MagIntegratorStepper *pStepper;
 
     const int ncompspin=12;
@@ -259,6 +270,15 @@ G4FieldManager* SetupField(G4int type)
       case 3: pStepper = new G4SimpleHeum( fEquation, ncompspin ); break;
       case 4: pStepper = new G4ClassicalRK4( fEquation, ncompspin ); break;
       case 8: pStepper = new G4CashKarpRKF45( fEquation, ncompspin ); break;
+
+      case 23: pStepper = new G4BogackiShampine23( fEquation, ncompspin ); break;
+      case 34: pStepper = new G4DoLoMcPriRK34( fEquation, ncompspin ); break;         
+      case 45: pStepper = new G4BogackiShampine45( fEquation, ncompspin ); break;
+      case 145: pStepper = new    G4TsitourasRK45( fEquation, ncompspin ); break;
+      case 745: pStepper = new G4DormandPrince745( fEquation, ncompspin ); break;
+      case 56: pStepper = new G4DormandPrinceRK56( fEquation, ncompspin ); break;
+      case 78: pStepper = new G4DormandPrinceRK78( fEquation, ncompspin ); break;
+         
       default: pStepper = new G4ClassicalRK4( fEquation, ncompspin ); break;
     }
     
@@ -294,33 +314,33 @@ G4PropagatorInField*  SetupPropagator( G4int type)
     return thePropagator;
 }
 
-//  This is Done only for this test program ... the transportation does it.
-//  The method is now obsolete -- as propagator in Field has this method,
-//    in order to message the correct field manager's chord finder.
-//
-void  SetChargeMomentumMass( G4ChordFinder* pChordFinder, 
-                             G4double charge, G4double MomentumXc, G4double Mass)
-{
+// //  This is Done only for this test program ... the transportation does it.
+// //  The method is now obsolete -- as propagator in Field has this method,
+// //    in order to message the correct field manager's chord finder.
+// //
+// void  SetChargeMomentumMass( G4ChordFinder* pChordFinder, 
+//                              G4double charge, G4double MomentumXc, G4double Mass)
+// {
 
-    // G4ChordFinder*  pChordFinder= 0; 
-    G4EquationOfMotion* equation= 0;
+//     // G4ChordFinder*  pChordFinder= 0; 
+//     G4EquationOfMotion* equation= 0;
 
-    //  pChordFinder= G4TransportationManager::GetTransportationManager()->
-    //		   GetFieldManager()->GetChordFinder();
+//     //  pChordFinder= G4TransportationManager::GetTransportationManager()->
+//     //		   GetFieldManager()->GetChordFinder();
 
-    G4MagInt_Driver* driver= pChordFinder->GetIntegrationDriver();
+//     G4MagInt_Driver* driver= pChordFinder->GetIntegrationDriver();
 
-    G4MagIntegratorStepper* stepper= driver->GetStepper(); 
-    equation = stepper->GetEquationOfMotion(); 
+//     G4MagIntegratorStepper* stepper= driver->GetStepper(); 
+//     equation = stepper->GetEquationOfMotion(); 
 
-// equation GetEquationOfMotion(); 
+// // equation GetEquationOfMotion(); 
 
-    G4ChargeState chargeSt(charge, 0.0, 0.5 ); // Assume M-dipole=0, spin=0.5
-    equation->SetChargeMomentumMass(
-                      chargeSt, 
-		      MomentumXc,   // Momentum in Mev/c ?
-                      Mass );
-}
+//     G4ChargeState chargeSt(charge, 0.0, 0.5 ); // Assume M-dipole=0, spin=0.5
+//     equation->SetChargeMomentumMass(
+//                       chargeSt, 
+// 		      MomentumXc,   // Momentum in Mev/c ?
+//                       Mass );
+// }
 
 //
 // Test Stepping
@@ -349,11 +369,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume *pTopNode, G4int ) // type
     G4PropagatorInField *pMagFieldPropagator= 
                             transportMgr->GetPropagatorInField(); 
       
-    // pMagFieldPropagator->SetChargeMomentumMass(  
-    SetChargeMomentumMass(  
-                            pMagFieldPropagator, 
-                            // chargeSt, 
-			    +1.,                    // charge in e+ units
+    // pMagFieldPropagator->SetChargeMomentumMass(
+    G4ChargeState chargeSt( +1.,         // charge in e+ units
+                            0.0,         // M-dipole=0
+                            0.5 );       // Polarisation    
+    gEquation->SetChargeMomentumMass(  
+                            chargeSt, 
 			    0.1*GeV,                // Momentum in Mev/c ?
 			    0.105658387*GeV );
     pNavig->SetWorldVolume(pTopNode);
@@ -399,10 +420,12 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume *pTopNode, G4int ) // type
 		    + rest_mass );
        G4double labTof= 10.0*ns, properTof= 0.1*ns;
        // pMagFieldPropagator->SetChargeMomentumMass(
-       SetChargeMomentumMass( pMagFieldPropagator, 
-		      +1,                    // charge in e+ units
-                      momentum_val, 
-                      rest_mass);
+       G4ChargeState chargeState( +1.,         // charge in e+ units
+                                  0.0,         // M-dipole=0
+                                  0.5 );       // Polarisation           
+       gEquation->SetChargeMomentumMass( chargeState
+                                         momentum_val, 
+                                         rest_mass);
 
        G4double  beta = momentum_val / std::sqrt( rest_mass*rest_mass + momentum_val*momentum_val );
        G4double       velocity_magnitude = beta * c_light;

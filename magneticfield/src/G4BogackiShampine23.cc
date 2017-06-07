@@ -49,17 +49,20 @@ G4BogackiShampine23::G4BogackiShampine23(G4EquationOfMotion *EqRhs,
   ak3 = new G4double[numberOfVariables] ;
   ak4 = new G4double[numberOfVariables] ;
 
-  yTemp = new G4double[numberOfVariables] ;
-  yIn = new G4double[numberOfVariables] ;
-    
   pseudoDydx_for_DistChord = new G4double[numberOfVariables];
 
-  fLastInitialVector = new G4double[numberOfVariables] ;
-  fLastFinalVector = new G4double[numberOfVariables] ;
-  fLastDyDx = new G4double[numberOfVariables];
+  const G4int numStateVars = std::max(noIntegrationVariables,
+                                      GetNumberOfStateVariables() );  
 
-  fMidVector = new G4double[numberOfVariables];
-  fMidError =  new G4double[numberOfVariables];
+  yTemp = new G4double[numberOfVariables] ;
+  yIn = new G4double[numberOfVariables] ;
+  
+  fLastInitialVector = new G4double[numStateVars] ;
+  fLastFinalVector = new G4double[numStateVars] ;
+  fLastDyDx = new G4double[numStateVars];
+
+  fMidVector = new G4double[numStateVars];
+  fMidError =  new G4double[numStateVars];
   if( primary )
   {
     fAuxStepper = new G4BogackiShampine23(EqRhs, numberOfVariables, !primary);

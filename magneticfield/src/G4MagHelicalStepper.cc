@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagHelicalStepper.cc 66241 2012-12-13 18:34:42Z gunter $
+// $Id: G4MagHelicalStepper.cc 97572 2016-06-03 21:52:00Z japost $
 //
 // --------------------------------------------------------------------
 
@@ -202,7 +202,7 @@ G4MagHelicalStepper::Stepper( const G4double yInput[],
    // correction for Richardson Extrapolation.
    // G4double  correction = 1. / ( (1 << IntegratorOrder()) -1 );
    
-   G4double      yTemp[7], yIn[7] ;
+   G4double      yTemp[8], yIn[8] ;
    G4ThreeVector Bfld_initial, Bfld_midpoint;
    
    //  Saving yInput because yInput and yOut can be aliases for same array

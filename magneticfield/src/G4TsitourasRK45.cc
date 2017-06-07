@@ -44,11 +44,20 @@ G4TsitourasRK45::G4TsitourasRK45(G4EquationOfMotion *EqRhs,
   ak6 = new G4double[numberOfVariables] ; 
   ak7 = new G4double[numberOfVariables] ;
   ak8 = new G4double[numberOfVariables] ;
-  yTemp = new G4double[numberOfVariables] ; 
-  yIn = new G4double[numberOfVariables] ;
+
+
+  // Must ensure space extra 'state' variables exists - i.e. yIn[7]
+  const G4int numStateMax  = std::max(GetNumberOfStateVariables(), 8);  
+  const G4int numStateVars = std::max(noIntegrationVariables,
+                                      numStateMax );
+                                   // GetNumberOfStateVariables() ); 
+                                      
+  yTemp = new G4double[numStateVars] ;
+  yIn = new G4double[numStateVars] ;
 
   fLastInitialVector = new G4double[numberOfVariables] ;
   fLastFinalVector = new G4double[numberOfVariables] ;
+
   fLastDyDx = new G4double[numberOfVariables];
 
   fMidVector = new G4double[numberOfVariables];

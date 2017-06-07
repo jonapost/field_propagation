@@ -59,6 +59,8 @@
 //      587/8064           0       4440339/15491840 24353/124800    387/44800     2152/5985   7267/94080       0
 //      2479/34992         0          123/416       612941/3411720  43/1440       2272/6561  79937/1113912  3293/556956
 
+#include <cassert>
+
 #include "G4FSALBogackiShampine45.hh"
 #include "G4LineSection.hh"
 
@@ -86,14 +88,22 @@ G4FSALBogackiShampine45::G4FSALBogackiShampine45(G4EquationOfMotion *EqRhs,
     ak10 = new G4double[numberOfVariables];
     ak11 = new G4double[numberOfVariables];
 
-    yTemp = new G4double[numberOfVariables];
-    yIn = new G4double[numberOfVariables] ;
+    assert ( GetNumberOfStateVariables() >= 8 );
+    const G4int numStateVars = std::max(noIntegrationVariables,
+                                        GetNumberOfStateVariables() );  
+
+    // Must ensure space extra 'state' variables exists - i.e. yIn[7]
+    yTemp = new G4double[numStateVars];
+    yIn = new G4double[numStateVars] ;
+    
+    fLastInitialVector = new G4double[numStateVars] ;
+    fLastFinalVector = new G4double[numStateVars] ;
+    fLastDyDx = new G4double[numberOfVariables];  // Only derivatives
+    
+    fMidVector = new G4double[numStateVars];
+    fMidError =  new G4double[numStateVars];
     
     pseudoDydx_for_DistChord = new G4double[numberOfVariables];
-    
-    fLastInitialVector = new G4double[numberOfVariables] ;
-    fLastFinalVector = new G4double[numberOfVariables] ;
-    fLastDyDx = new G4double[numberOfVariables];
     
     fMidVector = new G4double[numberOfVariables];
     fMidError =  new G4double[numberOfVariables];
@@ -212,7 +222,6 @@ void G4FSALBogackiShampine45::Stepper(const G4double yInput[],
         yIn[i]=yInput[i];
         DyDx[i] = dydx[i];
     }
-    
     
     
     // RightHandSide(yIn, dydx) ;

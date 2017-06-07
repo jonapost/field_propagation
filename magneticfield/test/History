@@ -1,4 +1,4 @@
-$Id: History 97371 2016-06-01 20:32:18Z japost $
+$Id: History 97572 2016-06-03 21:52:00Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -17,9 +17,28 @@ committal in the CVS repository !
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
 
+June  3, 2016 J.Apostolakis                  - part of field-V10-02-18
+---------------------------
+- Added option for new embedded steppers to remaining sub-system tests:
+        testProElectroMagField.cc
+        testProPerpSpin.cc
+        testPropagateSpin.cc
+
+- Added output for new steppers for new steppers for the tests:
+        testPropagateMagField.cc
+        testProElectroMagField.cc
+	
+June  3, 2016 J.Apostolakis                  - part of field-V10-02-17
+---------------------------
+- Added runs for new steppers to all tests in test.sh !!
+
+- Several changes in testPropagateMagField.cc:
+    Supress setting of min/max Eps in SetupPropagator - instead print them.
+    Changed to using Quad field as default.
+    Choice of type of magnetic field can be done at runtime - in argv[5]
 
 June  1, 2016 J.Apostolakis                  - part of field-V10-02-16
-------------------------------------------
+---------------------------
 - Deleted RkTestRun - 
    Reason: to alleviate cmake problem with "validate-sources"
  
