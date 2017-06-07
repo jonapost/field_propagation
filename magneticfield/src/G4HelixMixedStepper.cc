@@ -61,7 +61,9 @@
 #include "G4ThreeVector.hh"
 #include "G4LineSection.hh"
 
-G4HelixMixedStepper::G4HelixMixedStepper(G4Mag_EqRhs *EqRhs, G4int stepperNumber, G4double angleThreshold)
+G4HelixMixedStepper::
+G4HelixMixedStepper(G4Mag_EqRhs *EqRhs, G4int stepperNumber,
+                    G4double angleThreshold)
   : G4MagHelicalStepper(EqRhs), fNumCallsRK4(0), fNumCallsHelix(0)
 {
    SetVerbose(1);
@@ -126,17 +128,20 @@ void G4HelixMixedStepper::Stepper(  const G4double  yInput[7],
     
     G4double halfS = Step * 0.5;
     // 1. Do first half step and full step
-    AdvanceHelix(yIn,   Bfld,          halfS, yTemp, yTemp2); // yTemp2 for s=2*h (halfS)
+    AdvanceHelix(yIn, Bfld, halfS, yTemp, yTemp2); // yTemp2 for s=2*h (halfS)
     //**********
 
     MagFieldEvaluate(yTemp, Bfld_midpoint) ;
 
     // 2. Do second half step - with revised field
-    // NOTE: Could avoid this call if  'Bfld_midpoint == Bfld' or diff 'almost' zero
-    AdvanceHelix(yTemp, Bfld_midpoint, halfS, yOut); // Not requesting y at s=2*h (halfS)
+    // NOTE: Could avoid this call if  'Bfld_midpoint == Bfld'
+    //       or diff 'almost' zero
+    AdvanceHelix(yTemp, Bfld_midpoint, halfS, yOut);
+    // Not requesting y at s=2*h (halfS)
     //**********
     
-    // 3. Estimate the integration error - should be (nearly) zero if Bfield= constant
+    // 3. Estimate the integration error
+    //    should be (nearly) zero if Bfield= constant
     for(i=0;i<nvar;i++) {
       yErr[i] = yOut[i] - yTemp2[i] ;
     }
@@ -180,63 +185,115 @@ G4double G4HelixMixedStepper::DistChord()   const
 // ---------------------------------------------------------------------------
 void G4HelixMixedStepper::PrintCalls()
 {
-  G4cout<<"In HelixMixedStepper::Number of calls to smallStepStepper = "<<fNumCallsRK4
-        <<"  and Number of calls to Helix = "<<fNumCallsHelix<<G4endl;
+  G4cout << "In HelixMixedStepper::Number of calls to smallStepStepper = "
+         << fNumCallsRK4
+         << "  and Number of calls to Helix = " << fNumCallsHelix << G4endl;
 }
 
 G4MagIntegratorStepper*
 G4HelixMixedStepper::SetupStepper(G4Mag_EqRhs* pE, G4int StepperNumber)
 {
   G4MagIntegratorStepper* pStepper;
-  if (fVerbose>0)
-     G4cout<<" G4HelixMixedStepper: ";
+  if (fVerbose>0) G4cout << " G4HelixMixedStepper: ";
   switch ( StepperNumber )
     {
-     // Robust, classic method
-     case 4: pStepper = new G4ClassicalRK4( pE ); if (fVerbose>0)G4cout<<"G4ClassicalRK4"; break;
+      // Robust, classic method
+      case 4:
+        pStepper = new G4ClassicalRK4( pE );
+        if (fVerbose>0) G4cout << "G4ClassicalRK4";
+        break;
 
-     // Steppers with embedded estimation of error
-     case 8: pStepper = new G4CashKarpRKF45( pE ); if (fVerbose>0)G4cout<<"G4CashKarpRKF45"; break;
-     case 13: pStepper = new G4NystromRK4( pE );    if (fVerbose>0)G4cout<<"G4NystromRK4"; break;
+      // Steppers with embedded estimation of error
+      case 8:
+        pStepper = new G4CashKarpRKF45( pE );
+        if (fVerbose>0) G4cout << "G4CashKarpRKF45";
+        break;
+      case 13:
+        pStepper = new G4NystromRK4( pE );
+        if (fVerbose>0) G4cout << "G4NystromRK4";
+        break;
         
-     // Lowest order RK Stepper - experimental
-     case 1: pStepper = new G4ImplicitEuler( pE ); if (fVerbose>0)G4cout<<"G4ImplicitEuler"; break;
-     // Lower order RK Steppers - ok overall, good for uneven fields        
-     case 2: pStepper = new G4SimpleRunge( pE ); if (fVerbose>0)G4cout<<"G4SimpleRunge"; break;
-     case 3: pStepper = new G4SimpleHeum( pE );  if (fVerbose>0)G4cout<<"G4SimpleHeum";break;
-     case 23: pStepper = new G4BogackiShampine23( pE ); if (fVerbose>0)G4cout<<"G4BogackiShampine23"; break;
+      // Lowest order RK Stepper - experimental
+      case 1:
+        pStepper = new G4ImplicitEuler( pE );
+        if (fVerbose>0) G4cout << "G4ImplicitEuler";
+        break;
 
-     // Higher order RK Steppers - for smoother fields and high accuracy requirements 
-     case 45:  pStepper = new G4BogackiShampine45( pE ); if (fVerbose>0)G4cout<<"G4BogackiShampine45"; break;
-     case 145: pStepper = new G4TsitourasRK45( pE );    if (fVerbose>0)G4cout<<"G4TsitourasRK45"; break;
-     case 745: pStepper = new G4DormandPrince745( pE ); if (fVerbose>0)G4cout<<"G4DormandPrince745"; break;
+      // Lower order RK Steppers - ok overall, good for uneven fields        
+      case 2:
+        pStepper = new G4SimpleRunge( pE );
+        if (fVerbose>0) G4cout << "G4SimpleRunge";
+        break;
+      case 3:
+        pStepper = new G4SimpleHeum( pE );
+        if (fVerbose>0) G4cout << "G4SimpleHeum";
+        break;
+      case 23:
+        pStepper = new G4BogackiShampine23( pE );
+        if (fVerbose>0) G4cout << "G4BogackiShampine23";
+        break;
 
-     // Helical Steppers
-     case 6: pStepper = new G4HelixImplicitEuler( pE ); if (fVerbose>0)G4cout<<"G4HelixImplicitEuler"; break;
-     case 7: pStepper = new G4HelixSimpleRunge( pE ); if (fVerbose>0)G4cout<<"G4HelixSimpleRunge"; break;
-     case 5: pStepper = new G4HelixExplicitEuler( pE ); if (fVerbose>0)G4cout<<"G4HelixExplicitEuler"; break;
-     //  Since Helix Explicit is used for long steps, this is useful only to measure overhead.
-        
-     // Exact Helix - likely good only for cases of
-     //            i) uniform field (potentially over small distances)
-     //           ii) segmented uniform field (maybe)
-     case 9: pStepper = new G4ExactHelixStepper( pE );  if (fVerbose>0)G4cout<<"G4ExactHelixStepper";   break;
+      // Higher order RK Steppers
+      // for smoother fields and high accuracy requirements 
+      case 45:
+        pStepper = new G4BogackiShampine45( pE );
+        if (fVerbose>0) G4cout << "G4BogackiShampine45";
+        break;
+      case 145:
+        pStepper = new G4TsitourasRK45( pE );
+        if (fVerbose>0) G4cout << "G4TsitourasRK45";
+        break;
+      case 745:
+        pStepper = new G4DormandPrince745( pE );
+        if (fVerbose>0) G4cout << "G4DormandPrince745";
+        break;
 
-     case 10: pStepper = new G4RKG3_Stepper( pE );  if (fVerbose>0)G4cout<<"G4RKG3_Stepper";   break;
+      // Helical Steppers
+      case 6:
+        pStepper = new G4HelixImplicitEuler( pE );
+        if (fVerbose>0) G4cout << "G4HelixImplicitEuler";
+        break;
+      case 7:
+        pStepper = new G4HelixSimpleRunge( pE );
+        if (fVerbose>0) G4cout << "G4HelixSimpleRunge";
+        break;
+      case 5:
+        pStepper = new G4HelixExplicitEuler( pE );
+        if (fVerbose>0) G4cout << "G4HelixExplicitEuler";
+        break; //  Since Helix Explicit is used for long steps,
+               // this is useful only to measure overhead.
+      // Exact Helix - likely good only for cases of
+      //            i) uniform field (potentially over small distances)
+      //           ii) segmented uniform field (maybe)
+      case 9:
+        pStepper = new G4ExactHelixStepper( pE );
+        if (fVerbose>0) G4cout << "G4ExactHelixStepper";
+        break;
+      case 10:
+        pStepper = new G4RKG3_Stepper( pE );
+        if (fVerbose>0) G4cout << "G4RKG3_Stepper";
+        break;
 
-     // Low Order Steppers - not good except for very weak fields
-     case 11: pStepper = new G4ExplicitEuler( pE ); if (fVerbose>0)G4cout<<"G4ExplicitEuler"; break;
-     case 12: pStepper = new G4ImplicitEuler( pE ); if (fVerbose>0)G4cout<<"G4ImplicitEuler"; break;
+      // Low Order Steppers - not good except for very weak fields
+      case 11:
+        pStepper = new G4ExplicitEuler( pE );
+        if (fVerbose>0) G4cout << "G4ExplicitEuler";
+        break;
+      case 12:
+        pStepper = new G4ImplicitEuler( pE );
+        if (fVerbose>0) G4cout << "G4ImplicitEuler";
+        break;
 
-     case 0:
-     case -1:
-     default:
-         pStepper = new G4ClassicalRK4( pE );
-         G4cout<<"G4ClassicalRK4 (Default)";
-         if( fVerbose <= 0) G4cout << " chosen as stepper for small steps in G4HelixMixedStepper."; break;
-      
+      case 0:
+      case -1:
+      default:
+        pStepper = new G4ClassicalRK4( pE );
+        if (fVerbose>0) G4cout << "G4ClassicalRK4 (Default)";
+        break;
     }
-  if( fVerbose > 0 ) 
-     G4cout <<  " chosen as stepper for small steps." << G4endl;  
+  if(fVerbose>0)
+    G4cout << " chosen as stepper for small steps in G4HelixMixedStepper."
+           << G4endl;
+
   return pStepper;
 }
