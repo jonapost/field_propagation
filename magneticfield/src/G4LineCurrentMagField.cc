@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4LineCurrentMagField.cc 96752 2016-05-04 09:40:23Z gcosmo $
+// $Id: G4LineCurrentMagField.cc 96753 2016-05-04 09:49:38Z gcosmo $
 // -------------------------------------------------------------------
 
 #include "G4LineCurrentMagField.hh"

@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4LineCurrentMagField.hh 96752 2016-05-04 09:40:23Z gcosmo $
+// $Id: G4LineCurrentMagField.hh 96753 2016-05-04 09:49:38Z gcosmo $
 //
 //
 // class G4LineCurrentMagField
