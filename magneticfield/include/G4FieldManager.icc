@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4FieldManager.icc 93801 2015-11-02 10:25:38Z japost $
+// $Id: G4FieldManager.icc 104126 2017-05-11 14:16:54Z japost $
 //
 //
 // G4FieldManager inline implementation 
@@ -134,3 +134,20 @@ void      G4FieldManager::SetMaximumEpsilonStep( G4double newEpsMax )
     fEpsilonMax = newEpsMax;
   }
 }
+
+inline
+void   G4FieldManager::ChangeDetectorField(G4Field *detectorField)
+{
+   int errorType = 2; // Fatal !
+   this->SetDetectorField( detectorField, errorType ); 
+}
+
+inline
+void   G4FieldManager::ProposeDetectorField(G4Field *detectorField)
+{
+  fDetectorField= detectorField;
+  this->InitialiseFieldChangesEnergy();
+}
+// Note: this is equivalent to 
+//           this->SetDetectorField( detectorField, 0 );
+//       but simpler!
