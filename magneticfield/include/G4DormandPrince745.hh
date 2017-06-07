@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: DormandPrince745.hh 97110 2016-05-25 18:28:45Z japost $
+// $Id: G4DormandPrince745.hh 97285 2016-05-31 19:52:18Z japost $
 //
 //  Class desription: 
 //    An implementation of the 5th order embedded RK method from the paper
@@ -49,13 +49,13 @@
 
 #include "G4MagIntegratorStepper.hh"
 
-class DormandPrince745 : public G4MagIntegratorStepper
+class G4DormandPrince745 : public G4MagIntegratorStepper
 {
   public:
-    DormandPrince745(G4EquationOfMotion *EqRhs,
+    G4DormandPrince745(G4EquationOfMotion *EqRhs,
 					 G4int numberOfVariables = 6,
 					 G4bool primary =  true);
-    ~DormandPrince745();
+    ~G4DormandPrince745();
    
     void Stepper( const G4double y[],
                   const G4double dydx[],
@@ -117,11 +117,11 @@ class DormandPrince745 : public G4MagIntegratorStepper
     G4int IntegratorOrder() const {return 4; }
     
     //New copy constructor
-    //  DormandPrince745(const DormandPrince745 &);
+    //  G4DormandPrince745(const G4DormandPrince745 &);
     
 private :
     
-    DormandPrince745& operator=(const DormandPrince745&);
+    G4DormandPrince745& operator=(const G4DormandPrince745&);
     
     G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7,
       *ak8, *ak9, 	//For additional stages in the interpolant
@@ -132,6 +132,6 @@ private :
              *fInitialDyDx, *fMidVector, *fMidError;
     // for DistChord calculations
     
-    DormandPrince745* fAuxStepper;
+    G4DormandPrince745* fAuxStepper;
 };
-#endif /* defined(__Geant4__DormandPrince745__) */
+#endif /* defined(__Geant4__G4DormandPrince745__) */

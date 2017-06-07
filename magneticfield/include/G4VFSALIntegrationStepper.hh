@@ -23,9 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: FSALMagIntegratorStepper.hh
+// $Id: G4VFSALIntegrationStepper.hh
 //
-// class FSALMagIntegratorStepper
+// class G4VFSALIntegrationStepper
 //
 // Class description:
 //     Class similar to G4VMagIntegratorStepper, for steppers which
@@ -49,15 +49,15 @@
 #include "G4Types.hh"
 #include "G4EquationOfMotion.hh"
 
-class FSALMagIntegratorStepper
+class G4VFSALIntegrationStepper
 {
   public:  // with description
 
-     FSALMagIntegratorStepper (G4EquationOfMotion* Equation,
+     G4VFSALIntegrationStepper (G4EquationOfMotion* Equation,
                               G4int              numIntegrationVariables,
                               G4int              numStateVariables=12);
     
-     virtual ~FSALMagIntegratorStepper();
+     virtual ~G4VFSALIntegrationStepper();
        // Constructor and destructor. No actions.
 
      virtual  void  Stepper(  const G4double y[],
@@ -124,8 +124,8 @@ class FSALMagIntegratorStepper
     //--- --- ///////// --- ---
   private:
   
-     FSALMagIntegratorStepper(const FSALMagIntegratorStepper&);
-     FSALMagIntegratorStepper& operator=(const FSALMagIntegratorStepper&);
+     G4VFSALIntegrationStepper(const G4VFSALIntegrationStepper&);
+     G4VFSALIntegrationStepper& operator=(const G4VFSALIntegrationStepper&);
        // Private copy constructor and assignment operator.
 
   private:
@@ -143,6 +143,6 @@ class FSALMagIntegratorStepper
 
 };
 
-#include  "FSALMagIntegratorStepper.icc"
+#include  "G4VFSALIntegrationStepper.icc"
 
-#endif  /* FSALMagIntegratorStepper */
+#endif  /* G4VFSALIntegrationStepper */

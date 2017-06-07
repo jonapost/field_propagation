@@ -23,35 +23,46 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+//  G4DormandPrinceRK78.hh
 //
-// $Id: G4MagIntegratorStepper.cc 97255 2016-05-30 23:30:02Z japost $
-//
-// --------------------------------------------------------------------
+//  Created by Somnath on 30/06/15.
+
+#ifndef G4Dormand_Prince_RK78_hh
+#define G4Dormand_Prince_RK78_hh
 
 #include "G4MagIntegratorStepper.hh"
 
-// Constructor for stepper abstract base class. 
-// 
-
-G4MagIntegratorStepper::G4MagIntegratorStepper(G4EquationOfMotion* Equation,
-					       G4int       num_integration_vars,
-					       G4int       num_state_vars,
-                                               bool        isFSAL
-                                               // , G4int       methodOrder
-   )
-  : fEquation_Rhs(Equation),
-    fNoIntegrationVariables(num_integration_vars),
-    fNoStateVariables(num_state_vars),
-    fIsFSAL(isFSAL)
-    // , fIntegrationOrder( methodOrder )
+class G4DormandPrinceRK78 : public G4MagIntegratorStepper
 {
-}
+  public:
+    G4DormandPrinceRK78(G4EquationOfMotion *EqRhs,
+                     G4int numberOfVariables = 6,
+                     G4bool primary =  true);
+    ~G4DormandPrinceRK78();
+    
+    void Stepper( const G4double y[],
+                 const G4double dydx[],
+                 G4double h,
+                 G4double yout[],
+                 G4double yerr[]) ;
 
-G4MagIntegratorStepper::~G4MagIntegratorStepper()
-{
-}
+    G4double  DistChord()   const;
+    G4int IntegratorOrder() const {return 7; }
+    
+ private :  
+    G4DormandPrinceRK78(const G4DormandPrinceRK78&);
+    G4DormandPrinceRK78& operator=(const G4DormandPrinceRK78&);
+    
+    G4double *ak2,   *ak3,  *ak4,  *ak5,  *ak6,  *ak7, *ak8,
+             *ak9,   *ak10, *ak11, *ak12, *ak13,
+             *yTemp, *yIn;
 
-void G4MagIntegratorStepper::ComputeRightHandSide( const G4double y[], G4double dydx[] ) 
-{
-  this->RightHandSide( y, dydx );
-}
+    G4double fLastStepLength;
+    G4double *fLastInitialVector, *fLastFinalVector,
+             *fLastDyDx,     *fMidVector,   *fMidError;
+    // for DistChord calculations
+
+    G4DormandPrinceRK78* fAuxStepper;
+};
+
+#endif /* defined(__G4_DormandPrinceRK78_hh) */

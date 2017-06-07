@@ -10,11 +10,11 @@
 // which is available at
 //   http://geant4.org/license
 //
-//  FDormandPrince745.cc
+//  G4FSALDormandPrince745.cc
 //  Geant4
 //
 //
-//    This is the source file of FDormandPrince745 class containing the
+//    This is the source file of G4FSALDormandPrince745 class containing the
 //    definition of the stepper() method that evaluates one step in
 //    field propagation.
 //    The Butcher table of the FDormand-Prince-7-4-5 method is as follows :
@@ -26,21 +26,20 @@
 //    8/9 | 19372/6561 −25360/2187 64448/6561 −212/729
 //    1   | 9017/3168  −355/33    46732/5247  49/176  −5103/18656
 //    1   | 35/384      0         500/1113    125/192 −2187/6784    11/84
-//    ------------------------------------------------------------------------
+//    ----------f--------------------------------------------------------------
 //          35/384       0        500/1113    125/192  −2187/6784    11/84   0
 //          5179/57600   0       7571/16695  393/640  −92097/339200 187/2100 1/40
 
 
-#include "FDormandPrince745.hh"
+#include "G4FSALDormandPrince745.hh"
 #include "G4LineSection.hh"
 #include <cmath>
 
-
 //Constructor
-FDormandPrince745::FDormandPrince745(G4EquationOfMotion *EqRhs,
+G4FSALDormandPrince745::G4FSALDormandPrince745(G4EquationOfMotion *EqRhs,
                                    G4int noIntegrationVariables,
                                    G4bool primary)
-: FSALMagIntegratorStepper(EqRhs, noIntegrationVariables){
+: G4VFSALIntegrationStepper(EqRhs, noIntegrationVariables){
     
     const G4int numberOfVariables = noIntegrationVariables;
     
@@ -67,14 +66,14 @@ FDormandPrince745::FDormandPrince745(G4EquationOfMotion *EqRhs,
     fMidError =  new G4double[numberOfVariables];
     if( primary )
     {
-        fAuxStepper = new FDormandPrince745(EqRhs, numberOfVariables,
+        fAuxStepper = new G4FSALDormandPrince745(EqRhs, numberOfVariables,
                                            !primary);
     }
 }
 
 
 //Destructor
-FDormandPrince745::~FDormandPrince745(){
+G4FSALDormandPrince745::~G4FSALDormandPrince745(){
     //clear all previously allocated memory for stepper and DistChord
     delete[] ak2;
     delete[] ak3;
@@ -104,7 +103,7 @@ FDormandPrince745::~FDormandPrince745(){
 // Passing in the value of yInput[],the first time dydx[] and Step length
 // Giving back yOut and yErr arrays for output and error respectively
 
-void FDormandPrince745::Stepper(const G4double yInput[],
+void G4FSALDormandPrince745::Stepper(const G4double yInput[],
                                const G4double dydx[],
                                G4double Step,
                                G4double yOut[],
@@ -229,7 +228,7 @@ void FDormandPrince745::Stepper(const G4double yInput[],
 //The following has not been tested
 
 //The DistChord() function fot the class - must define it here.
-G4double  FDormandPrince745::DistChord() const
+G4double  G4FSALDormandPrince745::DistChord() const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -264,7 +263,7 @@ G4double  FDormandPrince745::DistChord() const
 }
 
 
-void FDormandPrince745::interpolate(  const G4double yInput[],
+void G4FSALDormandPrince745::interpolate(  const G4double yInput[],
                                      const G4double dydx[],
                                      G4double yOut[],
                                      G4double Step,
@@ -311,7 +310,7 @@ void FDormandPrince745::interpolate(  const G4double yInput[],
     
 }
 
-void FDormandPrince745::SetupInterpolate(const G4double yInput[],
+void G4FSALDormandPrince745::SetupInterpolate(const G4double yInput[],
                                    const G4double dydx[],
                                    const G4double Step ){
     
@@ -370,7 +369,7 @@ void FDormandPrince745::SetupInterpolate(const G4double yInput[],
 
 
 
-void FDormandPrince745::Interpolate( const G4double yInput[],
+void G4FSALDormandPrince745::Interpolate( const G4double yInput[],
                  const G4double dydx[],
                  const G4double Step,
                  G4double yOut[],

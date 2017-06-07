@@ -53,10 +53,10 @@
 #include "G4RKG3_Stepper.hh"
 #include "G4NystromRK4.hh"
 // Additional potential stepper 
+#include "G4DormandPrince745.hh"
 #include "G4BogackiShampine23.hh"
 #include "G4BogackiShampine45.hh"
-#include "TsitourasRK45.hh"
-#include "DormandPrince745.hh"
+#include "G4TsitourasRK45.hh"
 
 #include "G4ThreeVector.hh"
 #include "G4LineSection.hh"
@@ -207,8 +207,8 @@ G4HelixMixedStepper::SetupStepper(G4Mag_EqRhs* pE, G4int StepperNumber)
 
      // Higher order RK Steppers - for smoother fields and high accuracy requirements 
      case 45:  pStepper = new G4BogackiShampine45( pE ); if (fVerbose>0)G4cout<<"G4BogackiShampine45"; break;
-     case 145: pStepper = new TsitourasRK45( pE );    if (fVerbose>0)G4cout<<"TsitourasRK45"; break;
-     case 745: pStepper = new DormandPrince745( pE ); if (fVerbose>0)G4cout<<"DormandPrince745"; break;
+     case 145: pStepper = new G4TsitourasRK45( pE );    if (fVerbose>0)G4cout<<"G4TsitourasRK45"; break;
+     case 745: pStepper = new G4DormandPrince745( pE ); if (fVerbose>0)G4cout<<"G4DormandPrince745"; break;
 
      // Helical Steppers
      case 6: pStepper = new G4HelixImplicitEuler( pE ); if (fVerbose>0)G4cout<<"G4HelixImplicitEuler"; break;

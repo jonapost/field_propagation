@@ -23,17 +23,17 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: FSALMagIntegratorStepper.icc 97126 2016-05-26 00:17:31Z japost $
+// $Id: G4VFSALIntegrationStepper.icc 97271 2016-05-31 12:50:43Z japost $
 //
 
 inline
-G4EquationOfMotion* FSALMagIntegratorStepper::GetEquationOfMotion()
+G4EquationOfMotion* G4VFSALIntegrationStepper::GetEquationOfMotion()
 {
   return  fEquation_Rhs;
 } 
 
 inline void
- FSALMagIntegratorStepper::SetEquationOfMotion(G4EquationOfMotion* newEquation)
+ G4VFSALIntegrationStepper::SetEquationOfMotion(G4EquationOfMotion* newEquation)
 {
   if( newEquation != 0 )
   {
@@ -42,21 +42,21 @@ inline void
 } 
 
 inline
-G4int FSALMagIntegratorStepper::GetNumberOfVariables() const
+G4int G4VFSALIntegrationStepper::GetNumberOfVariables() const
 {
   return fNoIntegrationVariables;
 }
 
 
 inline
-G4int FSALMagIntegratorStepper::GetNumberOfStateVariables() const
+G4int G4VFSALIntegrationStepper::GetNumberOfStateVariables() const
 {
   return fNoStateVariables;
 }
 
 
 inline
-void FSALMagIntegratorStepper::NormaliseTangentVector( G4double vec[6] )
+void G4VFSALIntegrationStepper::NormaliseTangentVector( G4double vec[6] )
 {
   G4double drds2 = vec[3]*vec[3]+vec[4]*vec[4]+vec[5]*vec[5];
 
@@ -68,7 +68,7 @@ void FSALMagIntegratorStepper::NormaliseTangentVector( G4double vec[6] )
 }
 
 inline
-void FSALMagIntegratorStepper::NormalisePolarizationVector( G4double vec[12] )
+void G4VFSALIntegrationStepper::NormalisePolarizationVector( G4double vec[12] )
 {
   G4double drds2 = vec[9]*vec[9]+vec[10]*vec[10]+vec[11]*vec[11];
 

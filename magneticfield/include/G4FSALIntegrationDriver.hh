@@ -24,10 +24,10 @@
 // ********************************************************************
 //
 //
-// $Id: FSALMagIntegratorDriver.hh 97126 2016-05-26 00:17:31Z japost $
+// $Id: G4FSALIntegrationDriver.hh 97285 2016-05-31 19:52:18Z japost $
 //
 //
-// class FSALMagInt_Driver
+// class G4FSALIntegrationDriver
 //
 // Class description:
 //
@@ -38,16 +38,14 @@
 // - Created. J.Apostolakis.
 // --------------------------------------------------------------------
 
-#ifndef FSALMagInt_Driver_Def
-#define FSALMagInt_Driver_Def
+#ifndef G4FSALIntegrationDriver_Def
+#define G4FSALIntegrationDriver_Def
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
-#include "FSALMagIntegratorStepper.hh"
+#include "G4VFSALIntegrationStepper.hh"
 
-
-
-class FSALMagInt_Driver
+class G4FSALIntegrationDriver
 {
    public:  // with description
 
@@ -79,11 +77,11 @@ class FSALMagInt_Driver
        //    but does return the errors in  position and
        //        momentum (normalised: Delta_Integration(p^2)/(p^2) )
 
-     FSALMagInt_Driver( G4double                hminimum, 
-                      FSALMagIntegratorStepper *pItsStepper,
-                      G4int                   numberOfComponents=6,
-                      G4int                   statisticsVerbosity=1);
-     ~FSALMagInt_Driver();
+     G4FSALIntegrationDriver( G4double                hminimum, 
+                        G4VFSALIntegrationStepper *pItsStepper,
+                        G4int                   numberOfComponents=6,
+                        G4int                   statisticsVerbosity=1);
+     ~G4FSALIntegrationDriver();
         // Constructor, destructor.
 
      inline G4double GetHmin() const;
@@ -97,7 +95,7 @@ class FSALMagInt_Driver
                                        G4double    dydx[]   );  //       OUTput
         // Accessors.
 
-     inline void RenewStepperAndAdjust(FSALMagIntegratorStepper *pItsStepper);
+     inline void RenewStepperAndAdjust(G4VFSALIntegrationStepper *pItsStepper);
         // Sets a new stepper pItsStepper for this driver. Then it calls
         // ReSetParameters to reset its parameters accordingly.
 
@@ -116,8 +114,8 @@ class FSALMagInt_Driver
 
      inline G4double ComputeAndSetErrcon();
 
-     inline const FSALMagIntegratorStepper* GetStepper() const;
-     inline FSALMagIntegratorStepper* GetStepper();
+     inline const G4VFSALIntegrationStepper* GetStepper() const;
+     inline G4VFSALIntegrationStepper* GetStepper();
 
      void  OneGoodStep(       G4double  ystart[], // Like old RKF45step()
                         	  G4double  dydx[],
@@ -198,8 +196,6 @@ class FSALMagInt_Driver
 
      void PrintStatisticsReport() ;
        //  Report on the number of steps, maximum errors etc.
-    
-    
 
 #ifdef QUICK_ADV_TWO
      G4bool QuickAdvance(      G4double     yarrin[],     // In
@@ -212,8 +208,8 @@ class FSALMagInt_Driver
 
    private:
 
-     FSALMagInt_Driver(const FSALMagInt_Driver&);
-     FSALMagInt_Driver& operator=(const FSALMagInt_Driver&);
+     G4FSALIntegrationDriver(const G4FSALIntegrationDriver&);
+     G4FSALIntegrationDriver& operator=(const G4FSALIntegrationDriver&);
         // Private copy constructor and assignment operator.
 
    private:
@@ -248,7 +244,7 @@ class FSALMagInt_Driver
 
      // ---------------------------------------------------------------
      // DEPENDENT Objects
-     FSALMagIntegratorStepper *pIntStepper;
+     G4VFSALIntegrationStepper *pIntStepper;
 
      // ---------------------------------------------------------------
      //  STATE
@@ -267,6 +263,6 @@ class FSALMagInt_Driver
 
 };
 
-#include "FSALMagIntegratorDriver.icc"
+#include "G4FSALIntegrationDriver.icc"
 
-#endif /* FSALMagInt_Driver_Def */
+#endif /* G4FSALIntegrationDriver_Def */

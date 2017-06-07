@@ -21,21 +21,21 @@
 //
 // -------------------------------------------------------------------
 
-#include "TsitourasRK45.hh"
+#include "G4TsitourasRK45.hh"
 #include "G4LineSection.hh"
 
 /////////////////////////////////////////////////////////////////////
 //
 // Constructor
 
-TsitourasRK45::TsitourasRK45(G4EquationOfMotion *EqRhs, 
+G4TsitourasRK45::G4TsitourasRK45(G4EquationOfMotion *EqRhs, 
 				 G4int noIntegrationVariables, 
 				 G4bool primary)
   : G4MagIntegratorStepper(EqRhs, noIntegrationVariables),
     fLastStepLength(0.), fAuxStepper(0)
 {
   const G4int numberOfVariables = noIntegrationVariables;
-  G4cout << "TsitourasRK45 constructor called." << G4endl;
+  G4cout << "G4TsitourasRK45 constructor called." << G4endl;
   
   ak2 = new G4double[numberOfVariables] ;  
   ak3 = new G4double[numberOfVariables] ; 
@@ -55,7 +55,7 @@ TsitourasRK45::TsitourasRK45(G4EquationOfMotion *EqRhs,
   fMidError =  new G4double[numberOfVariables];
   if( primary )
   { 
-    fAuxStepper = new TsitourasRK45(EqRhs, numberOfVariables, !primary);
+    fAuxStepper = new G4TsitourasRK45(EqRhs, numberOfVariables, !primary);
   }
 }
 
@@ -63,7 +63,7 @@ TsitourasRK45::TsitourasRK45(G4EquationOfMotion *EqRhs,
 //
 // Destructor
 
-TsitourasRK45::~TsitourasRK45()
+G4TsitourasRK45::~G4TsitourasRK45()
 {
   delete[] ak2;
   delete[] ak3;
@@ -97,7 +97,7 @@ TsitourasRK45::~TsitourasRK45()
 
 // Doing a step
 void
-TsitourasRK45::Stepper(  const G4double yInput[],
+G4TsitourasRK45::Stepper(  const G4double yInput[],
                          const G4double dydx[],
                                G4double Step,
                                G4double yOut[],
@@ -228,13 +228,13 @@ TsitourasRK45::Stepper(  const G4double yInput[],
     return ;
 }
 
-void TsitourasRK45::SetupInterpolation() // (const G4double *yInput, const G4double *dydx, const G4double Step)
+void G4TsitourasRK45::SetupInterpolation() // (const G4double *yInput, const G4double *dydx, const G4double Step)
 {
     //Nothing to be done
 }
 
 
-void TsitourasRK45::Interpolate(const G4double *yInput, const G4double *dydx, const G4double Step, G4double *yOut, G4double tau){
+void G4TsitourasRK45::Interpolate(const G4double *yInput, const G4double *dydx, const G4double Step, G4double *yOut, G4double tau){
 
     
     G4double bf1, bf2, bf3, bf4, bf5, bf6, bf7;
@@ -277,7 +277,7 @@ void TsitourasRK45::Interpolate(const G4double *yInput, const G4double *dydx, co
 
 ///////////////////////////////////////////////////////////////////////////////
 
-G4double  TsitourasRK45::DistChord() const
+G4double  G4TsitourasRK45::DistChord() const
 {
   G4double distLine, distChord; 
   G4ThreeVector initialPoint, finalPoint, midPoint;

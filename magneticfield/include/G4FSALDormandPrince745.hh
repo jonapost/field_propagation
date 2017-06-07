@@ -22,15 +22,15 @@
 #ifndef FFDormand_Prince_745
 #define FFDormand_Prince_745
 
-#include "FSALMagIntegratorStepper.hh"
+#include "G4VFSALIntegrationStepper.hh"
 
-class FDormandPrince745 : public FSALMagIntegratorStepper
+class G4FSALDormandPrince745 : public G4VFSALIntegrationStepper
 {
-public:
-	FDormandPrince745(G4EquationOfMotion *EqRhs,
+  public:
+	G4FSALDormandPrince745(G4EquationOfMotion *EqRhs,
 					 G4int numberOfVariables = 6,
 					 G4bool primary =  true);
-	~FDormandPrince745();
+	~G4FSALDormandPrince745();
 
 	void Stepper( const G4double y[],
                   const G4double dydx[],
@@ -63,8 +63,8 @@ public:
     
 private :
     
-    FDormandPrince745(const FDormandPrince745&);
-    FDormandPrince745& operator=(const FDormandPrince745&);
+    G4FSALDormandPrince745(const G4FSALDormandPrince745&);
+    G4FSALDormandPrince745& operator=(const G4FSALDormandPrince745&);
     
     G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7,
     *ak8, *ak9, 	//For additional stages in the interpolant
@@ -78,13 +78,7 @@ private :
     *fLastDyDx, *fMidVector, *fMidError;
     // for DistChord calculations
     
-    FDormandPrince745* fAuxStepper;
+    G4FSALDormandPrince745* fAuxStepper;
 };
 
-
-
-
-
-
-
-#endif /* defined(__Geant4__FDormandPrince745__) */
+#endif /* defined(__Geant4__FSALDormandPrince745__) */

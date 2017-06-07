@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: DormandPrince745.cc 97110 2016-05-25 18:28:45Z japost $
+// $Id: G4DormandPrince745.cc 97285 2016-05-31 19:52:18Z japost $
 //
 // Class description:
 //
 //  DormandPrince7 - 5(4) non-FSAL
 //
-//    This is the source file of DormandPrince745 class containing the
+//    This is the source file of G4DormandPrince745 class containing the
 //    definition of the stepper() method that evaluates one step in
 //    field propagation.
 //	  The coefficients and the algorithm have been adapted from
@@ -63,12 +63,12 @@
 //  Note: Current version includes 3 versions of 'DistChord' method.
 //        Default is hard-coded interpolation.
 //
-#include "DormandPrince745.hh"
+#include "G4DormandPrince745.hh"
 #include "G4LineSection.hh"
 #include <cmath>
 
 //Constructor
-DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
+G4DormandPrince745::G4DormandPrince745(G4EquationOfMotion *EqRhs,
                                    G4int noIntegrationVariables,
                                    G4bool primary)
 : G4MagIntegratorStepper(EqRhs, noIntegrationVariables)
@@ -99,13 +99,13 @@ DormandPrince745::DormandPrince745(G4EquationOfMotion *EqRhs,
     fMidError =  new G4double[numberOfVariables];
     if( primary )
     {
-        fAuxStepper = new DormandPrince745(EqRhs, numberOfVariables,
+        fAuxStepper = new G4DormandPrince745(EqRhs, numberOfVariables,
                                            !primary);
     }
 }
 
 //Destructor
-DormandPrince745::~DormandPrince745()
+G4DormandPrince745::~G4DormandPrince745()
 {
     //clear all previously allocated memory for stepper and DistChord
     delete[] ak2;
@@ -157,7 +157,7 @@ DormandPrince745::~DormandPrince745()
 // Passing in the value of yInput[],the first time dydx[] and Step length
 // Giving back yOut and yErr arrays for output and error respectively
 
-void DormandPrince745::Stepper(const G4double yInput[],
+void G4DormandPrince745::Stepper(const G4double yInput[],
                                const G4double DyDx[],
                                      G4double Step,
                                      G4double yOut[],
@@ -275,7 +275,7 @@ void DormandPrince745::Stepper(const G4double yInput[],
 
 
 // Calculate DistChord given start, mid and end-point of step
-G4double DormandPrince745::DistLine( G4double yStart[], G4double yMid[], G4double yEnd[] ) const
+G4double G4DormandPrince745::DistLine( G4double yStart[], G4double yMid[], G4double yEnd[] ) const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -299,7 +299,7 @@ G4double DormandPrince745::DistLine( G4double yStart[], G4double yMid[], G4doubl
 }
 
 // (New) DistChord function using interpolation
-G4double DormandPrince745::DistChord2() const
+G4double G4DormandPrince745::DistChord2() const
 {
     // Copy the values of stages from this (original) into the Aux Stepper
     *fAuxStepper = *this;
@@ -312,7 +312,7 @@ G4double DormandPrince745::DistChord2() const
     return DistLine( fLastInitialVector, fAuxStepper->fMidVector, fLastFinalVector);
 }
 
-G4double DormandPrince745::DistChord() const
+G4double G4DormandPrince745::DistChord() const
 {
     //Coefficients for halfway interpolation
     const G4double
@@ -337,7 +337,7 @@ G4double DormandPrince745::DistChord() const
 }
 
 //The original DistChord() function for the class
-G4double  DormandPrince745::DistChord3() const
+G4double  G4DormandPrince745::DistChord3() const
 {
     // Do half a step using StepNoErr    
     fAuxStepper->Stepper( fLastInitialVector, fInitialDyDx, 0.5 * fLastStepLength,
@@ -353,12 +353,12 @@ G4double  DormandPrince745::DistChord3() const
 //	pp. 1007–1017, 1986.
 //---------------------------
 
-void DormandPrince745::SetupInterpolation_low() // const G4double *yInput, const G4double *dydx, const G4double Step)
+void G4DormandPrince745::SetupInterpolation_low() // const G4double *yInput, const G4double *dydx, const G4double Step)
 {
     //Nothing to be done
 }
 
-void DormandPrince745::Interpolate_low( /* const G4double yInput[],
+void G4DormandPrince745::Interpolate_low( /* const G4double yInput[],
                                                 const G4double dydx[], 
                                                 const G4double Step, */
                                                 G4double yOut[],
@@ -404,7 +404,7 @@ void DormandPrince745::Interpolate_low( /* const G4double yInput[],
 //---------------------
 
 // Calculating the extra stages for the interpolant :
-void DormandPrince745::SetupInterpolation_high( /* const G4double yInput[],
+void G4DormandPrince745::SetupInterpolation_high( /* const G4double yInput[],
                                                const G4double dydx[],
                                                const G4double Step */  ){
     
@@ -455,7 +455,7 @@ void DormandPrince745::SetupInterpolation_high( /* const G4double yInput[],
 
 
 // Calculating the interpolated result yOut with the coefficients
-void DormandPrince745::Interpolate_high( /* const G4double yInput[],
+void G4DormandPrince745::Interpolate_high( /* const G4double yInput[],
                                          const G4double dydx[],
                                          const G4double Step, */
                                                G4double yOut[],
@@ -578,14 +578,14 @@ void DormandPrince745::Interpolate_high( /* const G4double yInput[],
 
 }
 
-//DormandPrince745::DormandPrince745(DormandPrince745& DP_Obj){
+//G4DormandPrince745::G4DormandPrince745(G4DormandPrince745& DP_Obj){
 //    
 //}
 
 // Overloaded = operator
-DormandPrince745& DormandPrince745::operator=(const DormandPrince745& right)
+G4DormandPrince745& G4DormandPrince745::operator=(const G4DormandPrince745& right)
 {
-//    this->DormandPrince745(right.GetEquationOfMotion(),right.GetNumberOfVariables(), false);
+//    this->G4DormandPrince745(right.GetEquationOfMotion(),right.GetNumberOfVariables(), false);
 
     int noVars = right.GetNumberOfVariables();
     for(int i =0; i< noVars; i++)

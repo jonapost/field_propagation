@@ -14,19 +14,19 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
-#include "FSALMagIntegratorDriver.hh"
+#include "G4FSALIntegrationDriver.hh"
 #include "G4FieldTrack.hh"
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
 //
-const G4double FSALMagInt_Driver::max_stepping_increase = 5.0; //Changed from 5.0 by [hackabot]
-const G4double FSALMagInt_Driver::max_stepping_decrease = 0.1;  //Changed from 0.1 by [hackabot]
+const G4double G4FSALIntegrationDriver::max_stepping_increase = 5.0; //Changed from 5.0 by [hackabot]
+const G4double G4FSALIntegrationDriver::max_stepping_decrease = 0.1;  //Changed from 0.1 by [hackabot]
 
 //  The (default) maximum number of steps is Base
 //  divided by the order of Stepper
 //
-const G4int  FSALMagInt_Driver::fMaxStepBase = 100000;  // Was 5000, was 250
+const G4int  G4FSALIntegrationDriver::fMaxStepBase = 100000;  // Was 5000, was 250
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
@@ -40,8 +40,8 @@ const G4int  FSALMagInt_Driver::fMaxStepBase = 100000;  // Was 5000, was 250
 
 //  Constructor
 //
-FSALMagInt_Driver::FSALMagInt_Driver( G4double                hminimum,
-                                 FSALMagIntegratorStepper *pStepper,
+G4FSALIntegrationDriver::G4FSALIntegrationDriver( G4double                hminimum,
+                                 G4VFSALIntegrationStepper *pStepper,
                                  G4int                   numComponents,
                                  G4int                   statisticsVerbose)
 : fSmallestFraction( 1.0e-12 ),
@@ -84,7 +84,7 @@ TotalNoStepperCalls(0)
 
 //  Destructor
 //
-FSALMagInt_Driver::~FSALMagInt_Driver()
+G4FSALIntegrationDriver::~G4FSALIntegrationDriver()
 {
     if( fStatisticsVerboseLevel > 1 )
     {
@@ -99,7 +99,7 @@ FSALMagInt_Driver::~FSALMagInt_Driver()
 // ---------------------------------------------------------
 
 G4bool
-FSALMagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
+G4FSALIntegrationDriver::AccurateAdvance(G4FieldTrack& y_current,
                                  G4double     hstep,
                                  G4double     eps,
                                  G4double hinitial )
@@ -141,7 +141,7 @@ FSALMagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
         {
             std::ostringstream message;
             message << "Proposed step is zero; hstep = " << hstep << " !";
-            G4Exception("FSALMagInt_Driver::AccurateAdvance()",
+            G4Exception("G4FSALIntegrationDriver::AccurateAdvance()",
                         "GeomField1001", JustWarning, message);
             return succeeded;
         }
@@ -151,7 +151,7 @@ FSALMagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
             message << "Invalid run condition." << G4endl
             << "Proposed step is negative; hstep = " << hstep << "." << G4endl
             << "Requested step cannot be negative! Aborting event.";
-            G4Exception("FSALMagInt_Driver::AccurateAdvance()",
+            G4Exception("G4FSALIntegrationDriver::AccurateAdvance()",
                         "GeomField0003", EventMustBeAborted, message);
             return false;
         }
@@ -246,7 +246,7 @@ FSALMagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
 #endif
             if( h == 0.0 )
             {
-                G4Exception("FSALMagInt_Driver::AccurateAdvance()",
+                G4Exception("G4FSALIntegrationDriver::AccurateAdvance()",
                             "GeomField0003", FatalException,
                             "Integration Step became Zero!");
             }
@@ -404,7 +404,7 @@ FSALMagInt_Driver::AccurateAdvance(G4FieldTrack& y_current,
 // ---------------------------------------------------------
 
 void
-FSALMagInt_Driver::WarnSmallStepSize( G4double hnext, G4double hstep,
+G4FSALIntegrationDriver::WarnSmallStepSize( G4double hnext, G4double hstep,
                                    G4double h, G4double xDone,
                                    G4int nstp)
 {
@@ -428,7 +428,7 @@ FSALMagInt_Driver::WarnSmallStepSize( G4double hnext, G4double hstep,
         << ",  req_tot_len: " << hstep
         << ", done: " << xDone << ", min: " << Hmin();
     }
-    G4Exception("FSALMagInt_Driver::WarnSmallStepSize()", "GeomField1001",
+    G4Exception("G4FSALIntegrationDriver::WarnSmallStepSize()", "GeomField1001",
                 JustWarning, message);
     noWarningsIssued++;
 }
@@ -436,7 +436,7 @@ FSALMagInt_Driver::WarnSmallStepSize( G4double hnext, G4double hstep,
 // ---------------------------------------------------------
 
 void
-FSALMagInt_Driver::WarnTooManyStep( G4double x1start,
+G4FSALIntegrationDriver::WarnTooManyStep( G4double x1start,
                                  G4double x2end,
                                  G4double xCurrent)
 {
@@ -446,14 +446,14 @@ FSALMagInt_Driver::WarnTooManyStep( G4double x1start,
     << "Integration of the interval was not completed !" << G4endl
     << "Only a " << (xCurrent-x1start)*100/(x2end-x1start)
     << " % fraction of it was done.";
-    G4Exception("FSALMagInt_Driver::WarnTooManyStep()", "GeomField1001",
+    G4Exception("G4FSALIntegrationDriver::WarnTooManyStep()", "GeomField1001",
                 JustWarning, message);
 }
 
 // ---------------------------------------------------------
 
 void
-FSALMagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
+G4FSALIntegrationDriver::WarnEndPointTooFar (G4double endPointDist,
                                      G4double   h ,
                                      G4double  eps,
                                      G4int     dbg)
@@ -481,7 +481,7 @@ FSALMagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
         << "  Difference (curveLen-endpDist)= " << (h - endPointDist)
         << ", relative = " << (h-endPointDist) / h
         << ", epsilon =  " << eps;
-        G4Exception("FSALMagInt_Driver::WarnEndPointTooFar()", "GeomField1001",
+        G4Exception("G4FSALIntegrationDriver::WarnEndPointTooFar()", "GeomField1001",
                     JustWarning, message);
     }
 }
@@ -489,7 +489,7 @@ FSALMagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
 // ---------------------------------------------------------
 
 void
-FSALMagInt_Driver::OneGoodStep(      G4double y[],        // InOut
+G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
                              G4double dydx[],
                              G4double& x,         // InOut
                              G4double htry,
@@ -621,7 +621,7 @@ FSALMagInt_Driver::OneGoodStep(      G4double y[],        // InOut
 
 // QuickAdvance just tries one Step - it does not ensure accuracy
 //
-G4bool  FSALMagInt_Driver::QuickAdvance(
+G4bool  G4FSALIntegrationDriver::QuickAdvance(
                                       G4FieldTrack& y_posvel,         // INOUT
                                       G4double     dydx[],
                                       G4double     hstep,       // In
@@ -629,7 +629,7 @@ G4bool  FSALMagInt_Driver::QuickAdvance(
                                       G4double&    dyerr_pos_sq,
                                       G4double&    dyerr_mom_rel_sq )
 {
-    G4Exception("FSALMagInt_Driver::QuickAdvance()", "GeomField0001",
+    G4Exception("G4FSALIntegrationDriver::QuickAdvance()", "GeomField0001",
                 FatalException, "Not yet implemented.");
     
     // Use the parameters of this method, to please compiler
@@ -640,7 +640,7 @@ G4bool  FSALMagInt_Driver::QuickAdvance(
 
 //----------------------------------------------------------------------
 
-G4bool  FSALMagInt_Driver::QuickAdvance(
+G4bool  G4FSALIntegrationDriver::QuickAdvance(
                                       G4FieldTrack& y_posvel,         // INOUT
                                       G4double     dydx[],
                                       G4double     hstep,       // In
@@ -720,7 +720,7 @@ G4bool  FSALMagInt_Driver::QuickAdvance(
 // --------------------------------------------------------------------------
 
 #ifdef QUICK_ADV_ARRAY_IN_AND_OUT
-G4bool  FSALMagInt_Driver::QuickAdvance(
+G4bool  G4FSALIntegrationDriver::QuickAdvance(
                                       G4double     yarrin[],    // In
                                       const G4double     dydx[],
                                       G4double     hstep,       // In
@@ -728,7 +728,7 @@ G4bool  FSALMagInt_Driver::QuickAdvance(
                                       G4double&    dchord_step,
                                       G4double&    dyerr )      // In length
 {
-    G4Exception("FSALMagInt_Driver::QuickAdvance()", "GeomField0001",
+    G4Exception("G4FSALIntegrationDriver::QuickAdvance()", "GeomField0001",
                 FatalException, "Not yet implemented.");
     dyerr = dchord_step = hstep * yarrin[0] * dydx[0];
     yarrout[0]= yarrin[0];
@@ -741,7 +741,7 @@ G4bool  FSALMagInt_Driver::QuickAdvance(
 //   within  certain factors
 //
 G4double
-FSALMagInt_Driver::ComputeNewStepSize(
+G4FSALIntegrationDriver::ComputeNewStepSize(
                                     G4double  errMaxNorm,    // max error  (normalised)
                                     G4double  hstepCurrent)  // current step size
 {
@@ -771,7 +771,7 @@ FSALMagInt_Driver::ComputeNewStepSize(
 // They are kept separate currently for optimisation.
 //
 G4double
-FSALMagInt_Driver::ComputeNewStepSize_WithinLimits(
+G4FSALIntegrationDriver::ComputeNewStepSize_WithinLimits(
                                                  G4double  errMaxNorm,    // max error  (normalised)
                                                  G4double  hstepCurrent)  // current step size
 {
@@ -803,7 +803,7 @@ FSALMagInt_Driver::ComputeNewStepSize_WithinLimits(
 
 // ---------------------------------------------------------------------------
 
-void FSALMagInt_Driver::PrintStatus( const G4double*   StartArr,
+void G4FSALIntegrationDriver::PrintStatus( const G4double*   StartArr,
                                   G4double          xstart,
                                   const G4double*   CurrentArr,
                                   G4double          xcurrent,
@@ -828,7 +828,7 @@ void FSALMagInt_Driver::PrintStatus( const G4double*   StartArr,
 
 // ---------------------------------------------------------------------------
 
-void FSALMagInt_Driver::PrintStatus(
+void G4FSALIntegrationDriver::PrintStatus(
                                   const G4FieldTrack&  StartFT,
                                   const G4FieldTrack&  CurrentFT,
                                   G4double             requestStep,
@@ -854,7 +854,7 @@ void FSALMagInt_Driver::PrintStatus(
         subStepNo = - subStepNo;        // To allow printing banner
         
         G4cout << std::setw( 6)  << " " << std::setw( 25)
-        << " FSALMagInt_Driver: Current Position  and  Direction" << " "
+        << " G4FSALIntegrationDriver: Current Position  and  Direction" << " "
         << G4endl;
         G4cout << std::setw( 5) << "Step#" << " "
         << std::setw( 7) << "s-curve" << " "
@@ -906,7 +906,7 @@ void FSALMagInt_Driver::PrintStatus(
 
 // ---------------------------------------------------------------------------
 
-void FSALMagInt_Driver::PrintStat_Aux(
+void G4FSALIntegrationDriver::PrintStat_Aux(
                                     const G4FieldTrack&  aFieldTrack,
                                     G4double             requestStep,
                                     G4double             step_len,
@@ -972,13 +972,13 @@ void FSALMagInt_Driver::PrintStat_Aux(
 
 // ---------------------------------------------------------------------------
 
-void FSALMagInt_Driver::PrintStatisticsReport()
+void G4FSALIntegrationDriver::PrintStatisticsReport()
 {
     G4int noPrecBig= 6;
     G4int oldPrec= G4cout.precision(noPrecBig);
     
-    G4cout << "FSALMagInt_Driver Statistics of steps undertaken. " << G4endl;
-    G4cout << "FSALMagInt_Driver: Number of Steps: "
+    G4cout << "G4FSALIntegrationDriver Statistics of steps undertaken. " << G4endl;
+    G4cout << "G4FSALIntegrationDriver: Number of Steps: "
     << " Total= " <<  fNoTotalSteps
     << " Bad= "   <<  fNoBadSteps 
     << " Small= " <<  fNoSmallSteps 
@@ -1020,7 +1020,7 @@ void FSALMagInt_Driver::PrintStatisticsReport()
 
 // ---------------------------------------------------------------------------
 
-void FSALMagInt_Driver::SetSmallestFraction(G4double newFraction)
+void G4FSALIntegrationDriver::SetSmallestFraction(G4double newFraction)
 {
     if( (newFraction > 1.e-16) && (newFraction < 1e-8) )
     {

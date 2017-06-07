@@ -24,74 +24,74 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.icc 69699 2013-05-13 08:50:30Z gcosmo $
+// $Id: G4NewChordFinder.icc 97285 2016-05-31 19:52:18Z japost $
 //
-// G4ChordFinder inline implementations
+// G4NewChordFinder inline implementations
 //
 // --------------------------------------------------------------------
 
 inline 
-void G4ChordFinder::SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver)
+void G4NewChordFinder::SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver)
 {
   fIntgrDriver=IntegrationDriver;
 }
 
 inline
-G4MagInt_Driver* G4ChordFinder::GetIntegrationDriver()
+G4MagInt_Driver* G4NewChordFinder::GetIntegrationDriver()
 {
   return fIntgrDriver;
 }
 
 inline
-G4bool G4ChordFinder::AcceptableMissDist(G4double dChordStep) const
+G4bool G4NewChordFinder::AcceptableMissDist(G4double dChordStep) const
 { 
   return (dChordStep <= fDeltaChord) ;
 }
 
 inline
-G4double G4ChordFinder::GetDeltaChord() const
+G4double G4NewChordFinder::GetDeltaChord() const
 {
   return fDeltaChord;
 }
 
 inline
-void G4ChordFinder::SetDeltaChord(G4double newval)
+void G4NewChordFinder::SetDeltaChord(G4double newval)
 {
   fDeltaChord=newval;
 }
 
 // ......................................................................
 inline 
-G4double G4ChordFinder::GetLastStepEstimateUnc()
+G4double G4NewChordFinder::GetLastStepEstimateUnc()
 {
   return fLastStepEstimate_Unconstrained;   
 } 
 inline 
-void G4ChordFinder::SetLastStepEstimateUnc( G4double stepEst )
+void G4NewChordFinder::SetLastStepEstimateUnc( G4double stepEst )
 {
   fLastStepEstimate_Unconstrained = stepEst;    
 }
 inline
-void G4ChordFinder::ResetStepEstimate()
+void G4NewChordFinder::ResetStepEstimate()
 {
   fLastStepEstimate_Unconstrained = DBL_MAX;    
 }
 
 // ......................................................................
-inline G4int G4ChordFinder::GetNoCalls()     { return fNoCalls_FNC; }
-inline G4int G4ChordFinder::GetNoTrials()    { return fTotalNoTrials_FNC; }
-inline G4int G4ChordFinder::GetNoMaxTrials() { return fmaxTrials_FNC; } 
+inline G4int G4NewChordFinder::GetNoCalls()     { return fNoCalls_FNC; }
+inline G4int G4NewChordFinder::GetNoTrials()    { return fTotalNoTrials_FNC; }
+inline G4int G4NewChordFinder::GetNoMaxTrials() { return fmaxTrials_FNC; } 
 
-inline G4double G4ChordFinder::GetFirstFraction() { return fFirstFraction; } 
-inline G4double G4ChordFinder::GetFractionLast()  { return fFractionLast; } 
-inline G4double G4ChordFinder::GetFractionNextEstimate() 
+inline G4double G4NewChordFinder::GetFirstFraction() { return fFirstFraction; } 
+inline G4double G4NewChordFinder::GetFractionLast()  { return fFractionLast; } 
+inline G4double G4NewChordFinder::GetFractionNextEstimate() 
 { return fFractionNextEstimate; } 
-inline G4double G4ChordFinder::GetMultipleRadius()
+inline G4double G4NewChordFinder::GetMultipleRadius()
 { return fMultipleRadius; } 
 
-inline void G4ChordFinder::SetFirstFraction(G4double val){ fFirstFraction=val; }
+inline void G4NewChordFinder::SetFirstFraction(G4double val){ fFirstFraction=val; }
 
-inline G4int G4ChordFinder::SetVerbose( G4int newvalue )
+inline G4int G4NewChordFinder::SetVerbose( G4int newvalue )
 { 
   G4int oldval= fStatsVerbose; 
   fStatsVerbose = newvalue;
@@ -99,7 +99,7 @@ inline G4int G4ChordFinder::SetVerbose( G4int newvalue )
 }
 
 inline  
-void    G4ChordFinder::AccumulateStatistics( G4int noTrials ) 
+void    G4NewChordFinder::AccumulateStatistics( G4int noTrials ) 
 {
   // Statistics 
   fTotalNoTrials_FNC += noTrials; 
@@ -117,7 +117,7 @@ void    G4ChordFinder::AccumulateStatistics( G4int noTrials )
 // the three points (x,y) and returns the value x that, for the
 // inverse parabolic, corresponds to y=0.
 //
-inline G4double G4ChordFinder::InvParabolic ( const G4double xa, const G4double ya,
+inline G4double G4NewChordFinder::InvParabolic ( const G4double xa, const G4double ya,
 				    const G4double xb, const G4double yb,
 				    const G4double xc, const G4double yc )
 {   	const G4double R = yb/yc,
@@ -129,3 +129,34 @@ inline G4double G4ChordFinder::InvParabolic ( const G4double xa, const G4double 
 	const G4double P = S*(T*(R-T)*(xc-xb) - (1-R)*(xb-xa));
 	return xb + P/Q;
 }
+
+//  New - to cope with different type for FSAL steppers
+// =====================================================
+inline void G4NewChordFinder::SetFSALIntegrationDriver(G4FSALIntegrationDriver* fsalDriver)
+{
+  fFSALIntgrDriver= fsalDriver;
+}
+
+inline G4FSALIntegrationDriver* G4NewChordFinder::GetFSALIntegrationDriver()
+{
+  return fFSALIntgrDriver;
+}
+
+#include "G4MagIntegratorStepper.hh"
+#include "G4VFSALIntegrationStepper.hh"
+
+inline G4EquationOfMotion* G4NewChordFinder::GetEquationOfMotion()
+{
+  G4EquationOfMotion* pEquation;
+  if( fIntgrDriver ) {
+     G4MagIntegratorStepper* stepper= fIntgrDriver->GetStepper();
+     pEquation = stepper->GetEquationOfMotion();
+  } else {
+     G4VFSALIntegrationStepper* fsalStepper = fFSALIntgrDriver->GetStepper();
+     pEquation = fsalStepper->GetEquationOfMotion();
+  }
+  return pEquation;
+}
+
+
+

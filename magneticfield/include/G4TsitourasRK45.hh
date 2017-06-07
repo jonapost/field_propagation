@@ -1,5 +1,5 @@
 //
-//  TsitourasRK45.hh
+//  G4TsitourasRK45.hh
 //  Geant4
 //
 //  Created by hackabot on 11/06/15.
@@ -11,13 +11,13 @@
 
 #include "G4MagIntegratorStepper.hh"
 
-class TsitourasRK45 : public G4MagIntegratorStepper
+class G4TsitourasRK45 : public G4MagIntegratorStepper
 {
 public:
-	TsitourasRK45(G4EquationOfMotion *EqRhs,
+	G4TsitourasRK45(G4EquationOfMotion *EqRhs,
 					 G4int numberOfVariables = 6,
 					 G4bool primary =  true);
-	~TsitourasRK45();
+	~G4TsitourasRK45();
 
 	void Stepper( const G4double y[],
                   const G4double dydx[],
@@ -50,8 +50,8 @@ public:
     
 private :
     
-    TsitourasRK45(const TsitourasRK45&);
-    TsitourasRK45& operator=(const TsitourasRK45&);
+    G4TsitourasRK45(const G4TsitourasRK45&);
+    G4TsitourasRK45& operator=(const G4TsitourasRK45&);
     
     G4double *ak2, *ak3, *ak4, *ak5, *ak6, *ak7, *ak8, *yTemp, *yIn;
     
@@ -60,9 +60,9 @@ private :
     *fLastDyDx, *fMidVector, *fMidError;
     // for DistChord calculations
     
-    TsitourasRK45* fAuxStepper;
+    G4TsitourasRK45* fAuxStepper;
 };
 
 
 
-#endif /* defined(__Geant4__TsitourasRK45__) */
+#endif /* defined(__Geant4__G4TsitourasRK45__) */

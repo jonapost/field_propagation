@@ -1,3 +1,28 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
 //  Bogacki-Shampine - 8 - 5(4) FSAL implementation by Somnath Banerjee
 //  Supervision / code review: John Apostolakis
 //
@@ -5,19 +30,18 @@
 // 
 // First version: 26 May 2015
 //
-// This code is made available subject to the Geant4 license, a copy of
-// which is available at
-//   http://geant4.org/license
-//  FBogackiShampine45.cc
-//  Geant4
-//
 //  History
 // -----------------------------
 //  Created by Somnath on 26 May 2015
-//
-//
+// 
 ///////////////////////////////////////////////////////////////////////////////
-
+//  Renamed to G4 standard naming
+//  Plan is that this source file / class will be merged with the updated
+//  BogackiShampine45 class, which contains improvements (May 2016) 
+//               J. Apostolakis,  31 May 2016
+///////////////////////////////////////////////////////////////////////////////
+//
+//
 //This is the source file of BogackiShampine45 class containing the
 //definition of the stepper() method that evaluates one step in
 //field propagation.
@@ -35,16 +59,14 @@
 //      587/8064           0       4440339/15491840 24353/124800    387/44800     2152/5985   7267/94080       0
 //      2479/34992         0          123/416       612941/3411720  43/1440       2272/6561  79937/1113912  3293/556956
 
-
-#include "FBogackiShampine45.hh"
+#include "G4FSALBogackiShampine45.hh"
 #include "G4LineSection.hh"
 
-
 //Constructor
-FBogackiShampine45::FBogackiShampine45(G4EquationOfMotion *EqRhs,
+G4FSALBogackiShampine45::G4FSALBogackiShampine45(G4EquationOfMotion *EqRhs,
                                      G4int noIntegrationVariables,
                                      G4bool primary)
-: FSALMagIntegratorStepper(EqRhs, noIntegrationVariables)
+: G4VFSALIntegrationStepper(EqRhs, noIntegrationVariables)
 {
     
     const G4int numberOfVariables = noIntegrationVariables;
@@ -77,14 +99,14 @@ FBogackiShampine45::FBogackiShampine45(G4EquationOfMotion *EqRhs,
     fMidError =  new G4double[numberOfVariables];
     if( primary )
     {
-        fAuxStepper = new FBogackiShampine45(EqRhs, numberOfVariables,
+        fAuxStepper = new G4FSALBogackiShampine45(EqRhs, numberOfVariables,
                                             !primary);
     }
 }
 
 
 //Destructor
-FBogackiShampine45::~FBogackiShampine45(){
+G4FSALBogackiShampine45::~G4FSALBogackiShampine45(){
     //clear all previously allocated memory for stepper and DistChord
     delete[] ak2;
     delete[] ak3;
@@ -118,7 +140,7 @@ FBogackiShampine45::~FBogackiShampine45(){
 // Passing in the value of yInput[],the first time dydx[] and Step length
 // Giving back yOut and yErr arrays for output and error respectively
 
-void FBogackiShampine45::Stepper(const G4double yInput[],
+void G4FSALBogackiShampine45::Stepper(const G4double yInput[],
                                 const G4double dydx[],
                                 G4double Step,
                                 G4double yOut[],
@@ -266,14 +288,14 @@ void FBogackiShampine45::Stepper(const G4double yInput[],
     return ;
 }
 //
-//G4double* FBogackiShampine45::getLastDydx(){
+//G4double* G4FSALBogackiShampine45::getLastDydx(){
 //    return ak8;
 //}
 
 //The following has not been tested
 
 //The DistChord() function fot the class - must define it here.
-G4double  FBogackiShampine45::DistChord() const
+G4double  G4FSALBogackiShampine45::DistChord() const
 {
     G4double distLine, distChord;
     G4ThreeVector initialPoint, finalPoint, midPoint;
@@ -311,7 +333,7 @@ G4double  FBogackiShampine45::DistChord() const
 
 
 
-void FBogackiShampine45::interpolate( const G4double yInput[],
+void G4FSALBogackiShampine45::interpolate( const G4double yInput[],
                              const G4double dydx[],
                              G4double yOut[],
                              G4double Step,

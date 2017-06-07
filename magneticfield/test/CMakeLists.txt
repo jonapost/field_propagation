@@ -30,3 +30,5 @@ GEANT4_ADD_UNIT_TESTS(test*.cc
                       LIBRARIES G4geometry G4particles G4interfaces G4run)
 
 add_subdirectory(field07)
+add_subdirectory(RkTestRun)
+

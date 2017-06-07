@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 97286 2016-05-31 21:12:49Z japost $
+// $Id: testNewChordFinder.cc 97285 2016-05-31 19:52:18Z japost $
 //
 //  
 //
@@ -241,17 +241,21 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4ClassicalRK4.hh"
 #include "G4BogackiShampine23.hh"
 #include "G4BogackiShampine45.hh"
-#include "G4DormandPrince745.hh"
-#include "G4DormandPrinceRK56.hh"
-#include "G4DormandPrinceRK78.hh"
-#include "G4DoLoMcPriRK34.hh"
-#include "G4TsitourasRK45.hh"
+#include "DormandPrince745.hh"
+#include "DormandPrinceRK56.hh"
+#include "DormandPrinceRK78.hh"
+#include "DoLoMcPriRK34.hh"
+#include "TsitourasRK45.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4CashKarpRKF45.hh"
 #include "G4RKG3_Stepper.hh"
 #include "G4ConstRK4.hh"
 #include "G4NystromRK4.hh"
 #include "G4HelixMixedStepper.hh"
+
+// FSAL-interface versions of steppers
+#include "FBogackiShampine45.hh"
+#include "fDormandPrince745.hh"
 
 #include "globals.hh"
 
@@ -278,14 +282,15 @@ void SetFieldType( int ft )
    }
 } 
 
-G4FieldManager* SetupField(G4int stepperType)
+G4Field* SetupField(G4int type)
 {
-    G4FieldManager   *pFieldMgr= nullptr;
-    G4ChordFinder    *pChordFinder= nullptr;
-    static G4Mag_UsualEqRhs *fEquation= nullptr;
-    G4MagIntegratorStepper   *pStepper= nullptr;
+    G4FieldManager   *pFieldMgr;
+    G4ChordFinder    *pChordFinder;
+
+    G4MagIntegratorStepper   *pStepper= 0; // nullptr;
+    FSALMagIntegratorStepper *pFSALStepper= 0; // nullptr;    
     G4String fieldName;
-    
+
     // fEquation= new G4Mag_UsualEqRhs(&myMagField); 
     if( FieldChoice == 0 ) { 
        pMyMagField = &myCachedUniformField;
@@ -294,126 +299,152 @@ G4FieldManager* SetupField(G4int stepperType)
        pMyMagField = &myCachedQuadField;
        fieldName = fieldNameQuad;       
     }
-  
+    
+    G4cout << " Set  up field of type: " << fieldName << G4endl;    
+}
+
+// static G4Mag_UsualEqRhs *fEquation= nullptr;
+
+G4EquationOfMotion *SetupEquation( G4MagneticField* magField )
+{
     if( ! fEquation ) {
       fEquation= new G4Mag_UsualEqRhs(pMyMagField);
       G4cout << " Created Equation for Magnetic field." << G4endl;
     }
-    G4cout << " Setting up field of type: " << fieldName << G4endl;
+}
 
-    switch ( stepperType ) 
+G4MagIntegratorStepper* CreateStepper( int StepperType, G4EquationOfMotion* equation )
+{
+    G4MagIntegratorStepper* pStepper;
+    switch ( type ) 
     {
-      case 0: pStepper = new G4ExplicitEuler( fEquation ); break;
-      case 1: pStepper = new G4ImplicitEuler( fEquation ); break;
-      case 2: pStepper = new G4SimpleRunge( fEquation ); break;
-      case 3: pStepper = new G4SimpleHeum( fEquation ); break;
-      case 4: pStepper = new G4ClassicalRK4( fEquation ); break;
-      case 5: pStepper = new G4HelixExplicitEuler( fEquation ); break;
-      case 6: pStepper = new G4HelixImplicitEuler( fEquation ); break;
-      case 7: pStepper = new G4HelixSimpleRunge( fEquation ); break;
-      case 8: pStepper = new G4CashKarpRKF45( fEquation );    break;
-      case 9: pStepper = new G4ExactHelixStepper( fEquation );   break;
-      case 10: pStepper = new G4RKG3_Stepper( fEquation );       break;
-      case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
-      case 12: pStepper = new G4ConstRK4( fEquation ); break;
-      case 13: pStepper = new G4NystromRK4( fEquation ); break;
-      case 23: pStepper = new G4BogackiShampine23( fEquation ); break;
-      case 34: pStepper = new G4DoLoMcPriRK34( fEquation ); break;         
-      case 45: pStepper = new G4BogackiShampine45( fEquation ); break;
-      case 145: pStepper = new    G4TsitourasRK45( fEquation ); break;
-      case 745: pStepper = new G4DormandPrince745( fEquation ); break;
-      case 56: pStepper = new G4DormandPrinceRK56( fEquation ); break;
-      case 78: pStepper = new G4DormandPrinceRK78( fEquation ); break;
+      case 0: pStepper = new G4ExplicitEuler( equation ); break;
+      case 1: pStepper = new G4ImplicitEuler( equation ); break;
+      case 2: pStepper = new G4SimpleRunge( equation ); break;
+      case 3: pStepper = new G4SimpleHeum( equation ); break;
+      case 4: pStepper = new G4ClassicalRK4( equation ); break;
+      case 5: pStepper = new G4HelixExplicitEuler( equation ); break;
+      case 6: pStepper = new G4HelixImplicitEuler( equation ); break;
+      case 7: pStepper = new G4HelixSimpleRunge( equation ); break;
+      case 8: pStepper = new G4CashKarpRKF45( equation );    break;
+      case 9: pStepper = new G4ExactHelixStepper( equation );   break;
+      case 10: pStepper = new G4RKG3_Stepper( equation );       break;
+      case 11: pStepper = new G4HelixMixedStepper( equation );  break;
+      case 12: pStepper = new G4ConstRK4( equation ); break;
+      case 13: pStepper = new G4NystromRK4( equation ); break;
+      case 23: pStepper = new G4BogackiShampine23( equation ); break;
+      case 34: pStepper = new DoLoMcPriRK34( equation ); break;         
+      case 45: pStepper = new G4BogackiShampine45( equation ); break;
+      case 145: pStepper = new      TsitourasRK45( equation ); break;
+      case 745: pStepper = new DormandPrince745( equation ); break;
+      case 56: pStepper = new DormandPrinceRK56( equation ); break;
+      case 78: pStepper = new DormandPrinceRK78( equation ); break;
       default: 
-          pStepper = 0;   // Can use default= new G4ClassicalRK4( fEquation );
+          pStepper = 0;   // Can use default= new G4ClassicalRK4( equation );
           G4ExceptionDescription ErrorMsg;
           ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
-                   << stepperType << G4endl;
+                   << type << G4endl;
           ErrorMsg << " NO replacement stepper chosen! " << G4endl;
-          G4Exception("application::SetupField",
-                      "Runtime Error",
+          G4Exception("application::CreateStepper()", "Runtime Error",
                       FatalErrorInArgument,       //  use JustWarning,
                       " Invalid value of stepper type" );
           break; 
     }
+    return pStepper;
+}
 
+G4VFSALIntegratorStepper* CreateFSALStepper( int StepperType, G4EquationOfMotion* equation )
+{
+    G4VFSALIntegratorStepper* pFSALStepper= nullptr;
+    switch ( StepperType )
+    {
+         // FSAL Steppers
+      case 245: pFSALStepper = new G4FSALBogackiShampine45( equation ); break;
+      case 345: pFSALStepper = new G4FSALDormandPrince745( equation ); break;
+      default: 
+          pStepper = 0;   // Could use default= new 
+          G4ExceptionDescription ErrorMsg;
+          ErrorMsg << " Incorrect Stepper type requested. Value was id= " 
+                   << type << G4endl;
+          ErrorMsg << " NO replacement stepper chosen! " << G4endl;
+          G4Exception("application::CreateFSALStepper",   "Runtime Error", 
+                      FatalErrorInArgument, " Invalid value of stepper type" );
+          break; 
+    }
+    return pFSALStepper;
+}
+
+G4EquationOfMotion *SetupEquation( G4MagneticField* magField );
+G4MagIntegratorStepper* CreateStepper( int StepperType, G4EquationOfMotion* equation );
+G4VFSALIntegratorStepper* CreateFSALStepper( int StepperType, G4EquationOfMotion* equation );
+
+
+#include "G4SimpleLocator.hh"
+#include "G4BrentLocator.hh"
+#include "G4MultiLevelLocator.hh"
+
+// G4PropagatorInField*  SetupPropagator( G4int type)
+
+G4NewChordFinder*  SetupNewChordFinder( G4int stepperType, G4MagIntegratorStepper )
+{
+    // G4FieldManager* fieldMgr= 
+    SetupField( stepperType) ;
+
+    G4NewChordFinder  *pChordFinder= nullptr; // new G4NewChordFinder( &MagField, 0.05*mm ); // Default stepper
+
+    G4double  stepMinimum = 1.0e-2 * millimeter;    
+    if( pStepper )      
+       pChordFinder = new G4NewChordFinder( pMyMagField, // &myMagField,
+                                            stepMinimum, // 1.0e-2 * mm,
+                                            pStepper);
+    else {
+       pChordFinder = new G4NewChordFinder( pMyMagField,
+                                            pFSALStepper,
+                                            stepMinimum);
+    }
+    pChordFinder->SetVerbose(1);  // ity();
+    
+    // G4PropagatorInField *thePropagator = 
+    //   G4TransportationManager::GetTransportationManager()->
+    //    GetPropagatorInField ();
+
+    // G4double epsilon = 1.0e-4;
+    // G4double minEpsilon = epsilon;
+    // G4double maxEpsilon = epsilon;
+    
+    // Let us test the new Minimum Epsilon Step functionality
+    // thePropagator -> SetMinimumEpsilonStep( minEpsilon ) ; 
+    // thePropagator -> SetMaximumEpsilonStep( maxEpsilon ) ;
+
+    // G4Navigator *theNavigator= G4TransportationManager::GetTransportationManager()->
+    //      GetNavigatorForTracking();
+    // Test the options for Locator
+
+    return pChordFinder; // thePropagator;
+}
+
+
+G4FieldManager* SetupFieldManager( )
+{    
     pFieldMgr= G4TransportationManager::GetTransportationManager()->
        GetFieldManager();
 
     pFieldMgr->SetDetectorField( pMyMagField ); // ( &myMagField );
 
-    G4double  stepMinimum = 1.0e-2 * millimeter;        
-    pChordFinder = new G4ChordFinder( &myMagField,
-				      stepMinimum,
-				      pStepper);
-    assert( pChordFinder != 0 );
-    pChordFinder->SetVerbose(1);  // ity();
+
 
     pFieldMgr->SetChordFinder( pChordFinder );
 
     return    pFieldMgr;
 }
 
-#include "G4SimpleLocator.hh"
-#include "G4BrentLocator.hh"
-#include "G4MultiLevelLocator.hh"
-
-G4PropagatorInField*  SetupPropagator( G4int StepperType, G4int LocatorType = 1 )
-{
-    // G4FieldManager* fieldMgr= 
-    SetupField( StepperType ) ;
-
-    // G4ChordFinder  theChordFinder( &MagField, 0.05*mm ); // Default stepper
- 
-    G4PropagatorInField *thePropagator = 
-      G4TransportationManager::GetTransportationManager()->
-       GetPropagatorInField ();
-
-    G4double epsilon = 1.0e-4;
-    G4double minEpsilon = epsilon;
-    G4double maxEpsilon = epsilon;
-    
-    // Let us test the new Minimum Epsilon Step functionality
-    thePropagator -> SetMinimumEpsilonStep( minEpsilon ) ; 
-    thePropagator -> SetMaximumEpsilonStep( maxEpsilon ) ;
-
-    G4Navigator *theNavigator= G4TransportationManager::GetTransportationManager()->
-       GetNavigatorForTracking();
-    // Test the options for Locator
-    G4VIntersectionLocator *pLocator=0;
-    G4cout << "Over-riding  PropagatorInField to use ";
-    // pLocator= new G4MultiLevelLocator(theNavigator); G4cout << "Multi"; // default
-    // pLocator= new G4SimpleLocator(theNavigator); G4cout << "Simple";
-    // pLocator= new G4BrentLocator(theNavigator); G4cout << " Brent "; 
-
-    switch ( LocatorType ) {
-    case 0: 
-       pLocator= new G4SimpleLocator(theNavigator); G4cout << "Simple";
-       break;       
-
-    case 2:
-      pLocator= new G4BrentLocator(theNavigator); G4cout << " Brent ";
-      break;      
-       
-    case 1: 
-    default : 
-       pLocator= new G4MultiLevelLocator(theNavigator); G4cout << "Multi";
-       break;
-    };
-    G4cout << " Locator. ( In the unit test code. ) " << G4endl;
-    
-    thePropagator->SetIntersectionLocator(pLocator);
-
-    return thePropagator;
-}
 
 G4PropagatorInField *pMagFieldPropagator=0; 
 //
 // Test Stepping
 //
 G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode, 
-			       G4int               stepperType,
-                               G4int               locatorType = 1)
+			       G4int             type)
 {
     void report_endPV(G4ThreeVector    Position, 
                   G4ThreeVector UnitVelocity,
@@ -429,7 +460,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
     G4Navigator   *pNavig= G4TransportationManager::
                     GetTransportationManager()-> GetNavigatorForTracking();
     
-    pMagFieldPropagator= SetupPropagator(stepperType, locatorType );
+    pMagFieldPropagator= SetupPropagator(type);
 
     G4double particleCharge= +1.0;  // in e+ units
     G4double spin=0.0;              // ignore the spin
@@ -439,12 +470,11 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
                               spin=0.0,
                               magneticMoment=0.0); 
 
-    G4ChordFinder *pChordFndr= pMagFieldPropagator->GetChordFinder();
+    G4EquationOfMotion* equationOfMotion = 
+        ( pMagFieldPropagator->GetChordFinder()
+           // ->GetIntegrationDriver()->GetStepper())
+              ->GetEquationOfMotion()  );
     
-    G4EquationOfMotion* equationOfMotion= nullptr;
-    equationOfMotion =        
-        pChordFndr->GetIntegrationDriver()->GetStepper()
-                         ->GetEquationOfMotion() ;
     equationOfMotion->SetChargeMomentumMass( chargeState, 
 			            0.5 * proton_mass_c2, // Momentum in Mev/c
 					 proton_mass_c2 );
@@ -680,39 +710,29 @@ void repeatWith( double minEpsStep, double maxEpsStep, G4VPhysicalVolume *topNod
 int main(int argc, char **argv)
 {
     G4VPhysicalVolume *myTopNode;
-    G4int  stepperType;
-    G4int  optim, optimSaf;
+    G4int type, optim, optimSaf;
     G4bool optimiseVoxels=true;
     G4bool optimisePiFwithSafety=true;
 
-    stepperType = 8 ;  // Default stepper - Cash Karp RKF 45
-    int    locatorType= 1;
-                               
+    type = 8 ;
     G4cout << " Arguments:  stepper-no  optimise-Voxels optimise-PiF-with-safety" << G4endl;
 
     if( argc >= 2 ){
-       stepperType = atoi(argv[1]);
+       type = atoi(argv[1]);
     } 
 
     if( argc >=3 ){
-       locatorType = atoi(argv[2]);
-    }
-    
-    if( argc >=4 ){
-      optim= atoi(argv[3]);
+      optim= atoi(argv[2]);
       if( optim == 0 ) { optimiseVoxels = false; }
     }
 
-    if( argc >=5 ){
-      optimSaf= atoi(argv[4]);
+    if( argc >=4 ){
+      optimSaf= atoi(argv[3]);
       if( optimSaf == 0 ) { optimisePiFwithSafety= false; }
     }
 
-    G4cout << " Testing with stepper number    " << stepperType << G4endl;
-    G4cout << "             " ;    
-    G4cout << " Using 'locator'-type = " << locatorType << G4endl;
-    G4cout << "        Key: 0 = simple, 1 = Multi, 2= Brent" << G4endl;
-    G4cout << "             " ;
+    G4cout << " Testing with stepper number    " << type << G4endl; 
+    G4cout << "             " ; 
     G4cout << " voxel optimisation      " ; 
     // if (optimiseVoxels)   G4cout << "On"; 
     // else                  G4cout << "Off"; 
@@ -736,7 +756,7 @@ int main(int argc, char **argv)
     // pMagFieldPropagator->SetMaximumEpsilonStep();
        
     // Setup the propagator (will be overwritten by testG4Propagator ...)
-    pMagFieldPropagator= SetupPropagator(stepperType);
+    pMagFieldPropagator= SetupPropagator(type);
     G4cout << " Using default values for " 
 	   << " Min Eps = "  <<   pMagFieldPropagator->GetMinimumEpsilonStep()
            << " and "
@@ -747,7 +767,7 @@ int main(int argc, char **argv)
 
 // Do the tests without voxels
     G4cout << " Test with no voxels" << G4endl; 
-    testG4PropagatorInField(myTopNode, stepperType);
+    testG4PropagatorInField(myTopNode, type);
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
     pMagFieldPropagator->SetVerboseLevel( 1 ); 
@@ -758,7 +778,7 @@ int main(int argc, char **argv)
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4GeometryManager::GetInstance()->CloseGeometry(true);
 
-    testG4PropagatorInField(myTopNode, stepperType);
+    testG4PropagatorInField(myTopNode, type);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
@@ -780,29 +800,29 @@ int main(int argc, char **argv)
     pMagFieldPropagator->SetMaximumEpsilonStep(maxEps);
     pMagFieldPropagator->SetMinimumEpsilonStep(minEps);
 
-    testG4PropagatorInField(myTopNode, stepperType);
+    testG4PropagatorInField(myTopNode, type);
 
     
 // Repeat tests with full voxels and modified parameters
     G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
     maxEps= 1.0e-6;
     minEps= 1.0e-6;
-    repeatWith( minEps, maxEps, myTopNode, stepperType );
+    repeatWith( minEps, maxEps, myTopNode, type );
     
     G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
     maxEps= 1.0e-7;
     minEps= 1.0e-7;
-    repeatWith( minEps, maxEps, myTopNode, stepperType );
+    repeatWith( minEps, maxEps, myTopNode, type );
     
     G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
     maxEps= 1.0e-8;
     minEps= 1.0e-8;
-    repeatWith( minEps, maxEps, myTopNode, stepperType );
+    repeatWith( minEps, maxEps, myTopNode, type );
     
     G4cout << "Test with more accurate parameters ( voxels on )" << G4endl; 
     maxEps= 1.0e-9;
     minEps= 1.0e-9;
-    repeatWith( minEps, maxEps, myTopNode, stepperType );
+    repeatWith( minEps, maxEps, myTopNode, type );
     
     G4GeometryManager::GetInstance()->OpenGeometry();
     optimiseVoxels = ! optimiseVoxels;
@@ -813,7 +833,7 @@ int main(int argc, char **argv)
     G4cout << G4endl;
 
     pMagFieldPropagator->SetUseSafetyForOptimization(optimiseVoxels); 
-    testG4PropagatorInField(myTopNode, stepperType);
+    testG4PropagatorInField(myTopNode, type);
 
     G4GeometryManager::GetInstance()->OpenGeometry();
 
