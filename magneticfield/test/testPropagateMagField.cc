@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testPropagateMagField.cc 97286 2016-05-31 21:12:49Z japost $
+// $Id: testPropagateMagField.cc 97333 2016-06-01 15:33:03Z japost $
 //
 //  
 //
@@ -343,7 +343,7 @@ G4FieldManager* SetupField(G4int stepperType)
     pFieldMgr->SetDetectorField( pMyMagField ); // ( &myMagField );
 
     G4double  stepMinimum = 1.0e-2 * millimeter;        
-    pChordFinder = new G4ChordFinder( &myMagField,
+    pChordFinder = new G4ChordFinder( pMyMagField,
 				      stepMinimum,
 				      pStepper);
     assert( pChordFinder != 0 );

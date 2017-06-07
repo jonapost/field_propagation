@@ -1,4 +1,4 @@
-$Id: History 92928 2015-09-21 15:38:29Z japost $
+$Id: History 97371 2016-06-01 20:32:18Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,34 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+
+June  1, 2016 J.Apostolakis                  - part of field-V10-02-16
+------------------------------------------
+- Deleted RkTestRun - 
+   Reason: to alleviate cmake problem with "validate-sources"
+ 
+   **** Start Error report for reference: ****
+   Problems detected in /mnt/build/jenkins/workspace/g4-cont-slc6-gcc51-MT/continuous/RelWithDebInfo/g4tags-dev/g4tags-dev/source/geometry/magneticfield/test/RkTestRun:
+Sources on disk but not listed in sources.cmake:
+  RKTest.hh
+  RKTest.cc
+CMake Error at geant4_validate_sources.cmake:148 (message):
+  Inconsistent Geant4 build detected!
+   **** End   Error report for reference  ****
+
+
+June  1, 2016 J.Apostolakis                  - part of field-V10-02-14
+------------------------------------------
+- RkTestRun: renamed CMakeLists.txt to Old-CMakeLists.txt 
+    trying to fix Ctest error about sources.
+
+- Fixes to RkTestRun - renamed base and conrete stepper classes.
+
+May 26, 2016 J.Apostolakis & Som. Banerjee   - part of field-V10-02-11
+------------------------------------------
+- Added RkTestRun (first of Somnath's final tests for steppers)
+
 
 Sept  21st,  2015 J.Apostolakis
 ----------------------------------
