@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.cc 97809 2016-06-13 16:05:14Z japost $
+// $Id: G4ChordFinder.cc 99848 2016-10-07 15:31:43Z japost $
 //
 //
 // 25.02.97 - John Apostolakis - Design and implementation 
@@ -248,7 +248,7 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
   fIntgrDriver-> GetDerivatives( yCurrent, dydx );
 
   unsigned int        noTrials=0;
-  const unsigned int  maxTrials= 300; // Avoid endless loop for bad convergence 
+  const unsigned int  maxTrials= 75; // Avoid endless loop for bad convergence 
 
   const G4double safetyFactor= fFirstFraction; //  0.975 or 0.99 ? was 0.999
 
@@ -258,8 +258,7 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
   G4double stepForChord;
   do
   { 
-     yCurrent = yStart;    // Always start from initial point
-    
+     yCurrent = yStart;    // Always start from initial point  
      //            ************
      fIntgrDriver->QuickAdvance( yCurrent, dydx, stepTrial, 
                                  dChordStep, dyErrPos);
@@ -291,7 +290,8 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
      }
      noTrials++; 
   }
-  while( (! validEndPoint) && (noTrials < maxTrials) );   // End of do-while  RKD 
+  while( (! validEndPoint) && (noTrials < maxTrials) );
+  // Loop checking, 07.10.2016, J. Apostolakis
 
   if( noTrials >= maxTrials )
   {

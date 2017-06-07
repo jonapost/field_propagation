@@ -1,4 +1,4 @@
-$Id: History 99842 2016-10-07 13:49:26Z japost $
+$Id: History 101366 2016-11-15 15:44:48Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,10 +16,13 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
-
+Oct   7, 2016 J.Apostolakis             - field-V10-02-24, 25
+---------------------------
+- Checked loops for termination for infinite loops and annotated 
+   them with "Loop checking" comment
 
 Oct   7, 2016 D.Sorokin                 - field-V10-02-23
------------------------
+-----------------------  Commit: J. Apostolakis
 - Protection for multiple inclusion of G4ClassicalRK4 
    (thanks to Dmitrii Sorokin, GSoC 2016 student. )
 
