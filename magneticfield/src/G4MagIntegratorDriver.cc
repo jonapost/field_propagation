@@ -77,13 +77,13 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
     fNoIntegrationVariables(numComponents), 
     fMinNoVars(12), 
     fNoVars( std::max( fNoIntegrationVariables, fMinNoVars )),
+    ferrorPrev(-1),
     fStatisticsVerboseLevel(statisticsVerbose),
     fNoTotalSteps(0),  fNoBadSteps(0), fNoSmallSteps(0),
     fNoInitialSmallSteps(0), 
     fDyerr_max(0.0), fDyerr_mx2(0.0), 
     fDyerrPos_smTot(0.0), fDyerrPos_lgTot(0.0), fDyerrVel_lgTot(0.0), 
     fSumH_sm(0.0), fSumH_lg(0.0),
-    ferrorPrev(-1),
     fVerboseLevel(0)
 
 {  
