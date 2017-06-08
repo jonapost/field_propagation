@@ -15,6 +15,8 @@
 #include "G4LineSection.hh"
 #include "Utils.hh"
 
+using namespace magneticfield;
+
 namespace {
     void copyArray(G4double dst[], const G4double src[]) {
         memcpy(dst, src, sizeof(G4double) * G4FieldTrack::ncompSVEC);
@@ -119,14 +121,27 @@ void RK547FEq1::Stepper(const G4double yInput[],
     copyArray(yOut_, yOutput);
 }
 
+void RK547FEq1::ComputeRightHandSide(const G4double y[], G4double dydx[])
+{
+    const G4ThreeVector yEnd = makeVector(yOut_, Value3D::Position);
+    const G4ThreeVector yCurrent = makeVector(y, Value3D::Position);
+    const G4double distance = (yCurrent - yEnd).mag() / hstep_;
+
+    if (distance < 1e-3) {
+        copyArray(dydx, dydxOut_);
+    } else {
+        G4MagIntegratorStepper::ComputeRightHandSide(y, dydx);
+    }
+}
+
 G4double RK547FEq1::DistChord() const
 {
-    const G4ThreeVector begin = makeVector(yIn_, Type::Position);
-    const G4ThreeVector end = makeVector(yOut_, Type::Position);
+    const G4ThreeVector begin = makeVector(yIn_, Value3D::Position);
+    const G4ThreeVector end = makeVector(yOut_, Value3D::Position);
 
     G4double yMid[G4FieldTrack::ncompSVEC];
     makeStep(yIn_, dydx_, hstep_ / 2., yMid);
-    const G4ThreeVector mid = makeVector(yMid, Type::Position);
+    const G4ThreeVector mid = makeVector(yMid, Value3D::Position);
 
     return G4LineSection::Distline(mid, begin, end);
 }

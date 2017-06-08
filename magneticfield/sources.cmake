@@ -150,6 +150,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformGravityField.cc
         G4UniformMagField.cc
         RK547FEq1.cc
+        Utils.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES
