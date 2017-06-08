@@ -18,6 +18,7 @@ public:
     RK547FEq1 (const RK547FEq1&) = delete;
     RK547FEq1& operator = (const RK547FEq1&) = delete;
 
+    virtual void ComputeRightHandSide(const G4double y[], G4double dydx[]) override;
     virtual G4double DistChord() const override;
     virtual G4int IntegratorOrder() const override { return 4; }
 
