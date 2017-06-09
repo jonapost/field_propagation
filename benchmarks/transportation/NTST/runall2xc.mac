@@ -1,0 +1,68 @@
+# $Id: runall2xc.mac,v 1.1 2007-10-26 08:34:13 gcosmo Exp $
+#
+# Macro file for "exampleNTST.cc"
+# 
+# (can be run in batch, without graphic)
+#
+/control/verbose 2
+/control/saveHistory
+/NTST/setDebug 0
+#
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+#
+# construct the default geometry
+# 
+#/run/useBgsTran 0
+#/run/minEcut 1 MeV
+#/run/looperCut 200 MeV
+/run/cut 1 mm
+/gen/choose evt
+#
+# choose field type and stepper
+#/field/setFieldType 1
+#/field/setFieldType 2
+#/field/setFieldType 3
+#
+/field/setFieldType 4
+/field/setStepperType 4
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats
+
+/field/setStepperType 8
+/field/updateStepper
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats
+
+/field/setStepperType 10
+/field/updateStepper
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats
+
+/field/setStepperType 3
+/field/updateStepper
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats
+
+/field/setStepperType 2
+/field/updateStepper
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats
+
+/field/setStepperType 11
+/field/updateStepper
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats
+
+/field/setStepperType 12
+/field/updateStepper
+/run/initialize
+/run/beamOn  100
+/field/getFieldStats

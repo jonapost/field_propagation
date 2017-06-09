@@ -1,0 +1,32 @@
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    ParFullCMS benchmark History file
+                    ---------------------------------
+This file should be used by the G4 example coordinator to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+
+27-Nov-2013 - G.Folger    (ParFullCMS-V09-06-02)
+- remove setting number of threads from macro files.
+
+16-Oct-2013 - G.Folger    (ParFullCMS-V09-06-01)
+---------------------
+- fix compilation warning on un-used variable
+- copy cms.gdml into local directory
+
+16-Oct-2013 - G.Folger    (ParFullCMS-V09-06-00) 
+---------------------
+- added command line selection of physics list
+- added commands to CMakeLists.txt to use in testing, MT mode only.
+
+
+2013 - A.Dotti 
+---------------------
+- Created from FullCMS

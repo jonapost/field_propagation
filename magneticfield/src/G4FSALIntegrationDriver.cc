@@ -23,15 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: FSALMagIntegratorDriver.cc
-//
+// $Id: G4FSALIntegrationDriver.cc $
 // 
 //
-// Implementation for class FSALMagInt_Driver
-// Tracking in space dependent magnetic field
 //
 // History of major changes: /To be filled/
-
+//
 
 #include <iomanip>
 
@@ -378,7 +375,7 @@ G4FSALIntegrationDriver::AccurateAdvance(G4FieldTrack& y_current,
                 if (dbg>2)
                 {
                     int prec= G4cout.precision(12);
-                    G4cout << "Warning: FSALMagIntegratorDriver::AccurateAdvance"
+                    G4cout << "Warning: G4VIntegrationDriver::AccurateAdvance"
                     << G4endl
                     << "  Integration step 'h' became "
                     << h << " due to roundoff. " << G4endl
@@ -419,7 +416,7 @@ G4FSALIntegrationDriver::AccurateAdvance(G4FieldTrack& y_current,
 #ifdef G4DEBUG_FIELD
     if( dbg && no_warnings )
     {
-        G4cerr << "FSALMagIntegratorDriver exit status: no-steps " << nstp <<G4endl;
+        G4cerr << "G4VIntegrationDriver exit status: no-steps " << nstp <<G4endl;
         PrintStatus( yEnd, x1, y, x, hstep, nstp);
     }
 #endif
@@ -583,7 +580,7 @@ G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
         if( magvel_sq > 0.0 ) {
             errvel_sq = sumerr_sq / magvel_sq;
         }else{
-            G4cerr << "** G4MagIntegrationDriver: found case of zero momentum."
+            G4cerr << "** G4FSALIntegrationDriver: found case of zero momentum."
             << " iteration=  " << iter << " h= " << h << G4endl;
             errvel_sq = sumerr_sq;
         }
@@ -610,7 +607,7 @@ G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
         xnew = x + h;
         if(xnew == x)
         {
-            G4cerr << "FSALMagIntegratorDriver::OneGoodStep:" << G4endl
+            G4cerr << "G4FSALIntegrationDriver::OneGoodStep:" << G4endl
             << "  Stepsize underflow in Stepper " << G4endl ;
             G4cerr << "  Step's start x=" << x << " and end x= " << xnew
             << " are equal !! " << G4endl

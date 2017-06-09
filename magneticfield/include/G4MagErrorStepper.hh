@@ -31,9 +31,12 @@
 //
 // Class description:
 //
-// Abstract base class for integrator of particle's equation of motion,
-// used in tracking in space dependent magnetic field.
-
+// Abstract base class for simple Runge-Kutta integrators of a
+//     particle's equation of motion.
+// Used only for methods which are not able to estimate the error
+//     of a trial step.
+// As such, these methods will not have the FSAL property.
+//
 // History:
 // 09.12.97  W.Wander <wwc@mit.edu>  Created G4MagErrorStepper
 // --------------------------------------------------------------------

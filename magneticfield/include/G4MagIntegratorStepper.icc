@@ -55,10 +55,10 @@ G4int G4MagIntegratorStepper::GetNumberOfStateVariables() const
 }
 
 inline
-void G4MagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )   
+void G4MagIntegratorStepper::RightHandSide( const  double y[], double dydx[] )
 {
-  fEquation_Rhs-> RightHandSide(y, dydx);
-  fNoRHSCalls++; // IncrementRHSCalls();
+   fEquation_Rhs-> RightHandSide(y, dydx);
+   fNoRHSCalls++;   
 }
 
 inline

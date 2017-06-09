@@ -45,7 +45,9 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
-class G4MagInt_Driver
+#include "G4VIntegrationDriver.hh"
+
+class G4MagInt_Driver:public G4VIntegrationDriver
 {
    public:  // with description
 
@@ -90,6 +92,7 @@ class G4MagInt_Driver
      inline G4double GetPshrnk() const;
      inline G4double GetPgrow() const;
      inline G4double GetErrcon() const;
+     inline G4int GetNoTotalSteps() const;	//Only for debug purposes
      inline void GetDerivatives( const G4FieldTrack &y_curr,     // const, INput
                                        G4double    dydx[]   );  //       OUTput
         // Accessors.
@@ -146,6 +149,11 @@ class G4MagInt_Driver
         //  Modify and Get the Maximum number of Steps that can be
         //   taken for the integration of a single segment -
         //   (ie a single call to AccurateAdvance).
+    
+//---------------------------------------------------------------------
+//The following has been introduced by [hackabot] for testing purposes only
+    inline G4int GetTotalNoStepperCalls() const;
+//---------------------------------------------------------------------
 
    public:  // without description
 
@@ -187,6 +195,8 @@ class G4MagInt_Driver
 
      void PrintStatisticsReport() ;
        //  Report on the number of steps, maximum errors etc.
+    
+    
 
 #ifdef QUICK_ADV_TWO
      G4bool QuickAdvance(      G4double     yarrin[],     // In
@@ -249,6 +259,9 @@ class G4MagInt_Driver
 
      G4int  fVerboseLevel;   // Verbosity level for printing (debug, ..)
         // Could be varied during tracking - to help identify issues
+    
+    //For Test Purposes :-
+    G4int TotalNoStepperCalls;
 
 };
 

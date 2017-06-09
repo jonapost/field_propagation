@@ -1,0 +1,32 @@
+$Id: README,v 1.3 2007-10-26 10:09:08 gcosmo Exp $
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                      Benchmarks module
+                      -----------------
+
+This module collects a set of "bechmark" tests which are used as part of the
+validation procedure, to verify and control the overall CPU performance of
+the GEANT4 toolkit. Each test may include more than one test case, covering
+different initial conditions and setups.
+This set of tests is going to be extended in future, to become more and more
+exhaustive and complete.
+
+ANY change or update to the source code or input macros MUST be notified to
+the System Testing (geant4-stt@cern.ch), specifying if these will affect the
+measurements in comparison to previous benchmark runs, meaning that it may be
+necessary to regenerate all reference measurements.
+
+Responsible contact-persons:
+===========================
+calorimeter/FullCMS                      Alberto Ribon - Alberto.Ribon@cern.ch
+calorimeter/HadCalCMS                    Alberto Ribon - Alberto.Ribon@cern.ch
+electromagnetic/be1        Vladimir Ivantchenko - Vladimir.Ivantchenko@cern.ch
+electromagnetic/be2        Vladimir Ivantchenko - Vladimir.Ivantchenko@cern.ch
+transportation/honeycomb               Gabriele Cosmo - Gabriele.Cosmo@cern.ch
+transportation/NTST                Tatiana Nikitina - Tatiana.Nikitina@cern.ch
+______________________________________________________________________________
+

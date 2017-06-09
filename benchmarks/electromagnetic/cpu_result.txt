@@ -1,0 +1,136 @@
+      ==============================
+      Results of EM CPU benchmarking
+      Created  07 November 2011
+      ==============================
+
+Applications
+  em1: 10 GeV e- in matrix 5x5 of PbWO4 crystals (CMS-type) cut = 0.7 mm, 100 events
+  em2: 10 GeV e- in ATLAS barrel type sampling calorimeter cut = 0.7 mm 100 events
+  em3: 10 GeV e- in ATLAS barrel type sampling calorimeter cut = 0.02 mm 10 events
+
+Physics lists
+  standard: emstandard PhysicList
+  emv: emstandard_opt1 PhysicList
+  emx: emstandard_opt2 PhysicList
+
+
+----------------------Operating system informations----------------------
+Benches runnuing on pcphsft80: Linux 2.6.18-194.26.1.el5, processor x86_64
+--------------------------------------------------------------------------
+
+--- Bench em3_standard
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=140.060000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.976439(-2.356133%) , User time=136.760000 sec 
+    -- geant4-09-04-ref-02 => Normalized=0.996930(-0.307011%) , User time=139.630000 sec 
+    -- geant4-09-04-ref-03 => Normalized=0.989647(-1.035271%) , User time=138.610000 sec 
+    -- geant4-09-04-ref-04 => Normalized=0.981865(-1.813508%) , User time=137.520000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.081822(8.182208%) , User time=151.520000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.067328(6.732829%) , User time=149.490000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.074254(7.425389%) , User time=150.460000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.146866(14.686563%) , User time=160.630000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.163287(16.328716%) , User time=162.930000 sec 
+    -- geant4-09-04-ref-10 => Normalized=1.182065(18.206483%) , User time=165.560000 sec 
+
+--- Bench em2_emx
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=130.900000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.977311(-2.268908%) , User time=127.930000 sec 
+    -- geant4-09-04-ref-02 => Normalized=0.991520(-0.847976%) , User time=129.790000 sec 
+    -- geant4-09-04-ref-03 => Normalized=1.005195(0.519481%) , User time=131.580000 sec 
+    -- geant4-09-04-ref-04 => Normalized=1.080214(8.021390%) , User time=141.400000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.081589(8.158900%) , User time=141.580000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.464706(46.470588%) , User time=191.730000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.474179(47.417876%) , User time=192.970000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.424981(42.498090%) , User time=186.530000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.220015(22.001528%) , User time=159.700000 sec 
+    -- geant4-09-04-ref-10 => Normalized=0.592666(-40.733384%) , User time=77.580000 sec 
+
+--- Bench em1_emv
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=138.450000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.995377(-0.462261%) , User time=137.810000 sec 
+    -- geant4-09-04-ref-02 => Normalized=1.032575(3.257494%) , User time=142.960000 sec 
+    -- geant4-09-04-ref-03 => Normalized=1.009895(0.989527%) , User time=139.820000 sec 
+    -- geant4-09-04-ref-04 => Normalized=1.024269(2.426869%) , User time=141.810000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.065872(6.587216%) , User time=147.570000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.118382(11.838209%) , User time=154.840000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.089346(8.934633%) , User time=150.820000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.125099(12.509931%) , User time=155.770000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.077501(7.750090%) , User time=149.180000 sec 
+    -- geant4-09-04-ref-10 => Normalized=1.113687(11.368725%) , User time=154.190000 sec 
+
+--- Bench em3_emv
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=143.770000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.964874(-3.512555%) , User time=138.720000 sec 
+    -- geant4-09-04-ref-02 => Normalized=0.987550(-1.245044%) , User time=141.980000 sec 
+    -- geant4-09-04-ref-03 => Normalized=0.987202(-1.279822%) , User time=141.930000 sec 
+    -- geant4-09-04-ref-04 => Normalized=0.972804(-2.719622%) , User time=139.860000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.050915(5.091466%) , User time=151.090000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.095569(9.556931%) , User time=157.510000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.090979(9.097865%) , User time=156.850000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.100230(10.022953%) , User time=158.180000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.070182(7.018154%) , User time=153.860000 sec 
+    -- geant4-09-04-ref-10 => Normalized=1.109480(10.948042%) , User time=159.510000 sec 
+
+--- Bench em2_standard
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=140.300000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.978902(-2.109765%) , User time=137.340000 sec 
+    -- geant4-09-04-ref-02 => Normalized=0.989594(-1.040627%) , User time=138.840000 sec 
+    -- geant4-09-04-ref-03 => Normalized=1.018959(1.895937%) , User time=142.960000 sec 
+    -- geant4-09-04-ref-04 => Normalized=0.980542(-1.945830%) , User time=137.570000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.049537(4.953671%) , User time=147.250000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.066144(6.614398%) , User time=149.580000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.075481(7.548111%) , User time=150.890000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.135567(13.556664%) , User time=159.320000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.157662(15.766215%) , User time=162.420000 sec 
+    -- geant4-09-04-ref-10 => Normalized=1.130720(13.071989%) , User time=158.640000 sec 
+
+--- Bench em1_standard
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=145.780000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.998765(-0.123474%) , User time=145.600000 sec 
+    -- geant4-09-04-ref-02 => Normalized=1.035053(3.505282%) , User time=150.890000 sec 
+    -- geant4-09-04-ref-03 => Normalized=1.020099(2.009878%) , User time=148.710000 sec 
+    -- geant4-09-04-ref-04 => Normalized=1.010015(1.001509%) , User time=147.240000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.076005(7.600494%) , User time=156.860000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.114350(11.435039%) , User time=162.450000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.095212(9.521196%) , User time=159.660000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.131431(13.143092%) , User time=164.940000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.170257(17.025655%) , User time=170.600000 sec 
+    -- geant4-09-04-ref-10 => Normalized=1.145973(14.597338%) , User time=167.060000 sec 
+
+--- Bench em2_emv
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=144.580000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.973164(-2.683635%) , User time=140.700000 sec 
+    -- geant4-09-04-ref-02 => Normalized=0.985821(-1.417900%) , User time=142.530000 sec 
+    -- geant4-09-04-ref-03 => Normalized=0.993913(-0.608660%) , User time=143.700000 sec 
+    -- geant4-09-04-ref-04 => Normalized=0.985821(-1.417900%) , User time=142.530000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.050007(5.000692%) , User time=151.810000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.113017(11.301701%) , User time=160.920000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.107553(10.755291%) , User time=160.130000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.076290(7.628994%) , User time=155.610000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.073800(7.379997%) , User time=155.250000 sec 
+    -- geant4-09-04-ref-10 => Normalized=1.039770(3.977037%) , User time=150.330000 sec 
+
+--- Bench em1_emx
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=135.350000 sec 
+    -- geant4-09-04-ref-01 => Normalized=1.009235(0.923532%) , User time=136.600000 sec 
+    -- geant4-09-04-ref-02 => Normalized=1.044403(4.440340%) , User time=141.360000 sec 
+    -- geant4-09-04-ref-03 => Normalized=1.011230(1.123014%) , User time=136.870000 sec 
+    -- geant4-09-04-ref-04 => Normalized=1.070706(7.070558%) , User time=144.920000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.093609(9.360916%) , User time=148.020000 sec 
+    -- geant4-09-04-ref-06 => Normalized=2.150646(115.064647%) , User time=291.090000 sec 
+    -- geant4-09-04-ref-07 => Normalized=2.071740(107.173993%) , User time=280.410000 sec 
+    -- geant4-09-04-ref-08 => Normalized=2.060953(106.095308%) , User time=278.950000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.335722(33.572220%) , User time=180.790000 sec 
+    -- geant4-09-04-ref-10 => Normalized=0.938604(-6.139638%) , User time=127.040000 sec 
+
+--- Bench em3_emx
+    -- geant4-09-04-ref-00 => Normalized=1.000000(0.000000%) , User time=122.670000 sec 
+    -- geant4-09-04-ref-01 => Normalized=0.974403(-2.559713%) , User time=119.530000 sec 
+    -- geant4-09-04-ref-02 => Normalized=0.992826(-0.717372%) , User time=121.790000 sec 
+    -- geant4-09-04-ref-03 => Normalized=1.012554(1.255401%) , User time=124.210000 sec 
+    -- geant4-09-04-ref-04 => Normalized=1.085596(8.559550%) , User time=133.170000 sec 
+    -- geant4-09-04-ref-05 => Normalized=1.087470(8.747045%) , User time=133.400000 sec 
+    -- geant4-09-04-ref-06 => Normalized=1.209016(20.901606%) , User time=148.310000 sec 
+    -- geant4-09-04-ref-07 => Normalized=1.224994(22.499389%) , User time=150.270000 sec 
+    -- geant4-09-04-ref-08 => Normalized=1.184479(18.447868%) , User time=145.300000 sec 
+    -- geant4-09-04-ref-09 => Normalized=1.277819(27.781854%) , User time=156.750000 sec 
+    -- geant4-09-04-ref-10 => Normalized=0.687780(-31.221978%) , User time=84.370000 sec 

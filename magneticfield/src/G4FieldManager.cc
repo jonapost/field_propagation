@@ -34,6 +34,9 @@
 #include "G4ChordFinder.hh"
 #include "G4FieldManagerStore.hh"
 
+#include "G4MagIntegratorDriver.hh"
+// #include "G4VIntegratorDriver.hh"   in future
+
 G4FieldManager::G4FieldManager(G4Field       *detectorField, 
 			       G4ChordFinder *pChordFinder, 
 			       G4bool        fieldChangesEnergy
@@ -156,9 +159,7 @@ void G4FieldManager::InitialiseFieldChangesEnergy()
 
 G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
 {
-   G4MagInt_Driver*        driver= 0;
-   G4MagIntegratorStepper* stepper=0;
-   G4EquationOfMotion*     equation=0; 
+   G4EquationOfMotion*     equation= nullptr; 
    // G4bool  compatibleField= false; 
    G4bool ableToSet= false;
 
@@ -167,23 +168,25 @@ G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
    
    // Must 'propagate' the field to the dependent classes
    //
-   if( fChordFinder )
+   if( !fChordFinder )
    {
+      return ableToSet;  // No error reported -- nothing is set up
+   }
+
      failMode= std::max( failMode, 1) ; // If a chord finder exists, warn in case of error!
       
-     driver= fChordFinder->GetIntegrationDriver();
+     auto driver= fChordFinder->GetIntegrationDriver();
      if( driver ){
-        stepper= driver->GetStepper();
-        if( stepper ){
-          equation= stepper->GetEquationOfMotion();
-          // Should check the compatibility between the field and the equation HERE
-          if( equation ) {
-             equation->SetFieldObj(pDetectorField);
-             ableToSet = true;
-          }  
-        }
+        equation= driver->GetEquationOfMotion();
+        // New: no guarantee that an RK stepper is used - potential for alternative drivers
+
+        // Should check the compatibility between the field and the equation HERE
+        
+        if( equation ) {
+           equation->SetFieldObj(pDetectorField);
+           ableToSet = true;
+        }  
      }
-   }
    
    if( !ableToSet && (failMode > 0) )
    {
@@ -192,9 +195,10 @@ G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
       msg << "Unable to set the field in the dependent objects of G4FieldManager" << G4endl;
       msg << "All the dependent classes must be fully initialised, before it is possible to call this method." << G4endl;
       msg << "The problem encountered was the following: " << G4endl;
-      if( !fChordFinder ) { msg << "  No ChordFinder. " ; }
-      else if( !driver)   { msg << "  No Integration Driver set. ";}
-      else if( !stepper ) { msg << "  No Stepper found. " ; }
+      // if( !fChordFinder ) { msg << "  No ChordFinder. " ; }
+      // else
+      if( !driver)   { msg << "  No Integration Driver set. ";}
+      // else if( !stepper ) { msg << "  No Stepper found. " ; }
       else if( !equation) { msg << "  No Equation found. " ; }
       // else if( !compatibleField ) { msg << "  Field not compatible. ";}
       else { msg << "  Can NOT find reason for failure. ";}

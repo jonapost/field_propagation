@@ -32,7 +32,7 @@ inline
 G4MagErrorStepper::G4MagErrorStepper(G4EquationOfMotion *EquationRhs,
                                      G4int numberOfVariables, 
 				     G4int numStateVariables)
-     : G4MagIntegratorStepper(EquationRhs,numberOfVariables,numStateVariables)
+    : G4MagIntegratorStepper(EquationRhs,numberOfVariables,numStateVariables, false)  // not FSAL
   {
       G4int nvar = std::max(this->GetNumberOfVariables(), 8);
       yMiddle=     new G4double[nvar]; 

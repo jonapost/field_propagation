@@ -58,7 +58,7 @@ G4EqEMFieldWithEDM::SetChargeMomentumMass(G4ChargeState particleCharge,
                                           G4double MomentumXc,
                                           G4double particleMass)
 {
-   charge   = particleCharge.GetCharge();
+   charge    = particleCharge.GetCharge();
    mass      = particleMass;
    magMoment = particleCharge.GetMagneticDipoleMoment();
    spin      = particleCharge.GetSpin();

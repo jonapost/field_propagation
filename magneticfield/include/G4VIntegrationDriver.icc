@@ -1,0 +1,26 @@
+//setters
+inline void G4VIntegrationDriver::SetVerboseLevel(G4int newVerb)
+{  fverb = newVerb;  }
+
+inline void G4VIntegrationDriver::SetMinStep(G4double newStep)
+{  fMinimumStep = newStep;  }
+
+//getters
+//inline G4MagIntegratorStepper* G4VIntegrationDriver::GetStepper()
+//{  return fStepper;  }
+
+inline G4EquationOfMotion* G4VIntegrationDriver::GetEquationOfMotion()
+{  return fequation;  }
+
+inline const G4EquationOfMotion* G4VIntegrationDriver::GetEquationOfMotion() const
+{  return fequation;  }
+
+inline G4double G4VIntegrationDriver::GetMinStep() const
+{  return fMinimumStep;  }
+
+inline G4int G4VIntegrationDriver::GetNumberOfVariables() const
+{  return fnvar;  }
+
+inline G4double G4VIntegrationDriver::GetVerboseLevel() const
+{  return fverb;  }
+

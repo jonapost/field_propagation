@@ -162,4 +162,17 @@ inline
 G4double G4MagInt_Driver::GetSmallestFraction() const
 {
       return fSmallestFraction; 
-} 
+}
+
+inline
+G4int G4MagInt_Driver::GetNoTotalSteps() const
+{
+    return fNoTotalSteps;
+}
+
+inline
+G4int G4MagInt_Driver::GetTotalNoStepperCalls() const
+{
+    return TotalNoStepperCalls;
+}
+

@@ -47,6 +47,8 @@
 
 #include "G4MagIntegratorStepper.hh"
 
+#include "G4FieldTrack.hh"
+
 class G4CashKarpRKF45 : public G4MagIntegratorStepper
 {
 
@@ -57,15 +59,15 @@ class G4CashKarpRKF45 : public G4MagIntegratorStepper
                      G4bool primary= true ) ;
    ~G4CashKarpRKF45() ;
 
-    void Stepper( const G4double y[],
+    void Stepper(const G4double yInput[],
                   const G4double dydx[],
                         G4double h,
-                        G4double yout[],
+                        G4double yOutput[],
                         G4double yerr[] ) ;
 
   public:  // without description
 
-    G4double  DistChord()   const; 
+    G4double  DistChord()   const;
     G4int IntegratorOrder() const { return 4; }
 
   private:
@@ -77,7 +79,7 @@ class G4CashKarpRKF45 : public G4MagIntegratorStepper
                             G4double& alpha2,
                             G4double& beta2,
                       const G4double B1[],
-                            G4double B2[]    );  
+                            G4double B2[]    );
       // No longer used. Obsolete.
 
     G4CashKarpRKF45(const G4CashKarpRKF45&);
@@ -86,16 +88,27 @@ class G4CashKarpRKF45 : public G4MagIntegratorStepper
 
   private:
 
-   G4double *ak2, *ak3, *ak4, *ak5, *ak6, *yTemp, *yIn; // *ak7
+   // G4double *ak2, *ak3, *ak4, *ak5, *ak6, *yTemp, *yIn; // *ak7
+   
+    G4double ak2[G4FieldTrack::ncompSVEC],
+             ak3[G4FieldTrack::ncompSVEC],
+             ak4[G4FieldTrack::ncompSVEC],
+             ak5[G4FieldTrack::ncompSVEC],
+             ak6[G4FieldTrack::ncompSVEC],
+             yTemp[G4FieldTrack::ncompSVEC],
+             yIn[G4FieldTrack::ncompSVEC],
+             dydxIn[G4FieldTrack::ncompSVEC],
+             yOut[G4FieldTrack::ncompSVEC];
+
+    G4double mutable yMid[G4FieldTrack::ncompSVEC];
+    G4double mutable yError[G4FieldTrack::ncompSVEC];
+
       // scratch space
 
     G4double fLastStepLength;
-    G4double *fLastInitialVector, *fLastFinalVector,
-             *fLastDyDx, *fMidVector, *fMidError;
       // for DistChord calculations
 
-    G4CashKarpRKF45* fAuxStepper; 
-
+    G4CashKarpRKF45* fAuxStepper;
 };
 
 #endif /* G4CashKARP_RKF45 */

@@ -156,9 +156,10 @@ G4ChordFinderSaf::FindNextChord( const  G4FieldTrack&  yStart,
 
   stepTrial  = std::min( stepMax,  likelyGood ); 
 
-  G4MagInt_Driver *pIntgrDriver= G4ChordFinder::GetIntegrationDriver(); 
+  G4VIntegrationDriver *pIntgrDriver= G4ChordFinder::GetIntegrationDriver();
   G4double newStepEst_Uncons= 0.0;
   G4double stepForChord= -1.0;
+  
   do
   { 
      yCurrent = yStart;    // Always start from initial point

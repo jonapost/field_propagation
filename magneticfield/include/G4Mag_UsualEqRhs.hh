@@ -58,8 +58,8 @@ class G4Mag_UsualEqRhs : public G4Mag_EqRhs
 
      void EvaluateRhsGivenB( const G4double y[],
                              const G4double B[3],
-                                   G4double dydx[] ) const;
-       // Given the value of the magnetic field B, this function 
+                            G4double dydx[] ) const;
+       // Given the value of the magnetic field B, this function
        // calculates the value of the derivative dydx.
 
      virtual void SetChargeMomentumMass( G4ChargeState particleCharge,

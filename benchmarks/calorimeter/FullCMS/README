@@ -1,0 +1,81 @@
+ Last update: 12-Nov-2009
+
+ Full CMS Benchmark
+ ------------------
+
+ In this directory you can find a CPU benchmark test of Geant4
+ based on the full CMS detector, imported via a .gdml file.
+
+ Besides the "usual" Geant4 environmental variables, you need
+ also to set the following ones, for instance:
+
+   export G4LIB_BUILD_GDML=1
+   export G4LIB_USE_GDML=1
+   export XERCESCROOT=/afs/cern.ch/sw/geant4/dev/XercesC/2.8.0/slc4_amd64_gcc34
+   export LD_LIBRARY_PATH=$XERCESCROOT/lib:$LD_LIBRARY_PATH
+
+ Notice that the version of XercesC used must be consistent with the
+ once used to produce the  cms.gdml file.
+
+ The Physics List can be specified in the command line,
+ as the second argument, e.g. :
+
+           full_cms  bench1.g4  FTF_BIC
+
+ Notice that the name of the Physics List must be in upper case,
+ exactly as the corresponding header file.
+ If the Physics List is not specified, then  QGSP_BERT  is used
+ by default.
+
+ To build the application, first setup your environmental variables
+ (the Bash-shell setup file,  setup.sh , shows an example), and then
+ do:
+                                make
+ and you get the executable:
+                                $G4BIN/$G4SYSTEM/full_cms
+ and to run it:
+                                $G4BIN/$G4SYSTEM/full_cms bench1.g4
+
+ You can run this application with the following macro file:
+   -  bench1.g4 : 1 event, consisting of a beam particle shot into 
+                  the full CMS detector, with a uniform magnetic field 
+                  of 4 Tesla along the Z-axis.
+	          The beam particle has the following characteristics:
+                    o  random particle type 
+	               (draw with equal probability between:
+                        mu-, mu+, e-, e+, gamma, pi-, pi+, kaon-,
+                        kaon+, kaon0L, neutron, proton, anti_neutron,
+                        anti_proton, deuteron, triton, alpha, lambda,
+                        sigma+, sigma-, xi-, xi0, anti_lambda,
+                        anti_sigma+, anti_sigma-, anti_xi-, anti_xi0,
+                        omega-, anti_omega- )
+                    o  random kinetic energy
+	               (draw uniformily in the interval:  1 - 100 GeV )
+                    o  starting at the origin (0,0,0)
+                    o  with initial random direction
+                       (draw uniformily in 4*pi).
+                  NB) You can change any of the above choices
+	              (for instance shooting always 50 GeV pi-
+	               in a given, fixed direction)
+	              by modifying the file:
+                         src/MyPrimaryGeneratorAction.cc .
+
+ If you want to use this test for CPU time measurment, then you should
+ first increase (in bench1.g4) the number of events to  4000 ; then 
+ you can get the CPU time in two ways
+ (which should be, more or less, in agreement):
+   - Look at the value "User=..." at the end of the running,
+     after the line "Run Summary": this is the total time,
+     in seconds, for all (4000) events, excluding the 
+     initialization.
+   - Use:
+            time $G4BIN/$G4SYSTEM/full_cms bench1.g4
+     when launching the program: you would get, at the end
+     of the program, the value: "user ..."  which is the 
+     total time for all (4000) events, including the 
+     initialization.
+
+ Finally, notice that the macro file starts with the same seed number
+ (taken from the file  start.rndm ), so if you run twice in the same
+ machine you should get the same result, although the time can vary 
+ slightly due to the different condition of the machine.

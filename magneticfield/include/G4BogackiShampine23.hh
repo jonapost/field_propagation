@@ -25,8 +25,8 @@
 //
 //  Bogacki-Shampine - 4 - 3(2) non-FSAL implementation 
 //
-//  An implementation of the embedded RK method from the paper 
-// [1] P. Bogacki and L. F. Shampine, “A 3(2) pair of Runge - Kutta formulas,” 
+//  An implementation of the embedded RK method from the paper by
+// “A 3(2) pair of Runge - Kutta formulas,” by P. Bogacki and L. F. Shampine,
 // Appl. Math. Lett., vol. 2, no. 4, pp. 321–325, Jan. 1989.
 //
 //  This version does not utilise the FSAL property of the method,

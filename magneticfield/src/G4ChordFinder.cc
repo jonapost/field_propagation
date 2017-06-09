@@ -44,7 +44,7 @@
 
 // ..........................................................................
 
-G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
+G4ChordFinder::G4ChordFinder(G4VIntegrationDriver* pIntegrationDriver)
   : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
     fDeltaChord( fDefaultDeltaChord ),    //   Internal parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 
@@ -53,7 +53,9 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
     fDriversStepper(0),                    // Dependent objects 
     fAllocatedStepper(false),
     fEquation(0),      
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),
+    fQuickAdvanceCalls(0),fAccurateAdvanceCalls(0),
+    fFindNextChordTime(0),fAccurateAdvanceTime(0)
 {
   // Simple constructor -- it does not create equation
   fIntgrDriver= pIntegrationDriver;
@@ -79,7 +81,9 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
     fDriversStepper(0),                  //  Dependent objects
     fAllocatedStepper(false),
     fEquation(0), 
-    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0)  // State - stats
+    fTotalNoTrials_FNC(0), fNoCalls_FNC(0), fmaxTrials_FNC(0),  // State - stats
+    fQuickAdvanceCalls(0),fAccurateAdvanceCalls(0),
+    fFindNextChordTime(0),fAccurateAdvanceTime(0)
 {
   //  Construct the Chord Finder
   //  by creating in inverse order the  Driver, the Stepper and EqRhs ...
@@ -112,8 +116,6 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
   fIntgrDriver = new G4MagInt_Driver(stepMinimum, pItsStepper, 
                                      pItsStepper->GetNumberOfVariables() );
 }
-
-
 // ......................................................................
 
 G4ChordFinder::~G4ChordFinder()
@@ -176,6 +178,7 @@ G4ChordFinder::SetFractions_Last_Next( G4double fractLast, G4double fractNext )
 
 // ......................................................................
 
+
 G4double 
 G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
                                     G4double      stepMax,
@@ -189,11 +192,20 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   G4double  startCurveLen= yCurrent.GetCurveLength();
   G4double nextStep;
   //            *************
+
+#ifdef G4DEBUG_FIELD
+  timer.Start();
+#endif  
   stepPossible= FindNextChord(yCurrent, stepMax, yEnd, dyErr, epsStep,
                               &nextStep, latestSafetyOrigin, latestSafetyRadius
                              );
+#ifdef G4DEBUG_FIELD
+  timer.Stop();
+  fFindNextChordTime += timer.GetUserElapsed();
+#endif
   //            *************
 
+  //G4cout<<"step possible: "<<stepPossible<<G4endl;
   G4bool good_advance;
 
   if ( dyErr < epsStep * stepPossible )
@@ -207,17 +219,25 @@ G4ChordFinder::AdvanceChordLimited( G4FieldTrack& yCurrent,
   {  
      // Advance more accurately to "end of chord"
      //                           ***************
+#ifdef G4DEBUG_FIELD
+     timer.Start();
+#endif     
      good_advance = fIntgrDriver->AccurateAdvance(yCurrent, stepPossible,
                                                   epsStep, nextStep);
+#ifdef G4DEBUG_FIELD
+     timer.Stop();
+     fAccurateAdvanceTime += timer.GetUserElapsed();
+#endif          
+     ++fAccurateAdvanceCalls;
      if ( ! good_advance )
      { 
        // In this case the driver could not do the full distance
        stepPossible= yCurrent.GetCurveLength()-startCurveLen;
      }
   }
+  //G4cout<<"accurate step possible: "<<stepPossible<<G4endl;
   return stepPossible;
 }
-
 
 // ............................................................................
 
@@ -248,7 +268,7 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
   fIntgrDriver-> GetDerivatives( yCurrent, dydx );
 
   unsigned int        noTrials=0;
-  const unsigned int  maxTrials= 75; // Avoid endless loop for bad convergence 
+  const unsigned int  maxTrials= 300; // Avoid endless loop for bad convergence 
 
   const G4double safetyFactor= fFirstFraction; //  0.975 or 0.99 ? was 0.999
 
@@ -259,9 +279,11 @@ G4ChordFinder::FindNextChord( const  G4FieldTrack& yStart,
   do
   { 
      yCurrent = yStart;    // Always start from initial point  
+
      //            ************
      fIntgrDriver->QuickAdvance( yCurrent, dydx, stepTrial, 
                                  dChordStep, dyErrPos);
+     ++fQuickAdvanceCalls;
      //            ************
      
      //  We check whether the criterion is met here.
@@ -671,6 +693,17 @@ G4ChordFinder::PrintStatistics()
     << "  fFractionLast "   << fFractionLast
     << "  fFractionNextEstimate " << fFractionNextEstimate
     << G4endl; 
+
+  G4cout
+    << " No QuickAdvanceCalls: "    << fQuickAdvanceCalls
+    << " No AccurateAdvanceCalls: " << fAccurateAdvanceCalls
+    << G4endl;
+
+  G4cout
+    << " user time: "
+    << " FindNextChord: "    << fFindNextChordTime<<" s "
+    << " AccurateAdvance: " << fAccurateAdvanceTime<<" s "
+    << G4endl;
 }
 
 

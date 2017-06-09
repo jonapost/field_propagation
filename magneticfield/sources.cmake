@@ -31,12 +31,18 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
     HEADERS
         G4BogackiShampine23.hh
         G4BogackiShampine45.hh
+        VernerRK78.hh
+        VernerRK56.hh
+        VernerRK67.hh
+	FVernerRK56.hh
         G4CachedMagneticField.hh
         G4CashKarpRKF45.hh
         G4ChargeState.hh
         G4ChordFinder.hh
         G4ChordFinder.icc
         G4ChordFinderSaf.hh
+        G4NewChordFinder.hh
+        G4NewChordFinder.icc
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
@@ -61,6 +67,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4FieldManagerStore.hh
         G4FieldTrack.hh
         G4FieldTrack.icc
+        G4FSALBogackiShampine23.hh
         G4FSALBogackiShampine45.hh
         G4FSALDormandPrince745.hh
         G4FSALIntegrationDriver.hh
@@ -101,14 +108,33 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
+	BulirschStoerDenseDriver.hh
+	BulirschStoerDriver.hh
+	BulirschStoerDenseOut.hh
+	ModifiedMidpoint.hh
+	ModifiedMidpoint.icc
+	ModifiedMidpointDenseOut.hh
+	ModifiedMidpointDenseOut.icc
+	G4VIntegrationDriver.hh
+	G4VIntegrationDriver.icc
+	BSStepper.hh
+	BulirschStoer.hh
+	BulirschStoer.icc
+        BSChordFinder.hh
+        BSChordFinder.icc	
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
+        VernerRK78.cc
+        VernerRK56.cc
+        VernerRK67.cc
+	FVernerRK56.cc
         G4CachedMagneticField.cc
         G4CashKarpRKF45.cc
         G4ChargeState.cc
         G4ChordFinder.cc
         G4ChordFinderSaf.cc
+        G4NewChordFinder.cc
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc
@@ -130,6 +156,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4FieldManager.cc
         G4FieldManagerStore.cc
         G4FieldTrack.cc
+        G4FSALBogackiShampine23.cc
         G4FSALBogackiShampine45.cc
         G4FSALDormandPrince745.cc
         G4FSALIntegrationDriver.cc
@@ -163,6 +190,15 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.cc
         G4UniformGravityField.cc
         G4UniformMagField.cc
+	BulirschStoerDenseDriver.cc
+	BulirschStoerDriver.cc
+	ModifiedMidpoint.cc
+	ModifiedMidpointDenseOut.cc
+	G4VIntegrationDriver.cc
+	BSStepper.cc
+	BulirschStoer.cc
+	BulirschStoerDenseOut.cc
+        BSChordFinder.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

@@ -71,7 +71,7 @@ class G4NystromRK4 : public G4MagIntegratorStepper
     G4double  GetDistanceForConstantField() const; 
    
     G4int     IntegratorOrder() const {return 4;}
-    G4double  DistChord() const; 
+    G4double  DistChord() const;
   
   private:
 

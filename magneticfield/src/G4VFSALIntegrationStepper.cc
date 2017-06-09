@@ -35,7 +35,8 @@ G4VFSALIntegrationStepper::G4VFSALIntegrationStepper(G4EquationOfMotion* Equatio
 					       G4int       num_state_vars)
   : fEquation_Rhs(Equation),
     fNoIntegrationVariables(num_integration_vars),
-    fNoStateVariables(num_state_vars)
+    fNoStateVariables(num_state_vars),
+    fIsFSAL(true)
     // fNumberOfVariables( std::max(num_var,fNoStateVariables) )
 {
 }
@@ -48,19 +49,22 @@ void G4VFSALIntegrationStepper::ComputeRightHandSide( const G4double y[], G4doub
 {
   this->RightHandSide( y, dydx );
 //	fEquation_Rhs->RightHandSide(y, dydx);
-//        increasefNORHSCalls();
 }
 
-void G4VFSALIntegrationStepper::increasefNORHSCalls(){
-    //    std::cout<<"Yeah, I was called!";
+void G4VFSALIntegrationStepper::incrementRHSCalls()
+{
+    // std::cout<<" V-FSAL-Int-Stepper: Increment-RHS-calls was called!";
     fNoRHSCalls++;
 }
-
 
 void G4VFSALIntegrationStepper::RightHandSide( const  double y[], double dydx[] )
 {
     fEquation_Rhs-> RightHandSide(y, dydx);
-    increasefNORHSCalls();
+#ifndef G4DEBUG_FIELD
+    fNoRHSCalls++;
+#else
+    incrementRHSCalls();
+#endif        
 }
 
 

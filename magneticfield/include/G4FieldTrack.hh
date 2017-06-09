@@ -183,7 +183,8 @@ class  G4FieldTrack
    public: // Access
 
      const G4ChargeState* GetChargeState() const { return &fChargeState; } 
-}; 
+
+};
 
 #include "G4FieldTrack.icc"
 

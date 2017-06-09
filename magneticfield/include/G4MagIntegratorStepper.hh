@@ -79,14 +79,14 @@ class G4MagIntegratorStepper
      virtual void ComputeRightHandSide( const G4double y[], G4double dydx[] ); 
        // Must compute the RightHandSide as in the method below
        // Optionally can cache the input y[] and the dydx[] values computed.
-
+    
      inline void NormaliseTangentVector( G4double vec[6] );
        // Simple utility function to (re)normalise 'unit velocity' vector.
 
      inline void NormalisePolarizationVector( G4double vec[12] );
        // Simple utility function to (re)normalise 'unit spin' vector.
 
-     inline void RightHandSide( const double y[], double dydx[] );   
+     inline void RightHandSide( const double y[], double dydx[] );
        // Utility method to supply the standard Evaluation of the
        // Right Hand side of the associated equation.
 
@@ -106,7 +106,10 @@ class G4MagIntegratorStepper
      inline G4EquationOfMotion *GetEquationOfMotion(); 
        // As some steppers (eg RKG3) require other methods of Eq_Rhs
        // this function allows for access to them.
-     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
+     inline void SetEquationOfMotion(G4EquationOfMotion* newEquation);
+    
+     inline G4int GetNumRHSCalls(){ return fNoRHSCalls; }
+     inline void ResetNumRHSCalls(){ fNoRHSCalls = 0; }
 
      inline unsigned long GetfNoRHSCalls(){ return fNoRHSCalls; }
      // void IncrementRHSCalls() { fNoRHSCalls++; }

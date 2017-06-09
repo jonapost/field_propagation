@@ -1,0 +1,162 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// $Id: G4NewChordFinder.icc 97285 2016-05-31 19:52:18Z japost $
+//
+// G4NewChordFinder inline implementations
+//
+// --------------------------------------------------------------------
+
+inline 
+void G4NewChordFinder::SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver)
+{
+  fIntgrDriver=IntegrationDriver;
+}
+
+inline
+G4MagInt_Driver* G4NewChordFinder::GetIntegrationDriver()
+{
+  return fIntgrDriver;
+}
+
+inline
+G4bool G4NewChordFinder::AcceptableMissDist(G4double dChordStep) const
+{ 
+  return (dChordStep <= fDeltaChord) ;
+}
+
+inline
+G4double G4NewChordFinder::GetDeltaChord() const
+{
+  return fDeltaChord;
+}
+
+inline
+void G4NewChordFinder::SetDeltaChord(G4double newval)
+{
+  fDeltaChord=newval;
+}
+
+// ......................................................................
+inline 
+G4double G4NewChordFinder::GetLastStepEstimateUnc()
+{
+  return fLastStepEstimate_Unconstrained;   
+} 
+inline 
+void G4NewChordFinder::SetLastStepEstimateUnc( G4double stepEst )
+{
+  fLastStepEstimate_Unconstrained = stepEst;    
+}
+inline
+void G4NewChordFinder::ResetStepEstimate()
+{
+  fLastStepEstimate_Unconstrained = DBL_MAX;    
+}
+
+// ......................................................................
+inline G4int G4NewChordFinder::GetNoCalls()     { return fNoCalls_FNC; }
+inline G4int G4NewChordFinder::GetNoTrials()    { return fTotalNoTrials_FNC; }
+inline G4int G4NewChordFinder::GetNoMaxTrials() { return fmaxTrials_FNC; } 
+
+inline G4double G4NewChordFinder::GetFirstFraction() { return fFirstFraction; } 
+inline G4double G4NewChordFinder::GetFractionLast()  { return fFractionLast; } 
+inline G4double G4NewChordFinder::GetFractionNextEstimate() 
+{ return fFractionNextEstimate; } 
+inline G4double G4NewChordFinder::GetMultipleRadius()
+{ return fMultipleRadius; } 
+
+inline void G4NewChordFinder::SetFirstFraction(G4double val){ fFirstFraction=val; }
+
+inline G4int G4NewChordFinder::SetVerbose( G4int newvalue )
+{ 
+  G4int oldval= fStatsVerbose; 
+  fStatsVerbose = newvalue;
+  return oldval; 
+}
+
+inline  
+void    G4NewChordFinder::AccumulateStatistics( G4int noTrials ) 
+{
+  // Statistics 
+  fTotalNoTrials_FNC += noTrials; 
+  fNoCalls_FNC++; 
+  // if( noTrials >= fmaxTrials_FNC ){
+    if (noTrials > fmaxTrials_FNC ) { 
+      fmaxTrials_FNC=noTrials; 
+      // fnoTimesMaxTrFNC=0; 
+    } else { 
+      // fnoTimesMaxTrFNC++; 
+    } 
+  // } 
+}
+// A  member that calculates the inverse parabolic through
+// the three points (x,y) and returns the value x that, for the
+// inverse parabolic, corresponds to y=0.
+//
+inline G4double G4NewChordFinder::InvParabolic ( const G4double xa, const G4double ya,
+				    const G4double xb, const G4double yb,
+				    const G4double xc, const G4double yc )
+{   	const G4double R = yb/yc,
+	               S = yb/ya,
+		       T = ya/yc;
+        const G4double Q = (T-1)*(R-1)*(S-1);
+	if (std::fabs(Q) <DBL_MIN ) return  DBL_MAX;
+	
+	const G4double P = S*(T*(R-T)*(xc-xb) - (1-R)*(xb-xa));
+	return xb + P/Q;
+}
+
+//  New - to cope with different type for FSAL steppers
+// =====================================================
+inline void G4NewChordFinder::SetFSALIntegrationDriver(G4FSALIntegrationDriver* fsalDriver)
+{
+  fFSALIntgrDriver= fsalDriver;
+}
+
+inline G4FSALIntegrationDriver* G4NewChordFinder::GetFSALIntegrationDriver()
+{
+  return fFSALIntgrDriver;
+}
+
+#include "G4MagIntegratorStepper.hh"
+#include "G4VFSALIntegrationStepper.hh"
+
+inline G4EquationOfMotion* G4NewChordFinder::GetEquationOfMotion()
+{
+  G4EquationOfMotion* pEquation;
+  if( fIntgrDriver ) {
+     G4MagIntegratorStepper* stepper= fIntgrDriver->GetStepper();
+     pEquation = stepper->GetEquationOfMotion();
+  } else {
+     G4VFSALIntegrationStepper* fsalStepper = fFSALIntgrDriver->GetStepper();
+     pEquation = fsalStepper->GetEquationOfMotion();
+  }
+  return pEquation;
+}
+
+
+

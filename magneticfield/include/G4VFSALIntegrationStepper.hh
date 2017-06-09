@@ -78,10 +78,10 @@ class G4VFSALIntegrationStepper
      virtual void ComputeRightHandSide( const G4double y[], G4double dydx[] ); 
        // Must compute the RightHandSide as in the method below
        // Optionally can cache the input y[] and the dydx[] values computed.
-    
-//     virtual G4bool isFSAL() const = 0;
-//    	//Return true if the stepper uses FSAL (First Same As Last)
-    
+
+     G4bool isFSAL() const { return fIsFSAL; }
+       // Return true if the stepper uses FSAL (First Same As Last)
+
 //    G4double *getLastDydx() {return 0;}
 
      inline void NormaliseTangentVector( G4double vec[6] );
@@ -112,16 +112,15 @@ class G4VFSALIntegrationStepper
        // this function allows for access to them.
      inline void SetEquationOfMotion(G4EquationOfMotion* newEquation); 
 
-    //--- --- For DEBUG --- ---
-    inline G4int GetfNoRHSCalls(){
-        return fNoRHSCalls;
-    }
-    void increasefNORHSCalls();
+     // Simple statistics of equation calls
+     G4int GetNumRHSCalls(){ return fNoRHSCalls; }
+     void ResetNumRHSCalls(){ fNoRHSCalls = 0; }
+     void incrementRHSCalls(); // for debugging / profiling
+
+  protected:
+       void SetFSAL(bool val) { fIsFSAL= val; }
+          // Should be used in constructor
     
-    inline void ResetfNORHSCalls(){
-        fNoRHSCalls = 0;
-    }
-    //--- --- ///////// --- ---
   private:
   
      G4VFSALIntegrationStepper(const G4VFSALIntegrationStepper&);
@@ -133,11 +132,10 @@ class G4VFSALIntegrationStepper
      G4EquationOfMotion *fEquation_Rhs;
      const G4int  fNoIntegrationVariables;  // Number of Variables in integration
      const G4int  fNoStateVariables;        // Number required for FieldTrack
+     bool  fIsFSAL;
     
-    
-    //--- --- For DEBUG --- ---
+    //--- --- For simple statistics
     G4int fNoRHSCalls;
-    //--- --- ///////// --- ---
     
      // const G4int  fNumberOfVariables;
 

@@ -31,16 +31,23 @@
 // --------------------------------------------------------------------
 
 inline 
-void G4ChordFinder::SetIntegrationDriver(G4MagInt_Driver* IntegrationDriver)
+void G4ChordFinder::SetIntegrationDriver(G4VIntegrationDriver* IntegrationDriver)
 {
   fIntgrDriver=IntegrationDriver;
 }
 
 inline
-G4MagInt_Driver* G4ChordFinder::GetIntegrationDriver()
+G4VIntegrationDriver* G4ChordFinder::GetIntegrationDriver()
 {
   return fIntgrDriver;
 }
+
+inline
+const G4VIntegrationDriver* G4ChordFinder::GetIntegrationDriver() const
+{
+  return fIntgrDriver;
+}
+
 
 inline
 G4bool G4ChordFinder::AcceptableMissDist(G4double dChordStep) const
@@ -128,4 +135,17 @@ inline G4double G4ChordFinder::InvParabolic ( const G4double xa, const G4double 
 	
 	const G4double P = S*(T*(R-T)*(xc-xb) - (1-R)*(xb-xa));
 	return xb + P/Q;
+}
+
+
+inline G4EquationOfMotion*
+G4ChordFinder::GetEquationOfMotion()
+{
+   return GetIntegrationDriver()->GetEquationOfMotion();         
+}
+
+inline const G4EquationOfMotion*
+G4ChordFinder::GetEquationOfMotion() const
+{
+   return GetIntegrationDriver()->GetEquationOfMotion();         
 }

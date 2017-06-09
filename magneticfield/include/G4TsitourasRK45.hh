@@ -27,9 +27,24 @@
 //  G4TsitourasRK45.hh
 //  Geant4
 //
-//  Created by hackabot on 11/06/15.
+//  C. Tsitouras, “Runge–Kutta pairs of order 5(4) satisfying only the first
+//    column simplifying assumption,”
+//  Comput. Math. with Appl., vol. 62, no. 2, pp. 770–775, Jul. 2011.
 //
+//  This version utilises the FSAL property of the method, which
+//  allows reuse, in the next step, of the derivative of the endpoint
+//  of a successful step.
 //
+//  This version does not utilise the FSAL property of the method,
+//  which would allow the reuse, in the next step, of the 'last' derivative
+//  that at the endpoint of sucessful step.
+//  (Alternative FSAL implementation created with revised interface)
+
+//  Implemented by Somnath Banerjee (hackabot) on 11/06/15.
+//      Work supported by the Google as part of Google Summer of Code 2015.
+//  Supervision / code review: John Apostolakis
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef Tsitouras_RK45
 #define Tsitouras_RK45

@@ -62,7 +62,6 @@ G4Field* G4QuadrupoleMagField::Clone() const
 G4QuadrupoleMagField::~G4QuadrupoleMagField()
 {
 }
-
 ////////////////////////////////////////////////////////////////////////
 //  Allow displaced origin and rotation 
 //  Extensions by Björn Riese (GSI)

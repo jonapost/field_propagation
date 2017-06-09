@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+
+set(name be1)
+project(${name})
+find_package(Geant4 REQUIRED)
+include(${Geant4_USE_FILE})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+
+add_executable(${name} EXCLUDE_FROM_ALL ${name}.cc ${sources})
+target_link_libraries(${name} ${Geant4_LIBRARIES})
+
+
+GEANT4_ADD_TEST(bench-electromagnetic-be1-build
+                COMMAND  ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cms10gev.mac cms10gev.mac
+                POSTCMD  ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cms10gev_emv.mac cms10gev_emv.mac
+                POSTCMD  ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cms10gev_emx.mac cms10gev_emx.mac
+                BUILD be1)
+GEANT4_ADD_TEST(bench-electromagnetic-em1_standard
+                COMMAND be1  ${CMAKE_CURRENT_SOURCE_DIR}/cms10gev.mac
+                DEPENDS bench-electromagnetic-be1-build ENVIRONMENT ${GEANT4_TEST_ENVIRONMENT})
+GEANT4_ADD_TEST(bench-electromagnetic-em1_emv
+                COMMAND be1  ${CMAKE_CURRENT_SOURCE_DIR}/cms10gev_emv.mac
+                DEPENDS bench-electromagnetic-be1-build ENVIRONMENT ${GEANT4_TEST_ENVIRONMENT})
+GEANT4_ADD_TEST(bench-electromagnetic-em1_emx
+                COMMAND be1  ${CMAKE_CURRENT_SOURCE_DIR}/cms10gev_emx.mac
+                DEPENDS bench-electromagnetic-be1-build ENVIRONMENT ${GEANT4_TEST_ENVIRONMENT})
+
