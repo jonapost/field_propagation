@@ -190,8 +190,8 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
     9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
    10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
    11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
-   12         0   30.1357   1663.58         0  0.761006 -0.648745         0      -1.5     10240     10240         0        World 
-   13         0  -489.015   3815.94         0  0.451803  0.892118         0       1.5   3925.56     20480   243.304        World 
+   12         0   30.1357   1663.58         0  0.761006 -0.648745  -1.1e-16      -1.5     10240     10240         0        World 
+   13         0  -489.015   3815.94         0  0.451803  0.892118   1.1e-16       1.5   3925.56     20480   243.304        World 
  Cached field: 
    Number of calls:        132641
    Number of evaluations : 20743
@@ -243,11 +243,11 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
     9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
    10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
    11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
-   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240         0        World 
-   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   235.819        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295         0      -1.5     10240     10240         0        World 
+   13         0   -492.64   3825.63         0  0.510725  0.859744  -1.1e-16       1.5   3950.64     20480   235.819        World 
  Cached field: 
-   Number of calls:        212209
-   Number of evaluations : 29369
+   Number of calls:        212785
+   Number of evaluations : 29345
 
 Test PropagateMagField: ***********************
  Starting New Particle with Position (0.2,0.3,0.4)
@@ -269,8 +269,8 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
    12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
    13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
  Cached field: 
-   Number of calls:        224836
-   Number of evaluations : 32985
+   Number of calls:        225412
+   Number of evaluations : 32961
 Test with more accurate parameters ( voxels on )
 Test with more accurate parameters 
  Setting values for Min Eps = 1e-08 ( intended = 1e-08 )  and MaxEps = 0.001 ( intended = 1e-08 ). 
@@ -296,11 +296,11 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
     9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
    10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
    11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
-   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240         0        World 
-   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   235.819        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295         0      -1.5     10240     10240         0        World 
+   13         0   -492.64   3825.63         0  0.510725  0.859744  -1.1e-16       1.5   3950.64     20480   235.819        World 
  Cached field: 
-   Number of calls:        295642
-   Number of evaluations : 38889
+   Number of calls:        296794
+   Number of evaluations : 38841
 
 Test PropagateMagField: ***********************
  Starting New Particle with Position (0.2,0.3,0.4)
@@ -322,8 +322,8 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
    12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
    13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
  Cached field: 
-   Number of calls:        308269
-   Number of evaluations : 42505
+   Number of calls:        309421
+   Number of evaluations : 42457
 Test with more accurate parameters ( voxels on )
 Test with more accurate parameters 
  Setting values for Min Eps = 1e-09 ( intended = 1e-09 )  and MaxEps = 0.001 ( intended = 1e-09 ). 
@@ -349,11 +349,11 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
     9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280         0        World 
    10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560         0        World 
    11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120         0        World 
-   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240         0        World 
-   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   235.819        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295         0      -1.5     10240     10240         0        World 
+   13         0   -492.64   3825.63         0  0.510725  0.859744  -1.1e-16       1.5   3950.64     20480   235.819        World 
  Cached field: 
-   Number of calls:        379075
-   Number of evaluations : 48409
+   Number of calls:        380803
+   Number of evaluations : 48337
 
 Test PropagateMagField: ***********************
  Starting New Particle with Position (0.2,0.3,0.4)
@@ -375,8 +375,8 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
    12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
    13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
  Cached field: 
-   Number of calls:        391702
-   Number of evaluations : 52025
+   Number of calls:        393430
+   Number of evaluations : 51953
  Now test with optimisation off
  Setting up field of type: Cached Quadropole field, 20T/meter, cache=1cm
  Found values for Min Eps = 1e-09 and Max Eps = 0.001
@@ -400,11 +400,11 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
     9         0   104.728   82.5805         0  0.902832  0.429994         0     -0.31      1280      1280        50        World 
    10         0  -246.026   204.984         0 0.0976735 -0.995219         0      -1.4      2560      2560        50        World 
    11         0  -530.772   789.327         0 -0.533733  0.845653         0       1.8      5120      5120   239.327        World 
-   12         0   30.1357   1663.58         0  0.740283 -0.672295  -1.1e-16      -1.5     10240     10240   1113.58        World 
-   13         0   -492.64   3825.63         0  0.508848  0.860857   1.1e-16       1.5    3950.6     20480   1174.37        World 
+   12         0   30.1357   1663.58         0  0.740283 -0.672295         0      -1.5     10240     10240   1113.58        World 
+   13         0   -492.64   3825.63         0  0.510725  0.859744  -1.1e-16       1.5   3950.64     20480   1174.37        World 
  Cached field: 
-   Number of calls:        462508
-   Number of evaluations : 57929
+   Number of calls:        464812
+   Number of evaluations : 57833
 
 Test PropagateMagField: ***********************
  Starting New Particle with Position (0.2,0.3,0.4)
@@ -426,5 +426,5 @@ Step#     X(mm)     Y(mm)     Z(mm)      N_x       N_y       N_z   Delta|N|  Del
    12     540.5       550   508.618 -0.0297999 -0.576506   0.81655         0    0.0093   50.9649     10240         0    Target 4a 
    13   539.329   520.277       550  0.337883 -0.751912  0.566094         0     -0.25   16828.9     20480         0        World 
  Cached field: 
-   Number of calls:        475135
-   Number of evaluations : 61545
+   Number of calls:        477439
+   Number of evaluations : 61449

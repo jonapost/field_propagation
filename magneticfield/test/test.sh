@@ -3,7 +3,7 @@
 # A simple script to run all the tests in this directory and check
 # their results against the expected (previous) results
 #
-# $Id: test.sh 97572 2016-06-03 21:52:00Z japost $
+# $Id: test.sh 104536 2017-06-02 15:33:54Z japost $
 # $Name: geant4-09-02-ref-05 $
 #
 
@@ -15,15 +15,25 @@ fi
 echo "Running on `hostname`, which is a `uname -a` machine" 
 host=`hostname`
 
-#
-MAKE=make
-#4BIN=$G4BIN_GMAKE/bin/
-G4BIN=$G4WORKDIR/bin/
-BINDIR=$G4BIN/$G4SYSTEM/
+#  Choice of build engine
+# MAKE=make
+MAKE=ninja
+#####
+
+#  Choice of build target directory BUILD_DIR
+BUILD_DIR=$G4BUILD_DIR
+#G4BIN=$G4WORKDIR/bin/
+#G4BIN=$G4BIN
+#G4BIN=$G4BIN_GMAKE/bin/
+G4BIN=$G4BIN_CMAKE/
+
+#   Location of executable binaries  BINDIR
+#BINDIR=$G4BIN/$G4SYSTEM/
+BINDIR=$G4BIN/
 
 target=testPropagateMagField
 echo  "Compiling $target ... "
-$MAKE G4TARGET=$target   || exit
+( cd $BUILD_DIR ; $MAKE $target )  || exit
 if [[ ! -x $BINDIR/$target ]] ; then
   echo "Could not find executable $target in directory $BINDIR" 
   exit 1
@@ -43,16 +53,24 @@ do
   fi
   # if [[ -f $target.err$n ]]; then
   if [[ -f $target.newerr$n && `wc -l $target.newerr$n | awk ' { print $1; } '` != 0 ]]; then
-     echo  ".. Unexpected error output: "
-     diff -wb $target.err$n $target.newerr$n
-     sleep 1;
-  fi
+      echo  ".. Unexpected error output: "
+      if [[ -f $target.err$n ]]; then
+	  diff -wb $target.err$n $target.newerr$n
+      else
+	  head -50 $target.newerr$n
+      fi
+     sleep 5;
+  else
+      echo " Deleting empty error file ... "
+      cat $target.newerr$n
+      echo " Done - deleted. "
+  fi  
   echo  " "
 done
 
 target=testProElectroMagField
 echo  "Compiling $target ... "
-$MAKE G4TARGET=$target  || exit
+( cd $BUILD_DIR ; $MAKE $target )   || exit
 echo  "Executing $target ..."
 for n in 1 2 3 4 8   23 45 56 78 145 745
 do
@@ -72,7 +90,7 @@ for i in *Spin.cc
 do
   target=`basename $i .cc`
   echo  "Compiling $target ... "
-  $MAKE G4TARGET=$target   || exit
+  ( cd $BUILD_DIR ; $MAKE $target )  || exit
   echo  "Executing $target ..."
   for n in  4 3 2 1 0  # 23 45 56 78 145 745
   do
