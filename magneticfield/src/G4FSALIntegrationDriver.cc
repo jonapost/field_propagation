@@ -540,7 +540,9 @@ G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
     G4double errmax_sq;
     G4double h, htemp, xnew ;
     
-    G4double yerr[G4FieldTrack::ncompSVEC], ytemp[G4FieldTrack::ncompSVEC];
+    G4double yerr[G4FieldTrack::ncompSVEC],
+             yOut[G4FieldTrack::ncompSVEC],
+             dydxOut[G4FieldTrack::ncompSVEC];
     
     h = htry ; // Set stepsize to the initial trial value
     
@@ -566,7 +568,7 @@ G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
     for (iter=0; iter<max_trials ;iter++)
     {
         tot_no_trials++;
-        pIntStepper-> Stepper(y,dydx,h,ytemp,yerr, dydx);
+        pIntStepper->Stepper(y, dydx, h, yOut, yerr, dydxOut);
         //            *******
         TotalNoStepperCalls++;
         G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep);
@@ -638,7 +640,10 @@ G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
     }
     x += (hdid = h);
     
-    for(G4int k=0;k<fNoIntegrationVariables;k++) { y[k] = ytemp[k]; }
+    for (G4int k = 0; k < fNoIntegrationVariables; ++k) {
+        y[k] = yOut[k];
+        dydx[k] = dydxOut[k];
+    }
     
     return;
 }   // end of  OneGoodStep .............................
