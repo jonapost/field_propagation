@@ -1,4 +1,4 @@
-$Id: History 104209 2017-05-17 19:09:12Z japost $
+$Id: History 104506 2017-06-01 17:17:09Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,7 +16,7 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
-May 17, 2017 J.Apostolakis             - field-V10-03-03
+May 17, 2017 J.Apostolakis             - field-V10-03-03, -04 (resubmit)
 --------------------------
 G4FieldManager::SetDetectorField
   Fixed default of 'fail mode' parameter in 
