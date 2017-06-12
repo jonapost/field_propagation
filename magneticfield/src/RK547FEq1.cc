@@ -15,13 +15,39 @@
 #include "G4LineSection.hh"
 #include "Utils.hh"
 
+#define FSAL
+
 using namespace magneticfield;
 
 namespace {
-    void copyArray(G4double dst[], const G4double src[]) {
-        memcpy(dst, src, sizeof(G4double) * G4FieldTrack::ncompSVEC);
-    }
+
+void copyArray(G4double dst[], const G4double src[]) {
+    memcpy(dst, src, sizeof(G4double) * G4FieldTrack::ncompSVEC);
 }
+
+#ifdef FSAL
+G4double diffArray(const G4double array1[], const G4double array2[], G4double hstep)
+{
+/*
+    G4double diff = 0;
+    for (G4int i = 0; i < G4FieldTrack::ncompSVEC; ++i) {
+        diff = std::max(diff, std::abs(array1[i] - array2[i]));
+    }
+    return diff;
+*/
+    const auto pos1 = makeVector(array1, Value3D::Position);
+    const auto pos2 = makeVector(array2, Value3D::Position);
+    const G4double errorPos = (pos1 - pos2).mag() / hstep;
+
+    const auto mom1 = makeVector(array1, Value3D::Momentum);
+    const auto mom2 = makeVector(array2, Value3D::Momentum);
+    const G4double errorMom = (mom1 - mom2).mag() / mom1.mag();
+
+    return std::max(errorPos, errorMom);
+}
+#endif
+
+} // namespace
 
 RK547FEq1::RK547FEq1(G4EquationOfMotion *EqRhs, G4int integrationVariables)
    : G4MagIntegratorStepper(EqRhs, integrationVariables)
@@ -47,25 +73,25 @@ void RK547FEq1::makeStep(const G4double yInput[],
              ak6[G4FieldTrack::ncompSVEC];
 
     const G4double
-       b21 = 2./9.,
-       b31 = 1./12., b32 = 1./4.,
-       b41 = 1./8., b42 = 0., b43 = 3./8.,
-       b51 = 91./500., b52 = -27./100., b53 = 78./125., b54 = 8./125.,
+        b21 = 2./9.,
+        b31 = 1./12., b32 = 1./4.,
+        b41 = 1./8., b42 = 0., b43 = 3./8.,
+        b51 = 91./500., b52 = -27./100., b53 = 78./125., b54 = 8./125.,
 
-       b61 = -11./20., b62 = 27./20., b63 = 12./5.,
-           b64 = -36./5., b65 = 5.,
+        b61 = -11./20., b62 = 27./20., b63 = 12./5.,
+            b64 = -36./5., b65 = 5.,
 
-       b71 = 1./12.,    b72 = 0., b73 = 27./32.,
-            b74 = -4./3., b75 = 125./96., b76 = 5./48.;
+        b71 = 1./12.,    b72 = 0., b73 = 27./32.,
+             b74 = -4./3., b75 = 125./96., b76 = 5./48.;
 
     const G4double
-       dc1 = b71 - 2./15.,
-       dc2 = b72 - 0.,
-       dc3 = b73 - 27./80.,
-       dc4 = b74 + 2./15.,
-       dc5 = b75 - 25./48.,
-       dc6 = b76 - 1./24.,
-       dc7 = 0. - 1./10.;
+        dc1 = b71 - 2./15.,
+        dc2 = b72 - 0.,
+        dc3 = b73 - 27./80.,
+        dc4 = b74 + 2./15.,
+        dc5 = b75 - 25./48.,
+        dc6 = b76 - 1./24.,
+        dc7 = 0. - 1./10.;
 
     //RightHandSide(yInput, dydx);
     for(int i = 0; i < GetNumberOfVariables(); ++i)
@@ -123,25 +149,25 @@ void RK547FEq1::Stepper(const G4double yInput[],
 
 void RK547FEq1::ComputeRightHandSide(const G4double y[], G4double dydx[])
 {
-    const G4ThreeVector yEnd = makeVector(yOut_, Value3D::Position);
-    const G4ThreeVector yCurrent = makeVector(y, Value3D::Position);
-    const G4double distance = (yCurrent - yEnd).mag() / hstep_;
-
-    if (distance < 1e-3) {
+#ifdef FSAL
+    if (diffArray(y, yOut_, hstep_) < 1e-12) {
         copyArray(dydx, dydxOut_);
     } else {
         G4MagIntegratorStepper::ComputeRightHandSide(y, dydx);
     }
+#else
+    G4MagIntegratorStepper::ComputeRightHandSide(y, dydx);
+#endif
 }
 
 G4double RK547FEq1::DistChord() const
 {
-    const G4ThreeVector begin = makeVector(yIn_, Value3D::Position);
-    const G4ThreeVector end = makeVector(yOut_, Value3D::Position);
-
     G4double yMid[G4FieldTrack::ncompSVEC];
     makeStep(yIn_, dydx_, hstep_ / 2., yMid);
+
+    const G4ThreeVector begin = makeVector(yIn_, Value3D::Position);
     const G4ThreeVector mid = makeVector(yMid, Value3D::Position);
+    const G4ThreeVector end = makeVector(yOut_, Value3D::Position);
 
     return G4LineSection::Distline(mid, begin, end);
 }
