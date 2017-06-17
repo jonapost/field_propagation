@@ -2,6 +2,7 @@
 
 #include "G4UniformMagField.hh"
 #include "G4QuadrupoleMagField.hh"
+#include "CMSMagneticFieldG4.hh"
 #include "G4CachedMagneticField.hh"
 
 //first order explicit RK methods
@@ -44,8 +45,9 @@ int main()
         std::make_unique<G4DynamicParticle>(
             G4Proton::Definition(), G4ThreeVector(1, 1, 1).unit(), 0.1*GeV);
 
-    auto field = std::make_unique<G4UniformMagField>(G4ThreeVector(0, 0, 1*tesla));
+    //auto field = std::make_unique<G4UniformMagField>(G4ThreeVector(0, 0, 1*tesla));
     //auto field = std::make_unique<G4QuadrupoleMagField>(1 * tesla / meter);
+    auto field = std::make_unique<CMSMagneticFieldG4>("../cmsmagfield2015.txt");
     auto magneticField = std::make_shared<G4CachedMagneticField>(field.get(), 0);
 
     Comparator comparator(std::move(dynParticle), magneticField);
