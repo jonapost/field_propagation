@@ -1,0 +1,20 @@
+########################################################
+# Geant4 macro for testcomplex with Geant4 physics list  
+########################################################
+
+# verbosity
+#/gun/particle e-
+#/gun/energy 20 MeV
+/process/inactivate msc
+/process/em/spline 0
+/process/eLoss/integral 0
+/process/eLoss/fluct 0
+#/process/eLoss/linLossLimit 0.01
+#/process/eLoss/minKinEnergy 10.0 MeV
+#/process/eLoss/maxKinEnergy 1.0 TeV
+#/process/eLoss/binsDEDX 100
+#/process/eLoss/binsLambda 100
+/tracking/verbose 0
+/run/beamOn 20
+
+/process/list
