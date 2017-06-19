@@ -3,7 +3,7 @@
 
 #include "G4FieldTrack.hh"
 
-static const int NCOMP = G4FieldTrack::ncompSVEC;
+const int NCOMP = G4FieldTrack::ncompSVEC;
 
 GustafssonDriver::GustafssonDriver(G4double minimumStep,
                                    G4MagIntegratorStepper* stepper):
@@ -16,6 +16,7 @@ GustafssonDriver::GustafssonDriver(G4double minimumStep,
     KP(/*0.4 / fstepper->IntegratorOrder()*/0.10),
     fmaxStepIncrease(5),
     ferrorPrev(-1),
+    fpShrink(-1.0 / (fstepper->IntegratorOrder())),
     fpGrow(-1.0 / (1.0 + fstepper->IntegratorOrder())),
     fErrcon(std::pow(fmaxStepIncrease / fsafety, 1.0 / fpGrow))
 {
@@ -70,7 +71,7 @@ G4double GustafssonDriver::shrinkStep(G4double error, G4double hstep)
 {
     G4double htemp;
     if (ferrorPrev == -1) {
-        htemp = fsafety * hstep * std::pow(error, fpGrow);
+        htemp = fsafety * hstep * std::pow(error, fpShrink);
     } else {
         htemp = fsafety * hstep * std::pow(error, -KI) *
                 std::pow(ferrorPrev / error, KP);

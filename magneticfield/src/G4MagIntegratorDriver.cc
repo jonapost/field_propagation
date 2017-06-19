@@ -59,13 +59,19 @@ const G4double G4MagInt_Driver::max_stepping_decrease = 0.1;
 //
 const G4int  G4MagInt_Driver::fMaxStepBase = 250;  // Was 5000
 
-static const int NCOMP = G4FieldTrack::ncompSVEC;
 
 using namespace magneticfield;
 
 #ifndef G4NO_FIELD_STATISTICS
 #define G4FLD_STATS  1
 #endif
+
+namespace {
+
+const int NCOMP = G4FieldTrack::ncompSVEC;
+const int INVALID_ERROR_VALUE = -1;
+
+} // namespace
 
 // ---------------------------------------------------------
 
@@ -79,7 +85,7 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
     fNoIntegrationVariables(numComponents), 
     fMinNoVars(12), 
     fNoVars( std::max( fNoIntegrationVariables, fMinNoVars )),
-    ferrorPrev(-1),
+    ferrorPrev(INVALID_ERROR_VALUE),
     fStatisticsVerboseLevel(statisticsVerbose),
     fNoTotalSteps(0),  fNoBadSteps(0), fNoSmallSteps(0),
     fNoInitialSmallSteps(0), 
@@ -564,8 +570,8 @@ G4double G4MagInt_Driver::relativeError(const G4double y[],
 }
 
 
-//#define Gustaffson
-#define STANDARD
+#define Gustaffson
+//#define STANDARD
 
 #ifdef STANDARD
 G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
@@ -587,16 +593,15 @@ G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
 #endif
 
 #ifdef Gustaffson
-static const G4double KI(/*0.3 / fstepper->IntegratorOrder()*/0.08);
-static const G4double KP(/*0.4 / fstepper->IntegratorOrder()*/0.10);
+
 
 G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
 {
     G4double htemp;
-    if (ferrorPrev == -1) {
-        htemp = safety * hstep * std::pow(error, pgrow);
+    if (ferrorPrev == INVALID_ERROR_VALUE) {
+        htemp = GetSafety() * hstep * std::pow(error, GetPshrnk());
     } else {
-        htemp = safety * hstep * std::pow(error, -KI) *
+        htemp = GetSafety() * hstep * std::pow(error, -KI) *
                 std::pow(ferrorPrev / error, KP);
     }
     ferrorPrev = error;
@@ -606,8 +611,11 @@ G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
 
 G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
 {
+    static const G4double KI(/*0.3 / fstepper->IntegratorOrder()*/0.08);
+    static const G4double KP(/*0.4 / fstepper->IntegratorOrder()*/0.10);
+
     G4double hnext;
-    if (error > errcon && ferrorPrev > 0) {
+    if (error > errcon && ferrorPrev != INVALID_ERROR_VALUE) {
 
         hnext = hstep * std::pow(error, -KI) * std::pow(ferrorPrev / error, KP);
     } else {

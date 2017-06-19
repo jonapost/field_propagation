@@ -39,6 +39,7 @@ private:
     G4double KP;
     G4double fmaxStepIncrease;
     G4double ferrorPrev;
+    G4double fpShrink;
     G4double fpGrow;
     G4double fErrcon;
 };

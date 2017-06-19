@@ -58,7 +58,7 @@ int main()
     comparator.setPrecision(1);
     comparator.setStartPostition(G4ThreeVector(100, 100, -16000));
 
-    comparator.compareDriver<StandardDriver, G4MagInt_Driver, G4DormandPrince745>(
+    comparator.compareDriver<GustafssonDriver, G4MagInt_Driver, G4DormandPrince745>(
        40000*mm, Comparator::Mode::SaveTrack);
 
     //comparator.CompareWithBS<G4CashKarpRKF45>(1000*m, Comparator::Mode::Verbose);
