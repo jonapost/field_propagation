@@ -19,12 +19,13 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 #copy plot.py to bin dir 
-set(PLOT_SCRIPTS
+set(SCRIPTS
+    cmsmagfield2015.txt
     plot1d.py
     plot3d.py
     )
       
-foreach(_script ${PLOT_SCRIPTS})
+foreach(_script ${SCRIPTS})
     configure_file(
         ${PROJECT_SOURCE_DIR}/${_script}
         ${PROJECT_BINARY_DIR}/${_script}
