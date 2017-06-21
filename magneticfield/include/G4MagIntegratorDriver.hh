@@ -45,9 +45,20 @@
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
 
-class G4MagInt_Driver
-{
-   public:  // with description
+class G4MagInt_Driver {
+public:
+    enum class ErrorControlMethod {
+        Standard,
+        Gustafsson
+    };
+
+    G4MagInt_Driver(G4double hminimum,
+                    G4MagIntegratorStepper *pItsStepper,
+                    G4int numberOfComponents = 6,
+                    G4int statisticsVerbosity = 1,
+                    ErrorControlMethod method = ErrorControlMethod::Standard);
+
+    ~G4MagInt_Driver();
 
      G4bool  AccurateAdvance(G4FieldTrack&  y_current,
                              G4double hstep,
@@ -77,12 +88,6 @@ class G4MagInt_Driver
        //    but does return the errors in  position and
        //        momentum (normalised: Delta_Integration(p^2)/(p^2) )
 
-     G4MagInt_Driver( G4double                hminimum, 
-                      G4MagIntegratorStepper *pItsStepper,
-                      G4int                   numberOfComponents=6,
-                      G4int                   statisticsVerbosity=1);
-     ~G4MagInt_Driver();
-        // Constructor, destructor.
 
      inline G4double GetHmin() const;
      inline G4double Hmin() const;     // Obsolete
@@ -258,6 +263,8 @@ class G4MagInt_Driver
 
      G4int  fVerboseLevel;   // Verbosity level for printing (debug, ..)
         // Could be varied during tracking - to help identify issues
+
+     const ErrorControlMethod fMethod;
 
 };
 

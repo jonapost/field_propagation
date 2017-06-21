@@ -48,10 +48,10 @@ void Comparator::compareDriver(G4double length, Mode mode)
     G4double yRef[NCOMP], dydxRef[NCOMP];
 
     Stepper testStepper(fTestEquation.get());
-    TestDriver testDriver(fhmin, &testStepper);
+    TestDriver testDriver(fhmin, &testStepper, 6, 1, G4MagInt_Driver::ErrorControlMethod::Standard);
 
     Stepper refStepper(fRefEquation.get());
-    RefDriver refDriver(fhmin, &refStepper);
+    RefDriver refDriver(fhmin, &refStepper, 6, 1, G4MagInt_Driver::ErrorControlMethod::Standard);
 
     std::ofstream out("steps.txt");
 

@@ -71,16 +71,20 @@ namespace {
 const int NCOMP = G4FieldTrack::ncompSVEC;
 const int INVALID_ERROR_VALUE = -1;
 
+const G4double KI(/*0.3 / fstepper->IntegratorOrder()*/0.08);
+const G4double KP(/*0.4 / fstepper->IntegratorOrder()*/0.10);
+
 } // namespace
 
 // ---------------------------------------------------------
 
 //  Constructor
 //
-G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum, 
-                                  G4MagIntegratorStepper *pStepper,
-                                  G4int                   numComponents,
-                                  G4int                   statisticsVerbose)
+G4MagInt_Driver::G4MagInt_Driver(G4double hminimum,
+                                 G4MagIntegratorStepper *pStepper,
+                                 G4int numComponents,
+                                 G4int statisticsVerbose,
+                                 ErrorControlMethod method)
   : fSmallestFraction( 1.0e-12 ), 
     fNoIntegrationVariables(numComponents), 
     fMinNoVars(12), 
@@ -92,8 +96,8 @@ G4MagInt_Driver::G4MagInt_Driver( G4double                hminimum,
     fDyerr_max(0.0), fDyerr_mx2(0.0), 
     fDyerrPos_smTot(0.0), fDyerrPos_lgTot(0.0), fDyerrVel_lgTot(0.0), 
     fSumH_sm(0.0), fSumH_lg(0.0),
-    fVerboseLevel(0)
-
+    fVerboseLevel(0),
+    fMethod(method)
 {  
   // In order to accomodate "Laboratory Time", which is [7], fMinNoVars=8
   // is required. For proper time of flight and spin,  fMinNoVars must be 12
@@ -570,60 +574,46 @@ G4double G4MagInt_Driver::relativeError(const G4double y[],
 }
 
 
-#define Gustaffson
-//#define STANDARD
-
-#ifdef STANDARD
-G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
-{
-    G4double htemp = GetSafety() * hstep * std::pow(error, GetPshrnk());
-    return std::max(htemp, 0.1 * hstep);
-}
-
-G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
-{
-    G4double hnext;
-    if (error > errcon) {
-        hnext = GetSafety() * hstep * std::pow(error, GetPgrow());
-    } else {
-        hnext = max_stepping_increase * hstep;
-    }
-    return hnext;
-}
-#endif
-
-#ifdef Gustaffson
-
 
 G4double G4MagInt_Driver::shrinkStep(G4double error, G4double hstep)
 {
     G4double htemp;
-    if (ferrorPrev == INVALID_ERROR_VALUE) {
+
+    if (fMethod == ErrorControlMethod::Standard) {
         htemp = GetSafety() * hstep * std::pow(error, GetPshrnk());
-    } else {
-        htemp = GetSafety() * hstep * std::pow(error, -KI) *
-                std::pow(ferrorPrev / error, KP);
+    } else { //fMethod == ErrorControlMethod::Gustaffson
+        if (ferrorPrev == INVALID_ERROR_VALUE) {
+            htemp = GetSafety() * hstep * std::pow(error, GetPshrnk());
+        } else {
+            htemp = GetSafety() * hstep * std::pow(error, -KI) *
+                    std::pow(ferrorPrev / error, KP);
+        }
+        ferrorPrev = error;
     }
-    ferrorPrev = error;
 
     return std::max(htemp, 0.1 * hstep);
 }
 
 G4double G4MagInt_Driver::growStep(G4double error, G4double hstep)
 {
-    static const G4double KI(/*0.3 / fstepper->IntegratorOrder()*/0.08);
-    static const G4double KP(/*0.4 / fstepper->IntegratorOrder()*/0.10);
-
     G4double hnext;
-    if (error > errcon && ferrorPrev != INVALID_ERROR_VALUE) {
 
-        hnext = hstep * std::pow(error, -KI) * std::pow(ferrorPrev / error, KP);
-    } else {
-        hnext = max_stepping_increase * hstep;
+    if (fMethod == ErrorControlMethod::Standard) {
+        if (error > errcon) {
+            hnext = GetSafety() * hstep * std::pow(error, GetPgrow());
+        } else {
+            hnext = max_stepping_increase * hstep;
+        }
+    } else { //fMethod == ErrorControlMethod::Gustaffson
+        if (error > errcon && ferrorPrev != INVALID_ERROR_VALUE) {
+            hnext = hstep * std::pow(error, -KI) * std::pow(ferrorPrev / error, KP);
+        } else {
+            hnext = max_stepping_increase * hstep;
+        }
     }
+
     return hnext;
 }
-#endif
 
 // Driver for one Runge-Kutta Step with monitoring of local truncation error
 // to ensure accuracy and adjust stepsize. Input are dependent variable
