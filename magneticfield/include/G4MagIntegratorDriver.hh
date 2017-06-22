@@ -44,8 +44,9 @@
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
 #include "G4MagIntegratorStepper.hh"
+#include "G4VIntegrationDriver.hh"
 
-class G4MagInt_Driver {
+class G4MagInt_Driver: public G4VIntegrationDriver {
 public:
     enum class ErrorControlMethod {
         Standard,
@@ -58,110 +59,120 @@ public:
                     G4int statisticsVerbosity = 1,
                     ErrorControlMethod method = ErrorControlMethod::Standard);
 
-    ~G4MagInt_Driver();
+    virtual ~G4MagInt_Driver() override;
 
-     G4bool  AccurateAdvance(G4FieldTrack&  y_current,
-                             G4double hstep,
-                             G4double eps,            // Requested y_err/hstep
-                             G4double hinitial=0.0);  // Suggested 1st interval
-       // Above drivers for integrator (Runge-Kutta) with stepsize control. 
-       // Integrates ODE starting values y_current
-       // from current s (s=s0) to s=s0+h with accuracy eps. 
-       // On output ystart is replaced by value at end of interval. 
-       // The concept is similar to the odeint routine from NRC p.721-722.
+    G4MagInt_Driver(const G4MagInt_Driver&) = delete;
+    const G4MagInt_Driver& operator= (const G4MagInt_Driver&) = delete;
 
-     G4bool  QuickAdvance(      G4FieldTrack& y_val,      // INOUT
-                          const G4double     dydx[],  
-                                G4double     hstep,       // IN 
-                                G4double&    dchord_step,
-                                G4double&    dyerr )  ;
-        // QuickAdvance just tries one Step - it does not ensure accuracy.
+    // Above drivers for integrator (Runge-Kutta) with stepsize control.
+    // Integrates ODE starting values y_current
+    // from current s (s=s0) to s=s0+h with accuracy eps.
+    // On output ystart is replaced by value at end of interval.
+    // The concept is similar to the odeint routine from NRC p.721-722.
+    virtual G4bool AccurateAdvance(G4FieldTrack& track,
+                            G4double hstep,
+                            G4double eps,            // Requested y_err/hstep
+                            G4double hinitial = 0) override;  // Suggested 1st interval
 
-     G4bool  QuickAdvance(      G4FieldTrack& y_posvel,        // INOUT
-                          const G4double      dydx[],  
-                                G4double      hstep,           // IN
-                                G4double&     dchord_step,
-                                G4double&     dyerr_pos_sq,
-                                G4double&     dyerr_mom_rel_sq ) ;
-       // New QuickAdvance that also just tries one Step
-       //    (so also does not ensure accuracy)
-       //    but does return the errors in  position and
-       //        momentum (normalised: Delta_Integration(p^2)/(p^2) )
+    // QuickAdvance just tries one Step - it does not ensure accuracy.
+    virtual G4bool QuickAdvance(G4FieldTrack& track,      // INOUT
+                                const G4double dydx[],
+                                G4double hstep,
+                                G4double& dchord_step,
+                                G4double& dyerr) override;
+
+    virtual void GetDerivatives(const G4FieldTrack &track,
+                                G4double dydx[]) const override;
+
+    virtual void SetEquationOfMotion(G4EquationOfMotion* equation) override;
+    virtual G4EquationOfMotion* GetEquationOfMotion() override;
+
+    // Taking the last step's normalised error, calculate
+    // a step size for the next step.
+    // Do not limit the next step's size within a factor of the
+    // current one.
+    virtual G4double ComputeNewStepSize(G4double errMaxNorm,  // normalised error
+                                        G4double hstepCurrent) override; // current step size
+
+    virtual void SetVerboseLevel(G4int level) override;
+    virtual G4int GetVerboseLevel() const override;
 
 
-     inline G4double GetHmin() const;
-     inline G4double Hmin() const;     // Obsolete
-     inline G4double GetSafety() const;
-     inline G4double GetPshrnk() const;
-     inline G4double GetPgrow() const;
-     inline G4double GetErrcon() const;
-     inline void GetDerivatives( const G4FieldTrack &y_curr,     // const, INput
-                                       G4double    dydx[]   );  //       OUTput
-        // Accessors.
+    G4bool QuickAdvance(G4FieldTrack& y_posvel,        // INOUT
+                        const G4double dydx[],
+                              G4double hstep,           // IN
+                              G4double& dchord_step,
+                              G4double& dyerr_pos_sq,
+                              G4double& dyerr_mom_rel_sq);
+    // New QuickAdvance that also just tries one Step
+    //    (so also does not ensure accuracy)
+    //    but does return the errors in  position and
+    //        momentum (normalised: Delta_Integration(p^2)/(p^2) )
+    //TODO not implemented! Do we need it?
 
-     inline void RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper);
-        // Sets a new stepper pItsStepper for this driver. Then it calls
-        // ReSetParameters to reset its parameters accordingly.
 
-     inline void ReSetParameters(G4double new_safety= 0.9 );
-        //  i) sets the exponents (pgrow & pshrnk), 
-        //     using the current Stepper's order, 
-        // ii) sets the safety
-        // ii) calculates "errcon" according to the above values.
+    inline G4double GetHmin() const;
+    inline G4double Hmin() const;     // Obsolete
+    inline G4double GetSafety() const;
+    inline G4double GetPshrnk() const;
+    inline G4double GetPgrow() const;
+    inline G4double GetErrcon() const;
 
-     inline void SetSafety(G4double valS);
-     inline void SetPshrnk(G4double valPs);
-     inline void SetPgrow (G4double valPg);
-     inline void SetErrcon(G4double valEc);
-        // When setting safety or pgrow, errcon will be set to a 
-        // compatible value.
+     // Accessors.
 
-     inline G4double ComputeAndSetErrcon();
+    inline void RenewStepperAndAdjust(G4MagIntegratorStepper* pItsStepper);
+    // Sets a new stepper pItsStepper for this driver. Then it calls
+    // ReSetParameters to reset its parameters accordingly.
 
-     inline const G4MagIntegratorStepper* GetStepper() const;
-     inline G4MagIntegratorStepper* GetStepper();
+    inline void ReSetParameters(G4double new_safety = 0.9);
+    //  i) sets the exponents (pgrow & pshrnk),
+    //     using the current Stepper's order,
+    // ii) sets the safety
+    // ii) calculates "errcon" according to the above values.
 
-     void  OneGoodStep(       G4double  ystart[], // Like old RKF45step()
-                        const G4double  dydx[],
-                              G4double& x,
-                              G4double htry,
-                              G4double  eps,      //  memb variables ?
-                              G4double& hdid,
-                              G4double& hnext ) ;
+    inline void SetSafety(G4double valS);
+    inline void SetPshrnk(G4double valPs);
+    inline void SetPgrow (G4double valPg);
+    inline void SetErrcon(G4double valEc);
+    // When setting safety or pgrow, errcon will be set to a
+    // compatible value.
+
+    inline G4double ComputeAndSetErrcon();
+
+    inline const G4MagIntegratorStepper* GetStepper() const;
+    inline G4MagIntegratorStepper* GetStepper();
+
+    void OneGoodStep(G4double ystart[], // Like old RKF45step()
+                     const G4double dydx[],
+                     G4double& x,
+                     G4double htry,
+                     G4double eps,      //  memb variables ?
+                     G4double& hdid,
+                     G4double& hnext);
         // This takes one Step that is as large as possible while 
         // satisfying the accuracy criterion of:
         // yerr < eps * |y_end-y_start|
 
-     G4double ComputeNewStepSize( G4double  errMaxNorm,    // normalised error
-                                  G4double  hstepCurrent); // current step size
-        // Taking the last step's normalised error, calculate
-        // a step size for the next step.
-        // Do not limit the next step's size within a factor of the
-        // current one.
 
-     G4double ComputeNewStepSize_WithinLimits(
-                          G4double  errMaxNorm,    // normalised error
-                          G4double  hstepCurrent); // current step size
+    G4double ComputeNewStepSize_WithinLimits(G4double  errMaxNorm,    // normalised error
+                                             G4double  hstepCurrent); // current step size
         // Taking the last step's normalised error, calculate
         // a step size for the next step.
         // Limit the next step's size within a range around the current one.
 
-     inline G4int    GetMaxNoSteps() const;
-     inline void     SetMaxNoSteps( G4int val); 
+     inline G4int GetMaxNoSteps() const;
+     inline void SetMaxNoSteps( G4int val);
         //  Modify and Get the Maximum number of Steps that can be
         //   taken for the integration of a single segment -
         //   (ie a single call to AccurateAdvance).
 
-   public:  // without description
-
+public:  // without description
      inline void SetHmin(G4double newval);
-     inline void SetVerboseLevel(G4int newLevel); 
-     inline G4double GetVerboseLevel() const;
 
      inline G4double GetSmallestFraction() const; 
      void     SetSmallestFraction( G4double val ); 
 
-   protected:  // without description
+protected:  // without description
      void WarnSmallStepSize( G4double hnext, G4double hstep, 
                              G4double h,     G4double xDone,
                              G4int noSteps);
@@ -202,12 +213,7 @@ public:
                                G4double&    dyerr );      // in length
 #endif
 
-   private:
-
-     G4MagInt_Driver(const G4MagInt_Driver&);
-     G4MagInt_Driver& operator=(const G4MagInt_Driver&);
-        // Private copy constructor and assignment operator.
-
+private:
      G4double shrinkStep(G4double error, G4double hstep);
      G4double growStep(G4double error, G4double hstep);
 
@@ -216,7 +222,7 @@ public:
                             const G4double hstep,
                             const G4double errorTolerance);
 
-   private:
+private:
 
      // ---------------------------------------------------------------
      //  INVARIANTS 
@@ -265,7 +271,6 @@ public:
         // Could be varied during tracking - to help identify issues
 
      const ErrorControlMethod fMethod;
-
 };
 
 #include "G4MagIntegratorDriver.icc"

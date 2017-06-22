@@ -36,7 +36,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ChargeState.hh
         G4ChordFinder.hh
         G4ChordFinder.icc
-        G4ChordFinderSaf.hh
+        #G4ChordFinderSaf.hh
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
@@ -101,6 +101,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
+        G4VIntegrationDriver.hh
         RK547FEq1.hh
         Utils.hh
     SOURCES
@@ -110,7 +111,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4CashKarpRKF45.cc
         G4ChargeState.cc
         G4ChordFinder.cc
-        G4ChordFinderSaf.cc
+        #G4ChordFinderSaf.cc
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc

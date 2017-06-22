@@ -28,57 +28,48 @@
 //
 // --------------------------------------------------------------------
 
-inline
-G4double G4FSALIntegrationDriver::GetHmin() const
+inline G4double G4FSALIntegrationDriver::GetHmin() const
 {
       return fMinimumStep;
 } 
 
-inline
-G4double G4FSALIntegrationDriver::Hmin() const
+inline G4double G4FSALIntegrationDriver::Hmin() const
 {
       return fMinimumStep;
 }
 
-inline
-G4double G4FSALIntegrationDriver::GetSafety() const
+inline G4double G4FSALIntegrationDriver::GetSafety() const
 {
       return safety;
 }
 
-inline
-G4double G4FSALIntegrationDriver::GetPshrnk() const
+inline G4double G4FSALIntegrationDriver::GetPshrnk() const
 {
       return pshrnk;
 } 
 
-inline
-G4double G4FSALIntegrationDriver::GetPgrow() const
+inline G4double G4FSALIntegrationDriver::GetPgrow() const
 {
       return pgrow;
 }
  
-inline
-G4double G4FSALIntegrationDriver::GetErrcon() const
+inline G4double G4FSALIntegrationDriver::GetErrcon() const
 {
       return errcon;
 }
 
-inline
-void G4FSALIntegrationDriver::SetHmin(G4double newval)
+inline void G4FSALIntegrationDriver::SetHmin(G4double newval)
 {
       fMinimumStep = newval;
 } 
 
-inline
-G4double G4FSALIntegrationDriver::ComputeAndSetErrcon()
+inline G4double G4FSALIntegrationDriver::ComputeAndSetErrcon()
 {
       errcon = std::pow(max_stepping_increase/GetSafety(),1.0/GetPgrow());
       return errcon;
 } 
 
-inline
-void G4FSALIntegrationDriver::ReSetParameters(G4double new_safety)
+inline void G4FSALIntegrationDriver::ReSetParameters(G4double new_safety)
 {
       safety = new_safety;
       pshrnk = -1.0 / pIntStepper->IntegratorOrder();
@@ -86,93 +77,60 @@ void G4FSALIntegrationDriver::ReSetParameters(G4double new_safety)
       ComputeAndSetErrcon();
 }
 
-inline
-void G4FSALIntegrationDriver::SetSafety(G4double val)
+inline void G4FSALIntegrationDriver::SetSafety(G4double val)
 { 
       safety=val;
       ComputeAndSetErrcon();
 }
 
-inline
-void G4FSALIntegrationDriver::SetPgrow(G4double  val)
+inline void G4FSALIntegrationDriver::SetPgrow(G4double  val)
 { 
       pgrow=val;
       ComputeAndSetErrcon(); 
 }
 
-inline
-void G4FSALIntegrationDriver::SetErrcon(G4double val)
+inline void G4FSALIntegrationDriver::SetErrcon(G4double val)
 { 
       errcon=val;
 }
 
-inline
-void G4FSALIntegrationDriver::RenewStepperAndAdjust(G4VFSALIntegrationStepper *pItsStepper)
+inline void G4FSALIntegrationDriver::RenewStepperAndAdjust(G4VFSALIntegrationStepper *pItsStepper)
 {  
       pIntStepper = pItsStepper; 
       ReSetParameters();
 }
 
-inline
-const G4VFSALIntegrationStepper* G4FSALIntegrationDriver::GetStepper() const
+inline const G4VFSALIntegrationStepper* G4FSALIntegrationDriver::GetStepper() const
 {
-  return pIntStepper;
+     return pIntStepper;
 }
 
-inline
-G4VFSALIntegrationStepper* G4FSALIntegrationDriver::GetStepper()
+inline G4VFSALIntegrationStepper* G4FSALIntegrationDriver::GetStepper()
 {
-  return pIntStepper;
+     return pIntStepper;
 }
 
-inline
-G4int G4FSALIntegrationDriver::GetMaxNoSteps() const
+inline G4int G4FSALIntegrationDriver::GetMaxNoSteps() const
 {
-  return fMaxNoSteps;
+     return fMaxNoSteps;
 }
 
-inline
-void G4FSALIntegrationDriver::SetMaxNoSteps(G4int val)
+inline void G4FSALIntegrationDriver::SetMaxNoSteps(G4int val)
 {
-  fMaxNoSteps= val;
+    fMaxNoSteps = val;
 }
 
-inline
-void G4FSALIntegrationDriver::GetDerivatives(const G4FieldTrack &y_curr, // const, INput
-                                           G4double     dydx[])  // OUTput
-{ 
-  G4double  tmpValArr[G4FieldTrack::ncompSVEC];
-  y_curr.DumpToArray( tmpValArr  );
-  pIntStepper -> RightHandSide( tmpValArr , dydx );
-}
-
-inline
-G4double G4FSALIntegrationDriver::GetVerboseLevel() const
-{
-      return fVerboseLevel;
-} 
-
-inline 
-void G4FSALIntegrationDriver::SetVerboseLevel(G4int newLevel)
-{
-      fVerboseLevel= newLevel;
-}
-
-inline
-G4double G4FSALIntegrationDriver::GetSmallestFraction() const
+inline G4double G4FSALIntegrationDriver::GetSmallestFraction() const
 {
       return fSmallestFraction; 
 }
 
-inline
-G4int G4FSALIntegrationDriver::GetNoTotalSteps() const
+inline G4int G4FSALIntegrationDriver::GetNoTotalSteps() const
 {
     return fNoTotalSteps;
 }
 
-inline
-G4int G4FSALIntegrationDriver::GetTotalNoStepperCalls() const
+inline G4int G4FSALIntegrationDriver::GetTotalNoStepperCalls() const
 {
     return TotalNoStepperCalls;
 }
-

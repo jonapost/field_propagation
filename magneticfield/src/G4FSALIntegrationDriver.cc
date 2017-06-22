@@ -673,7 +673,7 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
 
 G4bool  G4FSALIntegrationDriver::QuickAdvance(
                                       G4FieldTrack& y_posvel,         // INOUT
-                                      G4double     dydx[],
+                                      const G4double     dydx[],
                                       G4double     hstep,       // In
                                       G4double&    dchord_step,
                                       G4double&    dyerr )
@@ -681,6 +681,7 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
     G4double dyerr_pos_sq, dyerr_mom_rel_sq;
     G4double yerr_vec[G4FieldTrack::ncompSVEC],
     yarrin[G4FieldTrack::ncompSVEC], yarrout[G4FieldTrack::ncompSVEC];
+    G4double dydxTemp[G4FieldTrack::ncompSVEC];
     G4double s_start;
     G4double dyerr_mom_sq, vel_mag_sq, inv_vel_mag_sq;
     
@@ -692,7 +693,7 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
     s_start = y_posvel.GetCurveLength();
     
     // Do an Integration Step
-    pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec, dydx) ;
+    pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec, dydxTemp);
     //            *******
     
     // Estimate curve-chord distance
@@ -746,6 +747,34 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
     }
     
     return true;
+}
+
+void G4FSALIntegrationDriver::GetDerivatives(const G4FieldTrack& track,
+                                             G4double dydx[]) const
+{
+    G4double  y[G4FieldTrack::ncompSVEC];
+    track.DumpToArray(y);
+    pIntStepper->RightHandSide(y, dydx);
+}
+
+void G4FSALIntegrationDriver::SetVerboseLevel(G4int level)
+{
+    fVerboseLevel = level;
+}
+
+G4int G4FSALIntegrationDriver::GetVerboseLevel() const
+{
+    return fVerboseLevel;
+}
+
+void G4FSALIntegrationDriver::SetEquationOfMotion(G4EquationOfMotion *equation)
+{
+    pIntStepper->SetEquationOfMotion(equation);
+}
+
+G4EquationOfMotion* G4FSALIntegrationDriver::GetEquationOfMotion()
+{
+    return pIntStepper->GetEquationOfMotion();
 }
 
 // --------------------------------------------------------------------------
