@@ -32,21 +32,22 @@
 //
 // History of major changes: /To be filled/
 
-
-#include <iomanip>
+#include "G4FSALIntegrationDriver.hh"
 
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
-#include "G4FSALIntegrationDriver.hh"
 #include "G4FieldTrack.hh"
 #include "Utils.hh"
 
+#include <iomanip>
+
 using namespace magneticfield;
 
-namespace  {
+namespace {
 const G4int NCOMP = G4FieldTrack::ncompSVEC;
-}
+
+} // namespace
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
@@ -67,39 +68,40 @@ const G4int  G4FSALIntegrationDriver::fMaxStepBase = 100000;  // Was 5000, was 2
 //#define G4DEBUG_FIELD 1
 //#endif
 
-// ---------------------------------------------------------
 
-//  Constructor
-//
-G4FSALIntegrationDriver::G4FSALIntegrationDriver( G4double                hminimum,
-                                 G4VFSALIntegrationStepper *pStepper,
-                                 G4int                   numComponents,
-                                 G4int                   statisticsVerbose)
-: fSmallestFraction( 1.0e-12 ),
-fNoIntegrationVariables(numComponents),
-fMinNoVars(12),
-fNoVars( std::max( fNoIntegrationVariables, fMinNoVars )),
-fStatisticsVerboseLevel(statisticsVerbose),
-fNoTotalSteps(0),  fNoBadSteps(0), fNoSmallSteps(0),
-fNoInitialSmallSteps(0),
-fDyerr_max(0.0), fDyerr_mx2(0.0),
-fDyerrPos_smTot(0.0), fDyerrPos_lgTot(0.0), fDyerrVel_lgTot(0.0),
-fSumH_sm(0.0), fSumH_lg(0.0),
-fVerboseLevel(0),
-TotalNoStepperCalls(0)
+G4FSALIntegrationDriver::G4FSALIntegrationDriver(
+    G4double  hminimum,
+    G4VFSALIntegrationStepper* pStepper,
+    G4int numComponents,
+    G4int statisticsVerbose):
+    fSmallestFraction( 1.0e-12 ),
+    fNoIntegrationVariables(numComponents),
+    fMinNoVars(12),
+    fNoVars(std::max(fNoIntegrationVariables, fMinNoVars)),
+    fStatisticsVerboseLevel(statisticsVerbose),
+    fNoTotalSteps(0),
+    fNoBadSteps(0),
+    fNoSmallSteps(0),
+    fNoInitialSmallSteps(0),
+    fDyerr_max(0.0), fDyerr_mx2(0.0),
+    fDyerrPos_smTot(0.0),
+    fDyerrPos_lgTot(0.0),
+    fDyerrVel_lgTot(0.0),
+    fSumH_sm(0.0), fSumH_lg(0.0),
+    fVerboseLevel(0),
+    TotalNoStepperCalls(0)
 {
     // In order to accomodate "Laboratory Time", which is [7], fMinNoVars=8
     // is required. For proper time of flight and spin,  fMinNoVars must be 12
     
-    RenewStepperAndAdjust( pStepper );
-    fMinimumStep= hminimum;
+    RenewStepperAndAdjust(pStepper);
+    fMinimumStep = hminimum;
     fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();
 #ifdef G4DEBUG_FIELD
-    fVerboseLevel=2;
+    fVerboseLevel = 2;
 #endif
     
-    if( (fVerboseLevel > 0) || (fStatisticsVerboseLevel > 1) )
-    {
+    if (fVerboseLevel > 0 || fStatisticsVerboseLevel > 1) {
         G4cout << "MagIntDriver version: Accur-Adv: "
         << "invE_nS, QuickAdv-2sqrt with Statistics "
 #ifdef G4FLD_STATS
@@ -111,14 +113,9 @@ TotalNoStepperCalls(0)
     }
 }
 
-// ---------------------------------------------------------
-
-//  Destructor
-//
 G4FSALIntegrationDriver::~G4FSALIntegrationDriver()
 {
-    if( fStatisticsVerboseLevel > 1 )
-    {
+    if(fStatisticsVerboseLevel > 1) {
         PrintStatisticsReport();
     }
 }
@@ -127,13 +124,12 @@ G4FSALIntegrationDriver::~G4FSALIntegrationDriver()
 // and set verbose level to 1 or higher value !
 // #define  G4DEBUG_FIELD 1
 
-// ---------------------------------------------------------
 
-G4bool
-G4FSALIntegrationDriver::AccurateAdvance(G4FieldTrack& y_current,
-                                 G4double     hstep,
-                                 G4double     eps,
-                                 G4double hinitial )
+G4bool G4FSALIntegrationDriver::AccurateAdvance(
+    G4FieldTrack& y_current,
+    G4double hstep,
+    G4double eps,
+    G4double hinitial)
 {
     // Runge-Kutta driver with adaptive stepsize control. Integrate starting
     // values at y_current over hstep x2 with accuracy eps.
@@ -255,7 +251,7 @@ G4FSALIntegrationDriver::AccurateAdvance(G4FieldTrack& y_current,
             //-----------------------------------------------------
             
             yFldTrk.DumpToArray(y);
-            
+
 #ifdef G4FLD_STATS
             fNoSmallSteps++;
             if ( dyerr_len > fDyerr_max)  { fDyerr_max= dyerr_len; }
@@ -1061,15 +1057,4 @@ void G4FSALIntegrationDriver::SetSmallestFraction(G4double newFraction)
         << "  Value must be between 1.e-8 and 1.e-16" << G4endl;
     }
 }
-
-
-
-
-
-
-
-//--------------------------------------------------------------------------------
-// New functions introduced for more debugging purposes :
-
-
 
