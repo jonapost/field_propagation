@@ -711,7 +711,7 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(G4FieldTrack& track,
     G4double momentumError2 = extractValue2(yError, Value3D::Momentum);
     G4double momentum2 = extractValue2(yOut, Value3D::Momentum);
     G4double relativeMomentumError2 = momentumError2 / momentum2;
-    
+
     // Calculate also the change in the momentum squared also ???
     // G4double veloc_square = track.GetVelocity().mag2();
     // ...
@@ -784,28 +784,17 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
 
 //  This method computes new step sizes - but does not limit changes to
 //   within  certain factors
-//
-G4double
-G4FSALIntegrationDriver::ComputeNewStepSize(
-                                    G4double  errMaxNorm,    // max error  (normalised)
-                                    G4double  hstepCurrent)  // current step size
+G4double G4FSALIntegrationDriver::ComputeNewStepSize(G4double  errMaxNorm,    // max error  (normalised)
+                                                     G4double  hstepCurrent)  // current step size
 {
-    G4double hnew;
-    
-    // Compute size of next Step for a failed step
-    if(errMaxNorm > 1.0 )
-    {
-        // Step failed; compute the size of retrial Step.
-        hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPshrnk()) ;
-    } else if(errMaxNorm > 0.0 ) {
-        // Compute size of next Step for a successful step
-        hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPgrow()) ;
-    } else {
-        // if error estimate is zero (possible) or negative (dubious)
-        hnew = max_stepping_increase * hstepCurrent;
+    if (errMaxNorm > 1) { // Step failed; compute the size of retrial Step.
+        return GetSafety() * hstepCurrent * std::pow(errMaxNorm, GetPshrnk());
+    } else if (errMaxNorm > 0) { // Compute size of next Step for a successful step
+        return GetSafety() * hstepCurrent * std::pow(errMaxNorm, GetPgrow());
     }
-    
-    return hnew;
+
+    // if error estimate is zero (possible) or negative (dubious)
+    return max_stepping_increase * hstepCurrent;
 }
 
 // ---------------------------------------------------------------------------
@@ -815,34 +804,31 @@ G4FSALIntegrationDriver::ComputeNewStepSize(
 // It shares its logic with AccurateAdvance.
 // They are kept separate currently for optimisation.
 //
-G4double
-G4FSALIntegrationDriver::ComputeNewStepSize_WithinLimits(
-                                                 G4double  errMaxNorm,    // max error  (normalised)
-                                                 G4double  hstepCurrent)  // current step size
+G4double G4FSALIntegrationDriver::ComputeNewStepSize_WithinLimits(
+    G4double  errMaxNorm,    // max error  (normalised)
+    G4double  hstepCurrent)  // current step size
 {
     G4double hnew;
     
     // Compute size of next Step for a failed step
-    if (errMaxNorm > 1.0 )
-    {
+    if (errMaxNorm > 1.0) {
         // Step failed; compute the size of retrial Step.
-        hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPshrnk()) ;
+        hnew = GetSafety() * hstepCurrent * std::pow(errMaxNorm,GetPshrnk()) ;
         
-        if (hnew < max_stepping_decrease*hstepCurrent)
-        {
-            hnew = max_stepping_decrease*hstepCurrent ;
+        if (hnew < max_stepping_decrease * hstepCurrent) {
+            hnew = max_stepping_decrease * hstepCurrent;
             // reduce stepsize, but no more
             // than this factor (value= 1/10)
         }
-    }
-    else
-    {
+    } else {
         // Compute size of next Step for a successful step
-        if (errMaxNorm > errcon)
-        { hnew = GetSafety()*hstepCurrent*std::pow(errMaxNorm,GetPgrow()); }
-        else  // No more than a factor of 5 increase
-        { hnew = max_stepping_increase * hstepCurrent; }
+        if (errMaxNorm > errcon) {
+            hnew = GetSafety() * hstepCurrent * std::pow(errMaxNorm, GetPgrow());
+        } else { // No more than a factor of 5 increase
+            hnew = max_stepping_increase * hstepCurrent;
+        }
     }
+
     return hnew;
 }
 
@@ -988,9 +974,9 @@ void G4FSALIntegrationDriver::PrintStat_Aux(
     
     static G4ThreadLocal G4double oldCurveLength= 0.0;
     static G4ThreadLocal G4double oldSubStepLength= 0.0;
-    static G4ThreadLocal G4int oldSubStepNo= -1;
+    static G4ThreadLocal G4int oldSubStepNo = -1;
     
-    G4double subStep_len=0.0;
+    G4double subStep_len = 0.0;
     if( curveLen > oldCurveLength )
     {
         subStep_len= curveLen - oldCurveLength;
@@ -1067,12 +1053,9 @@ void G4FSALIntegrationDriver::PrintStatisticsReport()
 
 void G4FSALIntegrationDriver::SetSmallestFraction(G4double newFraction)
 {
-    if( (newFraction > 1.e-16) && (newFraction < 1e-8) )
-    {
-        fSmallestFraction= newFraction;
-    }
-    else
-    { 
+    if (newFraction > 1.e-16 && newFraction < 1e-8) {
+        fSmallestFraction = newFraction;
+    } else {
         G4cerr << "Warning: SmallestFraction not changed. " << G4endl
         << "  Proposed value was " << newFraction << G4endl
         << "  Value must be between 1.e-8 and 1.e-16" << G4endl;
