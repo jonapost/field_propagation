@@ -24,7 +24,7 @@ public:
                                    G4double eps,               // Requested y_err/hstep
                                    G4double hinitial = 0) = 0; // Suggested 1st interval
 
-    virtual void GetDerivatives(const G4FieldTrack &track,
+    virtual void GetDerivatives(const G4FieldTrack& track,
                                 G4double dydx[]) const = 0;
 
     virtual void SetEquationOfMotion(G4EquationOfMotion* equation) = 0;

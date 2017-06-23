@@ -40,6 +40,13 @@
 #include "G4GeometryTolerance.hh"
 #include "G4FSALIntegrationDriver.hh"
 #include "G4FieldTrack.hh"
+#include "Utils.hh"
+
+using namespace magneticfield;
+
+namespace  {
+const G4int NCOMP = G4FieldTrack::ncompSVEC;
+}
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1
@@ -140,12 +147,12 @@ G4FSALIntegrationDriver::AccurateAdvance(G4FieldTrack& y_current,
 #ifdef G4DEBUG_FIELD
     static G4int dbg=10;
     static G4int nStpPr=50;   // For debug printing of long integrations
-    G4double ySubStepStart[G4FieldTrack::ncompSVEC];
+    G4double ySubStepStart[NCOMP];
     G4FieldTrack  yFldTrkStart(y_current);
 #endif
     
-    G4double y[G4FieldTrack::ncompSVEC], dydx[G4FieldTrack::ncompSVEC];
-    G4double ystart[G4FieldTrack::ncompSVEC], yEnd[G4FieldTrack::ncompSVEC];
+    G4double y[NCOMP], dydx[NCOMP];
+    G4double ystart[NCOMP], yEnd[NCOMP];
     G4double  x1, x2;
     G4bool succeeded = true, lastStepSucceeded;
     
@@ -540,9 +547,9 @@ G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
     G4double errmax_sq;
     G4double h, htemp, xnew ;
     
-    G4double yerr[G4FieldTrack::ncompSVEC],
-             yOut[G4FieldTrack::ncompSVEC],
-             dydxOut[G4FieldTrack::ncompSVEC];
+    G4double yerr[NCOMP],
+             yOut[NCOMP],
+             dydxOut[NCOMP];
     
     h = htry ; // Set stepsize to the initial trial value
     
@@ -669,59 +676,44 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
     return true;
 }
 
-//----------------------------------------------------------------------
-
-G4bool  G4FSALIntegrationDriver::QuickAdvance(
-                                      G4FieldTrack& y_posvel,         // INOUT
-                                      const G4double     dydx[],
-                                      G4double     hstep,       // In
-                                      G4double&    dchord_step,
-                                      G4double&    dyerr )
+G4bool  G4FSALIntegrationDriver::QuickAdvance(G4FieldTrack& track,
+                                              const G4double dydx[],
+                                              G4double hstep,
+                                              G4double& dchord_step,
+                                              G4double& dyerr)
 {
-    G4double dyerr_pos_sq, dyerr_mom_rel_sq;
-    G4double yerr_vec[G4FieldTrack::ncompSVEC],
-    yarrin[G4FieldTrack::ncompSVEC], yarrout[G4FieldTrack::ncompSVEC];
-    G4double dydxTemp[G4FieldTrack::ncompSVEC];
-    G4double s_start;
-    G4double dyerr_mom_sq, vel_mag_sq, inv_vel_mag_sq;
+    G4double yError[NCOMP], yIn[NCOMP], yOut[NCOMP], dydxOut[NCOMP];
     
-    static G4ThreadLocal G4int no_call=0;
-    no_call ++;
+    static G4ThreadLocal G4int no_call = 0;
+    ++no_call;
     
-    // Move data into array
-    y_posvel.DumpToArray( yarrin );      //  yarrin  <== y_posvel
-    s_start = y_posvel.GetCurveLength();
+    track.DumpToArray(yIn);
+    G4double curveLengthIn = track.GetCurveLength();
     
-    // Do an Integration Step
-    pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec, dydxTemp);
-    //            *******
+    pIntStepper->Stepper(yIn, dydx, hstep, yOut, yError, dydxOut);
+    dchord_step = pIntStepper->DistChord();
     
-    // Estimate curve-chord distance
-    dchord_step= pIntStepper-> DistChord();
-    //                         *********
-    
-    // Put back the values.  yarrout ==> y_posvel
-    y_posvel.LoadFromArray( yarrout, fNoIntegrationVariables );
-    y_posvel.SetCurveLength( s_start + hstep );
+    track.LoadFromArray(yOut, fNoIntegrationVariables);
+    track.SetCurveLength(curveLengthIn + hstep);
     
 #ifdef  G4DEBUG_FIELD
-    if(fVerboseLevel>2)
-    {
+    if (fVerboseLevel > 2) {
         G4cout << "G4MagIntDrv: Quick Advance" << G4endl;
-        PrintStatus( yarrin, s_start, yarrout, s_start+hstep, hstep,  1);
+        PrintStatus(yIn, curveLengthIn, yOut, curveLengthIn + hstep, hstep,  1);
     }
 #endif
     
+
     // A single measure of the error
     //      TO-DO :  account for  energy,  spin, ... ?
-    vel_mag_sq   = ( sqr(yarrout[3])+sqr(yarrout[4])+sqr(yarrout[5]) );
-    inv_vel_mag_sq = 1.0 / vel_mag_sq;
-    dyerr_pos_sq = ( sqr(yerr_vec[0])+sqr(yerr_vec[1])+sqr(yerr_vec[2]));
-    dyerr_mom_sq = ( sqr(yerr_vec[3])+sqr(yerr_vec[4])+sqr(yerr_vec[5]));
-    dyerr_mom_rel_sq = dyerr_mom_sq * inv_vel_mag_sq;
+    G4double positionError2 = extractValue2(yError, Value3D::Position);
+
+    G4double momentumError2 = extractValue2(yError, Value3D::Momentum);
+    G4double momentum2 = extractValue2(yOut, Value3D::Momentum);
+    G4double relativeMomentumError2 = momentumError2 / momentum2;
     
     // Calculate also the change in the momentum squared also ???
-    // G4double veloc_square = y_posvel.GetVelocity().mag2();
+    // G4double veloc_square = track.GetVelocity().mag2();
     // ...
     
 #ifdef RETURN_A_NEW_STEP_LENGTH
@@ -730,21 +722,14 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
     dyerr_len_sq /= eps ;
     
     // Look at the velocity deviation ?
-    //  sqr(yerr_vec[3])+sqr(yerr_vec[4])+sqr(yerr_vec[5]));
+    //  sqr(yError[3])+sqr(yError[4])+sqr(yError[5]));
     
     // Set suggested new step
-    hstep= ComputeNewStepSize( dyerr_len, hstep);
+    hstep = ComputeNewStepSize( dyerr_len, hstep);
 #endif
     
-    if( dyerr_pos_sq > ( dyerr_mom_rel_sq * sqr(hstep) ) )
-    {
-        dyerr = std::sqrt(dyerr_pos_sq);
-    }
-    else
-    {
-        // Scale it to the current step size - for now
-        dyerr = std::sqrt(dyerr_mom_rel_sq) * hstep;
-    }
+    dyerr = std::max(positionError2, relativeMomentumError2 * sqr(hstep));
+    dyerr = std::sqrt(dyerr);
     
     return true;
 }
@@ -752,7 +737,7 @@ G4bool  G4FSALIntegrationDriver::QuickAdvance(
 void G4FSALIntegrationDriver::GetDerivatives(const G4FieldTrack& track,
                                              G4double dydx[]) const
 {
-    G4double  y[G4FieldTrack::ncompSVEC];
+    G4double  y[NCOMP];
     track.DumpToArray(y);
     pIntStepper->RightHandSide(y, dydx);
 }
