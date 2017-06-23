@@ -3,6 +3,7 @@
 
 #include "G4Types.hh"
 #include "G4ThreeVector.hh"
+#include "G4IntegrationObserver.hh"
 
 namespace magneticfield {
 
@@ -25,6 +26,13 @@ G4double extractValue(const G4double array[], const Value3D& value);
 G4double extractValue2(const G4double array[], const Value3D& value);
 
 G4ThreeVector makeVector(const G4double array[], const Value3D& value);
+
+G4double relativeError(
+    const G4double y[],
+    const G4double yerr[],
+    const G4double hstep,
+    const G4double errorTolerance,
+    G4IntegrationObserver& observer);
 
 } //magneticfield
 

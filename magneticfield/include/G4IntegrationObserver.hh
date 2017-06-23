@@ -46,6 +46,11 @@ public:
 
     //void PrintStatisticsReport();
     //  Report on the number of steps, maximum errors etc.
+
+    void onRelativeError(
+        G4double H_lg,
+        G4double DyerrPos_lg,
+        G4double DyerrVel_lg);
 private:
     G4int fVerboseLevel;
     G4double fMinimumStep;
@@ -54,6 +59,10 @@ private:
     G4double fNoTotalSteps;
     G4double fNoBadSteps;
     G4double fNoSmallSteps;
+
+    G4double fSumH_lg;
+    G4double fDyerrPos_lgTot;
+    G4double fDyerrVel_lgTot;
 };
 
 #endif

@@ -14,7 +14,10 @@ G4IntegrationObserver::G4IntegrationObserver(
     fNoIntegrationVariables(numberOfIntegrationVariables),
     fNoTotalSteps(0),
     fNoBadSteps(0),
-    fNoSmallSteps(0)
+    fNoSmallSteps(0),
+    fSumH_lg(0),
+    fDyerrPos_lgTot(0),
+    fDyerrVel_lgTot(0)
 {
 }
 
@@ -313,4 +316,14 @@ void G4IntegrationObserver::PrintStatisticsReport()
     G4cout.precision(oldPrec);
 }
 */
+
+void G4IntegrationObserver::onRelativeError(
+    G4double H_lg,
+    G4double DyerrPos_lg,
+    G4double DyerrVel_lg)
+{
+    fSumH_lg += H_lg;
+    fDyerrPos_lgTot += DyerrPos_lg;
+    fDyerrVel_lgTot += DyerrVel_lg;
+}
 

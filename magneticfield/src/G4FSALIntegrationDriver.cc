@@ -70,7 +70,7 @@ const G4int  G4FSALIntegrationDriver::fMaxStepBase = 100000;  // Was 5000, was 2
 
 
 G4FSALIntegrationDriver::G4FSALIntegrationDriver(
-    G4double  hminimum,
+    G4double hminimum,
     G4VFSALIntegrationStepper* pStepper,
     G4int numComponents,
     G4int statisticsVerbose):
@@ -87,7 +87,8 @@ G4FSALIntegrationDriver::G4FSALIntegrationDriver(
     fDyerrPos_smTot(0.0),
     fDyerrPos_lgTot(0.0),
     fDyerrVel_lgTot(0.0),
-    fSumH_sm(0.0), fSumH_lg(0.0),
+    fSumH_sm(0.0),
+    fSumH_lg(0.0),
     fVerboseLevel(0),
     TotalNoStepperCalls(0),
     fObserver(fVerboseLevel, hminimum, numComponents)
@@ -116,7 +117,7 @@ G4FSALIntegrationDriver::G4FSALIntegrationDriver(
 
 G4FSALIntegrationDriver::~G4FSALIntegrationDriver()
 {
-    if(fStatisticsVerboseLevel > 1) {
+    if (fStatisticsVerboseLevel > 1) {
         //fObserver.PrintStatisticsReport();
         PrintStatisticsReport();
     }
@@ -127,18 +128,17 @@ G4FSALIntegrationDriver::~G4FSALIntegrationDriver()
 // #define  G4DEBUG_FIELD 1
 
 
+// Runge-Kutta driver with adaptive stepsize control. Integrate starting
+// values at y_current over hstep x2 with accuracy eps.
+// On output ystart is replaced by values at the end of the integration
+// interval. RightHandSide is the right-hand side of ODE system.
+// The source is similar to odeint routine from NRC p.721-722 .
 G4bool G4FSALIntegrationDriver::AccurateAdvance(
     G4FieldTrack& y_current,
     G4double hstep,
     G4double eps,
     G4double hinitial)
 {
-    // Runge-Kutta driver with adaptive stepsize control. Integrate starting
-    // values at y_current over hstep x2 with accuracy eps.
-    // On output ystart is replaced by values at the end of the integration
-    // interval. RightHandSide is the right-hand side of ODE system.
-    // The source is similar to odeint routine from NRC p.721-722 .
-    
     G4int nstp, i, no_warnings=0;
     G4double x, hnext, hdid, h;
     
@@ -166,7 +166,7 @@ G4bool G4FSALIntegrationDriver::AccurateAdvance(
     //
     if( hstep <= 0.0 )
     {
-        if(hstep==0.0)
+        if(hstep == 0.0)
         {
             std::ostringstream message;
             message << "Proposed step is zero; hstep = " << hstep << " !";
@@ -435,142 +435,65 @@ G4bool G4FSALIntegrationDriver::AccurateAdvance(
     return succeeded;
 }  // end of AccurateAdvance ...........................
 
-
-void
-G4FSALIntegrationDriver::OneGoodStep(      G4double y[],        // InOut
-                             G4double dydx[],
-                             G4double& x,         // InOut
-                             G4double htry,
-                             G4double eps_rel_max,
-                             G4double& hdid,      // Out
-                             G4double& hnext )    // Out
-
-// Driver for one Runge-Kutta Step with monitoring of local truncation error
-// to ensure accuracy and adjust stepsize. Input are dependent variable
-// array y[0,...,5] and its derivative dydx[0,...,5] at the
-// starting value of the independent variable x . Also input are stepsize
-// to be attempted htry, and the required accuracy eps. On output y and x
-// are replaced by their new values, hdid is the stepsize that was actually
-// accomplished, and hnext is the estimated next stepsize.
-// This is similar to the function rkqs from the book:
-// Numerical Recipes in C: The Art of Scientific Computing (NRC), Second
-// Edition, by William H. Press, Saul A. Teukolsky, William T.
-// Vetterling, and Brian P. Flannery (Cambridge University Press 1992),
-// 16.2 Adaptive StepSize Control for Runge-Kutta, p. 719
-
+G4double G4FSALIntegrationDriver::ShrinkStep(G4double error, G4double hstep)
 {
-    G4double errmax_sq;
-    G4double h, htemp, xnew ;
-    
-    G4double yerr[NCOMP],
-             yOut[NCOMP],
-             dydxOut[NCOMP];
-    
-    h = htry ; // Set stepsize to the initial trial value
-    
-    G4double inv_eps_vel_sq = 1.0 / (eps_rel_max*eps_rel_max);
-    
-    G4double errpos_sq=0.0;    // square of displacement error
-    G4double errvel_sq=0.0;    // square of momentum vector difference
-    G4double errspin_sq=0.0;   // square of spin vector difference
-    
-    G4int iter;
-    
-    static G4ThreadLocal G4int tot_no_trials=0;
-    //-----------------------------------------------------------
-    //Made a change :
-    //max_trials = 100
-    const G4int max_trials=100000;
-    //[hackabot]
-    //------------------------------------------------------------
-    G4ThreeVector Spin(y[9],y[10],y[11]);
-    G4double   spin_mag2 =Spin.mag2() ;
-    G4bool     hasSpin= (spin_mag2 > 0.0);
-    
-    for (iter=0; iter<max_trials ;iter++)
-    {
-        tot_no_trials++;
-        pIntStepper->Stepper(y, dydx, h, yOut, yerr, dydxOut);
-        //            *******
-        TotalNoStepperCalls++;
-        G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep);
-        G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos);
-        
-        // Evaluate accuracy
-        //
-        errpos_sq =  sqr(yerr[0]) + sqr(yerr[1]) + sqr(yerr[2]) ;
-        errpos_sq *= inv_eps_pos_sq; // Scale relative to required tolerance
-        
-        // Accuracy for momentum
-        G4double magvel_sq=  sqr(y[3]) + sqr(y[4]) + sqr(y[5]) ;
-        G4double sumerr_sq =  sqr(yerr[3]) + sqr(yerr[4]) + sqr(yerr[5]) ;
-        if( magvel_sq > 0.0 ) {
-            errvel_sq = sumerr_sq / magvel_sq;
-        }else{
-            G4cerr << "** G4MagIntegrationDriver: found case of zero momentum."
-            << " iteration=  " << iter << " h= " << h << G4endl;
-            errvel_sq = sumerr_sq;
-        }
-        errvel_sq *= inv_eps_vel_sq;
-        errmax_sq = std::max( errpos_sq, errvel_sq ); // Square of maximum error
-        
-        if( hasSpin )
-        {
-            // Accuracy for spin
-            errspin_sq =  ( sqr(yerr[9]) + sqr(yerr[10]) + sqr(yerr[11]) )
-            /  spin_mag2; // ( sqr(y[9]) + sqr(y[10]) + sqr(y[11]) );
-            errspin_sq *= inv_eps_vel_sq;
-            errmax_sq = std::max( errmax_sq, errspin_sq );
-        }
-        
-        if ( errmax_sq <= 1.0 )  { break; } // Step succeeded.
-        
-        // Step failed; compute the size of retrial Step.
-        htemp = GetSafety()*h* std::pow( errmax_sq, 0.5*GetPshrnk() );
-        
-        if (htemp >= 0.1*h)  { h = htemp; }  // Truncation error too large,
-        else  { h = 0.1*h; }                 // reduce stepsize, but no more
-        // than a factor of 10
-        xnew = x + h;
-        if(xnew == x)
-        {
-            G4cerr << "FSALMagIntegratorDriver::OneGoodStep:" << G4endl
-            << "  Stepsize underflow in Stepper " << G4endl ;
-            G4cerr << "  Step's start x=" << x << " and end x= " << xnew
-            << " are equal !! " << G4endl
-            <<"  Due to step-size= " << h
-            << " . Note that input step was " << htry << G4endl;
+    G4double htemp = GetSafety() * hstep * std::pow(error, GetPshrnk());
+    return std::max(htemp, 0.1 * hstep);
+}
+
+G4double G4FSALIntegrationDriver::GrowStep(G4double error, G4double hstep)
+{
+    G4double hnext;
+    if (error > errcon) {
+        hnext = GetSafety() * hstep * std::pow(error, GetPgrow());
+    } else {
+        hnext = max_stepping_increase * hstep;
+    }
+
+    return hnext;
+}
+
+void G4FSALIntegrationDriver::OneGoodStep(G4double y[],             // InOut
+                                  G4double dydx[],
+                                  G4double& trackLength,   // InOut
+                                  G4double htry,
+                                  G4double eps_rel_max,
+                                  G4double& hdid,          // Out
+                                  G4double& hnext )        // Out
+{
+    G4double yerr[NCOMP], ytemp[NCOMP], dydxOut[NCOMP];
+
+    static G4ThreadLocal G4int tot_no_trials = 0;
+    const G4int maxTrials = 100;
+    // Set stepsize to the initial trial value
+    G4double hstep = htry;
+    G4double error;
+    for (G4int iter = 0; iter < maxTrials; ++iter) {
+        ++tot_no_trials;
+        hstep = std::max(hstep, fMinimumStep);
+        pIntStepper->Stepper(y, dydx, hstep, ytemp, yerr, dydxOut);
+
+        error = relativeError(y, yerr, hstep, eps_rel_max, fObserver);
+
+         // Step succeeded
+        if (error <= 1.0) {
             break;
         }
+
+        // Step failed, compute the size of retrial step
+        hstep = ShrinkStep(error, hstep);
     }
-    
-#ifdef G4FLD_STATS
-    // Sum of squares of position error // and momentum dir (underestimated)
-    fSumH_lg += h;
-    fDyerrPos_lgTot += errpos_sq;
-    fDyerrVel_lgTot += errvel_sq * h * h;
-#endif
-    
-    // Compute size of next Step
-    if (errmax_sq > errcon*errcon)
-    {
-        hnext = GetSafety()*h*std::pow(errmax_sq, 0.5*GetPgrow());
-    }
-    else
-    {
-        hnext = max_stepping_increase*h ; // No more than a factor of 5 increase
-    }
-    x += (hdid = h);
-    
-    for (G4int k = 0; k < fNoIntegrationVariables; ++k) {
-        y[k] = yOut[k];
+
+    // Compute size of next step
+    hnext = GrowStep(error, hstep);
+    trackLength += (hdid = hstep);
+
+    for(G4int k = 0; k < fNoIntegrationVariables; ++k) {
+        y[k] = ytemp[k];
         dydx[k] = dydxOut[k];
     }
-    
-    return;
-}   // end of  OneGoodStep .............................
+}
 
-//----------------------------------------------------------------------
 
 // QuickAdvance just tries one Step - it does not ensure accuracy
 //

@@ -187,6 +187,8 @@ protected:  // without description
 #endif
 
 private:
+     G4double GrowStep(G4double hstep, G4double error);
+     G4double ShrinkStep(G4double hstep, G4double error);
      // ---------------------------------------------------------------
      //  INVARIANTS 
 
