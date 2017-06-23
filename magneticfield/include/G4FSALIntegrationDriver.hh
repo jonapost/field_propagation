@@ -43,6 +43,7 @@
 
 #include "G4VIntegrationDriver.hh"
 #include "G4VFSALIntegrationStepper.hh"
+#include "G4IntegrationObserver.hh"
 
 class G4FSALIntegrationDriver: public G4VIntegrationDriver {
 public:
@@ -172,33 +173,6 @@ public:  // without description
      void     SetSmallestFraction( G4double val );
 
 protected:  // without description
-     void WarnSmallStepSize( G4double hnext, G4double hstep, 
-                             G4double h,     G4double xDone,
-                             G4int noSteps);
-     void WarnTooManyStep( G4double x1start, G4double x2end, G4double xCurrent);
-     void WarnEndPointTooFar (G4double  endPointDist, 
-                              G4double  hStepSize , 
-                              G4double  epsilonRelative,
-                              G4int     debugFlag);
-        //  Issue warnings for undesirable situations
-
-     void PrintStatus(  const G4double*      StartArr,
-                              G4double       xstart,
-                        const G4double*      CurrentArr, 
-                              G4double       xcurrent, 
-                              G4double       requestStep, 
-                              G4int          subStepNo );
-     void PrintStatus(  const G4FieldTrack&  StartFT,
-                        const G4FieldTrack&  CurrentFT, 
-                              G4double       requestStep, 
-                              G4int          subStepNo );
-     void PrintStat_Aux( const G4FieldTrack& aFieldTrack,
-                               G4double      requestStep, 
-                               G4double      actualStep,
-                               G4int         subStepNo,
-                               G4double      subStepSize,
-                               G4double      dotVelocities );       
-       //  Verbose output for debugging
 
      void PrintStatisticsReport();
        //  Report on the number of steps, maximum errors etc.
@@ -259,6 +233,8 @@ private:
     
     //For Test Purposes :-
     G4int TotalNoStepperCalls;
+
+    G4IntegrationObserver fObserver;
 };
 
 #include "G4FSALIntegrationDriver.icc"
