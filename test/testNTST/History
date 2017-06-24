@@ -1,0 +1,41 @@
+$Id: History 66241 2012-12-13 18:34:42Z gunter $
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    ExampleNTST History file
+                    ------------------------
+This file should be used by the G4 example coordinator to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+
+December 5th, 2012  John Allison
+- Migrated to DrawTrajectory (i_mode argument no longer available).
+
+June 13th, 2012  Gabriele Cosmo
+- Explicit inclusion of units and constants headers.
+- Fixed shadowing compilation warnings...
+
+February 2nd, 2012  John Apostolakis
+- Improved Exceptions in NTSTPhysicsList.cc
+
+October 26th, 2011  John Apostolakis
+- Moved to separate Multiple Scattering processes 
+   * necessary for recent G4 versions. 
+   Changed NTSTPhysicsList (with Vladimir Ivantchenko's help)
+
+November 9th, 2005  Gabriele Cosmo
+- Migrated to <sstream> and std:: namespace.
+
+May 27th, 2003  John Apostolakis
+- Ported to gcc 3.2.
+- Deleted all Bgs classes.
+
+July 1998 David Williams
+- Started from ExampleN02.
