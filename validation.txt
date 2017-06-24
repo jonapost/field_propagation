@@ -1,0 +1,25 @@
+run2a.mac
+
+Number calls to field = 259251794
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0266 +- 0.000527 (sec) 
+### Event real time = 0.0274 +- 0.000543 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+run2b.mac
+
+Number calls to field = 1216830112
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0803 +- 0.00149 (sec) 
+### Event real time = 0.0822 +- 0.00153 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+run2c.mac
+
+Number calls to field = 4298927706
+### Processed number of events for all runs: 1e+03
+### Event user time =   0.36 +- 0.00544 (sec) 
+### Event real time =  0.365 +- 0.00554 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
