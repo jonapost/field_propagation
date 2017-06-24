@@ -52,11 +52,13 @@ std::map<std::string, NTSTDetectorMessenger::StepperType> STEPPERS =
 };
 
 const std::string STANDARD_DRIVER_NAME = "G4MagInt_Driver";
+const std::string NEW_STANRARD_DRIVER_NAME = "G4IntegrationDriver";
 const std::string FSAL_DRIVER_NAME = "FSAL";
 
 std::map<std::string, NTSTDetectorMessenger::DriverType> DRIVERS =
 {
     {STANDARD_DRIVER_NAME, NTSTDetectorMessenger::DriverType::G4MagInt_Driver},
+    {NEW_STANRARD_DRIVER_NAME, NTSTDetectorMessenger::DriverType::G4IntegrationDriver},
     {FSAL_DRIVER_NAME, NTSTDetectorMessenger::DriverType::G4FSALIntegrationDriver}
 };
 

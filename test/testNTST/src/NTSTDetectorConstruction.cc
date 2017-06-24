@@ -66,6 +66,7 @@
 
 #include "G4MagIntegratorDriver.hh"
 #include "G4FSALIntegrationDriver.hh"
+#include "G4IntegrationDriver.hh"
 #include "G4FSALDormandPrince745.hh"
 
 #include "G4SimpleLocator.hh"
@@ -224,6 +225,10 @@ void NTSTDetectorConstruction::SetDriverMethod(
     case NTSTDetectorMessenger::DriverType::G4MagInt_Driver:
         assert(fStepper);
         fDriver = new G4MagInt_Driver(fMinChordStep, fStepper);
+        break;
+    case NTSTDetectorMessenger::DriverType::G4IntegrationDriver:
+        assert(fStepper);
+        fDriver = new G4IntegrationDriver(fMinChordStep, fStepper);
         break;
     case NTSTDetectorMessenger::DriverType::G4FSALIntegrationDriver:
         assert(fFSALStepper);

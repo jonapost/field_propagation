@@ -59,6 +59,7 @@ public:
 
     enum class DriverType {
         G4MagInt_Driver,
+        G4IntegrationDriver,
         G4FSALIntegrationDriver
     };
 
