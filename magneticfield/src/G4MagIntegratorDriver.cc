@@ -495,7 +495,6 @@ G4double G4MagInt_Driver::RelativeError(
     const G4double eps_rel_max,
     const G4int iter)
 {
-
     G4double spin_mag2 = magneticfield::extractValue2(y, magneticfield::Value3D::Spin);
     G4bool hasSpin = (spin_mag2 > 0);
 
@@ -616,74 +615,49 @@ G4bool G4MagInt_Driver::QuickAdvance(
     G4double& dchord_step,
     G4double& dyerr)
 {
-  G4double dyerr_pos_sq, dyerr_mom_rel_sq;  
-  G4double yerr_vec[G4FieldTrack::ncompSVEC],
-           yarrin[G4FieldTrack::ncompSVEC], yarrout[G4FieldTrack::ncompSVEC]; 
-  G4double s_start;
-  G4double dyerr_mom_sq, vel_mag_sq, inv_vel_mag_sq;
 
-  static G4ThreadLocal G4int no_call=0; 
-  no_call ++; 
+    G4double yError[G4FieldTrack::ncompSVEC],
+             yIn[G4FieldTrack::ncompSVEC],
+             yOut[G4FieldTrack::ncompSVEC];
 
-  // Move data into array
-  y_posvel.DumpToArray( yarrin );      //  yarrin  <== y_posvel 
-  s_start = y_posvel.GetCurveLength();
+    static G4ThreadLocal G4int no_call = 0;
+    ++no_call;
 
-  // Do an Integration Step
-  pIntStepper-> Stepper(yarrin, dydx, hstep, yarrout, yerr_vec) ; 
-  //            *******
+    y_posvel.DumpToArray(yIn);
+    G4double s_start = y_posvel.GetCurveLength();
 
-  // Estimate curve-chord distance
-  dchord_step= pIntStepper-> DistChord();
-  //                         *********
+    pIntStepper->Stepper(yIn, dydx, hstep, yOut, yError);
+    dchord_step = pIntStepper->DistChord();
 
-  // Put back the values.  yarrout ==> y_posvel
-  y_posvel.LoadFromArray( yarrout, fNoIntegrationVariables );
-  y_posvel.SetCurveLength( s_start + hstep );
+    // Put back the values.  yarrout ==> y_posvel
+    y_posvel.LoadFromArray(yOut, fNoIntegrationVariables);
+    y_posvel.SetCurveLength(s_start + hstep);
 
 #ifdef  G4DEBUG_FIELD
-  if(fVerboseLevel>2)
-  {
-    G4cout << "G4MagIntDrv: Quick Advance" << G4endl;
-    PrintStatus( yarrin, s_start, yarrout, s_start+hstep, hstep,  1); 
-  }
+    if(fVerboseLevel>2)
+    {
+      G4cout << "G4MagIntDrv: Quick Advance" << G4endl;
+      PrintStatus( yarrin, s_start, yarrout, s_start+hstep, hstep,  1);
+    }
 #endif
 
-  // A single measure of the error   
-  //      TO-DO :  account for  energy,  spin, ... ? 
-  vel_mag_sq   = ( sqr(yarrout[3])+sqr(yarrout[4])+sqr(yarrout[5]) );
-  inv_vel_mag_sq = 1.0 / vel_mag_sq; 
-  dyerr_pos_sq = ( sqr(yerr_vec[0])+sqr(yerr_vec[1])+sqr(yerr_vec[2]));
-  dyerr_mom_sq = ( sqr(yerr_vec[3])+sqr(yerr_vec[4])+sqr(yerr_vec[5]));
-  dyerr_mom_rel_sq = dyerr_mom_sq * inv_vel_mag_sq;
+    G4double vel_mag_sq = magneticfield::extractValue2(yOut, magneticfield::Value3D::Momentum);
+    G4double inv_vel_mag_sq = 1.0 / vel_mag_sq;
+    G4double dyerr_pos_sq = magneticfield::extractValue2(yError, magneticfield::Value3D::Position);
+    G4double dyerr_mom_sq = magneticfield::extractValue2(yError, magneticfield::Value3D::Momentum);
+    G4double dyerr_mom_rel_sq = dyerr_mom_sq * inv_vel_mag_sq;
 
-  // Calculate also the change in the momentum squared also ???
-  // G4double veloc_square = y_posvel.GetVelocity().mag2();
-  // ...
+    dyerr = std::max(dyerr_pos_sq, dyerr_mom_rel_sq * sqr(hstep));
+    dyerr = std::sqrt(dyerr);
+/*
+    if( dyerr_pos_sq > ( dyerr_mom_rel_sq * sqr(hstep) ) ) {
+        dyerr = std::sqrt(dyerr_pos_sq);
+    } else {
+        // Scale it to the current step size - for now
+        dyerr = std::sqrt(dyerr_mom_rel_sq) * hstep;
+    }*/
 
-#ifdef RETURN_A_NEW_STEP_LENGTH
-  // The following step cannot be done here because "eps" is not known.
-  dyerr_len = std::sqrt( dyerr_len_sq ); 
-  dyerr_len_sq /= eps ;
-
-  // Look at the velocity deviation ?
-  //  sqr(yerr_vec[3])+sqr(yerr_vec[4])+sqr(yerr_vec[5]));
-
-  // Set suggested new step
-  hstep= ComputeNewStepSize( dyerr_len, hstep);
-#endif
-
-  if( dyerr_pos_sq > ( dyerr_mom_rel_sq * sqr(hstep) ) )
-  {
-    dyerr = std::sqrt(dyerr_pos_sq);
-  }
-  else
-  {
-    // Scale it to the current step size - for now
-    dyerr = std::sqrt(dyerr_mom_rel_sq) * hstep;
-  }
-
-  return true;
+    return true;
 }
 
 //  This method computes new step sizes - but does not limit changes to
