@@ -471,6 +471,78 @@ G4MagInt_Driver::WarnEndPointTooFar (G4double endPointDist,
   }
 }
 
+// Step failed; compute the size of retrial Step.
+G4double G4MagInt_Driver::ShrinkStepSize(G4double h, G4double errmax_sq) const
+{
+    G4double htemp = GetSafety() * h * std::pow(errmax_sq, 0.5 * GetPshrnk());
+    return std::max(htemp, 0.1 * h);
+}
+
+// Compute size of next Step
+G4double G4MagInt_Driver::GrowStepSize(G4double h, G4double errmax_sq) const
+{
+    if (errmax_sq > errcon * errcon) {
+        return GetSafety() * h * std::pow(errmax_sq, 0.5 * GetPgrow());
+    }
+
+    return max_stepping_increase * h;
+}
+
+G4double G4MagInt_Driver::RelativeError(
+    const G4double y[],
+    const G4double yerr[],
+    const G4double h,
+    const G4double eps_rel_max,
+    const G4int iter)
+{
+
+    G4double spin_mag2 = magneticfield::extractValue2(y, magneticfield::Value3D::Spin);
+    G4bool hasSpin = (spin_mag2 > 0);
+
+    G4double inv_eps_vel_sq = 1.0 / (eps_rel_max * eps_rel_max);
+
+    G4double errpos_sq = 0;    // square of displacement error
+    G4double errvel_sq = 0;    // square of momentum vector difference
+    G4double errspin_sq = 0;   // square of spin vector difference
+
+    G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep);
+    G4double inv_eps_pos_sq = 1.0 / (eps_pos * eps_pos);
+
+    // Evaluate accuracy
+    errpos_sq = magneticfield::extractValue2(yerr, magneticfield::Value3D::Position);
+    errpos_sq *= inv_eps_pos_sq; // Scale relative to required tolerance
+
+    // Accuracy for momentum
+    G4double magvel_sq = magneticfield::extractValue2(y, magneticfield::Value3D::Momentum);
+    G4double sumerr_sq = magneticfield::extractValue2(yerr,  magneticfield::Value3D::Momentum);
+    if (magvel_sq > 0) {
+       errvel_sq = sumerr_sq / magvel_sq;
+    } else {
+        G4cerr << "** G4MagIntegrationDriver: found case of zero momentum."
+               << " iteration=  " << iter << " h= " << h << G4endl;
+        errvel_sq = sumerr_sq;
+    }
+    errvel_sq *= inv_eps_vel_sq;
+    G4double errmax_sq = std::max(errpos_sq, errvel_sq); // Square of maximum error
+
+    if (hasSpin) {
+    // Accuracy for spin
+        errspin_sq =
+                magneticfield::extractValue2(
+                    yerr, magneticfield::Value3D::Spin) /  spin_mag2;
+        errspin_sq *= inv_eps_vel_sq;
+        errmax_sq = std::max( errmax_sq, errspin_sq );
+    }
+
+#ifdef G4FLD_STATS
+  // Sum of squares of position error // and momentum dir (underestimated)
+    fSumH_lg += h;
+    fDyerrPos_lgTot += errpos_sq;
+    fDyerrVel_lgTot += errvel_sq * h * h;
+#endif
+
+    return errmax_sq;
+}
 
 // Driver for one Runge-Kutta Step with monitoring of local truncation error
 // to ensure accuracy and adjust stepsize. Input are dependent variable
@@ -495,72 +567,27 @@ void G4MagInt_Driver::OneGoodStep(
     G4double& hnext)    // Out
 {
     G4double errmax_sq;
-    G4double h, htemp, xnew ;
+    G4double h, xnew;
 
     G4double yerr[G4FieldTrack::ncompSVEC], ytemp[G4FieldTrack::ncompSVEC];
 
-    h = htry ; // Set stepsize to the initial trial value
+    h = htry; // Set stepsize to the initial trial value
 
-    G4double inv_eps_vel_sq = 1.0 / (eps_rel_max*eps_rel_max);
-
-    G4double errpos_sq = 0.0;    // square of displacement error
-    G4double errvel_sq = 0.0;    // square of momentum vector difference
-    G4double errspin_sq = 0.0;   // square of spin vector difference
-
-    static G4ThreadLocal G4int tot_no_trials=0;
-    const G4int max_trials=100;
-
-    G4ThreeVector Spin(y[9],y[10],y[11]);
-    G4double   spin_mag2 =Spin.mag2() ;
-    G4bool     hasSpin= (spin_mag2 > 0.0);
+    static G4ThreadLocal G4int tot_no_trials = 0;
+    const G4int max_trials = 100;
 
     for (G4int iter = 0; iter < max_trials; ++iter) {
         tot_no_trials++;
 
         pIntStepper-> Stepper(y, dydx, h, ytemp, yerr);
-
-        G4double eps_pos = eps_rel_max * std::max(h, fMinimumStep);
-        G4double inv_eps_pos_sq = 1.0 / (eps_pos*eps_pos);
-
-        // Evaluate accuracy
-        errpos_sq = magneticfield::extractValue2(yerr, magneticfield::Value3D::Position);
-        errpos_sq *= inv_eps_pos_sq; // Scale relative to required tolerance
-
-        // Accuracy for momentum
-        G4double magvel_sq = magneticfield::extractValue2(y, magneticfield::Value3D::Momentum);
-        G4double sumerr_sq = magneticfield::extractValue2(yerr,  magneticfield::Value3D::Momentum);
-        if( magvel_sq > 0.0 ) {
-           errvel_sq = sumerr_sq / magvel_sq;
-        } else {
-            G4cerr << "** G4MagIntegrationDriver: found case of zero momentum."
-                   << " iteration=  " << iter << " h= " << h << G4endl;
-            errvel_sq = sumerr_sq;
-        }
-        errvel_sq *= inv_eps_vel_sq;
-        errmax_sq = std::max( errpos_sq, errvel_sq ); // Square of maximum error
-
-        if (hasSpin) {
-        // Accuracy for spin
-            errspin_sq =
-                    magneticfield::extractValue2(
-                        yerr, magneticfield::Value3D::Spin) /  spin_mag2; // ( sqr(y[9]) + sqr(y[10]) + sqr(y[11]) );
-            errspin_sq *= inv_eps_vel_sq;
-            errmax_sq = std::max( errmax_sq, errspin_sq );
-        }
+        errmax_sq = RelativeError(y, yerr, h, eps_rel_max, iter);
 
         // Step succeeded.
         if (errmax_sq <= 1) {
             break;
         }
 
-        // Step failed; compute the size of retrial Step.
-        htemp = GetSafety() * h * std::pow(errmax_sq, 0.5 * GetPshrnk());
-
-        if (htemp >= 0.1 * h) {// Truncation error too large,
-            h = htemp;
-        } else {  // reduce stepsize, but no more than a factor of 10
-            h = 0.1 * h;
-        }
+        h = ShrinkStepSize(h, errmax_sq);
 
         xnew = x + h;
         if (xnew == x) {
@@ -574,25 +601,12 @@ void G4MagInt_Driver::OneGoodStep(
         }
     }
 
-#ifdef G4FLD_STATS
-  // Sum of squares of position error // and momentum dir (underestimated)
-    fSumH_lg += h;
-    fDyerrPos_lgTot += errpos_sq;
-    fDyerrVel_lgTot += errvel_sq * h * h;
-#endif
-
-    // Compute size of next Step
-    if (errmax_sq > errcon * errcon) {
-        hnext = GetSafety()*h*std::pow(errmax_sq, 0.5*GetPgrow());
-    } else {
-        hnext = max_stepping_increase * h; // No more than a factor of 5 increase
-    }
+    hnext = GrowStepSize(h, errmax_sq);
     x += (hdid = h);
 
     for(G4int k = 0; k < fNoIntegrationVariables; ++k) {
         y[k] = ytemp[k];
     }
-
 }
 
 G4bool G4MagInt_Driver::QuickAdvance(

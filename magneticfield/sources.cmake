@@ -107,6 +107,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4IntegrationDriver.icc
         RK547FEq1.hh
         Utils.hh
+        Utils.icc
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc

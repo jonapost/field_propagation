@@ -206,6 +206,14 @@ protected:  // without description
 
 
 private:
+     G4double ShrinkStepSize(G4double h, G4double errmax_sq) const;
+     G4double GrowStepSize(G4double h, G4double errmax_sq) const;
+     G4double RelativeError(
+         const G4double y[],
+         const G4double yerr[],
+         const G4double h,
+         const G4double eps_rel_max,
+         const G4int iter);
      //  INVARIANTS 
 
      G4double  fMinimumStep;

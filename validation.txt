@@ -23,3 +23,61 @@ Number calls to field = 4298927706
 ### Event user time =   0.36 +- 0.00544 (sec) 
 ### Event real time =  0.365 +- 0.00554 (sec) 
 ### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+Make G4MagInt_Driver inherit base class
+
+run2a.mac
+
+Number calls to field = 259251794
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0288 +- 0.000563 (sec) 
+### Event real time = 0.0298 +- 0.000583 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+Number calls to field = 1216830112
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0815 +- 0.00151 (sec) 
+### Event real time = 0.0827 +- 0.00155 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+run2c.mac
+
+/NTST/getFieldStats
+Number calls to field = 4298927706
+Graphics systems deleted.
+Visualization Manager deleting...
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.371 +- 0.00567 (sec) 
+### Event real time =  0.379 +- 0.00584 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+Start refactoring OneGoodStep
+
+run2a.mac
+
+Number calls to field = 259251794
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0256 +- 0.000478 (sec) 
+### Event real time = 0.0274 +- 0.000506 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+Number calls to field = 1216830112
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0985 +- 0.0018 (sec) 
+### Event real time =  0.102 +- 0.0019 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+Number calls to field = 4298927706
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.403 +- 0.00621 (sec) 
+### Event real time =  0.408 +- 0.00633 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
