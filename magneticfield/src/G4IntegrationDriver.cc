@@ -440,7 +440,7 @@ void G4IntegrationDriver::OneGoodStep(G4double y[],             // InOut
         hstep = std::max(hstep, fMinimumStep);
         pIntStepper->Stepper(y, dydx, hstep, ytemp, yerr);
 
-        error = relativeError(y, yerr, hstep, eps_rel_max, fObserver);
+        error = relativeError(y, yerr, hstep, eps_rel_max);
 
          // Step succeeded
         if (error <= 1.0) {

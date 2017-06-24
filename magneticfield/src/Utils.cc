@@ -4,41 +4,32 @@ namespace magneticfield {
 
 G4double relativeError(
     const G4double y[],
-    const G4double yerr[],
-    const G4double hstep,
-    const G4double errorTolerance,
-    G4IntegrationObserver& observer)
+    const G4double yError[],
+    const G4double h,
+    const G4double errorTolerance)
 {
-    const G4double errorTolerance2 = sqr(errorTolerance);
-    const G4double hstep2 = sqr(hstep);
+    // Accuracy for position
+    G4double error2 = extractValue2(yError, Value3D::Position) / sqr(h);
 
-    // square of displacement error
-    G4double positionError2 =  extractValue2(yerr, Value3D::Position);
-    positionError2 /= hstep2 * errorTolerance2;
-
-    // square of momentum vector difference
+    // Accuracy for momentum
     const G4double momentum2 = extractValue2(y, Value3D::Momentum);
-    G4double momentumError2 = 0;
     if (momentum2 > 0) {
-        momentumError2 = extractValue2(yerr, Value3D::Momentum);
-        momentumError2 /= momentum2 * errorTolerance2;
+       const G4double momentumError2 =
+           extractValue2(yError,  Value3D::Momentum) / momentum2;
+       error2 = std::max(error2, momentumError2);
     } else {
-        G4Exception("G4MagInt_Driver::relativeError()", "GeomField0003",
-                    JustWarning, "momentum is zero");
+        G4Exception("G4MagInt_Driver","Field001",
+                    JustWarning, "found case of zero momentum");
     }
-
-    // square of spin vector difference
+#if 0
+    // Accuracy for spin
     const G4double spin2 = extractValue2(y, Value3D::Spin);
-    G4double spinError2 = 0;
     if (spin2 > 0) {
-        spinError2 = extractValue2(yerr, Value3D::Spin);
-        spinError2 /= spin2 * errorTolerance2;
+        const G4double spinError2 = extractValue2(yError, Value3D::Spin) / spin2;
+        error2 = std::max(error2, spinError2);
     }
-
-    observer.onRelativeError(hstep, positionError2, momentumError2 * hstep2);
-
-    // Square of maximum error
-    return sqrt(std::max({positionError2, momentumError2, spinError2}));
+#endif
+    return std::sqrt(error2) / errorTolerance;
 }
 
 } // nagneticfield

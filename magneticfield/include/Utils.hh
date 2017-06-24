@@ -31,8 +31,7 @@ G4double relativeError(
     const G4double y[],
     const G4double yerr[],
     const G4double hstep,
-    const G4double errorTolerance,
-    G4IntegrationObserver& observer);
+    const G4double errorTolerance = 1);
 
 } //magneticfield
 
