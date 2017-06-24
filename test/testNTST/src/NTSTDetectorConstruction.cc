@@ -24,13 +24,11 @@
 // ********************************************************************
 //
 
-#include <iomanip>
+#include "NTSTDetectorConstruction.hh"
 
 #include "globals.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
-#include "NTSTDetectorConstruction.hh"
-#include "NTSTDetectorMessenger.hh"
 #include "NTSTRotationMatrix.hh"
 #include "G4TransportationManager.hh"
 #include "G4FieldManager.hh"
@@ -64,7 +62,7 @@
 
 #include "G4ClassicalRK4.hh"
 #include "G4CashKarpRKF45.hh"
-#include "DormandPrince745.hh"
+#include "G4DormandPrince745.hh"
 
 #include "G4MagIntegratorDriver.hh"
 #include "G4FSALIntegrationDriver.hh"
@@ -74,12 +72,19 @@
 
 #include "RK547FEq1.hh"
 
+
+#include <iomanip>
+
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
   : _FileRead(0), debug(false), radius(19*cm), NSubLayer(0),
     disableSVT(false), disableDCH(false),
-    field( 1.5*tesla, 0, 0 ),
-    fpChordFinder( 0 ), 
-    fMinChordStep( 0.1 )  // was 0.001 *mm )
+    field(1.5*tesla, 0, 0),
+    fMinChordStep(0.1),  // was 0.001 *mm )
+    fEquation(new G4Mag_UsualEqRhs( &field)),
+    fStepper(nullptr),
+    fFSALStepper(nullptr),
+    fDriver(nullptr),
+    fChordFinder(nullptr)
 {
   _FileRead = new NTSTFileRead("SVT.dat");
 
@@ -90,9 +95,13 @@ NTSTDetectorConstruction::NTSTDetectorConstruction()
 
 NTSTDetectorConstruction::~NTSTDetectorConstruction()
 {
-  delete _FileRead;
-  delete fpChordFinder;
-  delete DetectorMessenger;
+    delete _FileRead;
+    delete fEquation;
+    delete fStepper;
+    //delete fFSALStepper;
+    delete fDriver;
+   // delete fChordFinder;
+    delete DetectorMessenger;
 }
 
 void NTSTDetectorConstruction::SetInputFileName(G4String FileName)
@@ -189,78 +198,112 @@ NTSTDetectorConstruction::PrintCorners(const G4Transform3D& theT,
 	 << std::setw(9) << u7.z() << std::setw(9) << u8.z() << G4endl;
 }
 
-
-G4VPhysicalVolume*
-NTSTDetectorConstruction::Construct()
+void NTSTDetectorConstruction::SetStepperMethod(
+    NTSTDetectorMessenger::StepperType stepperType)
 {
-  //------------------------------------------------------ field
-  G4Mag_UsualEqRhs *pEquation;
-  G4MagIntegratorStepper *pStepper;
-  G4FieldManager *globalFieldManager; 
+    switch (stepperType) {
+    case NTSTDetectorMessenger::StepperType::ClassicalRK4:
+        fStepper = new G4ClassicalRK4(fEquation);
+        break;
+    case NTSTDetectorMessenger::StepperType::CashKarp:
+        fStepper = new G4CashKarpRKF45(fEquation);
+        break;
+    case NTSTDetectorMessenger::StepperType::DormandPrince:
+        fStepper = new G4DormandPrince745(fEquation);
+        break;
+    default:
+        assert(false);
+        break;
+    }
+}
 
-  globalFieldManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+void NTSTDetectorConstruction::SetDriverMethod(
+    NTSTDetectorMessenger::DriverType driverType)
+{
+    switch (driverType) {
+    case NTSTDetectorMessenger::DriverType::G4MagInt_Driver:
+        assert(fStepper);
+        fDriver = new G4MagInt_Driver(fMinChordStep, fStepper);
+        break;
+    case NTSTDetectorMessenger::DriverType::G4FSALIntegrationDriver:
+        assert(fFSALStepper);
+        fDriver = new G4FSALIntegrationDriver(fMinChordStep, fFSALStepper);
+        break;
+    default:
+        assert(false);
+        break;
+    }
+}
+
+void NTSTDetectorConstruction::constructField()
+{
+    assert(fDriver);
+
+    G4FieldManager *globalFieldManager =
+            globalFieldManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+
+    G4PropagatorInField* globalPropagatorInField =
+            G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
+
+    G4Navigator* Navigator =
+            G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+
+    globalPropagatorInField->SetIntersectionLocator(new G4SimpleLocator(Navigator));
+
+    globalPropagatorInField->SetMaxLoopCount( 10000 );
+    G4cout
+      << "PropagatorInField parameter(s) are: " << G4endl
+      << " SetMaxLoopCount=" << globalPropagatorInField->GetMaxLoopCount()
+      << " minEpsilonStep= " << globalPropagatorInField->GetMinimumEpsilonStep() << " "
+      << " maxEpsilonStep= " << globalPropagatorInField->GetMaximumEpsilonStep() << " "
+      << G4endl;
+
+    globalFieldManager->SetDetectorField( (G4MagneticField *)&field );
+
+    // globalFieldManager->SetMinimumEpsilonStep( 5.0e-7 );    // Old value
+    // globalFieldManager->SetMaximumEpsilonStep( 0.05 );      // FIX - old value
+    // globalFieldManager->SetDeltaOneStep( 0.25 * mm );       // original value
+    // globalFieldManager->SetDeltaIntersection( 0.10 * mm );  // original value
+
+    G4cout << "Field Manager's parameters are "
+       << " minEpsilonStep= " << globalFieldManager->GetMinimumEpsilonStep() << " "
+       << " maxEpsilonStep= " << globalFieldManager->GetMaximumEpsilonStep() << " "
+       << " deltaOneStep=   " << globalFieldManager->GetDeltaOneStep() << " "
+       << " deltaIntersection= " << globalFieldManager->GetDeltaIntersection()
+       << G4endl;
+
+    //pStepper = new RK547FEq1( pEquation);
+    //pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
+    // pStepper = new DormandPrince745( pEquation );
+    // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
+    // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
+    // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
+    // pStepper= new G4HelixMixedStepper( pEquation ); G4cout << "Stepper is " << "HelixMixed" << G4endl;
+    // pStepper=  StepperFactory::CreateStepper( order );
+
+    // pStepper= new G4NystromRK4( pEquation ); G4cout << "Stepper is " << "NystromRK4" << G4endl;
+
+      // G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
+      //	 << "ClassicalRK4" << G4endl;
+      //   << " G4HelixMixedStepper " << G4endl;
+
+    // globalFieldManager->CreateChordFinder( (G4MagneticField *)&field );
+
+    //pStepper = new BSStepper(pEquation);
+    //fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field,
+      //			    fMinChordStep,
+     //                 pStepper );
+
+    fChordFinder = new G4ChordFinder(fDriver);
+
+    fChordFinder->SetVerbose(1);
+    globalFieldManager->SetChordFinder(fChordFinder);
+}
 
 
-  G4PropagatorInField *
-  globalPropagatorInField= G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
-
-  G4Navigator* Navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
-
-  globalPropagatorInField->SetIntersectionLocator(new G4SimpleLocator(Navigator));
-
-  globalPropagatorInField->SetMaxLoopCount( 10000 );
-  G4cout 
-    << "PropagatorInField parameter(s) are: " << G4endl
-    << " SetMaxLoopCount=" << globalPropagatorInField->GetMaxLoopCount()
-    << " minEpsilonStep= " << globalPropagatorInField->GetMinimumEpsilonStep() << " "
-    << " maxEpsilonStep= " << globalPropagatorInField->GetMaximumEpsilonStep() << " " 
-    << G4endl;
-
-  globalFieldManager->SetDetectorField( (G4MagneticField *)&field );
-
-  // globalFieldManager->SetMinimumEpsilonStep( 5.0e-7 );    // Old value
-  // globalFieldManager->SetMaximumEpsilonStep( 0.05 );      // FIX - old value
-  // globalFieldManager->SetDeltaOneStep( 0.25 * mm );       // original value
-  // globalFieldManager->SetDeltaIntersection( 0.10 * mm );  // original value
-
-  G4cout << "Field Manager's parameters are " 
-	 << " minEpsilonStep= " << globalFieldManager->GetMinimumEpsilonStep() << " "
-	 << " maxEpsilonStep= " << globalFieldManager->GetMaximumEpsilonStep() << " " 
-	 << " deltaOneStep=   " << globalFieldManager->GetDeltaOneStep() << " "
-	 << " deltaIntersection= " << globalFieldManager->GetDeltaIntersection() 
-	 << G4endl;
-
-  pEquation = new G4Mag_UsualEqRhs( &field); 
- 
-
-   auto stepper = new G4FSALDormandPrince745(pEquation);
-   G4VIntegrationDriver* driver = new G4FSALIntegrationDriver(fMinChordStep, stepper);
-      //pStepper = new RK547FEq1( pEquation);
-   //pStepper =  new G4ClassicalRK4( pEquation ); G4cout << "Stepper is " << "ClassicalRK4" << G4endl;
-  // pStepper = new DormandPrince745( pEquation );
-  // pStepper= new G4RKG3_Stepper( pEquation );  // Nystrom, like Geant3
-  // pStepper= new G4SimpleRunge( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
-  // pStepper= new G4CashKarpRKF45( pEquation ); G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
-  // pStepper= new G4HelixMixedStepper( pEquation ); G4cout << "Stepper is " << "HelixMixed" << G4endl;
-  // pStepper=  StepperFactory::CreateStepper( order );
-
-  // pStepper= new G4NystromRK4( pEquation ); G4cout << "Stepper is " << "NystromRK4" << G4endl;
-
-    // G4cout << "Stepper is " << "CashKarpRKF45" << G4endl;
-    //	 << "ClassicalRK4" << G4endl;
-    //   << " G4HelixMixedStepper " << G4endl;
-
-  // globalFieldManager->CreateChordFinder( (G4MagneticField *)&field );
-
-  //pStepper = new BSStepper(pEquation);
-  //fpChordFinder= new G4ChordFinder( (G4MagneticField *)&field,
-    //			    fMinChordStep,
-   //                 pStepper );
-
-  fpChordFinder = new G4ChordFinder(driver);
-
-  fpChordFinder->SetVerbose(1); 
-  globalFieldManager->SetChordFinder(fpChordFinder);
+G4VPhysicalVolume* NTSTDetectorConstruction::Construct()
+{
+    constructField();
 
   //------------------------------------------------------ materials
 

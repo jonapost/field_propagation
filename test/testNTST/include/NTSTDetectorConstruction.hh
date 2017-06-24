@@ -33,15 +33,17 @@
 // $Id: NTSTDetectorConstruction.hh 66241 2012-12-13 18:34:42Z gunter $
 //
 
-#ifndef NTSTDetectorConstruction_H
-#define NTSTDetectorConstruction_H 1
+#ifndef NTSTDetectorConstruction_HH
+#define NTSTDetectorConstruction_HH
+
 #include "G4Transform3D.hh"
 #include "globals.hh"
 #include "G4ChordFinder.hh"
+#include "G4VFSALIntegrationStepper.hh"
+#include "NTSTDetectorMessenger.hh"
 
 class NTSTFileRead;
 class G4VPhysicalVolume;
-class NTSTDetectorMessenger;
 class G4LogicalVolume;
 
 #include "G4VUserDetectorConstruction.hh"
@@ -49,8 +51,7 @@ class G4LogicalVolume;
 #include "NTSTField.hh"
 
 
-class NTSTDetectorConstruction : public G4VUserDetectorConstruction
-{
+class NTSTDetectorConstruction : public G4VUserDetectorConstruction {
 public:
     NTSTDetectorConstruction();
     ~NTSTDetectorConstruction();
@@ -61,15 +62,20 @@ public:
     void PrintCorners(const G4Transform3D&, G4LogicalVolume*);
     void DisableDetector(G4String);
     
-public:
     G4VPhysicalVolume* Construct();
     
-    void GetFieldCallStats() {
+    void GetFieldCallStats()
+    {
     	G4cout << "Number calls to field = " << field.GetCount() << G4endl;
-	field.ClearCount();
+        field.ClearCount();
     }
 
+    void SetStepperMethod(NTSTDetectorMessenger::StepperType stepperType);
+    void SetDriverMethod(NTSTDetectorMessenger::DriverType driverType);
+
 private:
+    void constructField();
+
     NTSTFileRead* _FileRead;
     G4bool debug;
     G4double radius; // outer radius of the SVT mother volume
@@ -79,8 +85,13 @@ private:
     G4bool disableDCH;
     
     NTSTField field;
-    G4ChordFinder *fpChordFinder;
     G4double  fMinChordStep;   // Minimum Step for chord
+
+    G4EquationOfMotion* fEquation;
+    G4MagIntegratorStepper* fStepper;
+    G4VFSALIntegrationStepper* fFSALStepper;
+    G4VIntegrationDriver* fDriver;
+    G4ChordFinder* fChordFinder;
 };
 
 #endif

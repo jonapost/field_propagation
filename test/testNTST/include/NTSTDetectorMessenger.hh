@@ -34,14 +34,13 @@
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-#ifndef NTSTDetectorMessenger_h
-#define NTSTDetectorMessenger_h 1
+#ifndef NTST_DETECTOR_MESSENGER_HH
+#define NTST_DETECTOR_MESSENGER_HH
 
 #include "globals.hh"
 #include "G4UImessenger.hh"
+
+#include <map>
 
 class NTSTDetectorConstruction;
 class G4UIdirectory;
@@ -50,26 +49,37 @@ class G4UIcmdWithAnInteger;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithoutParameter;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+class NTSTDetectorMessenger: public G4UImessenger {
+public:
+    enum class StepperType {
+        ClassicalRK4,
+        CashKarp,
+        DormandPrince
+    };
 
-class NTSTDetectorMessenger: public G4UImessenger
-{
-  public:
+    enum class DriverType {
+        G4MagInt_Driver,
+        G4FSALIntegrationDriver
+    };
+
     NTSTDetectorMessenger(NTSTDetectorConstruction* );
    ~NTSTDetectorMessenger();
     
     void SetNewValue(G4UIcommand*, G4String);
     
-  private:
-    NTSTDetectorConstruction*   NTSTDetector;
+private:
+    NTSTDetectorConstruction* NTSTDetector;
     
-    G4UIdirectory*             NTSTdetDir;
-    G4UIcmdWithAnInteger*      DebugCmd;
-    G4UIcmdWithAnInteger*      NSubLayer;
+    G4UIdirectory* NTSTdetDir;
+    G4UIcmdWithAnInteger* DebugCmd;
+    G4UIcmdWithAnInteger* NSubLayer;
     G4UIcmdWithADoubleAndUnit* MotherOuterRadius;
-    G4UIcmdWithAString*        InputFileNameCmd;
-    G4UIcmdWithAString*        DisableDet;
-    G4UIcmdWithoutParameter*   fieldStat;
+    G4UIcmdWithAString* InputFileNameCmd;
+    G4UIcmdWithAString* DisableDet;
+    G4UIcmdWithoutParameter* fieldStat;
+
+    G4UIcmdWithAString* StepperMethodCmd;
+    G4UIcmdWithAString* DriverMethodCmd;
 };
 
 #endif

@@ -27,9 +27,6 @@
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
 #include "NTSTDetectorMessenger.hh"
 
 #include "NTSTDetectorConstruction.hh"
@@ -39,80 +36,132 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+#include <assert.h>
 
-NTSTDetectorMessenger::NTSTDetectorMessenger(NTSTDetectorConstruction * NTSTDet)
-:NTSTDetector(NTSTDet)
-{ 
-  NTSTdetDir = new G4UIdirectory("/NTST/");
-  NTSTdetDir->SetGuidance("NTST detector control.");
+namespace {
 
-  InputFileNameCmd = new G4UIcmdWithAString("/NTST/setInputFile", this);
-  InputFileNameCmd->SetGuidance("Set input file name");
-  InputFileNameCmd->SetParameterName("File",true);
-  InputFileNameCmd->SetDefaultValue("SVT.dat");
+const std::string CLASSICAL_RK4_STEPPER_NAME = "ClassicalRK4";
+const std::string CASH_KARP_STEPPER_NAME = "CashKarp45";
+const std::string DORMAND_PRINCE_STEPPER_NAME = "DormandPrince745";
 
-  DisableDet = new G4UIcmdWithAString("/NTST/disable", this);
-  DisableDet->SetGuidance("disable detetector");
-  DisableDet->SetCandidates("none SVT DCH all");
-  DisableDet->SetDefaultValue("none");
+std::map<std::string, NTSTDetectorMessenger::StepperType> STEPPERS =
+{
+    {CLASSICAL_RK4_STEPPER_NAME, NTSTDetectorMessenger::StepperType::ClassicalRK4},
+    {CASH_KARP_STEPPER_NAME, NTSTDetectorMessenger::StepperType::CashKarp},
+    {DORMAND_PRINCE_STEPPER_NAME, NTSTDetectorMessenger::StepperType::DormandPrince}
+};
 
-  DebugCmd = new G4UIcmdWithAnInteger("/NTST/setDebug",this);
-  DebugCmd->SetGuidance("Set debug flag.");
-  DebugCmd->SetParameterName("Debug",true);
+const std::string STANDARD_DRIVER_NAME = "G4MagInt_Driver";
+const std::string FSAL_DRIVER_NAME = "FSAL";
 
-  NSubLayer = new G4UIcmdWithAnInteger("/NTST/setNSubLayer",this);
-  NSubLayer->SetGuidance("Set the number of SVT sublayers.");
-  NSubLayer->SetParameterName("NSubLay",true);
-  NSubLayer->SetDefaultValue(7);
-  NSubLayer->SetRange("NSubLay<8");
+std::map<std::string, NTSTDetectorMessenger::DriverType> DRIVERS =
+{
+    {STANDARD_DRIVER_NAME, NTSTDetectorMessenger::DriverType::G4MagInt_Driver},
+    {FSAL_DRIVER_NAME, NTSTDetectorMessenger::DriverType::G4FSALIntegrationDriver}
+};
 
-#if 0
-  MinimumDriverStep
-      = new G4UIcmdWithADoubleAndUnit("/NTST/setOuterRadius",this);
-  MinimumDriverStep->SetGuidance("Set Minimum Step for ");
-  MinimumDriverStep->SetParameterName("MinimumStep",false,false);
-  MinimumDriverStep->SetDefaultValue(0.1);
-  MinimumDriverStep->SetDefaultUnit("mm");
-  MinimumDriverStep->SetRange("Radius>0.");
-#endif
-  
-  MotherOuterRadius
-      = new G4UIcmdWithADoubleAndUnit("/NTST/setOuterRadius",this);
-  MotherOuterRadius->SetGuidance("Set outer radius of the SVT mother volume");
-  MotherOuterRadius->SetParameterName("Radius",false,false);
-  MotherOuterRadius->SetDefaultValue(19.);
-  MotherOuterRadius->SetDefaultUnit("cm");
-  MotherOuterRadius->SetRange("Radius>0.");
-  
-  fieldStat = new G4UIcmdWithoutParameter("/NTST/getFieldStats",this);
-  fieldStat->SetGuidance( "Return number calls to field routine" );
+template <class KeyValueContainer>
+const typename KeyValueContainer::mapped_type& safeAt(
+    const KeyValueContainer& container,
+    const typename KeyValueContainer::key_type& key)
+{
+    const auto it = container.find(key);
+    assert(it != container.end());
+    return it->second;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+} // namespace
+
+
+NTSTDetectorMessenger::NTSTDetectorMessenger(NTSTDetectorConstruction * NTSTDet):
+    NTSTDetector(NTSTDet)
+{ 
+    NTSTdetDir = new G4UIdirectory("/NTST/");
+    NTSTdetDir->SetGuidance("NTST detector control.");
+
+    InputFileNameCmd = new G4UIcmdWithAString("/NTST/setInputFile", this);
+    InputFileNameCmd->SetGuidance("Set input file name");
+    InputFileNameCmd->SetParameterName("File",true);
+    InputFileNameCmd->SetDefaultValue("SVT.dat");
+
+    DisableDet = new G4UIcmdWithAString("/NTST/disable", this);
+    DisableDet->SetGuidance("disable detetector");
+    DisableDet->SetCandidates("none SVT DCH all");
+    DisableDet->SetDefaultValue("none");
+
+    DebugCmd = new G4UIcmdWithAnInteger("/NTST/setDebug",this);
+    DebugCmd->SetGuidance("Set debug flag.");
+    DebugCmd->SetParameterName("Debug",true);
+
+    NSubLayer = new G4UIcmdWithAnInteger("/NTST/setNSubLayer",this);
+    NSubLayer->SetGuidance("Set the number of SVT sublayers.");
+    NSubLayer->SetParameterName("NSubLay",true);
+    NSubLayer->SetDefaultValue(7);
+    NSubLayer->SetRange("NSubLay<8");
+
+#if 0
+    MinimumDriverStep
+        = new G4UIcmdWithADoubleAndUnit("/NTST/setOuterRadius",this);
+    MinimumDriverStep->SetGuidance("Set Minimum Step for ");
+    MinimumDriverStep->SetParameterName("MinimumStep",false,false);
+    MinimumDriverStep->SetDefaultValue(0.1);
+    MinimumDriverStep->SetDefaultUnit("mm");
+    MinimumDriverStep->SetRange("Radius>0.");
+#endif
+  
+    MotherOuterRadius = new G4UIcmdWithADoubleAndUnit("/NTST/setOuterRadius",this);
+    MotherOuterRadius->SetGuidance("Set outer radius of the SVT mother volume");
+    MotherOuterRadius->SetParameterName("Radius",false,false);
+    MotherOuterRadius->SetDefaultValue(19.);
+    MotherOuterRadius->SetDefaultUnit("cm");
+    MotherOuterRadius->SetRange("Radius>0.");
+  
+    fieldStat = new G4UIcmdWithoutParameter("/NTST/getFieldStats",this);
+    fieldStat->SetGuidance( "Return number calls to field routine" );
+
+    StepperMethodCmd = new G4UIcmdWithAString("/NTST/stepper", this);
+    StepperMethodCmd->SetGuidance("ClassicalRK4");
+
+    DriverMethodCmd = new G4UIcmdWithAString("/NTST/driver" ,this);
+    DriverMethodCmd->SetGuidance("G4MagInt_Driver, G4FSALIntegrationDriver");
+
+
+}
 
 NTSTDetectorMessenger::~NTSTDetectorMessenger()
 {
-  delete DebugCmd; delete MotherOuterRadius;
-  delete NTSTdetDir;
+    delete DebugCmd;
+    delete MotherOuterRadius;
+    delete StepperMethodCmd;
+    delete DriverMethodCmd;
+    delete NTSTdetDir;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-void NTSTDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
+void NTSTDetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 { 
-  if( command == DebugCmd )
-   { NTSTDetector->SetDebugCmd(DebugCmd->GetNewIntValue(newValue));}
+    if (command == DebugCmd) {
+        NTSTDetector->SetDebugCmd(DebugCmd->GetNewIntValue(newValue));
+    }
    
-  if( command == MotherOuterRadius )
-   { NTSTDetector->
-         SetOuterRadius(MotherOuterRadius->GetNewDoubleValue(newValue));}
+    if (command == MotherOuterRadius) {
+        NTSTDetector->SetOuterRadius(
+                MotherOuterRadius->GetNewDoubleValue(newValue));
+    }
 
-  if( command == NSubLayer )
-   { NTSTDetector->
-         SetNSubLayer(NSubLayer->GetNewIntValue(newValue));}
+    if (command == NSubLayer) {
+        NTSTDetector->SetNSubLayer(
+                NSubLayer->GetNewIntValue(newValue));
+    }
 
-  if (command == fieldStat) NTSTDetector->GetFieldCallStats();
+    if (command == fieldStat) {
+        NTSTDetector->GetFieldCallStats();
+    }
+
+    if (command == StepperMethodCmd) {
+        NTSTDetector->SetStepperMethod(safeAt(STEPPERS, newValue));
+    }
+
+    if (command == DriverMethodCmd) {
+        NTSTDetector->SetDriverMethod(safeAt(DRIVERS, newValue));
+    }
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

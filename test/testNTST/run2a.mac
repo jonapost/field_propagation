@@ -7,6 +7,9 @@
 /control/verbose 2
 /control/saveHistory
 /NTST/setDebug 0
+
+/NTST/stepper ClassicalRK4
+/NTST/driver G4MagInt_Driver
 #
 /run/verbose 0
 /event/verbose 0

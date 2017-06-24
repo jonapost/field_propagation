@@ -64,9 +64,9 @@ const G4int  G4FSALIntegrationDriver::fMaxStepBase = 100000;  // Was 5000, was 2
 #define G4FLD_STATS  1
 #endif
 
-#ifndef G4DEBUG_FIELD
-#define G4DEBUG_FIELD 1
-#endif
+//#ifndef G4DEBUG_FIELD
+//#define G4DEBUG_FIELD 1
+//#endif
 
 
 G4FSALIntegrationDriver::G4FSALIntegrationDriver(
