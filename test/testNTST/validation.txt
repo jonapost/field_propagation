@@ -1,0 +1,24 @@
+run2a, ClassicalRK4
+
+NEW Integration dirver: 
+
+/NTST/getFieldStats
+Number calls to field = 259326648
+Graphics systems deleted.
+Visualization Manager deleting...
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0269 +- 0.000511 (sec) 
+### Event real time = 0.0285 +- 0.000564 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+OLD Integration driver: 
+
+/NTST/getFieldStats
+Number calls to field = 259326648
+Graphics systems deleted.
+Visualization Manager deleting...
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0263 +- 0.000496 (sec) 
+### Event real time = 0.0268 +- 0.000498 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167

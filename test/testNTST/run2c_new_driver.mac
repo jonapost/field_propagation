@@ -9,7 +9,7 @@
 /NTST/setDebug 0
 
 /NTST/stepper ClassicalRK4
-/NTST/driver G4MagInt_Driver
+/NTST/driver G4IntegrationDriver 
 #
 /run/verbose 0
 /event/verbose 0
