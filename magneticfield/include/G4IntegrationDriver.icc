@@ -4,22 +4,20 @@
 #include "G4FieldTrack.hh"
 #include "Utils.hh"
 
-#include <assert.h>
+#include <cassert>
 
 
 template <class T>
-G4MagInt_Driver<T>::G4MagInt_Driver(
+G4IntegrationDriver<T>::G4IntegrationDriver (
     G4double hminimum,
     T* pStepper,
     G4int numComponents,
     G4int statisticsVerbose)
-  : fSmallestFraction(1e-12),
-    fStatisticsVerboseLevel(statisticsVerbose),
-    fNoTotalSteps(0),
-    fNoBadSteps(0),
-    fNoSmallSteps(0),
-    fNoInitialSmallSteps(0),
-    fVerboseLevel(0)
+    : fSmallestFraction(1e-12),
+      fVerboseLevel(statisticsVerbose),
+      fNoTotalSteps(0),
+      fNoBadSteps(0),
+      fNoGoodSteps(0)
 {
     assert(numComponents == pStepper->GetNumberOfVariables());
     RenewStepperAndAdjust(pStepper);
@@ -33,126 +31,82 @@ G4MagInt_Driver<T>::G4MagInt_Driver(
 // interval. RightHandSide is the right-hand side of ODE system.
 // The source is similar to odeint routine from NRC p.721-722 .
 template <class T>
-G4bool G4MagInt_Driver<T>::AccurateAdvance(
+G4bool G4IntegrationDriver<T>::AccurateAdvance(
     G4FieldTrack& track,
     G4double hstep,
     G4double eps,
     G4double hinitial)
 {
-    G4bool succeeded = true;
+    G4bool succeeded = false;
     if (hstep == 0) {
         std::ostringstream message;
         message << "Proposed step is zero; hstep = " << hstep << " !";
-        G4Exception("G4MagInt_Driver::AccurateAdvance()",
+        G4Exception("G4IntegrationDriver ::AccurateAdvance()",
                   "GeomField1001", JustWarning, message);
-        return succeeded;
+        return true;
     }
     if (hstep < 0) {
         std::ostringstream message;
         message << "Invalid run condition." << G4endl
                 << "Proposed step is negative; hstep = " << hstep << "." << G4endl
                 << "Requested step cannot be negative! Aborting event.";
-        G4Exception("G4MagInt_Driver::AccurateAdvance()",
+        G4Exception("G4IntegrationDriver ::AccurateAdvance()",
                     "GeomField0003", EventMustBeAborted, message);
-        return false;
+        return succeeded;
     }
 
-    G4int nstp, no_warnings = 0;
     G4double hnext, hdid;
 
 
     G4double y[G4FieldTrack::ncompSVEC], dydx[G4FieldTrack::ncompSVEC];
-    G4bool lastStepSucceeded;
-
-    G4int  noFullIntegr = 0, noSmallIntegr = 0;
-    static G4ThreadLocal G4int noGoodSteps = 0;  // Bad = chord > curve-len
 
     track.DumpToArray(y);
 
-    G4double startCurveLength = track.GetCurveLength();
-    G4double x1 = startCurveLength;
-    G4double x2 = x1 + hstep;
-    G4double x = x1;
+    // hstep somtimes is too small. No need to add large curveLength.
+    G4double curveLength = 0;
+    G4double endCurveLength = hstep;
+
 
     G4double h = hstep;
     if (hinitial > perMillion * hstep && hinitial < hstep) {
         h = hinitial;
     }
 
-    G4bool lastStep = false;
-    nstp = 1;
-
-    do {
-        G4ThreeVector StartPos(y[0], y[1], y[2]);
+    for (G4int iter = 0; iter < fMaxNoSteps; ++iter) {
+        const G4ThreeVector StartPos =
+                magneticfield::makeVector(y, magneticfield::Value3D::Position);
 
         pIntStepper->ComputeRightHandSide(y, dydx);
-        ++fNoTotalSteps;
 
-        // Perform the Integration
-        if (h > fMinimumStep) {
-            OneGoodStep(y, dydx, x, h, eps, hdid, hnext);
-            lastStepSucceeded = (hdid == h);
+        if (/*restCurveLength > eps*/h > eps) {
+            OneGoodStep(y, dydx, curveLength, h, eps, hdid, hnext);
         } else {
             G4double yError[G4FieldTrack::ncompSVEC];
             pIntStepper->Stepper(y, dydx, h, y, yError);
             G4double dyerr = magneticfield::relativeError(y, yError, h, eps);
             hdid = h;
-            x += hdid;
+            curveLength += hdid;
             hnext = ComputeNewStepSize(dyerr, h);
-            lastStepSucceeded = (dyerr <= 1);
         }
 
-        lastStepSucceeded ? ++noFullIntegr : ++noSmallIntegr;
+        const G4ThreeVector EndPos =
+                magneticfield::makeVector(y, magneticfield::Value3D::Position);
 
-        G4ThreeVector EndPos(y[0], y[1], y[2]);
+        CheckStep(EndPos, StartPos, hdid);
 
-        // Check the endpoint
-        G4double endPointDist = (EndPos-StartPos).mag();
-        if (endPointDist >= hdid * (1. + perMillion)) {
-            ++fNoBadSteps;
-
-            // Issue a warning only for gross differences -
-            // we understand how small difference occur.
-            if (endPointDist >= hdid * (1. + perThousand)){
-               ++no_warnings;
-            }
-        } else {
-           ++noGoodSteps;
+        G4double restCurveLength = endCurveLength - curveLength;
+        if (restCurveLength < eps) {
+            succeeded = true;
+            break;
         }
 
-        //  Avoid numerous small last steps
-        if ( (h < eps * hstep) || (h < fSmallestFraction * startCurveLength) ) {
-            // No more integration -- the next step will not happen
-            lastStep = true;
-        } else {
-            h = std::max(hnext, fMinimumStep);
-
-            //  Ensure that the next step does not overshoot
-            if (x + h > x2) {                // When stepsize overshoots, decrease it!
-                h = x2 - x;   // Must cope with difficult rounding-error
-            }                // issues if hstep << x2
-
-            if (h == 0) {
-                // Cannot progress - accept this as last step - by default
-                lastStep = true;
-            }
-        }
-    } while ( ((nstp++) <= fMaxNoSteps) && (x < x2) && (!lastStep) );
-  // Loop checking, 07.10.2016, J. Apostolakis
-
-     // Have we reached the end ?
-     // --> a better test might be x-x2 > an_epsilon
-
-    succeeded = (x >= x2);  // If it was a "forced" last step
+        h = std::min(hnext, restCurveLength);
+    }
 
 
-    // Put back the values.
-    track.LoadFromArray(y, pIntStepper->GetNumberOfVariables());
-    track.SetCurveLength(x);
-
-    if (nstp > fMaxNoSteps) {
-        ++no_warnings;
-        succeeded = false;
+    if (succeeded) {
+        track.LoadFromArray(y, pIntStepper->GetNumberOfVariables());
+        track.SetCurveLength(track.GetCurveLength() + hstep);
     }
 
     return succeeded;
@@ -160,7 +114,7 @@ G4bool G4MagInt_Driver<T>::AccurateAdvance(
 
 // Step failed; compute the size of retrial Step.
 template <class T>
-G4double G4MagInt_Driver<T>::ShrinkStepSize(G4double h, G4double error) const
+G4double G4IntegrationDriver<T>::ShrinkStepSize(G4double h, G4double error) const
 {
     G4double htemp = GetSafety() * h * std::pow(error, GetPshrnk());
     return std::max(htemp, max_stepping_decrease * h);
@@ -168,7 +122,7 @@ G4double G4MagInt_Driver<T>::ShrinkStepSize(G4double h, G4double error) const
 
 // Compute size of next Step
 template<class T>
-G4double G4MagInt_Driver<T>::GrowStepSize(G4double h, G4double error) const
+G4double G4IntegrationDriver<T>::GrowStepSize(G4double h, G4double error) const
 {
     if (error > errcon) {
         return GetSafety() * h * std::pow(error, GetPgrow());
@@ -189,7 +143,7 @@ G4double G4MagInt_Driver<T>::GrowStepSize(G4double h, G4double error) const
 // Vetterling, and Brian P. Flannery (Cambridge University Press 1992),
 // 16.2 Adaptive StepSize Control for Runge-Kutta, p. 719
 template <class T>
-void G4MagInt_Driver<T>::OneGoodStep(
+void G4IntegrationDriver<T>::OneGoodStep(
     G4double y[],
     const G4double dydx[],
     G4double& curveLength,   // InOut
@@ -211,7 +165,7 @@ void G4MagInt_Driver<T>::OneGoodStep(
     for (G4int iter = 0; iter < max_trials; ++iter) {
         ++tot_no_trials;
 
-        pIntStepper-> Stepper(y, dydx, hstep, ytemp, yerror);
+        pIntStepper->Stepper(y, dydx, hstep, ytemp, yerror);
         error = magneticfield::relativeError(y, yerror, hstep, eps_rel_max);
 
         // Step succeeded.
@@ -231,7 +185,7 @@ void G4MagInt_Driver<T>::OneGoodStep(
 }
 
 template <class T>
-G4bool G4MagInt_Driver<T>::QuickAdvance(
+G4bool G4IntegrationDriver<T>::QuickAdvance(
     G4FieldTrack& fieldTrack,
     const G4double dydx[],
     G4double hstep,
@@ -246,23 +200,21 @@ G4bool G4MagInt_Driver<T>::QuickAdvance(
     ++no_call;
 
     fieldTrack.DumpToArray(yIn);
-    G4double s_start = fieldTrack.GetCurveLength();
+    const G4double s_start = fieldTrack.GetCurveLength();
 
     pIntStepper->Stepper(yIn, dydx, hstep, yOut, yError);
     dchord_step = pIntStepper->DistChord();
 
-    // Put back the values.  yarrout ==> y_posvel
     fieldTrack.LoadFromArray(yOut, pIntStepper->GetNumberOfVariables());
     fieldTrack.SetCurveLength(s_start + hstep);
 
-
-    dyerr = magneticfield::relativeError(yOut, yError, hstep);
+    dyerr = magneticfield::relativeError(yOut, yError, hstep) * hstep;
 
     return true;
 }
 
 template <class T>
-G4double G4MagInt_Driver<T>::ComputeNewStepSize(
+G4double G4IntegrationDriver<T>::ComputeNewStepSize(
     G4double  errMaxNorm,    // max error  (normalised)
     G4double  hstepCurrent)  // current step size
 {
@@ -272,14 +224,16 @@ G4double G4MagInt_Driver<T>::ComputeNewStepSize(
         return GrowStepSize(hstepCurrent, errMaxNorm);
     }
 
-    // if error estimate is negative (dubious)
+    G4Exception("G4IntegrationDriver::ConputeNewStepSize", "Field002",
+            JustWarning, "error is negative");
+
     return max_stepping_increase * hstepCurrent;
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetSmallestFraction(G4double newFraction)
+void G4IntegrationDriver<T>::SetSmallestFraction(G4double newFraction)
 {
-    if( (newFraction > 1.e-16) && (newFraction < 1e-8) ) {
+    if( newFraction > 1.e-16 && newFraction < 1e-8 ) {
         fSmallestFraction = newFraction;
     } else {
         G4cerr << "Warning: SmallestFraction not changed. " << G4endl
@@ -289,60 +243,78 @@ void G4MagInt_Driver<T>::SetSmallestFraction(G4double newFraction)
 }
 
 template <class T>
-void G4MagInt_Driver<T>::GetDerivatives(
-    const G4FieldTrack& track,
-    G4double dydx[]) const
+void G4IntegrationDriver<T>::GetDerivatives(
+    const G4FieldTrack& track, G4double dydx[]) const
 {
-    G4double  y[G4FieldTrack::ncompSVEC];
+    G4double y[G4FieldTrack::ncompSVEC];
     track.DumpToArray(y);
-    pIntStepper -> RightHandSide(y, dydx);
+    pIntStepper->RightHandSide(y, dydx);
 }
 
 template <class T>
-inline G4double G4MagInt_Driver<T>::GetMinimumStep() const
+void G4IntegrationDriver<T>::CheckStep(
+    const G4ThreeVector& posIn, const G4ThreeVector& posOut, G4double hdid)
+{
+    ++fNoTotalSteps;
+
+    const G4double endPointDist = (posOut - posIn).mag();
+    if (endPointDist >= hdid * (1. + perMillion)) {
+        ++fNoBadSteps;
+        // Issue a warning only for gross differences -
+        // we understand how small difference occur.
+        if (endPointDist >= hdid * (1. + perThousand)){
+            G4cout << "WARNING: endPointDist >= hdid!" << G4endl;
+        }
+    } else {
+       ++fNoGoodSteps;
+    }
+}
+
+template <class T>
+inline G4double G4IntegrationDriver<T>::GetMinimumStep() const
 {
     return fMinimumStep;
 } 
 
 template <class T>
-inline G4double G4MagInt_Driver<T>::GetSafety() const
+inline G4double G4IntegrationDriver<T>::GetSafety() const
 {
     return safety;
 }
 
 template <class T>
-inline G4double G4MagInt_Driver<T>::GetPshrnk() const
+inline G4double G4IntegrationDriver<T>::GetPshrnk() const
 {
     return pshrnk;
 } 
 
 template <class T>
-G4double G4MagInt_Driver<T>::GetPgrow() const
+G4double G4IntegrationDriver<T>::GetPgrow() const
 {
     return pgrow;
 }
  
 template <class T>
-G4double G4MagInt_Driver<T>::GetErrcon() const
+G4double G4IntegrationDriver<T>::GetErrcon() const
 {
     return errcon;
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetMinimumStep(G4double minimumStepLength)
+void G4IntegrationDriver<T>::SetMinimumStep(G4double minimumStepLength)
 {
     fMinimumStep = minimumStepLength;
 } 
 
 template <class T>
-G4double G4MagInt_Driver<T>::ComputeAndSetErrcon()
+G4double G4IntegrationDriver<T>::ComputeAndSetErrcon()
 {
     errcon = std::pow(max_stepping_increase / GetSafety(), 1.0 / GetPgrow());
     return errcon;
 } 
 
 template <class T>
-void G4MagInt_Driver<T>::ReSetParameters(G4double new_safety)
+void G4IntegrationDriver<T>::ReSetParameters(G4double new_safety)
 {
     safety = new_safety;
     pshrnk = -1.0 / pIntStepper->IntegratorOrder();
@@ -351,82 +323,82 @@ void G4MagInt_Driver<T>::ReSetParameters(G4double new_safety)
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetSafety(G4double val)
+void G4IntegrationDriver<T>::SetSafety(G4double val)
 { 
     safety = val;
     ComputeAndSetErrcon();
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetPgrow(G4double  val)
+void G4IntegrationDriver<T>::SetPgrow(G4double  val)
 { 
     pgrow = val;
     ComputeAndSetErrcon();
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetErrcon(G4double val)
+void G4IntegrationDriver<T>::SetErrcon(G4double val)
 { 
     errcon = val;
 }
 
 template <class T>
-void G4MagInt_Driver<T>::RenewStepperAndAdjust(G4MagIntegratorStepper* pItsStepper)
+void G4IntegrationDriver<T>::RenewStepperAndAdjust(T* pItsStepper)
 {  
       pIntStepper = pItsStepper; 
       ReSetParameters();
 }
 
 template <class T>
-const T* G4MagInt_Driver<T>::GetStepper() const
+const T* G4IntegrationDriver<T>::GetStepper() const
 {
     return pIntStepper;
 }
 
 template <class T>
-T* G4MagInt_Driver<T>::GetStepper()
+T* G4IntegrationDriver<T>::GetStepper()
 {
     return pIntStepper;
 }
 
 template <class T>
-G4int G4MagInt_Driver<T>::GetMaxNoSteps() const
+G4int G4IntegrationDriver<T>::GetMaxNoSteps() const
 {
     return fMaxNoSteps;
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetMaxNoSteps(G4int val)
+void G4IntegrationDriver<T>::SetMaxNoSteps(G4int val)
 {
     fMaxNoSteps = val;
 }
 
 template <class T>
-G4int G4MagInt_Driver<T>::GetVerboseLevel() const
+G4int G4IntegrationDriver<T>::GetVerboseLevel() const
 {
     return fVerboseLevel;
 } 
 
 template <class T>
-void G4MagInt_Driver<T>::SetVerboseLevel(G4int newLevel)
+void G4IntegrationDriver<T>::SetVerboseLevel(G4int newLevel)
 {
     fVerboseLevel = newLevel;
 }
 
 template <class T>
-G4double G4MagInt_Driver<T>::GetSmallestFraction() const
+G4double G4IntegrationDriver<T>::GetSmallestFraction() const
 {
     return fSmallestFraction;
 } 
 
 template <class T>
-G4EquationOfMotion* G4MagInt_Driver<T>::GetEquationOfMotion()
+G4EquationOfMotion* G4IntegrationDriver<T>::GetEquationOfMotion()
 {
     return pIntStepper->GetEquationOfMotion();
 }
 
 template <class T>
-void G4MagInt_Driver<T>::SetEquationOfMotion(G4EquationOfMotion* equation)
+void G4IntegrationDriver<T>::SetEquationOfMotion(G4EquationOfMotion* equation)
 {
     pIntStepper->SetEquationOfMotion(equation);
 }

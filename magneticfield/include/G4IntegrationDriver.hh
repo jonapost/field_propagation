@@ -1,22 +1,21 @@
-#ifndef G4MAGINT_DRIVER_HH
-#define G4MAGINT_DRIVER_HH
+#ifndef G4IntegrationDriver_HH
+#define G4IntegrationDriver_HH
 
 #include "G4Types.hh"
 #include "G4FieldTrack.hh"
 #include "G4VIntegrationDriver.hh"
-#include "G4MagIntegratorStepper.hh"
 
 template <class T>
-class G4MagInt_Driver: public G4VIntegrationDriver {
+class G4IntegrationDriver : public G4VIntegrationDriver {
 public:
-    G4MagInt_Driver(
+    G4IntegrationDriver(
         G4double hminimum,
         T* stepper,
         G4int numberOfComponents = 6,
         G4int statisticsVerbosity = 1);
 
-    G4MagInt_Driver(const G4MagInt_Driver&) = delete;
-    const G4MagInt_Driver& operator =(const G4MagInt_Driver&) = delete;
+    G4IntegrationDriver(const G4IntegrationDriver &) = delete;
+    const G4IntegrationDriver& operator =(const G4IntegrationDriver &) = delete;
 
     // Integrates ODE from current s (s=s0) to s=s0+h with accuracy eps.
     // On output track is replaced by value at end of interval.
@@ -24,15 +23,14 @@ public:
     virtual G4bool AccurateAdvance(
         G4FieldTrack& track,
         G4double hstep,
-        G4double eps,            // Requested y_err/hstep
+        G4double eps,                     // Requested y_err/hstep
         G4double hinitial = 0) override;  // Suggested 1st interval
-
 
     // QuickAdvance just tries one Step - it does not ensure accuracy.
     virtual G4bool QuickAdvance(
-        G4FieldTrack& fieldTrack,      // INOUT
+        G4FieldTrack& fieldTrack,
         const G4double dydx[],
-        G4double hstep,       // IN
+        G4double hstep,
         G4double& dchord_step,
         G4double& dyerr) override;
 
@@ -45,7 +43,7 @@ public:
     // Do not limit the next step's size within a factor of the
     // current one.
     virtual G4double ComputeNewStepSize(
-        G4double errMaxNorm,    // normalised error
+        G4double errMaxNorm,             // normalised error
         G4double hstepCurrent) override; // current step size
 
     virtual void SetVerboseLevel(G4int newLevel) override;
@@ -61,24 +59,24 @@ public:
     G4double GetPgrow() const;
     G4double GetErrcon() const;
 
+    // Sets a new stepper pItsStepper for this driver. Then it calls
+    // ReSetParameters to reset its parameters accordingly.
+    void RenewStepperAndAdjust(T *pItsStepper);
+
+    //  i) sets the exponents (pgrow & pshrnk),
+    //     using the current Stepper's order,
+    // ii) sets the safety
+    // ii) calculates "errcon" according to the above values.
+    void ReSetParameters(G4double safety = 0.9 );
 
 
-    void RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper);
-        // Sets a new stepper pItsStepper for this driver. Then it calls
-        // ReSetParameters to reset its parameters accordingly.
-
-    void ReSetParameters(G4double new_safety= 0.9 );
-        //  i) sets the exponents (pgrow & pshrnk), 
-        //     using the current Stepper's order, 
-        // ii) sets the safety
-        // ii) calculates "errcon" according to the above values.
-
+    // When setting safety or pgrow, errcon will be set to a
+    // compatible value.
+    void SetMinimumStep(G4double newval);
     void SetSafety(G4double valS);
     void SetPshrnk(G4double valPs);
-    void SetPgrow (G4double valPg);
+    void SetPgrow(G4double valPg);
     void SetErrcon(G4double valEc);
-        // When setting safety or pgrow, errcon will be set to a 
-        // compatible value.
 
     G4double ComputeAndSetErrcon();
 
@@ -93,25 +91,25 @@ public:
         const G4double dydx[],
         G4double& curveLength,
         G4double htry,
-        G4double eps,      //  memb variables ?
+        G4double eps,
         G4double& hdid,
         G4double& hnext);
 
-
+     // Modify and Get the Maximum number of Steps that can be
+     // taken for the integration of a single segment -
+     // (ie a single call to AccurateAdvance).
      G4int GetMaxNoSteps() const;
      void SetMaxNoSteps( G4int val);
-        //  Modify and Get the Maximum number of Steps that can be
-        //   taken for the integration of a single segment -
-        //   (ie a single call to AccurateAdvance).
-
-     void SetMinimumStep(G4double newval);
 
      G4double GetSmallestFraction() const;
-     void     SetSmallestFraction( G4double val ); 
+     void SetSmallestFraction(G4double val);
 
 private:
      G4double ShrinkStepSize(G4double h, G4double error) const;
      G4double GrowStepSize(G4double h, G4double error) const;
+
+     void CheckStep(
+         const G4ThreeVector& posIn, const G4ThreeVector& posOut, G4double hdid);
 
      // Minimum Step allowed in a Step (in absolute units)
      G4double  fMinimumStep;
@@ -137,18 +135,15 @@ private:
      static constexpr G4double max_stepping_increase = 5;
      static constexpr G4double max_stepping_decrease = 0.1;
 
-     G4int    fStatisticsVerboseLevel;
-
      T* pIntStepper;
 
      // Step Statistics
-     unsigned long fNoTotalSteps, fNoBadSteps, fNoSmallSteps, fNoInitialSmallSteps;
-     unsigned long fNoCalls; 
+     unsigned long fNoTotalSteps, fNoBadSteps, fNoGoodSteps;
 
      G4int  fVerboseLevel;   // Verbosity level for printing (debug, ..)
         // Could be varied during tracking - to help identify issues
 };
 
-#include "G4MagIntegratorDriver.icc"
+#include "G4IntegrationDriver.icc"
 
-#endif /* G4MagInt_Driver_Def */
+#endif /* G4IntegrationDriver _Def */
