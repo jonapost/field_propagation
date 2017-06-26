@@ -139,7 +139,6 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4FieldTrack.cc
         G4FSALBogackiShampine45.cc
         G4FSALDormandPrince745.cc
-        G4FSALIntegrationDriver.cc
         G4VFSALIntegrationStepper.cc
         G4HarmonicPolMagField.cc
         G4HelixExplicitEuler.cc
@@ -171,7 +170,6 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformGravityField.cc
         G4UniformMagField.cc
         G4IntegrationObserver.cc
-        G4IntegrationDriver.cc
         RK547FEq1.cc
         Utils.cc
     GRANULAR_DEPENDENCIES

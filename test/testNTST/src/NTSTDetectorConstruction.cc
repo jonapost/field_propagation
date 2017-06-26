@@ -73,7 +73,6 @@
 
 #include "RK547FEq1.hh"
 
-
 #include <iomanip>
 
 NTSTDetectorConstruction::NTSTDetectorConstruction() 
@@ -82,8 +81,6 @@ NTSTDetectorConstruction::NTSTDetectorConstruction()
     field(1.5*tesla, 0, 0),
     fMinChordStep(0.1),  // was 0.001 *mm )
     fEquation(new G4Mag_UsualEqRhs( &field)),
-    fStepper(nullptr),
-    fFSALStepper(nullptr),
     fDriver(nullptr),
     fChordFinder(nullptr)
 {
@@ -98,8 +95,6 @@ NTSTDetectorConstruction::~NTSTDetectorConstruction()
 {
     delete _FileRead;
     delete fEquation;
-    delete fStepper;
-    //delete fFSALStepper;
     delete fDriver;
    // delete fChordFinder;
     delete DetectorMessenger;
@@ -200,39 +195,25 @@ NTSTDetectorConstruction::PrintCorners(const G4Transform3D& theT,
 }
 
 void NTSTDetectorConstruction::SetStepperMethod(
-    NTSTDetectorMessenger::StepperType stepperType)
+    NTSTDetectorMessenger::StepperType type)
 {
-    switch (stepperType) {
-    case NTSTDetectorMessenger::StepperType::ClassicalRK4:
-        fStepper = new G4ClassicalRK4(fEquation);
-        break;
-    case NTSTDetectorMessenger::StepperType::CashKarp:
-        fStepper = new G4CashKarpRKF45(fEquation);
-        break;
-    case NTSTDetectorMessenger::StepperType::DormandPrince:
-        fStepper = new G4DormandPrince745(fEquation);
-        break;
-    default:
-        assert(false);
-        break;
-    }
+    stepperType = type;
 }
 
 void NTSTDetectorConstruction::SetDriverMethod(
     NTSTDetectorMessenger::DriverType driverType)
 {
+    RK547FEq1* stepper = new RK547FEq1(fEquation);
     switch (driverType) {
     case NTSTDetectorMessenger::DriverType::G4MagInt_Driver:
-        assert(fStepper);
-        fDriver = new G4MagInt_Driver(fMinChordStep, fStepper);
+        fDriver = new G4MagInt_Driver(fMinChordStep, stepper);
         break;
     case NTSTDetectorMessenger::DriverType::G4IntegrationDriver:
-        assert(fStepper);
-        fDriver = new G4IntegrationDriver(fMinChordStep, fStepper);
+        fDriver = new G4IntegrationDriver<RK547FEq1>(fMinChordStep, stepper);
         break;
     case NTSTDetectorMessenger::DriverType::G4FSALIntegrationDriver:
-        assert(fFSALStepper);
-        fDriver = new G4FSALIntegrationDriver(fMinChordStep, fFSALStepper);
+        //assert(fFSALStepper);
+        fDriver = new G4FSALIntegrationDriver<RK547FEq1>(fMinChordStep, stepper);
         break;
     default:
         assert(false);

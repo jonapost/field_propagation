@@ -15,8 +15,6 @@
 #include "G4LineSection.hh"
 #include "Utils.hh"
 
-#define FSAL
-
 using namespace magneticfield;
 
 namespace {
@@ -25,28 +23,6 @@ void copyArray(G4double dst[], const G4double src[]) {
     memcpy(dst, src, sizeof(G4double) * G4FieldTrack::ncompSVEC);
 }
 
-#ifdef FSAL
-G4double diffArray(const G4double array1[], const G4double array2[], G4double hstep)
-{
-/*
-    G4double diff = 0;
-    for (G4int i = 0; i < G4FieldTrack::ncompSVEC; ++i) {
-        diff = std::max(diff, std::abs(array1[i] - array2[i]));
-    }
-    return diff;
-*/
-    const auto pos1 = makeVector(array1, Value3D::Position);
-    const auto pos2 = makeVector(array2, Value3D::Position);
-    const G4double errorPos = (pos1 - pos2).mag() / hstep;
-
-    const auto mom1 = makeVector(array1, Value3D::Momentum);
-    const auto mom2 = makeVector(array2, Value3D::Momentum);
-    const G4double errorMom = (mom1 - mom2).mag() / mom1.mag();
-
-    return std::max(errorPos, errorMom);
-}
-#endif
-
 } // namespace
 
 RK547FEq1::RK547FEq1(G4EquationOfMotion *EqRhs, G4int integrationVariables)
@@ -54,12 +30,13 @@ RK547FEq1::RK547FEq1(G4EquationOfMotion *EqRhs, G4int integrationVariables)
 {
 }
 
-void RK547FEq1::makeStep(const G4double yInput[],
-                         const G4double dydx[],
-                         const G4double hstep,
-                         G4double yOutput[],
-                         G4double* dydxOutput,
-                         G4double* yError) const
+void RK547FEq1::makeStep(
+    const G4double yInput[],
+    const G4double dydx[],
+    const G4double hstep,
+    G4double yOutput[],
+    G4double* dydxOutput,
+    G4double* yError) const
 {
     G4double yTemp[G4FieldTrack::ncompSVEC];
     for (int i = GetNumberOfVariables(); i < GetNumberOfStateVariables(); ++i){
@@ -132,32 +109,38 @@ void RK547FEq1::makeStep(const G4double yInput[],
     }
 }
 
-void RK547FEq1::Stepper(const G4double yInput[],
-                        const G4double dydx[],
-                        G4double hstep,
-                        G4double yOutput[],
-                        G4double yError[])
+void RK547FEq1::Stepper(
+    const G4double yInput[],
+    const G4double dydx[],
+    G4double hstep,
+    G4double yOutput[],
+    G4double yError[])
 {
     copyArray(yIn_, yInput);
     copyArray(dydx_, dydx);
     hstep_ = hstep;
 
-    makeStep(yInput, dydx, hstep, yOutput, dydxOut_, yError);
+    makeStep(yIn_, dydx_, hstep_, yOut_, dydxOut_, yError);
 
-    copyArray(yOut_, yOutput);
+    copyArray(yOutput, yOut_);
 }
 
-void RK547FEq1::ComputeRightHandSide(const G4double y[], G4double dydx[])
+void RK547FEq1::Stepper(
+    const G4double yInput[],
+    const G4double dydx[],
+    G4double hstep,
+    G4double yOutput[],
+    G4double yError[],
+    G4double dydxOutput[])
 {
-#ifdef FSAL
-    if (diffArray(y, yOut_, hstep_) < 1e-12) {
-        copyArray(dydx, dydxOut_);
-    } else {
-        G4MagIntegratorStepper::ComputeRightHandSide(y, dydx);
-    }
-#else
-    G4MagIntegratorStepper::ComputeRightHandSide(y, dydx);
-#endif
+    copyArray(yIn_, yInput);
+    copyArray(dydx_, dydx);
+    hstep_ = hstep;
+
+    makeStep(yIn_, dydx_, hstep_, yOut_, dydxOut_, yError);
+
+    copyArray(yOutput, yOut_);
+    copyArray(dydxOutput, dydxOut_);
 }
 
 G4double RK547FEq1::DistChord() const

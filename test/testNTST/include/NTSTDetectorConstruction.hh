@@ -87,9 +87,8 @@ private:
     NTSTField field;
     G4double  fMinChordStep;   // Minimum Step for chord
 
+    NTSTDetectorMessenger::StepperType stepperType;
     G4EquationOfMotion* fEquation;
-    G4MagIntegratorStepper* fStepper;
-    G4VFSALIntegrationStepper* fFSALStepper;
     G4VIntegrationDriver* fDriver;
     G4ChordFinder* fChordFinder;
 };

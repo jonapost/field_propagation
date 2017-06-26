@@ -76,7 +76,7 @@ G4bool G4IntegrationDriver<T>::AccurateAdvance(
         const G4ThreeVector StartPos =
                 magneticfield::makeVector(y, magneticfield::Value3D::Position);
 
-        pIntStepper->ComputeRightHandSide(y, dydx);
+        pIntStepper->/*Compute*/RightHandSide(y, dydx);
 
         if (/*restCurveLength > eps*/h > eps) {
             OneGoodStep(y, dydx, curveLength, h, eps, hdid, hnext);
