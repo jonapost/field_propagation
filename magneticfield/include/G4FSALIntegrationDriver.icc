@@ -19,7 +19,12 @@ G4FSALIntegrationDriver<T>::G4FSALIntegrationDriver (
       fNoBadSteps(0),
       fNoGoodSteps(0)
 {
-    assert(numComponents == pStepper->GetNumberOfVariables());
+    if (numComponents != pStepper->GetNumberOfVariables()) {
+        std::ostringstream message;
+        message << "Driver's number of integrated components " << numComponents
+           << " != Stepper's number of components " << pStepper->GetNumberOfVariables();
+        G4Exception("G4IntegrationDriver","001", FatalException, message);
+    }
     RenewStepperAndAdjust(pStepper);
     fMinimumStep = hminimum;
     fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();
@@ -78,7 +83,7 @@ G4bool G4FSALIntegrationDriver<T>::AccurateAdvance(
         const G4ThreeVector StartPos =
                 magneticfield::makeVector(y, magneticfield::Value3D::Position);
 
-        if (/*restCurveLength > eps*/h > eps) {
+        if (h > GetMinimumStep()) {
             OneGoodStep(y, dydx, curveLength, h, eps, hdid, hnext);
         } else {
             G4double yError[G4FieldTrack::ncompSVEC];
@@ -95,7 +100,7 @@ G4bool G4FSALIntegrationDriver<T>::AccurateAdvance(
         CheckStep(EndPos, StartPos, hdid);
 
         G4double restCurveLength = endCurveLength - curveLength;
-        if (restCurveLength < eps) {
+        if (restCurveLength < GetSmallestFraction() * hstep) {
             succeeded = true;
             break;
         }
@@ -106,7 +111,7 @@ G4bool G4FSALIntegrationDriver<T>::AccurateAdvance(
 
     if (succeeded) {
         track.LoadFromArray(y, pIntStepper->GetNumberOfVariables());
-        track.SetCurveLength(track.GetCurveLength() + hstep);
+        track.SetCurveLength(track.GetCurveLength() + curveLength);
     }
 
     return succeeded;
@@ -116,18 +121,20 @@ G4bool G4FSALIntegrationDriver<T>::AccurateAdvance(
 template <class T>
 G4double G4FSALIntegrationDriver<T>::ShrinkStepSize(G4double h, G4double error) const
 {
-    G4double htemp = GetSafety() * h * std::pow(error, GetPshrnk());
-    return std::max(htemp, max_stepping_decrease * h);
+    if (error > errorConstraintShrink) {
+        return max_stepping_decrease * h;
+    }
+    return GetSafety() * h * std::pow(error, GetPshrnk());
 }
 
 // Compute size of next Step
 template<class T>
 G4double G4FSALIntegrationDriver<T>::GrowStepSize(G4double h, G4double error) const
 {
-    if (error > errcon) {
-        return GetSafety() * h * std::pow(error, GetPgrow());
+    if (error < errorConstraintGrow) {
+        return max_stepping_increase * h;
     }
-    return max_stepping_increase * h;
+    return GetSafety() * h * std::pow(error, GetPgrow());
 }
 
 // Driver for one Runge-Kutta Step with monitoring of local truncation error
@@ -190,26 +197,27 @@ void G4FSALIntegrationDriver<T>::OneGoodStep(
 template <class T>
 G4bool G4FSALIntegrationDriver<T>::QuickAdvance(
     G4FieldTrack& fieldTrack,
-    const G4double dydx[],
+    const G4double dydxIn[],
     G4double hstep,
     G4double& dchord_step,
     G4double& dyerr)
 {
-    G4double yError[G4FieldTrack::ncompSVEC],
-             yIn[G4FieldTrack::ncompSVEC],
-             yOut[G4FieldTrack::ncompSVEC];
 
     static G4ThreadLocal G4int no_call = 0;
     ++no_call;
 
-    fieldTrack.DumpToArray(yIn);
-    const G4double s_start = fieldTrack.GetCurveLength();
+    G4double yError[G4FieldTrack::ncompSVEC],
+             yIn[G4FieldTrack::ncompSVEC],
+             yOut[G4FieldTrack::ncompSVEC],
+             dydxOut[G4FieldTrack::ncompSVEC];
 
-    pIntStepper->Stepper(yIn, dydx, hstep, yOut, yError);
+    fieldTrack.DumpToArray(yIn);
+
+    pIntStepper->Stepper(yIn, dydxIn, hstep, yOut, yError, dydxOut);
     dchord_step = pIntStepper->DistChord();
 
     fieldTrack.LoadFromArray(yOut, pIntStepper->GetNumberOfVariables());
-    fieldTrack.SetCurveLength(s_start + hstep);
+    fieldTrack.SetCurveLength(fieldTrack.GetCurveLength() + hstep);
 
     dyerr = magneticfield::relativeError(yOut, yError, hstep) * hstep;
 
@@ -228,7 +236,7 @@ G4double G4FSALIntegrationDriver<T>::ComputeNewStepSize(
     }
 
     G4Exception("G4FSALIntegrationDriver::ConputeNewStepSize", "Field002",
-            JustWarning, "error is negative");
+            FatalException, "error is negative");
 
     return max_stepping_increase * hstepCurrent;
 }
@@ -274,6 +282,16 @@ void G4FSALIntegrationDriver<T>::CheckStep(
 }
 
 template <class T>
+void G4IntegrationDriver<T>::UpdateErrorConstraints()
+{
+    errorConstraintShrink = std::pow(
+            max_stepping_decrease / GetSafety(), 1. / GetPshrnk());
+
+    errorConstraintGrow = std::pow(
+            max_stepping_increase / GetSafety(), 1. / GetPgrow());
+}
+
+template <class T>
 inline G4double G4FSALIntegrationDriver<T>::GetMinimumStep() const
 {
     return fMinimumStep;
@@ -296,12 +314,6 @@ G4double G4FSALIntegrationDriver<T>::GetPgrow() const
 {
     return pgrow;
 }
- 
-template <class T>
-G4double G4FSALIntegrationDriver<T>::GetErrcon() const
-{
-    return errcon;
-}
 
 template <class T>
 void G4FSALIntegrationDriver<T>::SetMinimumStep(G4double minimumStepLength)
@@ -310,45 +322,25 @@ void G4FSALIntegrationDriver<T>::SetMinimumStep(G4double minimumStepLength)
 } 
 
 template <class T>
-G4double G4FSALIntegrationDriver<T>::ComputeAndSetErrcon()
-{
-    errcon = std::pow(max_stepping_increase / GetSafety(), 1.0 / GetPgrow());
-    return errcon;
-} 
-
-template <class T>
 void G4FSALIntegrationDriver<T>::ReSetParameters(G4double new_safety)
 {
     safety = new_safety;
     pshrnk = -1.0 / pIntStepper->IntegratorOrder();
     pgrow  = -1.0 / (1.0 + pIntStepper->IntegratorOrder());
-    ComputeAndSetErrcon();
+    UpdateErrorConstraints();
 }
 
 template <class T>
 void G4FSALIntegrationDriver<T>::SetSafety(G4double val)
 { 
     safety = val;
-    ComputeAndSetErrcon();
+    UpdateErrorConstraints();
 }
 
 template <class T>
-void G4FSALIntegrationDriver<T>::SetPgrow(G4double  val)
-{ 
-    pgrow = val;
-    ComputeAndSetErrcon();
-}
-
-template <class T>
-void G4FSALIntegrationDriver<T>::SetErrcon(G4double val)
-{ 
-    errcon = val;
-}
-
-template <class T>
-void G4FSALIntegrationDriver<T>::RenewStepperAndAdjust(T* pItsStepper)
+void G4FSALIntegrationDriver<T>::RenewStepperAndAdjust(T* stepper)
 {  
-      pIntStepper = pItsStepper; 
+      pIntStepper = stepper;
       ReSetParameters();
 }
 

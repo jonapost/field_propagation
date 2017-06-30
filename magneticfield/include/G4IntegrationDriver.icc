@@ -208,7 +208,7 @@ G4bool G4IntegrationDriver<T>::QuickAdvance(
     dchord_step = pIntStepper->DistChord();
 
     fieldTrack.LoadFromArray(yOut, pIntStepper->GetNumberOfVariables());
-    fieldTrack.SetCurveLength( fieldTrack.GetCurveLength() + hstep);
+    fieldTrack.SetCurveLength(fieldTrack.GetCurveLength() + hstep);
 
     dyerr = magneticfield::relativeError(yOut, yError, hstep) * hstep;
 

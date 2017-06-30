@@ -57,7 +57,6 @@ public:
     G4double GetSafety() const;
     G4double GetPshrnk() const;
     G4double GetPgrow() const;
-    G4double GetErrcon() const;
 
     // Sets a new stepper pItsStepper for this driver. Then it calls
     // ReSetParameters to reset its parameters accordingly.
@@ -66,19 +65,11 @@ public:
     //  i) sets the exponents (pgrow & pshrnk),
     //     using the current Stepper's order,
     // ii) sets the safety
-    // ii) calculates "errcon" according to the above values.
     void ReSetParameters(G4double safety = 0.9 );
 
 
-    // When setting safety or pgrow, errcon will be set to a
-    // compatible value.
     void SetMinimumStep(G4double newval);
     void SetSafety(G4double valS);
-    void SetPshrnk(G4double valPs);
-    void SetPgrow(G4double valPg);
-    void SetErrcon(G4double valEc);
-
-    G4double ComputeAndSetErrcon();
 
     const T* GetStepper() const;
     T* GetStepper();
@@ -107,6 +98,7 @@ public:
 private:
      G4double ShrinkStepSize(G4double h, G4double error) const;
      G4double GrowStepSize(G4double h, G4double error) const;
+     void UpdateErrorConstraints();
 
      void CheckStep(
          const G4ThreeVector& posIn, const G4ThreeVector& posOut, G4double hdid);
@@ -129,7 +121,10 @@ private:
      G4double safety;
      G4double pshrnk;   //  exponent for shrinking
      G4double pgrow;    //  exponent for growth
-     G4double errcon;
+
+     // muximum error values for shrinking / growing (optimisation).
+     G4double errorConstraintShrink;
+     G4double errorConstraintGrow;
 
      // Maximum stepsize increase/decrease factors.
      static constexpr G4double max_stepping_increase = 5;
@@ -146,4 +141,4 @@ private:
 
 #include "G4FSALIntegrationDriver.icc"
 
-#endif /* G4FSALIntegrationDriver _Def */
+#endif
