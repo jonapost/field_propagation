@@ -282,7 +282,7 @@ void G4FSALIntegrationDriver<T>::CheckStep(
 }
 
 template <class T>
-void G4IntegrationDriver<T>::UpdateErrorConstraints()
+void G4FSALIntegrationDriver<T>::UpdateErrorConstraints()
 {
     errorConstraintShrink = std::pow(
             max_stepping_decrease / GetSafety(), 1. / GetPshrnk());
