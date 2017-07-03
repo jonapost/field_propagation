@@ -106,6 +106,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4IntegrationDriver.hh
         G4IntegrationDriver.icc
         RK547FEq1.hh
+        RK547FEq2.hh
+        RK547FEq3.hh
         Utils.hh
         Utils.icc
     SOURCES
@@ -171,6 +173,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformMagField.cc
         G4IntegrationObserver.cc
         RK547FEq1.cc
+        RK547FEq2.cc
+        RK547FEq3.cc
         Utils.cc
     GRANULAR_DEPENDENCIES
         G4globman
