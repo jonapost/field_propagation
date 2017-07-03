@@ -25,7 +25,7 @@ void copyArray(G4double dst[], const G4double src[]) {
 
 } // namespace
 
-RK547FEq1::RK547FEq1(G4EquationOfMotion *EqRhs, G4int integrationVariables)
+RK547FEq1::RK547FEq1(G4EquationOfMotion* EqRhs, G4int integrationVariables)
    : G4MagIntegratorStepper(EqRhs, integrationVariables)
 {
 }
@@ -54,10 +54,8 @@ void RK547FEq1::makeStep(
         b31 = 1./12., b32 = 1./4.,
         b41 = 1./8., b42 = 0., b43 = 3./8.,
         b51 = 91./500., b52 = -27./100., b53 = 78./125., b54 = 8./125.,
-
         b61 = -11./20., b62 = 27./20., b63 = 12./5.,
             b64 = -36./5., b65 = 5.,
-
         b71 = 1./12.,    b72 = 0., b73 = 27./32.,
              b74 = -4./3., b75 = 125./96., b76 = 5./48.;
 
@@ -116,13 +114,13 @@ void RK547FEq1::Stepper(
     G4double yOutput[],
     G4double yError[])
 {
-    copyArray(yIn_, yInput);
-    copyArray(dydx_, dydx);
-    hstep_ = hstep;
+    copyArray(fyIn, yInput);
+    copyArray(fdydx, dydx);
+    fhstep = hstep;
 
-    makeStep(yIn_, dydx_, hstep_, yOut_, dydxOut_, yError);
+    makeStep(fyIn, fdydx, fhstep, fyOut, fdydxOut, yError);
 
-    copyArray(yOutput, yOut_);
+    copyArray(yOutput, fyOut);
 }
 
 void RK547FEq1::Stepper(
@@ -133,24 +131,24 @@ void RK547FEq1::Stepper(
     G4double yError[],
     G4double dydxOutput[])
 {
-    copyArray(yIn_, yInput);
-    copyArray(dydx_, dydx);
-    hstep_ = hstep;
+    copyArray(fyIn, yInput);
+    copyArray(fdydx, dydx);
+    fhstep = hstep;
 
-    makeStep(yIn_, dydx_, hstep_, yOut_, dydxOut_, yError);
+    makeStep(fyIn,fdydx, fhstep, fyOut, fdydxOut, yError);
 
-    copyArray(yOutput, yOut_);
-    copyArray(dydxOutput, dydxOut_);
+    copyArray(yOutput, fyOut);
+    copyArray(dydxOutput, fdydxOut);
 }
 
 G4double RK547FEq1::DistChord() const
 {
     G4double yMid[G4FieldTrack::ncompSVEC];
-    makeStep(yIn_, dydx_, hstep_ / 2., yMid);
+    makeStep(fyIn, fdydx, fhstep / 2., yMid);
 
-    const G4ThreeVector begin = makeVector(yIn_, Value3D::Position);
+    const G4ThreeVector begin = makeVector(fyIn, Value3D::Position);
     const G4ThreeVector mid = makeVector(yMid, Value3D::Position);
-    const G4ThreeVector end = makeVector(yOut_, Value3D::Position);
+    const G4ThreeVector end = makeVector(fyOut, Value3D::Position);
 
     return G4LineSection::Distline(mid, begin, end);
 }
