@@ -15,7 +15,8 @@ public:
         G4double yOutput[],
         G4double yError[]) override;
 
-    void Stepper(const G4double yInput[],
+    void Stepper(
+        const G4double yInput[],
         const G4double dydx[],
         G4double hstep,
         G4double yOutput[],

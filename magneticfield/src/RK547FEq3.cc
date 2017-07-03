@@ -19,7 +19,8 @@ using namespace magneticfield;
 
 namespace {
 
-void copyArray(G4double dst[], const G4double src[]) {
+void copyArray(G4double dst[], const G4double src[])
+{
     memcpy(dst, src, sizeof(G4double) * G4FieldTrack::ncompSVEC);
 }
 
