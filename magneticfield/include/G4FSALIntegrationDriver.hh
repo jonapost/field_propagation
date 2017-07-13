@@ -14,6 +14,8 @@ public:
         G4int numberOfComponents = 6,
         G4int statisticsVerbosity = 1);
 
+    virtual ~G4FSALIntegrationDriver() override;
+
     G4FSALIntegrationDriver(const G4FSALIntegrationDriver &) = delete;
     const G4FSALIntegrationDriver& operator =(const G4FSALIntegrationDriver &) = delete;
 
@@ -65,7 +67,7 @@ public:
     //  i) sets the exponents (pgrow & pshrnk),
     //     using the current Stepper's order,
     // ii) sets the safety
-    void ReSetParameters(G4double safety = 0.9 );
+    void ReSetParameters(G4double safety = 0.9);
 
 
     void SetMinimumStep(G4double newval);
@@ -137,6 +139,8 @@ private:
 
      G4int  fVerboseLevel;   // Verbosity level for printing (debug, ..)
         // Could be varied during tracking - to help identify issues
+
+     G4int fNoQuickAvanceCalls;
 };
 
 #include "G4FSALIntegrationDriver.icc"

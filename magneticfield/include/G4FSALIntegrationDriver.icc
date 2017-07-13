@@ -17,7 +17,8 @@ G4FSALIntegrationDriver<T>::G4FSALIntegrationDriver (
       fVerboseLevel(statisticsVerbose),
       fNoTotalSteps(0),
       fNoBadSteps(0),
-      fNoGoodSteps(0)
+      fNoGoodSteps(0),
+      fNoQuickAvanceCalls(0)
 {
     if (numComponents != pStepper->GetNumberOfVariables()) {
         std::ostringstream message;
@@ -28,6 +29,13 @@ G4FSALIntegrationDriver<T>::G4FSALIntegrationDriver (
     RenewStepperAndAdjust(pStepper);
     fMinimumStep = hminimum;
     fMaxNoSteps = fMaxStepBase / pIntStepper->IntegratorOrder();
+}
+
+template <class T>
+G4FSALIntegrationDriver<T>::~G4FSALIntegrationDriver()
+{
+    G4cout << "#QuickAdvance " << fNoQuickAvanceCalls
+           << " #AccurateAdvance " << fNoTotalSteps << G4endl;
 }
 
 // Runge-Kutta driver with adaptive stepsize control. Integrate starting
@@ -42,23 +50,14 @@ G4bool G4FSALIntegrationDriver<T>::AccurateAdvance(
     G4double eps,
     G4double hinitial)
 {
+    if (hstep < GetMinimumStep()) {
+        G4double dchord_step = 0, dyerr = 0;
+        G4double dydx[G4FieldTrack::ncompSVEC];
+        GetDerivatives(track, dydx);
+        return QuickAdvance(track, dydx, hstep, dchord_step, dyerr);
+    }
+
     G4bool succeeded = false;
-    if (hstep == 0) {
-        std::ostringstream message;
-        message << "Proposed step is zero; hstep = " << hstep << " !";
-        G4Exception("G4FSALIntegrationDriver ::AccurateAdvance()",
-                  "GeomField1001", JustWarning, message);
-        return true;
-    }
-    if (hstep < 0) {
-        std::ostringstream message;
-        message << "Invalid run condition." << G4endl
-                << "Proposed step is negative; hstep = " << hstep << "." << G4endl
-                << "Requested step cannot be negative! Aborting event.";
-        G4Exception("G4FSALIntegrationDriver ::AccurateAdvance()",
-                    "GeomField0003", EventMustBeAborted, message);
-        return succeeded;
-    }
 
     G4double hnext, hdid;
 
@@ -81,21 +80,12 @@ G4bool G4FSALIntegrationDriver<T>::AccurateAdvance(
 
     for (G4int iter = 0; iter < fMaxNoSteps; ++iter) {
         const G4ThreeVector StartPos =
-                magneticfield::makeVector(y, magneticfield::Value3D::Position);
+            magneticfield::makeVector(y, magneticfield::Value3D::Position);
 
-        if (h > GetMinimumStep()) {
-            OneGoodStep(y, dydx, curveLength, h, eps, hdid, hnext);
-        } else {
-            G4double yError[G4FieldTrack::ncompSVEC];
-            pIntStepper->Stepper(y, dydx, h, y, yError, dydx);
-            G4double dyerr = magneticfield::relativeError(y, yError, h, eps);
-            hdid = h;
-            curveLength += hdid;
-            hnext = ComputeNewStepSize(dyerr, h);
-        }
+        OneGoodStep(y, dydx, curveLength, h, eps, hdid, hnext);
 
         const G4ThreeVector EndPos =
-                magneticfield::makeVector(y, magneticfield::Value3D::Position);
+            magneticfield::makeVector(y, magneticfield::Value3D::Position);
 
         CheckStep(EndPos, StartPos, hdid);
 
@@ -159,7 +149,7 @@ void G4FSALIntegrationDriver<T>::OneGoodStep(
     G4double& hdid,          // Out
     G4double& hnext)         // Out
 {
-    G4double error;
+    G4double error = DBL_MAX;
 
     G4double yError[G4FieldTrack::ncompSVEC],
              yOut[G4FieldTrack::ncompSVEC],
@@ -202,9 +192,24 @@ G4bool G4FSALIntegrationDriver<T>::QuickAdvance(
     G4double& dchord_step,
     G4double& dyerr)
 {
+    ++fNoQuickAvanceCalls;
 
-    static G4ThreadLocal G4int no_call = 0;
-    ++no_call;
+    if (hstep == 0) {
+        std::ostringstream message;
+        message << "Proposed step is zero; hstep = " << hstep << " !";
+        G4Exception("G4IntegrationDriver ::QuickAdvance()",
+                  "GeomField1001", JustWarning, message);
+        return true;
+    }
+    if (hstep < 0) {
+        std::ostringstream message;
+        message << "Invalid run condition." << G4endl
+                << "Proposed step is negative; hstep = " << hstep << "." << G4endl
+                << "Requested step cannot be negative! Aborting event.";
+        G4Exception("G4IntegrationDriver ::QuickAdvance()",
+                    "GeomField0003", EventMustBeAborted, message);
+        return false;
+    }
 
     G4double yError[G4FieldTrack::ncompSVEC],
              yIn[G4FieldTrack::ncompSVEC],
