@@ -1,0 +1,170 @@
+FSALBogackiShampine45
+
+run2a.mac
+
+/NTST/getFieldStats
+Number calls to field = 256955477
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0317 +- 0.000582 (sec) 
+### Event real time = 0.0347 +- 0.000642 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+/NTST/getFieldStats
+Number calls to field = 771930292
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0799 +- 0.00138 (sec) 
+### Event real time = 0.0838 +- 0.00144 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+/NTST/getFieldStats
+Number calls to field = 2225668803
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.342 +- 0.00535 (sec) 
+### Event real time =   0.36 +- 0.0057 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+FSALDormandPrince
+
+run2a.mac
+
+/NTST/getFieldStats
+Number calls to field = 237269835
+### Event user time = 0.0382 +- 0.000705 (sec) 
+### Event real time = 0.0412 +- 0.000782 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+/NTST/getFieldStats
+Number calls to field = 839033299
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.102 +- 0.00174 (sec) 
+### Event real time =  0.109 +- 0.00191 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+/NTST/getFieldStats
+Number calls to field = 2846443753
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.439 +- 0.00708 (sec) 
+### Event real time =   0.47 +- 0.00784 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+RK547FEq1
+
+run2a.mac
+
+/NTST/getFieldStats
+Number calls to field = 214351636
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0263 +- 0.000522 (sec) 
+### Event real time = 0.0279 +- 0.000568 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+/NTST/getFieldStats
+Number calls to field = 760877297
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0717 +- 0.00127 (sec) 
+### Event real time = 0.0746 +- 0.00138 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+Number calls to field = 2333895699
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.333 +- 0.0052 (sec) 
+### Event real time =  0.346 +- 0.00549 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+G4CashCarp
+
+run2a.mac
+
+/NTST/getFieldStats
+Number calls to field = 188723395
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0259 +- 0.000475 (sec) 
+### Event real time = 0.0271 +- 0.000505 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+Number calls to field = 638019165
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0815 +- 0.00147 (sec) 
+### Event real time = 0.0849 +- 0.00155 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+Number calls to field = 2004737589
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.307 +- 0.00517 (sec) 
+### Event real time =  0.313 +- 0.00537 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+BogackiShampine45
+
+run2a.mac
+
+/vis~/show/view
+/NTST/getFieldStats
+Number calls to field = 256977983
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0361 +- 0.000703 (sec) 
+### Event real time = 0.0404 +- 0.000915 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+/NTST/getFieldStats
+Number calls to field = 773339677
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.103 +- 0.00186 (sec) 
+### Event real time =  0.126 +- 0.00243 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+Number calls to field = 2243733731
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.331 +- 0.00581 (sec) 
+### Event real time =  0.357 +- 0.00708 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+DormandPrince
+
+run2a.mac
+
+Number calls to field = 178346145
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0394 +- 0.000686 (sec) 
+### Event real time =  0.055 +- 0.000972 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2b.mac
+
+/NTST/getFieldStats
+Number calls to field = 635085252
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.106 +- 0.00201 (sec) 
+### Event real time =  0.126 +- 0.00263 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+Number calls to field = 2058103677
+### Processed number of events for all runs: 1e+03
+### Event user time =  0.351 +- 0.00619 (sec) 
+### Event real time =  0.374 +- 0.0074 (sec) 
+

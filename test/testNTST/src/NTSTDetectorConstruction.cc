@@ -52,6 +52,8 @@
 #include "G4RKG3_Stepper.hh"
 #include "G4HelixMixedStepper.hh"
 #include "G4NystromRK4.hh"
+#include "G4BogackiShampine45.hh"
+#include "G4DormandPrince745.hh"
 
 #include "G4DELPHIMagField.hh"
 #include "G4PropagatorInField.hh"
@@ -68,10 +70,13 @@
 #include "G4FSALIntegrationDriver.hh"
 #include "G4IntegrationDriver.hh"
 #include "G4FSALDormandPrince745.hh"
+#include "G4FSALBogackiShampine45.hh"
 
 #include "G4SimpleLocator.hh"
 
 #include "RK547FEq1.hh"
+#include "RK547FEq2.hh"
+#include "RK547FEq3.hh"
 
 #include <iomanip>
 
@@ -95,8 +100,8 @@ NTSTDetectorConstruction::~NTSTDetectorConstruction()
 {
     delete _FileRead;
     delete fEquation;
-    delete fDriver;
-   // delete fChordFinder;
+    //delete fDriver;
+    delete fChordFinder;
     delete DetectorMessenger;
 }
 
@@ -202,7 +207,7 @@ void NTSTDetectorConstruction::SetStepperMethod(
 
 void NTSTDetectorConstruction::SetDriverMethod(
     NTSTDetectorMessenger::DriverType driverType)
-{
+{/*
     RK547FEq1* stepper = new RK547FEq1(fEquation);
     switch (driverType) {
     case NTSTDetectorMessenger::DriverType::G4MagInt_Driver:
@@ -218,7 +223,10 @@ void NTSTDetectorConstruction::SetDriverMethod(
     default:
         assert(false);
         break;
-    }
+    }*/
+    //fDriver = new G4IntegrationDriver<G4ClassicalRK4>(fMinChordStep, new G4ClassicalRK4(fEquation));
+    fDriver = new G4IntegrationDriver<G4DormandPrince745>(
+            fMinChordStep, new G4DormandPrince745(fEquation));
 }
 
 void NTSTDetectorConstruction::constructField()

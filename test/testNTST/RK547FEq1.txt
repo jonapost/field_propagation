@@ -1,0 +1,38 @@
+Run2a.mac
+
+/NTST/getFieldStats
+Number calls to field = 217686114
+#QuickAdvance 16015463 #AccurateAdvance 3647558
+G4ChordFinder statistics report: 
+  No trials: 15450072  No Calls: 15337787  Max-trial: 7
+  Parameters:   fFirstFraction 0.999  fFractionLast 1  fFractionNextEstimate 0.98
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0233 +- 0.000438 (sec) 
+### Event real time = 0.0251 +- 0.000485 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+
+run2b.mac
+
+/NTST/getFieldStats
+Number calls to field = 780247592
+#QuickAdvance 48084338 #AccurateAdvance 28569313
+G4ChordFinder statistics report: 
+  No trials: 46839051  No Calls: 46366996  Max-trial: 7
+  Parameters:   fFirstFraction 0.999  fFractionLast 1  fFractionNextEstimate 0.98
+### Processed number of events for all runs: 1e+03
+### Event user time = 0.0608 +- 0.00106 (sec) 
+### Event real time = 0.0633 +- 0.0011 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
+
+run2c.mac
+
+Number calls to field = 2405482710
+#QuickAdvance 134827156 #AccurateAdvance 112994864
+G4ChordFinder statistics report: 
+  No trials: 133071292  No Calls: 125474522  Max-trial: 9
+  Parameters:   fFirstFraction 0.999  fFractionLast 1  fFractionNextEstimate 0.98
+### Processed number of events for all runs: 1e+03
+### Event user time =   0.31 +- 0.00494 (sec) 
+### Event real time =  0.321 +- 0.00521 (sec) 
+### Number of Vertices =   23.8 +-  0.167 Number of Tracks =   23.8 +-  0.167
