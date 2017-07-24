@@ -36,7 +36,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4ChargeState.hh
         G4ChordFinder.hh
         G4ChordFinder.icc
-        G4ChordFinderSaf.hh
+        #G4ChordFinderSaf.hh
         G4ClassicalRK4.hh
         G4ConstRK4.hh
         G4DELPHIMagField.hh
@@ -101,8 +101,14 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformElectricField.hh
         G4UniformGravityField.hh
         G4UniformMagField.hh
+        G4VIntegrationDriver.hh
+        G4IntegrationDriver.hh
+        G4IntegrationDriver.icc
         RK547FEq1.hh
+        RK547FEq2.hh
+        RK547FEq3.hh
         Utils.hh
+        Utils.icc
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
@@ -110,7 +116,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4CashKarpRKF45.cc
         G4ChargeState.cc
         G4ChordFinder.cc
-        G4ChordFinderSaf.cc
+        #G4ChordFinderSaf.cc
         G4ClassicalRK4.cc
         G4ConstRK4.cc
         G4DELPHIMagField.cc
@@ -134,7 +140,6 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4FieldTrack.cc
         G4FSALBogackiShampine45.cc
         G4FSALDormandPrince745.cc
-        G4FSALIntegrationDriver.cc
         G4VFSALIntegrationStepper.cc
         G4HarmonicPolMagField.cc
         G4HelixExplicitEuler.cc
@@ -166,6 +171,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4UniformGravityField.cc
         G4UniformMagField.cc
         RK547FEq1.cc
+        RK547FEq2.cc
+        RK547FEq3.cc
         Utils.cc
     GRANULAR_DEPENDENCIES
         G4globman

@@ -33,6 +33,7 @@
 #include <iomanip>
 
 #include "G4ChordFinder.hh"
+#include "G4MagIntegratorDriver.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4MagneticField.hh"
 #include "G4Mag_UsualEqRhs.hh"
@@ -44,8 +45,8 @@
 
 // ..........................................................................
 
-G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
-  : fDefaultDeltaChord( 0.25 * mm ),      // Parameters
+G4ChordFinder::G4ChordFinder(G4VIntegrationDriver* pIntegrationDriver):
+    fDefaultDeltaChord( 0.25 * mm ),      // Parameters
     fDeltaChord( fDefaultDeltaChord ),    //   Internal parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 
     fMultipleRadius(15.0), 
@@ -68,9 +69,9 @@ G4ChordFinder::G4ChordFinder(G4MagInt_Driver* pIntegrationDriver)
 
 // ..........................................................................
 
-G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
-                              G4double                stepMinimum, 
-                              G4MagIntegratorStepper* pItsStepper )
+G4ChordFinder::G4ChordFinder(G4MagneticField* theMagField,
+                             G4double stepMinimum,
+                             G4MagIntegratorStepper* pItsStepper)
   : fDefaultDeltaChord( 0.25 * mm ),     // Constants 
     fDeltaChord( fDefaultDeltaChord ),   // Parameters
     fFirstFraction(0.999), fFractionLast(1.00),  fFractionNextEstimate(0.98), 

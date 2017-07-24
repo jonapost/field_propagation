@@ -156,9 +156,8 @@ void G4FieldManager::InitialiseFieldChangesEnergy()
 
 G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
 {
-   G4MagInt_Driver*        driver= 0;
-   G4MagIntegratorStepper* stepper=0;
-   G4EquationOfMotion*     equation=0; 
+   G4VIntegrationDriver*   driver= 0;
+   G4EquationOfMotion*     equation=0;
    // G4bool  compatibleField= false; 
    G4bool ableToSet= false;
 
@@ -173,16 +172,13 @@ G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
       
      driver= fChordFinder->GetIntegrationDriver();
      if( driver ){
-        stepper= driver->GetStepper();
-        if( stepper ){
-          equation= stepper->GetEquationOfMotion();
+          equation= driver->GetEquationOfMotion();
           // Should check the compatibility between the field and the equation HERE
           if( equation ) {
              equation->SetFieldObj(pDetectorField);
              ableToSet = true;
           }  
         }
-     }
    }
    
    if( !ableToSet && (failMode > 0) )
@@ -194,7 +190,6 @@ G4bool G4FieldManager::SetDetectorField(G4Field *pDetectorField, int failMode )
       msg << "The problem encountered was the following: " << G4endl;
       if( !fChordFinder ) { msg << "  No ChordFinder. " ; }
       else if( !driver)   { msg << "  No Integration Driver set. ";}
-      else if( !stepper ) { msg << "  No Stepper found. " ; }
       else if( !equation) { msg << "  No Equation found. " ; }
       // else if( !compatibleField ) { msg << "  Field not compatible. ";}
       else { msg << "  Can NOT find reason for failure. ";}
