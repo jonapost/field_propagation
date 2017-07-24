@@ -813,6 +813,34 @@ G4MagInt_Driver::ComputeNewStepSize(
   return hnew;
 }
 
+G4EquationOfMotion* G4MagInt_Driver::GetEquationOfMotion()
+{
+    return pIntStepper->GetEquationOfMotion();
+}
+
+void G4MagInt_Driver::SetEquationOfMotion(G4EquationOfMotion* equation)
+{
+    pIntStepper->SetEquationOfMotion(equation);
+}
+
+void G4MagInt_Driver::GetDerivatives(const G4FieldTrack& track,
+                                     G4double dydx[]) const
+{
+    G4double y[NCOMP];
+    track.DumpToArray(y);
+    pIntStepper->RightHandSide(y, dydx);
+}
+
+void G4MagInt_Driver::SetVerboseLevel(G4int level)
+{
+      fVerboseLevel = level;
+}
+
+G4int G4MagInt_Driver::GetVerboseLevel() const
+{
+      return fVerboseLevel;
+}
+
 // ---------------------------------------------------------------------------
 
 // This method computes new step sizes limiting changes within certain factors

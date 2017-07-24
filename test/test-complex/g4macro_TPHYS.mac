@@ -1,0 +1,9 @@
+###################################################
+# Geant4 macro for testcomplex with TABPHYS 
+###################################################
+
+# verbosity
+/tracking/verbose 0
+/run/beamOn 20
+
+/process/list

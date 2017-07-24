@@ -18,14 +18,22 @@ enum class Value1D {
     ProperTime = 8
 };
 
-G4double extractValue(const G4double array[], const Value1D& value);
-G4double extractValue2(const G4double array[], const Value1D& value);
+inline G4double extractValue(const G4double array[], const Value1D& value);
+inline G4double extractValue2(const G4double array[], const Value1D& value);
 
-G4double extractValue(const G4double array[], const Value3D& value);
-G4double extractValue2(const G4double array[], const Value3D& value);
+inline G4double extractValue(const G4double array[], const Value3D& value);
+inline G4double extractValue2(const G4double array[], const Value3D& value);
 
-G4ThreeVector makeVector(const G4double array[], const Value3D& value);
+inline G4ThreeVector makeVector(const G4double array[], const Value3D& value);
+
+G4double relativeError(
+    const G4double y[],
+    const G4double yerr[],
+    const G4double hstep,
+    const G4double errorTolerance = 1);
 
 } //magneticfield
+
+#include "Utils.icc"
 
 #endif

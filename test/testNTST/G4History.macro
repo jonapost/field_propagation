@@ -1,0 +1,12 @@
+/NTST/setDebug 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/run/useBgsTran 0
+/run/minEcut 1 MeV
+/run/looperCut 200 MeV
+/run/cut 1 mm
+/gen/choose evt
+/run/initialize
+/run/beamOn 100
+/NTST/getFieldStats
