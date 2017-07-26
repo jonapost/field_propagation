@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4HelixExplicitEuler.cc 97572 2016-06-03 21:52:00Z japost $
+// $Id: G4HelixExplicitEuler.cc 97551 2016-06-03 17:24:37Z japost $
 //
 //
 //  Helix Explicit Euler: x_1 = x_0 + helix(h)

@@ -77,7 +77,8 @@ G4FSALDormandPrince745::G4FSALDormandPrince745(G4EquationOfMotion *EqRhs,
     yIn = new G4double[numberOfVariables] ;
     
     pseudoDydx_for_DistChord = new G4double[numberOfVariables];
-    
+
+    fInitialDyDx = new G4double[numberOfVariables];    
     fLastInitialVector = new G4double[numberOfVariables] ;
     fLastFinalVector = new G4double[numberOfVariables] ;
     fLastDyDx = new G4double[numberOfVariables];
@@ -167,73 +168,70 @@ void G4FSALDormandPrince745::Stepper(const G4double yInput[],
     
     
     const G4int numberOfVariables= this->GetNumberOfVariables();
-    G4double *DyDx = new G4double[numberOfVariables];
-    
     // The number of variables to be integrated over
-    yOut[7] = yTemp[7]  = yIn[7];
+
     //  Saving yInput because yInput and yOut can be aliases for same array
-    
     for(i=0;i<numberOfVariables;i++)
     {
-        yIn[i]=yInput[i];
-        DyDx[i] = dydx[i];
+        yIn[i]          = yInput[i];
+        fInitialDyDx[i] = dydx[i];
     }
-    
-    
+    // Ensure that time is initialised - in case it is not integrated
+    yOut[7] = yTemp[7]  = yInput[7];
     
     // RightHandSide(yIn, DyDx) ;
     // 1st Step - Not doing, getting passed
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yTemp[i] = yIn[i] + b21*Step*DyDx[i] ;
+        yTemp[i] = yIn[i] + b21*Step*fInitialDyDx[i] ;
     }
     RightHandSide(yTemp, ak2) ;              // 2nd Step
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yTemp[i] = yIn[i] + Step*(b31*DyDx[i] + b32*ak2[i]) ;
+        yTemp[i] = yIn[i] + Step*(b31*fInitialDyDx[i] + b32*ak2[i]) ;
     }
     RightHandSide(yTemp, ak3) ;              // 3rd Step
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yTemp[i] = yIn[i] + Step*(b41*DyDx[i] + b42*ak2[i] + b43*ak3[i]) ;
+        yTemp[i] = yIn[i] + Step*(b41*fInitialDyDx[i] + b42*ak2[i] + b43*ak3[i]) ;
     }
     RightHandSide(yTemp, ak4) ;              // 4th Step
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yTemp[i] = yIn[i] + Step*(b51*DyDx[i] + b52*ak2[i] + b53*ak3[i] +
+        yTemp[i] = yIn[i] + Step*(b51*fInitialDyDx[i] + b52*ak2[i] + b53*ak3[i] +
                                   b54*ak4[i]) ;
     }
     RightHandSide(yTemp, ak5) ;              // 5th Step
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yTemp[i] = yIn[i] + Step*(b61*DyDx[i] + b62*ak2[i] + b63*ak3[i] +
-                                  b64*ak4[i] + b65*ak5[i]) ;
+        yTemp[i] = yIn[i] + Step*(b61*fInitialDyDx[i] + b62*ak2[i] + b63*ak3[i] +
+                                  b64*ak4[i]          + b65*ak5[i]) ;
     }
     RightHandSide(yTemp, ak6) ;              // 6th Step
     
     for(i=0;i<numberOfVariables;i++)
     {
-        yOut[i] = yIn[i] + Step*(b71*DyDx[i] + b72*ak2[i] + b73*ak3[i] +
-                                  b74*ak4[i] + b75*ak5[i] + b76*ak6[i]);
+        yOut[i] = yIn[i] + Step*(b71*fInitialDyDx[i] + b72*ak2[i] + b73*ak3[i] +
+                                  b74*ak4[i]         + b75*ak5[i] + b76*ak6[i]);
     }
     RightHandSide(yOut, ak7);               //7th and Final step
     
     for(i=0;i<numberOfVariables;i++)
     {
         
-        yErr[i] = Step*(dc1*DyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
-                        dc5*ak5[i] + dc6*ak6[i] + dc7*ak7[i] ) ;
+        yErr[i] = Step*(dc1*fInitialDyDx[i] + dc2*ak2[i] + dc3*ak3[i] + dc4*ak4[i] +
+                        dc5*ak5[i]          + dc6*ak6[i] + dc7*ak7[i] ) ;
         
 
         // Store Input and Final values, for possible use in calculating chord
         fLastInitialVector[i] = yIn[i] ;
         fLastFinalVector[i]   = yOut[i];
-        fLastDyDx[i]          = DyDx[i];
+        fLastDyDx[i]          = fInitialDyDx[i];
         nextDydx[i] = ak7[i];
         
         

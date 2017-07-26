@@ -1,4 +1,4 @@
-$Id: History 104209 2017-05-17 19:09:12Z japost $
+$Id: History 104992 2017-07-03 19:02:08Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,7 +16,59 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
-May 17, 2017 J.Apostolakis             - field-V10-03-03
+Jul 03, 2017 J.Apostolakis             - field-V10-03-08
+--------------------------
+G4FSALBogackiShampline45
+ - Initialise 'bi[][]' const coefficients only 1 time - in method
+   PrepareConstants() called by constructor.
+    ( Similar to G4BogackiShampine => seek consolidation. )
+ - Small fix: initialise fAuxStepper to nullptr, if not primary.
+    ( Part of Coverity issue 67394. )
+
+G4DormandPrinceRK56:
+ - fix for significant memory leak of ak10_low buffer space in
+     SetupInterpolate_low(), apparently not seen by Coverity
+     because it was initialised in each use, not in constructor!
+ - improved initialisation of ak10, 11, 12 (moved to constructor)
+    and fixed small memory leak (added deletion in destructor).
+
+G4MagIntegratorStepper: initialise fNoRHSCalls & fIntegrationOrder in c-tor.
+  ( fIntegrationOrder is not yet used widely - future migration. )
+   Coverity issue 67392.
+
+G4VFSALIntegrationStepper: initialise counter in c-tor.
+   Coverity issue 67396.
+
+G4BogackiShampine23: initialised fIsFSAL, fIntegrationOrder in c-tor.
+   Suppressed obsolete virtual method isFSAL,
+   Deleted duplicate virtual method 'isFSAL()'.
+     Non-virtual method IsFSAL() now exists in base class G4MagIntegratorStepper.
+   Made copy constructor and equal operator private and not unimplemented.
+   Added explanatory comments in source file.
+     can make this method FSAL easily (it calculates derivative @ endpoint. )
+
+Several steppers ( G4DoLoMcPriRK34, G4FSALBogackiShampine45,
+    G4DormandPrince745, G4BogackiShampine45 )
+ - Initialise fLastStepLength and/or fAuxStepper data members in
+     constructor
+     Coverity issues: 67393, 67394, 67391, 67390, 67363
+
+Jul 03, 2017 J.Apostolakis             - field-V10-03-07
+--------------------------
+G4FSALBogackiShampline45: fix for memory leak in Stepper()
+  ( Coverity issue 67389 )
+  
+Jul 03, 2017 J.Apostolakis             - field-V10-03-06
+--------------------------
+G4BogackiShampline23: fix for memory leak in destructor
+  ( Coverity issue 67355 )
+
+Jun 30, 2017 J.Apostolakis             - field-V10-03-05
+--------------------------
+G4FSALDormandPrince745: fix for memory leak in Stepper()
+  ( Coverity issue 67397 )
+
+May 17, 2017 J.Apostolakis             - field-V10-03-03, -04 (resubmit)
 --------------------------
 G4FieldManager::SetDetectorField
   Fixed default of 'fail mode' parameter in 
