@@ -41,10 +41,10 @@ ARK4::ARK4(
 void ARK4::DumbStepper(
     const G4double yIn[],
     const G4double dydx[],
-    G4double h,
+    G4double hstep,
     G4double yOut[])
 {
-    G4double hh = h * 0.5;
+    G4double halfStep = hstep * 0.5;
 
     G4double ytemp[G4FieldTrack::ncompSVEC];
     G4double ak2[G4FieldTrack::ncompSVEC],
@@ -59,29 +59,35 @@ void ARK4::DumbStepper(
 
     //RightHandSide(yIn, dydx);
     for (G4int i = 0; i < GetNumberOfVariables(); ++i) {
-        ytemp[i] = yIn[i] + hh * dydx[i];
+        ytemp[i] = yIn[i] + halfStep * dydx[i];
     }
 
     RightHandSide(ytemp, ak2);
     for (G4int i = 0; i < GetNumberOfVariables(); ++i) {
-        ytemp[i] = yIn[i] + hh * ak2[i];
+        ytemp[i] = yIn[i] + halfStep * ak2[i];
     }
 
     RightHandSide(ytemp, ak3);
     for (G4int i = 0; i < GetNumberOfVariables(); ++i) {
-        ytemp[i] = yIn[i] + h * ak3[i];
+        ytemp[i] = yIn[i] + hstep * ak3[i];
     }
 
-    // TODO use bettis function!
-    //double nu =
-    G4double b1 = 1. / 6.,
-             b2 = 2. / 6.,
-             b3 = 2. / 6.,
-             b4 = 1. / 6.;
+    //TODO calculate omega
+    G4double omega = 0;
+    G4double nu = omega * hstep;
+
+    G4double phi3 = magneticfield::bettisFunction<3>(nu);
+    G4double phi4 = magneticfield::bettisFunction<4>(nu);
+
+    G4double b1 = 4 * phi4,
+             b2 = 1 - 4 * phi3,
+             b3 = 4 * phi3 - 8 * phi4,
+             b4 = 4 * phi4;
 
     RightHandSide(ytemp, ak4);
     for (G4int i = 0; i < GetNumberOfVariables(); ++i) {
-        yOut[i] = yIn[i] + h * (b1 * dydx[i] + b2 * ak2[i] + b3 * ak3[i] + b4 * ak4[i]);
+        yOut[i] = yIn[i] + hstep * (b1 * dydx[i] + b2 * ak2[i] +
+                                    b3 * ak3[i] + b4 * ak4[i]);
     }
 }
 
