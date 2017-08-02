@@ -81,7 +81,7 @@ void ARK4::DumbStepper(
 
     RightHandSide(ytemp, ak4);
     for (G4int i = 0; i < GetNumberOfVariables(); ++i) {
-        yOut[i] = yIn[i] + b1 * dydx[i] + b2 * ak2[i] + b3 * ak3[i] + b4 * ak4[i];
+        yOut[i] = yIn[i] + h * (b1 * dydx[i] + b2 * ak2[i] + b3 * ak3[i] + b4 * ak4[i]);
     }
 }
 
