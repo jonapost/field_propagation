@@ -109,6 +109,8 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         RK547FEq3.hh
         Utils.hh
         Utils.icc
+        BettisFunctions.hh
+        ARK4.hh
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
@@ -174,6 +176,7 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         RK547FEq2.cc
         RK547FEq3.cc
         Utils.cc
+        ARK4.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES

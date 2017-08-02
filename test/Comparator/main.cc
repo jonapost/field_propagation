@@ -34,6 +34,8 @@
 #include "G4FSALIntegrationDriver.hh"
 #include "RK547FEq1.hh"
 
+#include "ARK4.hh"
+
 #include <iostream>
 #include <memory>
 
@@ -53,14 +55,14 @@ int main()
 
     Comparator comparator(std::move(dynParticle), magneticField);
 
-   // comparator.compare<G4ClassicalRK4, /*G4ExactHelixStepper*/G4ClassicalRK4>(
-   //    100*cm, 10000, Comparator::Mode::SaveTrack);
+    comparator.compare<G4ClassicalRK4, /*G4ExactHelixStepper*/ARK4>(
+       100*cm, 10000, Comparator::Mode::Verbose);
 
-    comparator.setPrecision(1);
-    comparator.setStartPostition(G4ThreeVector(100, 100, -16000));
+    //comparator.setPrecision(1);
+    //comparator.setStartPostition(G4ThreeVector(100, 100, -16000));
 
-    comparator.compareDriver<G4MagInt_Driver, G4FSALIntegrationDriver, G4DormandPrince745>(
-       40*m, Comparator::Mode::SaveTrack);
+    //comparator.compareDriver<G4MagInt_Driver, G4FSALIntegrationDriver, G4DormandPrince745>(
+    //   40*m, Comparator::Mode::SaveTrack);
 
     //comparator.CompareWithBS<G4CashKarpRKF45>(1000*m, Comparator::Mode::Verbose);
     return 0;
