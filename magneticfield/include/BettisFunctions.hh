@@ -6,6 +6,8 @@
 namespace magneticfield {
 namespace internal {
 
+constexpr double SWITCH_TO_TAYLOR_THRESHOLD = 0.01;
+
 template <int val>
 struct factorial {
     enum {value = val * factorial<val-1>::value};
@@ -64,7 +66,7 @@ double taylorBettis(double nu)
 template <int order>
 double bettisFunction(double nu)
 {
-    return nu < 0.01 ?
+    return nu < internal::SWITCH_TO_TAYLOR_THRESHOLD ?
         internal::taylorBettis<order>(nu) : internal::reqursiveBettis<order>(nu);
 }
 

@@ -47,6 +47,16 @@ public:
     {
         return 4;
     }
+
+private:
+    G4double particleCharge();
+
+    // oscillation frequency * time step
+    G4double integrationParameter(
+        G4double charge,
+        G4double momentum,
+        G4double Bfield,
+        G4double hstep);
 };
 
 #endif

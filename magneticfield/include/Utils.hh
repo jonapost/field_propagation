@@ -26,6 +26,9 @@ inline G4double extractValue2(const G4double array[], const Value3D& value);
 
 inline G4ThreeVector makeVector(const G4double array[], const Value3D& value);
 
+inline void copyValue(G4double dest[], const G4double src[], const Value1D& value);
+inline void copyValue(G4double dest[], const G4double src[], const Value3D& value);
+
 G4double relativeError(
     const G4double y[],
     const G4double yerr[],

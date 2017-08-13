@@ -33,4 +33,18 @@ inline G4ThreeVector makeVector(const G4double array[], const Value3D& value)
     return G4ThreeVector(array[begin], array[begin + 1], array[begin + 2]);
 }
 
+inline void copyValue(G4double dest[], const G4double src[], const Value1D& value)
+{
+    const auto begin = getFirstIndex(value);
+    dest[begin] = src[begin];
+}
+
+inline void copyValue(G4double dest[], const G4double src[], const Value3D& value)
+{
+    const auto begin = getFirstIndex(value);
+    for (auto i = begin; i < begin + 3; ++i) {
+        dest[i] = src[i];
+    }
+}
+
 } // magneticfield
