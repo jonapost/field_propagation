@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4NystromRK4.cc 66241 2012-12-13 18:34:42Z gunter $
+// $Id: G4NystromRK4.cc 105851 2017-08-23 16:33:52Z japost $
 //
 // History:
 // - Created:      I.Gavrilenko    15.05.2009   (as G4AtlasRK4)
@@ -72,22 +72,51 @@ void
 G4NystromRK4::Stepper
 (const G4double P[],const G4double dPdS[],G4double Step,G4double Po[],G4double Err[])
 {
-  G4double R[3] = {   P[0],   P[1] ,    P[2]};
+  G4double R[3] = {   P[0],   P[1] ,    P[2]};  
   G4double A[3] = {dPdS[0], dPdS[1], dPdS[2]};
 
   m_iPoint[0]=R[0]; m_iPoint[1]=R[1]; m_iPoint[2]=R[2];
 
-  const G4double one_sixth= 1./6.;
-  G4double S  =     Step   ;
-  G4double S5 =  .5*Step   ;
-  G4double S4 = .25*Step   ;
-  G4double S6 =     Step * one_sixth;   // Step / 6.;
+  constexpr double one_sixth= 1./6.;
+  const G4double S  =     Step   ;
+  const G4double S5 =  .5*Step   ;
+  const G4double S4 = .25*Step   ;
+  const G4double S6 =     Step * one_sixth;   // Step / 6.;
+  
+  // Ensure that the location and cached field value are correct
+  getField( P );  
 
-
+  // Ensure that the momentum is reset correctly, and the field location is correct
+  m_mom   = sqrt(P[3]*P[3]+P[4]*P[4]+P[5]*P[5]); 
+  m_imom  = 1./m_mom;
+  m_cof   = m_fEq->FCof()*m_imom;
   // John A  added, in order to emulate effect of call to changed/derived RHS
-  // m_mom   = sqrt(P[3]*P[3]+P[4]*P[4]+P[5]*P[5]); 
-  // m_imom  = 1./m_mom;
-  // m_cof   = m_fEq->FCof()*m_imom;
+  
+#ifdef  DEBUG_NYSTROM
+  // const double perMillion = 1.0e-6;
+  constexpr double perThousand = 1.0e-3;  
+  double new_mom2= (P[3]*P[3]+P[4]*P[4]+P[5]*P[5]);
+  double new_mom=  std::sqrt(new_mom2); 
+  if( std::fabs(new_mom - m_mom ) > perThousand * m_mom ) {
+     G4cerr << " Nystrom::Stepper WARNING: momentum magnitude is invalid / has changed "
+            << G4endl
+            << " new p= "     << new_mom
+            << " cached p = " << m_mom
+            << " ratio= " << new_mom / m_mom << G4endl;
+  }
+
+  double dx = P[0]-m_fldPosition[0];
+  double dy = P[1]-m_fldPosition[1];
+  double dz = P[2]-m_fldPosition[2];
+  double distMag2 = dx*dx+dy*dy+dz*dz;
+  if( distMag2 > m_magdistance2) {
+     const double allowedDist = std::sqrt( m_magdistance2 );
+     double dist= std::sqrt( distMag2 );
+     G4cerr << " NystromRK4::Stepper> ERROR> Moved from correct field position by "
+               << dist <<  "( larger than allowed = " << allowedDist << " ) "
+               << G4endl;
+  }
+#endif // DEBUG_NYSTROM
 
   // Point 1
   //

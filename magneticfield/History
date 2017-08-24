@@ -1,4 +1,4 @@
-$Id: History 105011 2017-07-04 11:26:02Z japost $
+$Id: History 105852 2017-08-23 16:34:13Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,12 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+Aug 23, 2017 J.Apostolakis             - field-V10-03-10
+--------------------------
+G4NystromRK4 - Fix the caching of momentum, field location & value
+  Fixes issue reported by ALICE ( problem report 1996 ).
+  Thanks to Ruben Shahoyan for identifying and reporting the issue!
+
 Jul 04, 2017 J.Apostolakis             - field-V10-03-09
 --------------------------
 G4DormandPrinceRK78:
