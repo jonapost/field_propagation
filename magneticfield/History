@@ -1,4 +1,4 @@
-$Id: History 104992 2017-07-03 19:02:08Z japost $
+$Id: History 105011 2017-07-04 11:26:02Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,6 +16,16 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+Jul 04, 2017 J.Apostolakis             - field-V10-03-09
+--------------------------
+G4DormandPrinceRK78:
+ - Initialise fLastStepLength and/or fAuxStepper data members in
+     constructor.
+   Coverity issue: 67398,
+ - Improved description and reference to original 1981 DP paper.
+
+G4MagIntegratorDriver: initialised fNoCalls in c-tor. Coverity #15158
+
 Jul 03, 2017 J.Apostolakis             - field-V10-03-08
 --------------------------
 G4FSALBogackiShampline45
