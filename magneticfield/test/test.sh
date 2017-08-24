@@ -3,7 +3,7 @@
 # A simple script to run all the tests in this directory and check
 # their results against the expected (previous) results
 #
-# $Id: test.sh 104536 2017-06-02 15:33:54Z japost $
+# $Id: test.sh 105866 2017-08-24 13:29:35Z japost $
 # $Name: geant4-09-02-ref-05 $
 #
 
@@ -45,26 +45,31 @@ do
   $BINDIR/$target $n  > $target.newout$n \
 		     2> $target.newerr$n
   if [[ -f $target.out$n ]]; then
-     echo  ".. difference from expected output: "
-     diff -wb $target.out$n $target.newout$n
-     sleep 1;
+     if [[ `cmp --silent $target.out$n $target.newout$n` ]]; then
+	 echo  ".. difference(s) from expected output: "
+	 diff -wb $target.out$n $target.newout$n
+	 sleep 2;
+     fi
   else
      echo  " Expected output *not* found. Time to create " $target.out$n
   fi
   # if [[ -f $target.err$n ]]; then
-  if [[ -f $target.newerr$n && `wc -l $target.newerr$n | awk ' { print $1; } '` != 0 ]]; then
-      echo  ".. Unexpected error output: "
-      if [[ -f $target.err$n ]]; then
-	  diff -wb $target.err$n $target.newerr$n
+  if [[ -f $target.newerr$n ]]; then
+      if [[ `wc -l $target.newerr$n | awk ' { print $1; } '` != 0 ]]; then
+	  echo  ".. Unexpected error output: "
+	  if [[ -f $target.err$n ]]; then
+	      diff -wb $target.err$n $target.newerr$n
+	  else
+	      head -50 $target.newerr$n
+	  fi
+	  sleep 5;
       else
-	  head -50 $target.newerr$n
+	  ## echo " Deleting empty error file ... "
+	  rm $target.newerr$n
       fi
-     sleep 5;
   else
-      echo " Deleting empty error file ... "
-      cat $target.newerr$n
-      echo " Done - deleted. "
-  fi  
+      echo "WARNING> 'Error' output file $target.newerr$n not found."
+  fi      
   echo  " "
 done
 

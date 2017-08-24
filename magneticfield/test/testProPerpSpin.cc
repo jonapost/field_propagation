@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: testProPerpSpin.cc 97564 2016-06-03 18:49:49Z japost $
+// $Id: testProPerpSpin.cc 105866 2017-08-24 13:29:35Z japost $
 //
 //  
 //
@@ -423,7 +423,7 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume *pTopNode, G4int ) // type
        G4ChargeState chargeState( +1.,         // charge in e+ units
                                   0.0,         // M-dipole=0
                                   0.5 );       // Polarisation           
-       gEquation->SetChargeMomentumMass( chargeState
+       gEquation->SetChargeMomentumMass( chargeState,
                                          momentum_val, 
                                          rest_mass);
 

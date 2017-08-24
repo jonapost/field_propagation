@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4NystromRK4.hh 66241 2012-12-13 18:34:42Z gunter $ 
+// $Id: G4NystromRK4.hh 105871 2017-08-24 16:04:03Z japost $ 
 //
 // class G4NystromRK4
 //
@@ -77,6 +77,9 @@ class G4NystromRK4 : public G4MagIntegratorStepper
 
     inline void getField   (const G4double P[4]);
 
+    bool CheckCachedMomemtum( const double PosMom[6], double savedMom );
+    bool CheckFieldPosition( const G4double Position[3], const double lastPosition[3] );
+   
     ////////////////////////////////////////////////////////////////
     // Private data
     ////////////////////////////////////////////////////////////////
