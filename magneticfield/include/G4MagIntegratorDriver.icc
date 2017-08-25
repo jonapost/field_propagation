@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.icc 69600 2013-05-08 16:42:59Z japost $
+// $Id: G4MagIntegratorDriver.icc 105887 2017-08-25 16:47:29Z japost $
 //
 // --------------------------------------------------------------------
 
@@ -162,4 +162,22 @@ inline
 G4double G4MagInt_Driver::GetSmallestFraction() const
 {
       return fSmallestFraction; 
-} 
+}
+
+inline
+const G4EquationOfMotion* G4MagInt_Driver::GetEquationOfMotion() const
+{
+      return pIntStepper->GetEquationOfMotion();
+}
+
+inline
+G4EquationOfMotion* G4MagInt_Driver::GetEquationOfMotion()
+{
+      return pIntStepper->GetEquationOfMotion();
+}
+
+// void G4MagInt_Driver::SetEquationOfMotion(G4EquationOfMotion* equation)
+// {
+//      pIntStepper->SetEquationOfMotion( equation ); 
+// }
+

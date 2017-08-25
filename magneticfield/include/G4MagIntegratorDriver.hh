@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4MagIntegratorDriver.hh 104203 2017-05-17 17:35:02Z japost $
+// $Id: G4MagIntegratorDriver.hh 105885 2017-08-25 16:40:51Z japost $
 //
 //
 // class G4MagInt_Driver
@@ -94,6 +94,10 @@ class G4MagInt_Driver
                                        G4double    dydx[]   );  //       OUTput
         // Accessors.
 
+     G4EquationOfMotion* GetEquationOfMotion();
+     const G4EquationOfMotion* GetEquationOfMotion() const;   
+     // void SetEquationOfMotion(G4EquationOfMotion* equation);
+   
      inline void RenewStepperAndAdjust(G4MagIntegratorStepper *pItsStepper);
         // Sets a new stepper pItsStepper for this driver. Then it calls
         // ReSetParameters to reset its parameters accordingly.
