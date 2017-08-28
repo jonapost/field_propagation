@@ -2,7 +2,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4GeometryTolerance.hh"
 #include "G4FieldTrack.hh"
-#include "Utils.hh"
+#include "G4FieldUtils.hh"
 
 #include <cassert>
 

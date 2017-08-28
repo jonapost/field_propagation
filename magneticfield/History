@@ -16,6 +16,24 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+Aug 28, 2017 D.Sorokin & J. Apostolakis - field-V10-03-14
+---------------------------------------
+- G4MagInt_Driver class is now derived from G4VIntegrationDriver,
+  in order to enable the creation of a diversity of drivers:
+  * templated RK-driver which takes a specific RK stepper
+  * FSAL driver which takes a specific FSAL RK stepper
+  * original class which takes an unspecified (RK) stepper
+  * Bulirsch-Stoer (Additional separate development - GSoC 2017)
+
+- RK547FEq{1,2,3} classes, RK steppers for improved oscillatory
+    behaviour
+
+- MagIntegratorDriver: Optional new equation to determine next
+    step size.  Prioritise stability over potential 'best'
+    performance ( meant for 'fragile' integration. )
+
+######--------- Development of driver ABC class ------######
+
 Aug 24, 2017 D.Sorokin & J. Apostolakis - field-V10-03-11
 ---------------------------------------
 G4NystromRK4 - Correction in call to getField: needs p[4], not p[3]

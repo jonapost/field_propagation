@@ -11,9 +11,9 @@
 //             1/12      0          27/32     -4/3     125/96    5/48    0
 //             2/15      0          27/80     -2/15    25/48     1/24    1/10
 
-#include "RK547FEq1.hh"
+#include "G4RK547FEq1.hh"
 #include "G4LineSection.hh"
-#include "Utils.hh"
+#include "G4FieldUtils.hh"
 
 using namespace magneticfield;
 
@@ -26,12 +26,12 @@ void copyArray(G4double dst[], const G4double src[])
 
 } // namespace
 
-RK547FEq1::RK547FEq1(G4EquationOfMotion* EqRhs, G4int integrationVariables)
+G4RK547FEq1::G4RK547FEq1(G4EquationOfMotion* EqRhs, G4int integrationVariables)
    : G4MagIntegratorStepper(EqRhs, integrationVariables)
 {
 }
 
-void RK547FEq1::makeStep(
+void G4RK547FEq1::makeStep(
     const G4double yInput[],
     const G4double dydx[],
     const G4double hstep,
@@ -108,7 +108,7 @@ void RK547FEq1::makeStep(
     }
 }
 
-void RK547FEq1::Stepper(
+void G4RK547FEq1::Stepper(
     const G4double yInput[],
     const G4double dydx[],
     G4double hstep,
@@ -124,7 +124,7 @@ void RK547FEq1::Stepper(
     copyArray(yOutput, fyOut);
 }
 
-void RK547FEq1::Stepper(
+void G4RK547FEq1::Stepper(
     const G4double yInput[],
     const G4double dydx[],
     G4double hstep,
@@ -142,7 +142,7 @@ void RK547FEq1::Stepper(
     copyArray(dydxOutput, fdydxOut);
 }
 
-G4double RK547FEq1::DistChord() const
+G4double G4RK547FEq1::DistChord() const
 {
     G4double yMid[G4FieldTrack::ncompSVEC];
     makeStep(fyIn, fdydx, fhstep / 2., yMid);

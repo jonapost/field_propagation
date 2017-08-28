@@ -46,7 +46,7 @@
 #include "G4GeometryTolerance.hh"
 #include "G4MagIntegratorDriver.hh"
 #include "G4FieldTrack.hh"
-#include "Utils.hh"
+#include "G4FieldUtils.hh"
 
 //  Stepsize can increase by no more than 5.0
 //           and decrease by no more than 1/10. = 0.1

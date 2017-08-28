@@ -1,19 +1,19 @@
 // The Butcher table of the Higham & Hall 5(4)7 method is:
 //
-//   0    |
-//  11/45 |    11/45
-//  11/30 |    11/120          11/40
-//  55/56 |    106865/87808    -408375/87808    193875/43904
-//  9/10  |    79503/121000    -1053/440        147753/56870       27048/710875
-//   1    |    89303/78045     -2025/473        994650/244541      -2547216/28122215     475/2967
-//   1    |    1247/10890      0                57375/108053       -1229312/1962015      125/207     43/114
-//---------------------------------------------------------------------------------------------------------------------
-//             1247/10890      0                57375/108053       -1229312/1962015      125/207     43/114       0
-//             21487/185130    0                963225/1836901     -39864832/33354255    2575/3519   4472/4845    -1/10
+//   0   |
+//  2/13 |    2/13
+//  2/13 |    3/52	          9/52
+//  5/9  |    12955/26244     -15925/8748    12350/6561
+//  3/4  |    -10383/52480    13923/10496    -176553/199424        505197/997120
+//   1   |    1403/7236       -429/268       733330/309339         -7884/8911        104960/113967
+//   1   |    181/2700        0              656903/1846800        19683/106400      34112/110565      67/800
+//----------------------------------------------------------------------------------------------------------------------
+//            181/2700        0              656903/1846800        19683/106400      34112/110565      67/800       0
+//            11377/154575    0              35378291/105729300    343359/1522850    535952/1947645    134/17175    1/12
 
-#include "RK547FEq3.hh"
+#include "G4RK547FEq2.hh"
 #include "G4LineSection.hh"
-#include "Utils.hh"
+#include "G4FieldUtils.hh"
 
 using namespace magneticfield;
 
@@ -26,12 +26,12 @@ void copyArray(G4double dst[], const G4double src[])
 
 } // namespace
 
-RK547FEq3::RK547FEq3(G4EquationOfMotion* EqRhs, G4int integrationVariables)
+G4RK547FEq2::G4RK547FEq2(G4EquationOfMotion* EqRhs, G4int integrationVariables)
    : G4MagIntegratorStepper(EqRhs, integrationVariables)
 {
 }
 
-void RK547FEq3::makeStep(
+void G4RK547FEq2::makeStep(
     const G4double yInput[],
     const G4double dydx[],
     const G4double hstep,
@@ -51,24 +51,24 @@ void RK547FEq3::makeStep(
              ak6[G4FieldTrack::ncompSVEC];
 
     const G4double
-        b21 = 11./45.,
-        b31 = 11./120., b32 = 11./40.,
-        b41 = 106865./87808., b42 = -408375./87808., b43 = 193875./43904.,
-        b51 = 79503./121000., b52 = -1053./440., b53 = 147753./56870.,
-            b54 =  27048./710875.,
-        b61 = 89303./78045., b62 = -2025./473., b63 = 994650./244541.,
-            b64 = -2547216./28122215., b65 = 475./2967.,
-        b71 = 1247./10890., b72 = 0., b73 = 57375./108053.,
-             b74 = -1229312./1962015., b75 = 125./207., b76 = 43./114.;
+        b21 = 2./13.,
+        b31 = 3./52., b32 = 9./52.,
+        b41 = 12955./26244., b42 =  -15925./8748., b43 = 12350./6561.,
+        b51 = -10383./52480., b52 = 13923./10496., b53 = -176553./199424.,
+            b54 = 505197./997120.,
+        b61 = 1403./7236., b62 = -429./268., b63 = 733330./309339.,
+            b64 = -7884./8911., b65 = 104960./113967.,
+        b71 = 181./2700., b72 = 0., b73 = 656903./1846800.,
+             b74 = 19683./106400., b75 = 34112./110565., b76 =  67./800.;
 
     const G4double
-        dc1 = b71 - 21487./185130.,
+        dc1 = b71 - 11377./154575.,
         dc2 = b72 - 0.,
-        dc3 = b73 - 963225./1836901.,
-        dc4 = b74 + 39864832./33354255.,
-        dc5 = b75 - 2575./3519.,
-        dc6 = b76 - 4472./4845.,
-        dc7 = 0. + 1./10.;
+        dc3 = b73 - 35378291./105729300.,
+        dc4 = b74 - 343359./1522850.,
+        dc5 = b75 - 535952./1947645.,
+        dc6 = b76 - 134./17175.,
+        dc7 = 0. - 1./12.;
 
     //RightHandSide(yInput, dydx);
     for(int i = 0; i < GetNumberOfVariables(); ++i)
@@ -109,7 +109,7 @@ void RK547FEq3::makeStep(
     }
 }
 
-void RK547FEq3::Stepper(
+void G4RK547FEq2::Stepper(
     const G4double yInput[],
     const G4double dydx[],
     G4double hstep,
@@ -125,7 +125,7 @@ void RK547FEq3::Stepper(
     copyArray(yOutput, fyOut);
 }
 
-void RK547FEq3::Stepper(
+void G4RK547FEq2::Stepper(
     const G4double yInput[],
     const G4double dydx[],
     G4double hstep,
@@ -143,7 +143,7 @@ void RK547FEq3::Stepper(
     copyArray(dydxOutput, fdydxOut);
 }
 
-G4double RK547FEq3::DistChord() const
+G4double G4RK547FEq2::DistChord() const
 {
     G4double yMid[G4FieldTrack::ncompSVEC];
     makeStep(fyIn, fdydx, fhstep / 2., yMid);
