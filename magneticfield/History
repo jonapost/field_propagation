@@ -16,6 +16,13 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+Aug 29, 2017 D.Sorokin & J. Apostolakis - field-V10-03-14
+---------------------------------------
+- RK547FEq{1,2,3} classes, RK steppers for improved oscillatory
+    behaviour
+
+
 Aug 28, 2017 D.Sorokin & J. Apostolakis - field-V10-03-14
 ---------------------------------------
 - G4MagInt_Driver class is now derived from G4VIntegrationDriver,
@@ -25,12 +32,11 @@ Aug 28, 2017 D.Sorokin & J. Apostolakis - field-V10-03-14
   * original class which takes an unspecified (RK) stepper
   * Bulirsch-Stoer (Additional separate development - GSoC 2017)
 
-- RK547FEq{1,2,3} classes, RK steppers for improved oscillatory
-    behaviour
-
-- MagIntegratorDriver: Optional new equation to determine next
-    step size.  Prioritise stability over potential 'best'
-    performance ( meant for 'fragile' integration. )
+- MagIntegratorDriver: Optional new algorithm to determine next
+    step size, using 'error controller'.
+    New option uses previous step size, to dampen oscilatory
+    behaviour near instabilities; it prioritises stability over
+    potential optimal performance in the smoother/est cases.
 
 ######--------- Development of driver ABC class ------######
 
