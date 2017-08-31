@@ -24,15 +24,15 @@
 // ********************************************************************
 //
 //
-// $Id: G4NystromRK4.cc 105871 2017-08-24 16:04:03Z japost $
+// $Id: G4NystromRK4.cc 105935 2017-08-31 13:45:52Z japost $
 //
 // History:
 // - Created:      I.Gavrilenko    15.05.2009   (as G4AtlasRK4)
 // - Adaptations:  J. Apostolakis  May-Nov 2009
 // -------------------------------------------------------------------
 
-#include "G4NystromRK4.hh"
 #include <iostream>
+#include "G4NystromRK4.hh"
 
 //////////////////////////////////////////////////////////////////
 // Constructor - with optional distance ( has default value)
@@ -72,6 +72,7 @@ void
 G4NystromRK4::Stepper
 (const G4double P[],const G4double dPdS[],G4double Step,G4double Po[],G4double Err[])
 {
+  const G4double perMillion = 1.0e-6;
   G4double R[4] = {   P[0],   P[1] ,    P[2],  P[7] };   // x, y, z, t
   G4double A[3] = {dPdS[0], dPdS[1], dPdS[2]};
 
@@ -84,12 +85,18 @@ G4NystromRK4::Stepper
   const G4double S6 =     Step * one_sixth;   // Step / 6.;
   
   // Ensure that the location and cached field value are correct
-  getField( R );  
+  getField( R );
 
   // Ensure that the momentum is set correctly.
-  m_mom   = sqrt(P[3]*P[3]+P[4]*P[4]+P[5]*P[5]); 
-  m_imom  = 1./m_mom;
-  m_cof   = m_fEq->FCof()*m_imom;
+
+  // - Quick check momentum magnitude (squared) against previous value
+  G4double newmom2 = (P[3]*P[3]+P[4]*P[4]+P[5]*P[5]); 
+  G4double oldmom2 = m_mom * m_mom;
+  if( std::fabs(newmom2 - oldmom2) > perMillion * oldmom2 ) {
+     m_mom   = sqrt(newmom2) ;
+     m_imom  = 1./m_mom;
+     m_cof   = m_fEq->FCof()*m_imom;
+  }
 
 #ifdef  G4DEBUG_FIELD
   CheckCachedMomemtum( P, m_mom );
@@ -216,14 +223,13 @@ G4NystromRK4::ComputeRightHandSide(const G4double P[],G4double dPdS[])
   dPdS[5] = m_cof*(P[3]*m_lastField[1]-P[4]*m_lastField[0]) ; // dPz/ds
 }
 
-
 ////////////////////////////////////////////////////////////////////////////
 // Check that the location is (almost) unmoved from 'last' field evaluation
 ////////////////////////////////////////////////////////////////////////////
 
 bool
 G4NystromRK4::CheckFieldPosition( const G4double Position[3],
-                                  const double lastPosition[3] )
+                                  const G4double lastPosition[3] )
 {
   bool ok= true;
   double dx = Position[0] - lastPosition[0];

@@ -1,4 +1,4 @@
-$Id: History 105888 2017-08-25 16:47:59Z japost $
+$Id: History 105935 2017-08-31 13:45:52Z japost $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,7 +16,11 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
-
+Aug 31, 2017 J. Apostolakis             - field-V10-03-14
+---------------------------------------
+G4NystromRK4 - Used caching of momentum magnitude ( & its inverse)
+  to reduce overhead of fix in field-V10-03-10.
+  
 Aug 25, 2017 J. Apostolakis             - field-V10-03-12, 13
 ---------------------------------------
 G4MagInt_Driver: Added GetEquationOfMotion method -
