@@ -36,12 +36,12 @@
 #include "G4SystemOfUnits.hh"
 #include "G4MagneticField.hh"
 #include "G4Mag_UsualEqRhs.hh"
-#include "G4ClassicalRK4.hh"
-#include "G4CashKarpRKF45.hh"
+// #include "G4ClassicalRK4.hh"
+// #include "G4CashKarpRKF45.hh"
 // #include "G4BogackiShampine23.hh"
-#include "G4BogackiShampine45.hh"
+// #include "G4BogackiShampine45.hh"
 #include "G4DormandPrince745.hh"
-#include "G4NystromRK4.hh"
+// #include "G4NystromRK4.hh"
 
 // ..........................................................................
 
@@ -101,9 +101,9 @@ G4ChordFinder::G4ChordFinder( G4MagneticField*        theMagField,
      pItsStepper = fDriversStepper =
          // new G4ClassicalRK4(pEquation);   // The old default
          // new G4CashKarpRKF45(pEquation);
-         // new G4DormandPrince745(pEquation); 
+         new G4DormandPrince745(pEquation); 
          // new G4BogackiShampine45(pEquation);
-        new G4NystromRK4(pEquation, 0.1*millimeter ); // *clhep::millimeter );
+         // new G4NystromRK4(pEquation, 0.1*millimeter ); // *clhep::millimeter );
 
      fAllocatedStepper= true;
   }

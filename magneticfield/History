@@ -16,6 +16,12 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+Aug 31, 2017 J. Apostolakis             - field-V10-03-15
+---------------------------------------
+- Made G4DormandPrince457 the default Stepper for magnetic 
+   fields in G4ChordFinder - when a driver/stepper is not 
+   specified.
+
 Aug 31, 2017 J. Apostolakis             - field-V10-03-14
 ---------------------------------------
 G4NystromRK4 - Used caching of momentum magnitude ( & its inverse)
