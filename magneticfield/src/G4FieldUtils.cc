@@ -31,7 +31,7 @@
 //    Supervision / code review: John Apostolakis
 
 
-#include "FieldUtils.hh"
+#include "G4FieldUtils.hh"
 
 namespace magneticfield {
 
