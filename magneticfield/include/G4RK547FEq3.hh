@@ -27,6 +27,11 @@
 //
 // Helper namespace 'magneticfield'
 //
+// Description:
+//    An implementation of the 7 stage embedded Runge-Kutta 4,5 pair (RK547FEq3)
+//    from the paper D. J. Higham and G. Hall,
+//    “Embedded Runge-Kutta formulae with stable equilibrium states”,
+//    J. Comput. Appl. Math., vol. 29, no. 1, pp. 25–33, Jan. 1990.
 //
 //    Implementation by Dmitry Sorokin - GSoC 2017
 //       Work supported by Google as part of Google Summer of Code 2017.
