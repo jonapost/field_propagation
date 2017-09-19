@@ -55,7 +55,7 @@
 
 #include "G4ExactHelixStepper.hh"       // Reference stepper
 
-#include "DormandPrince745.hh"          //For Dormand-Prince's RK 5(4) Stepper with interpolation
+#include "G4DormandPrince745.hh"          //For Dormand-Prince's RK 5(4) Stepper with interpolation
 #include "G4BogackiShampine45.hh"         //For Bogacki-Shampine's RK 5(4) Stepper with interpolation
 
 // #include "VernerRK56.hh"                //For Verner's RK 6(5) with interpolation
@@ -286,7 +286,7 @@ void test(G4double maxAngle, G4double Div, G4double epsilon, G4int verbose = 1)
     // The stepper to be tested
     // auto *myStepper = new G4BogackiShampine45(fEquation,6);
     // cout << "#      Trial solution: BogackiShampine45 Stepper" << endl;
-    DormandPrince745 *myStepper = new DormandPrince745(fEquation, 6);
+    G4DormandPrince745 *myStepper = new G4DormandPrince745(fEquation, 6);
     cout << "#      Trial solution:     DormandPrince745 Stepper" << endl;
     //  auto *myStepper = new VernerRK78(fEquation,6);
     

@@ -16,12 +16,13 @@ echo "Running on `hostname`, which is a `uname -a` machine"
 host=`hostname`
 
 #  Choice of build engine
-# MAKE=make
-MAKE=ninja
+ MAKE=make
+#MAKE=ninja
 #####
 
 #  Choice of build target directory BUILD_DIR
 BUILD_DIR=$G4BUILD_DIR
+echo $BUILD_DIR
 #G4BIN=$G4WORKDIR/bin/
 #G4BIN=$G4BIN
 #G4BIN=$G4BIN_GMAKE/bin/
@@ -39,7 +40,7 @@ if [[ ! -x $BINDIR/$target ]] ; then
   exit 1
 fi
 echo  "Executing $target ..."
-for n in 1 2 3 4 5 6 7 8 9 10 11 12 13  23 45 56 78 145 745
+for n in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 23 45 56 78 145 745
 do
   echo "Executing with stepper choice $n ..."
   $BINDIR/$target $n  > $target.newout$n \
@@ -72,6 +73,8 @@ do
   fi      
   echo  " "
 done
+
+exit
 
 target=testProElectroMagField
 echo  "Compiling $target ... "

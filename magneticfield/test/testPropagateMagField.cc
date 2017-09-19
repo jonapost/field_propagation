@@ -253,6 +253,9 @@ G4VPhysicalVolume* BuildGeometry()
 #include "G4ConstRK4.hh"
 #include "G4NystromRK4.hh"
 #include "G4HelixMixedStepper.hh"
+#include "G4RK547FEq1.hh"
+#include "G4RK547FEq2.hh"
+#include "G4RK547FEq3.hh"
 
 #include "globals.hh"
 
@@ -318,6 +321,9 @@ G4FieldManager* SetupField(G4int stepperType)
       case 11: pStepper = new G4HelixMixedStepper( fEquation );  break;
       case 12: pStepper = new G4ConstRK4( fEquation ); break;
       case 13: pStepper = new G4NystromRK4( fEquation ); break;
+      case 14: pStepper = new G4RK547FEq1( fEquation ); break;
+      case 15: pStepper = new G4RK547FEq2( fEquation ); break;
+      case 16: pStepper = new G4RK547FEq3( fEquation ); break;
       case 23: pStepper = new G4BogackiShampine23( fEquation ); break;
       case 34: pStepper = new G4DoLoMcPriRK34( fEquation ); break;         
       case 45: pStepper = new G4BogackiShampine45( fEquation ); break;
@@ -448,10 +454,8 @@ G4bool testG4PropagatorInField(G4VPhysicalVolume*,     // *pTopNode,
 
     G4ChordFinder *pChordFndr= pMagFieldPropagator->GetChordFinder();
     
-    G4EquationOfMotion* equationOfMotion= nullptr;
-    equationOfMotion =        
-        pChordFndr->GetIntegrationDriver()->GetStepper()
-                         ->GetEquationOfMotion() ;
+    G4EquationOfMotion* equationOfMotion =
+        pChordFndr->GetIntegrationDriver()->GetEquationOfMotion();
     equationOfMotion->SetChargeMomentumMass( chargeState, 
 			            0.5 * proton_mass_c2, // Momentum in Mev/c
 					 proton_mass_c2 );

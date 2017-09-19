@@ -213,6 +213,7 @@ G4VPhysicalVolume* BuildGeometry()
 
 //  Equation of motion 
 // #include "G4Mag_UsualEqRhs.hh"
+#include "G4MagIntegratorDriver.hh"
 #include "G4EqMagElectricField.hh"
 
 #include "G4ChordFinder.hh"
@@ -287,7 +288,7 @@ G4FieldManager* SetupField(G4int type)
     pFieldMgr->SetDetectorField( &myElectricField );
 
     G4double stepMinimum=  1.0e-2 * mm;  // hmin 
-    G4MagInt_Driver* pIntgrDriver = new G4MagInt_Driver(stepMinimum, pStepper, 
+    auto pIntgrDriver = new G4MagInt_Driver(stepMinimum, pStepper,
                                      pStepper->GetNumberOfVariables() );
     pChordFinder = new G4ChordFinder( pIntgrDriver ); 
 
