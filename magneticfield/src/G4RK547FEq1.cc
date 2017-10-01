@@ -15,7 +15,7 @@
 #include "G4LineSection.hh"
 #include "G4FieldUtils.hh"
 
-using namespace magneticfield;
+using namespace field_utils;
 
 namespace {
 

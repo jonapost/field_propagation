@@ -35,13 +35,13 @@
 //       Work supported by Google as part of Google Summer of Code 2017.
 //    Supervision / code review: John Apostolakis
 
-#ifndef G4FieldUtils_HH
-#define G4FieldUtils_HH
+#ifndef G4FIELD_UTILS_HH
+#define G4FIELD_UTILS_HH
 
 #include "G4Types.hh"
 #include "G4ThreeVector.hh"
 
-namespace magneticfield {
+namespace field_utils {
 
 enum class Value3D {
     Position = 0,
@@ -55,13 +55,13 @@ enum class Value1D {
     ProperTime = 8
 };
 
-inline G4double extractValue(const G4double array[], const Value1D& value);
-inline G4double extractValue2(const G4double array[], const Value1D& value);
+inline G4double getValue(const G4double array[], Value1D value);
+inline G4double getValue2(const G4double array[], Value1D value);
 
-inline G4double extractValue(const G4double array[], const Value3D& value);
-inline G4double extractValue2(const G4double array[], const Value3D& value);
+inline G4double getValue(const G4double array[], Value3D value);
+inline G4double getValue2(const G4double array[], Value3D value);
 
-inline G4ThreeVector makeVector(const G4double array[], const Value3D& value);
+inline G4ThreeVector makeVector(const G4double array[], Value3D value);
 
 G4double relativeError(
     const G4double y[],
@@ -69,7 +69,7 @@ G4double relativeError(
     const G4double hstep,
     const G4double errorTolerance = 1);
 
-} //magneticfield
+} // field_utils
 
 #include "G4FieldUtils.icc"
 

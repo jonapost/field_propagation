@@ -28,39 +28,39 @@
 //       Work supported by Google as part of Google Summer of Code 2017.
 //    Supervision / code review: John Apostolakis
 
-namespace magneticfield {
+namespace field_utils {
 
 template<class T>
 size_t getFirstIndex(const T& value) {
     return static_cast<size_t>(value);
 }
 
-inline G4double extractValue(const G4double array[], const Value1D& value)
+inline G4double getValue(const G4double array[], Value1D value)
 {
     const auto begin = getFirstIndex(value);
     return array[begin];
 }
 
-inline G4double extractValue2(const G4double array[], const Value1D& value)
+inline G4double getValue2(const G4double array[], Value1D value)
 {
-    return sqr(extractValue(array, value));
+    return sqr(getValue(array, value));
 }
 
-inline G4double extractValue(const G4double array[], const Value3D &value)
+inline G4double getValue(const G4double array[], Value3D value)
 {
-    return sqrt(extractValue2(array, value));
+    return sqrt(getValue2(array, value));
 }
 
-inline G4double extractValue2(const G4double array[], const Value3D& value)
+inline G4double getValue2(const G4double array[], const Value3D value)
 {
     const auto begin = getFirstIndex(value);
     return sqr(array[begin]) + sqr(array[begin+1]) + sqr(array[begin+2]);
 }
 
-inline G4ThreeVector makeVector(const G4double array[], const Value3D& value)
+inline G4ThreeVector makeVector(const G4double array[], Value3D value)
 {
     const auto begin = getFirstIndex(value);
     return G4ThreeVector(array[begin], array[begin + 1], array[begin + 2]);
 }
 
-} // magneticfield
+} // field_utils
