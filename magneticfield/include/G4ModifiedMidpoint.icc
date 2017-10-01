@@ -1,0 +1,13 @@
+namespace internal {
+
+inline void G4ModifiedMidpoint::SetSteps(G4int steps)
+{
+    fsteps = steps;
+}
+
+inline G4int G4ModifiedMidpoint::Steps() const
+{
+    return fsteps;
+}
+
+} // internal

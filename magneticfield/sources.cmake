@@ -109,6 +109,11 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4RK547FEq3.hh
         G4FieldUtils.hh
         G4FieldUtils.icc
+        G4BulirschStoer.hh
+        G4BulirschStoer.icc
+        G4BulirschStoerDriver.hh
+        G4ModifiedMidpoint.hh
+        G4ModifiedMidpoint.icc
     SOURCES
         G4BogackiShampine23.cc
         G4BogackiShampine45.cc
@@ -174,6 +179,9 @@ GEANT4_DEFINE_MODULE(NAME G4magneticfield
         G4RK547FEq2.cc
         G4RK547FEq3.cc
         G4FieldUtils.cc
+        G4BulirschStoer.cc
+        G4BulirschStoerDriver.cc
+        G4ModifiedMidpoint.cc
     GRANULAR_DEPENDENCIES
         G4globman
     GLOBAL_DEPENDENCIES
