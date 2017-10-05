@@ -73,6 +73,8 @@ public:
     inline G4int Steps() const;
 
 private:
+    void copy(G4double dst[], const G4double src[]) const;
+
     G4EquationOfMotion* fEquation;
     G4int fnvar;
     G4int fsteps;

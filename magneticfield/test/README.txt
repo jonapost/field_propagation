@@ -5,3 +5,8 @@ to successfuly run tests you have:
 2. set enviroment variables
     G4BUILD_DIR=/path/to/Geant4/build/
     G4BIN_CMAKE=${G4BUILD_DIR}/BuildProducts/bin 
+
+testModifiedMidpoint needs boost
+* download boost http://www.boost.org/users/download/
+* inpack in dir/to/boost
+* add it to PATH

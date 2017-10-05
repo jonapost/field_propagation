@@ -55,13 +55,20 @@ enum class Value1D {
     ProperTime = 8
 };
 
-inline G4double getValue(const G4double array[], Value1D value);
-inline G4double getValue2(const G4double array[], Value1D value);
+template <typename ArrayType>
+G4double getValue(const ArrayType& array, Value1D value);
 
-inline G4double getValue(const G4double array[], Value3D value);
-inline G4double getValue2(const G4double array[], Value3D value);
+template <typename ArrayType>
+G4double getValue2(const ArrayType& array, Value1D value);
 
-inline G4ThreeVector makeVector(const G4double array[], Value3D value);
+template <typename ArrayType>
+G4double getValue(const ArrayType& array, Value3D value);
+
+template <typename ArrayType>
+G4double getValue2(const ArrayType& array, Value3D value);
+
+template <typename ArrayType>
+G4ThreeVector makeVector(const ArrayType& array, Value3D value);
 
 G4double relativeError(
     const G4double y[],
