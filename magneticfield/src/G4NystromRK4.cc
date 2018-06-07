@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4NystromRK4.cc 105935 2017-08-31 13:45:52Z japost $
+// $Id: G4NystromRK4.cc 106563 2017-10-13 09:04:55Z gcosmo $
 //
 // History:
 // - Created:      I.Gavrilenko    15.05.2009   (as G4AtlasRK4)
@@ -78,7 +78,7 @@ G4NystromRK4::Stepper
 
   m_iPoint[0]=R[0]; m_iPoint[1]=R[1]; m_iPoint[2]=R[2];
 
-  constexpr double one_sixth= 1./6.;
+  constexpr G4double one_sixth= 1./6.;
   const G4double S  =     Step   ;
   const G4double S5 =  .5*Step   ;
   const G4double S4 = .25*Step   ;
@@ -227,18 +227,18 @@ G4NystromRK4::ComputeRightHandSide(const G4double P[],G4double dPdS[])
 // Check that the location is (almost) unmoved from 'last' field evaluation
 ////////////////////////////////////////////////////////////////////////////
 
-bool
+G4bool
 G4NystromRK4::CheckFieldPosition( const G4double Position[3],
                                   const G4double lastPosition[3] )
 {
-  bool ok= true;
-  double dx = Position[0] - lastPosition[0];
-  double dy = Position[1] - lastPosition[1];
-  double dz = Position[2] - lastPosition[2];
-  double distMag2 = dx*dx+dy*dy+dz*dz;
+  G4bool ok= true;
+  G4double dx = Position[0] - lastPosition[0];
+  G4double dy = Position[1] - lastPosition[1];
+  G4double dz = Position[2] - lastPosition[2];
+  G4double distMag2 = dx*dx+dy*dy+dz*dz;
   if( distMag2 > m_magdistance2) {
-     const double allowedDist = std::sqrt( m_magdistance2 );
-     double dist= std::sqrt( distMag2 );
+     const G4double allowedDist = std::sqrt( m_magdistance2 );
+     G4double dist= std::sqrt( distMag2 );
      G4cerr << " NystromRK4::Stepper> ERROR> Moved from correct field position by "
                << dist <<  "( larger than allowed = " << allowedDist << " ) "
                << G4endl;
@@ -251,10 +251,11 @@ G4NystromRK4::CheckFieldPosition( const G4double Position[3],
 // Check magnitude of momentum against saved value
 ////////////////////////////////////////////////////
 
-bool G4NystromRK4::CheckCachedMomemtum( const double PosMom[6], double savedMom )
+G4bool G4NystromRK4::CheckCachedMomemtum( const G4double PosMom[6],
+                                                G4double savedMom )
 {
   constexpr G4double perThousand = 1.0e-3;
-  bool ok= true;
+  G4bool ok= true;
   G4double new_mom2= (PosMom[3]*PosMom[3]+PosMom[4]*PosMom[4]+PosMom[5]*PosMom[5]);
   G4double new_mom=  std::sqrt(new_mom2); 
   if( std::fabs(new_mom - savedMom ) > perThousand * savedMom ) {

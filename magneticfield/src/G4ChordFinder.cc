@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: G4ChordFinder.cc 105853 2017-08-23 16:35:57Z japost $
+// $Id: G4ChordFinder.cc 105950 2017-09-01 15:25:35Z japost $
 //
 //
 // 25.02.97 - John Apostolakis - Design and implementation 

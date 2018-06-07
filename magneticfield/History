@@ -1,4 +1,4 @@
-$Id: History 105935 2017-08-31 13:45:52Z japost $
+$Id: History 106563 2017-10-13 09:04:55Z gcosmo $
 -------------------------------------------------------------------
 
      =========================================================
@@ -16,103 +16,94 @@ committal in the CVS repository !
      ----------------------------------------------------------
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
+
+Oct 13, 2017 G. Cosmo                   - field-V10-03-16
+---------------------------------------
+- G4NystromRK4: use consistenly G4 types for double and bool in G4NystromRK4.
+
 Aug 31, 2017 J. Apostolakis             - field-V10-03-15
 ---------------------------------------
-- Made G4DormandPrince457 the default Stepper for magnetic 
-   fields in G4ChordFinder - when a driver/stepper is not 
-   specified.
+- Made G4DormandPrince457 the default Stepper for magnetic fields in
+  G4ChordFinder - when a driver/stepper is not specified.
 
 Aug 31, 2017 J. Apostolakis             - field-V10-03-14
 ---------------------------------------
-G4NystromRK4 - Used caching of momentum magnitude ( & its inverse)
+- G4NystromRK4: used caching of momentum magnitude ( & its inverse)
   to reduce overhead of fix in field-V10-03-10.
-  
+
 Aug 25, 2017 J. Apostolakis             - field-V10-03-12, 13
 ---------------------------------------
-G4MagInt_Driver: Added GetEquationOfMotion method -
-     for enabling common code with future develoment.
+- G4MagInt_Driver: added GetEquationOfMotion method for enabling common
+  code with future develoment.
 
 Aug 24, 2017 D.Sorokin & J. Apostolakis - field-V10-03-11
 ---------------------------------------
-G4NystromRK4 - Correction in call to getField: needs p[4], not p[3]
+- G4NystromRK4: correction in call to getField: needs p[4], not p[3]
     ( Spotted by D. Sorokin )
   Also small cleanup of testing code into 2 small new methods.
     ( J. Apostolakis )
 
-Aug 23, 2017 J.Apostolakis             - field-V10-03-10
+Aug 23, 2017 J.Apostolakis              - field-V10-03-10
 --------------------------
-G4NystromRK4 - Fix the caching of momentum, field location & value
-  Fixes issue reported by ALICE ( problem report 1996 ).
+- G4NystromRK4 - Fix the caching of momentum, field location & value.
+  Fixes issue reported by ALICE ( problem report #1996 ).
   Thanks to Ruben Shahoyan for identifying and reporting the issue!
-
-Note: makes G4NystromRK4 the default Stepper in G4ChordFinder's 2nd
-  constructor (to ensure adequate testing. )
+- Temporarly made G4NystromRK4 the default Stepper in G4ChordFinder's 2nd
+  constructor (to ensure adequate testing).
 
 Jul 04, 2017 J.Apostolakis             - field-V10-03-09
 --------------------------
-G4DormandPrinceRK78:
- - Initialise fLastStepLength and/or fAuxStepper data members in
-     constructor.
-   Coverity issue: 67398,
- - Improved description and reference to original 1981 DP paper.
-
-G4MagIntegratorDriver: initialised fNoCalls in c-tor. Coverity #15158
+- G4DormandPrinceRK78: initialise fLastStepLength and/or fAuxStepper data
+  members in constructor. Coverity issue: 67398,
+  Improved description and reference to original 1981 DP paper.
+- G4MagIntegratorDriver: initialised fNoCalls in c-tor. Coverity #15158.
 
 Jul 03, 2017 J.Apostolakis             - field-V10-03-08
 --------------------------
-G4FSALBogackiShampline45
- - Initialise 'bi[][]' const coefficients only 1 time - in method
-   PrepareConstants() called by constructor.
-    ( Similar to G4BogackiShampine => seek consolidation. )
- - Small fix: initialise fAuxStepper to nullptr, if not primary.
-    ( Part of Coverity issue 67394. )
-
-G4DormandPrinceRK56:
- - fix for significant memory leak of ak10_low buffer space in
-     SetupInterpolate_low(), apparently not seen by Coverity
-     because it was initialised in each use, not in constructor!
- - improved initialisation of ak10, 11, 12 (moved to constructor)
-    and fixed small memory leak (added deletion in destructor).
-
-G4MagIntegratorStepper: initialise fNoRHSCalls & fIntegrationOrder in c-tor.
-  ( fIntegrationOrder is not yet used widely - future migration. )
-   Coverity issue 67392.
-
-G4VFSALIntegrationStepper: initialise counter in c-tor.
-   Coverity issue 67396.
-
-G4BogackiShampine23: initialised fIsFSAL, fIntegrationOrder in c-tor.
-   Suppressed obsolete virtual method isFSAL,
-   Deleted duplicate virtual method 'isFSAL()'.
-     Non-virtual method IsFSAL() now exists in base class G4MagIntegratorStepper.
-   Made copy constructor and equal operator private and not unimplemented.
-   Added explanatory comments in source file.
-     can make this method FSAL easily (it calculates derivative @ endpoint. )
-
-Several steppers ( G4DoLoMcPriRK34, G4FSALBogackiShampine45,
-    G4DormandPrince745, G4BogackiShampine45 )
- - Initialise fLastStepLength and/or fAuxStepper data members in
-     constructor
-     Coverity issues: 67393, 67394, 67391, 67390, 67363
+- G4FSALBogackiShampline45: initialise 'bi[][]' const coefficients only 1 time
+  in method PrepareConstants() called by constructor.
+    ( Similar to G4BogackiShampine => seek consolidation )
+  Small fix: initialise fAuxStepper to nullptr, if not primary.
+    ( Part of Coverity issue 67394 )
+- G4DormandPrinceRK56: fix for significant memory leak of ak10_low buffer
+  space in SetupInterpolate_low(), apparently not seen by Coverity
+  because it was initialised in each use, not in constructor!
+  Improved initialisation of ak10, 11, 12 (moved to constructor)
+  and fixed small memory leak (added deletion in destructor).
+- G4MagIntegratorStepper: initialise fNoRHSCalls & fIntegrationOrder in c-tor.
+  ( fIntegrationOrder is not yet used widely - future migration )
+  Coverity issue 67392.
+- G4VFSALIntegrationStepper: initialise counter in c-tor. Coverity issue 67396.
+- G4BogackiShampine23: initialised fIsFSAL, fIntegrationOrder in c-tor.
+  Suppressed obsolete virtual method isFSAL,
+  Deleted duplicate virtual method 'isFSAL()'. Non-virtual method IsFSAL()
+  now exists in base class G4MagIntegratorStepper.
+  Made copy constructor and equal operator private and not unimplemented.
+  Added explanatory comments in source file; can make this method FSAL easily
+  (it calculates derivative @ endpoint. )
+- Several steppers ( G4DoLoMcPriRK34, G4FSALBogackiShampine45,
+  G4DormandPrince745, G4BogackiShampine45 ): initialise fLastStepLength and/or
+  fAuxStepper data members in constructor.
+  Coverity issues: 67393, 67394, 67391, 67390, 67363
 
 Jul 03, 2017 J.Apostolakis             - field-V10-03-07
 --------------------------
-G4FSALBogackiShampline45: fix for memory leak in Stepper()
+- G4FSALBogackiShampline45: fix for memory leak in Stepper()
   ( Coverity issue 67389 )
   
 Jul 03, 2017 J.Apostolakis             - field-V10-03-06
 --------------------------
-G4BogackiShampline23: fix for memory leak in destructor
+- G4BogackiShampline23: fix for memory leak in destructor
   ( Coverity issue 67355 )
 
 Jun 30, 2017 J.Apostolakis             - field-V10-03-05
 --------------------------
-G4FSALDormandPrince745: fix for memory leak in Stepper()
+- G4FSALDormandPrince745: fix for memory leak in Stepper()
   ( Coverity issue 67397 )
 
 May 17, 2017 J.Apostolakis             - field-V10-03-03, -04 (resubmit)
 --------------------------
-G4FieldManager::SetDetectorField
+- G4FieldManager::SetDetectorField
   Fixed default of 'fail mode' parameter in 
      to 0 (silent) - not 1 which was used for debugging.
   In case of existing G4ChordFinder, use 'max' (1, failMode) not min.
@@ -120,42 +111,34 @@ G4FieldManager::SetDetectorField
 
 May 11, 2017 J.Apostolakis             - field-V10-03-02
 -------------------------- 
-Reintroduced changes of field-V10-01-05, 06 and 07  to address
-issue recalled by ATLAS.
-
-New fixes/refinements (since field-V10-01-07)
-- Extra check for missing equation. (Fix)
-- Renamed G4FieldManager::SetFieldChangesEnergy() method to
-     InitialiseFieldChangesEnergy() to clarify its utility.
-
-Original functionality change (copied from field-V10-01-05, & -07) :
-- G4FieldManager.cc : Revised behaviour of SetDetector - it now
-   passes the Field to the Equation, as is the natural user expectation
-   The previous behaviour is possible, using extra argument 'failMode' 
-      flag. Values: 0           = silent ; 
+- Reintroduced changes of field-V10-01-05, 06 and 07  to address
+  issue recalled by ATLAS.
+- New fixes/refinements (since field-V10-01-07)
+  o Extra check for missing equation. (Fix)
+  o Renamed G4FieldManager::SetFieldChangesEnergy() method to
+    InitialiseFieldChangesEnergy() to clarify its utility.
+- Original functionality change (copied from field-V10-01-05, & -07) :
+  o G4FieldManager.cc : Revised behaviour of SetDetector - it now
+    passes the Field to the Equation, as is the natural user expectation
+    The previous behaviour is possible, using extra argument 'failMode' flag.
+            Values: 0           = silent ; 
                     1 (default) = warning; 
                     2 or other  = fatal exception.
 
-   This change is to ensure that user expectation is met: 
-      if the field is changed for an existing, working stepper it must 
-      be propagated to the equation of motion.
-   Note: this causes potential conflict between the type of the equation
-         and the field, which will need to be solved in the future.
-
-   Old behaviour (just set our own pointer) is still available in new method:
-     ProposeDetectorField(G4Field *detectorField) 
-
-  Note: Error reporting behaviour of SetDetector is 'soft'. It does not 
-   complain by default if ChordFinder is not (yet) set.
-    ( The default values of failMode = 0 i.e. quiet. )
-   If a chord-finder exists, it will still warn for other errors.
-   
-   To obtain have noisy extra checks call SetDetectorField with failMode > 0
-   or by using the new method for an existing field:
-      ChangeDetectorField(G4Field *detectorField)    
-
---------------------------
-
+    This change is to ensure that user expectation is met: 
+    if the field is changed for an existing, working stepper it must 
+    be propagated to the equation of motion.
+    Note: this causes potential conflict between the type of the equation
+          and the field, which will need to be solved in the future.
+    Old behaviour (just set our own pointer) is still available in new method:
+    ProposeDetectorField(G4Field *detectorField) 
+    Note: Error reporting behaviour of SetDetector is 'soft'. It does not 
+          complain by default if ChordFinder is not (yet) set.
+          ( The default values of failMode = 0 i.e. quiet. )
+    If a chord-finder exists, it will still warn for other errors.
+    To obtain have noisy extra checks call SetDetectorField with failMode > 0
+    or by using the new method for an existing field:
+    ChangeDetectorField(G4Field *detectorField)    
   OLD: Co-works and requires new tag in geometry/navigation: geomnav-V10-01-24.
 
 Mar  22, 2017 G.Cosmo                   - field-V10-03-01
